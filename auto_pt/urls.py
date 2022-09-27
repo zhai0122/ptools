@@ -15,5 +15,7 @@ urlpatterns = [
     path(r'page_downloading', views.page_downloading, name='page_downloading'),
     path(r'get_downloader', views.get_downloader, name='get_downloader'),
     path(r'downloading', views.get_downloading, name='downloading'),
+    path(r'torrent_info_page', views.render_torrents_page, name='torrent_info_page'),
+    path(r'get_torrent_info_list', views.get_torrent_info_list, name='get_torrent_info_list'),
     path(r'do_sql', views.do_sql, name='do_sql'),
 ]

@@ -12,7 +12,7 @@ from django.shortcuts import render
 
 from pt_site import views as tasks
 from pt_site.UtilityTool import FileSizeConvert
-from pt_site.models import SiteStatus, MySite, Site, Downloader
+from pt_site.models import SiteStatus, MySite, Site, Downloader, TorrentInfo
 from pt_site.views import scheduler, pt_spider
 from ptools.base import CommonResponse, StatusCodeEnum, DownloaderCategory, TorrentBaseInfo
 
@@ -28,7 +28,7 @@ def add_task(request):
             second = int(start_time[2])
             s = content['s']  # 接收执行任务的各种参数
             # 创建任务
-            scheduler.add_job(tasks.scheduler, 'cron', hour=hour, minute=minute, second=second, args=[s])
+            scheduler.add_job(download_tasks.scheduler, 'cron', hour=hour, minute=minute, second=second, args=[s])
             code = '200'
             message = 'success'
         except Exception as e:
@@ -44,7 +44,7 @@ def add_task(request):
 
 def get_tasks(request):
     # print(dir(tasks))
-    data = [key for key in dir(tasks) if key.startswith('auto')]
+    data = [key for key in dir(download_tasks) if key.startswith('auto')]
     print(data)
     # print(tasks.__getattr__)
     # print(tasks.auto_get_status.__doc__)
@@ -358,3 +358,43 @@ def do_restart(request):
         return JsonResponse(data=CommonResponse.error(
             msg='重启指令发送失败!' + str(e),
         ).to_dict(), safe=False)
+
+
+def render_torrents_page(request):
+    """
+    种子列表页
+    :param request:
+    :return:
+    """
+    return render(request, 'auto_pt/torrents.html')
+
+
+def get_torrent_info_list(request):
+    """
+    获取种子列表
+    :return:
+    """
+    torrent_info_list = TorrentInfo.objects.all().values()
+    for torrent_info in torrent_info_list:
+        if not torrent_info.downloader:
+            pass
+        else:
+            pass
+
+
+def push_to_downloader(request):
+    """
+    推送到下载器
+    :param request:
+    :return:
+    """
+    pass
+
+
+def download_tasks():
+    """
+    任务管理
+    :return:
+    """
+    downloader_list = Downloader.objects.all()
+    pass
