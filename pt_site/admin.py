@@ -711,7 +711,8 @@ class TorrentInfoAdmin(ImportExportModelAdmin, AjaxAdmin):  # instead of ModelAd
         # 'updated_at'
     )
 
-    # list_display_links = None
+    # list_display_links = ['name_href']
+
     def file_size(self, torrent_info: TorrentInfo):
         return FileSizeConvert.parse_2_file_size(torrent_info.size)
 
@@ -735,7 +736,7 @@ class TorrentInfoAdmin(ImportExportModelAdmin, AjaxAdmin):  # instead of ModelAd
         return format_html(
             # <el-link href="{}" target="_blank">下载种子</el-link>
             # '<a target="blank" href="{}" >下载种子</a>',
-            '<a href="{}" target="_blank">下载种子</a>',
+            '<a href="#" target="_blank">下载种子</a>',
             obj.magnet_url
         )
 
@@ -743,8 +744,8 @@ class TorrentInfoAdmin(ImportExportModelAdmin, AjaxAdmin):  # instead of ModelAd
         return format_html(
             # <el-link href="{}" target="_blank">下载种子</el-link>
             # '<a target="blank" href="{}" >下载种子</a>',
-            '<a href="{}" target="_blank" title="{}">{}</a>',
-            obj.magnet_url,
+            '<a href="#" target="_blank" title="{}">{}</a>',
+            # obj.magnet_url,
             obj.name,
             obj.name[0:25] + ' ...'
         )
