@@ -141,7 +141,7 @@ def get_downloading(request):
                 'day,', '天'
             ).replace(':', '小时', 1).replace(':', '分', 1).split('.')[0] + '秒'
             # 大小与速度处理
-            torrent['state'] = TorrentBaseInfo.download_state.get(torrent.get('state'))
+            # torrent['state'] = TorrentBaseInfo.download_state.get(torrent.get('state'))
             torrent['ratio'] = '%.4f' % torrent.get('ratio') if torrent['ratio'] >= 0.0001 else 0
             torrent['progress'] = '%.4f' % torrent.get('progress') if float(torrent['progress']) < 1 else 1
             torrent['uploaded'] = '' if torrent['uploaded'] == 0 else torrent['uploaded']
