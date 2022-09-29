@@ -10,11 +10,9 @@ import qbittorrentapi
 from django.http import JsonResponse
 from django.shortcuts import render
 
-from pt_site import views as tasks
-from pt_site.UtilityTool import FileSizeConvert
 from pt_site.models import SiteStatus, MySite, Site, Downloader, TorrentInfo
 from pt_site.views import scheduler, pt_spider
-from ptools.base import CommonResponse, StatusCodeEnum, DownloaderCategory, TorrentBaseInfo
+from ptools.base import CommonResponse, StatusCodeEnum, DownloaderCategory
 
 
 def add_task(request):
@@ -110,6 +108,10 @@ def get_downloading(request):
     try:
         qb_client.auth_log_in()
         torrents = qb_client.torrents_info()
+        transfer = qb_client.transfer_info()
+        main_data = qb_client.sync_maindata()
+        print(transfer)
+        print(json.dumps(main_data))
         for torrent in torrents:
             # 时间处理
             # 添加于
@@ -147,13 +149,45 @@ def get_downloading(request):
             torrent['uploaded'] = '' if torrent['uploaded'] == 0 else torrent['uploaded']
             torrent['upspeed'] = '' if torrent['upspeed'] == 0 else torrent['upspeed']
             torrent['dlspeed'] = '' if torrent['dlspeed'] == 0 else torrent['dlspeed']
-        print(torrents)
+        print(len(torrents))
         return JsonResponse(CommonResponse.success(data=torrents).to_dict(), safe=False)
     except Exception as e:
         print(e)
         return JsonResponse(CommonResponse.error(
             msg='连接下载器出错咯！'
         ).to_dict(), safe=False)
+
+
+def control_torrent(request):
+    ids = request.POST.get('ids')
+    command = request.POST.get('command')
+    downloader_id = request.POST.get('downloader_id')
+    print(request.POST)
+    # print(command, type(ids), downloader_id)
+    downloader = Downloader.objects.filter(id=downloader_id).first()
+    qb_client = qbittorrentapi.Client(
+        host=downloader.host,
+        port=downloader.port,
+        username=downloader.username,
+        password=downloader.password,
+        SIMPLE_RESPONSES=True
+    )
+    try:
+        qb_client.auth_log_in()
+        # qb_client.torrents.resume()
+        # 根据指令字符串定位函数
+        command_exec = getattr(qb_client.torrents, command)
+        print(command_exec)
+        command_exec(torrent_hashes=ids.split(','))
+        # 延缓2秒等待操作生效
+        time.sleep(2)
+    except Exception as e:
+        print(e)
+    return JsonResponse(CommonResponse.success(data={
+        'ids': ids.split(','),
+        'command': command,
+        'downloader_id': downloader_id
+    }).to_dict(), safe=False)
 
 
 def import_from_ptpp(request):

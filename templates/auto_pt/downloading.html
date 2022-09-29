@@ -29,22 +29,29 @@
                 {#                :name="downloader.id"#}
                 :id="downloader.id">
             <div>
-                <el-dropdown split-button type="primary" size="mini">
-                    查看
+                <el-dropdown split-button type="primary" size="mini" @command="handleSelected">
+                    操作
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item>继续</el-dropdown-item>
-                        <el-dropdown-item>暂停</el-dropdown-item>
-                        <el-dropdown-item>强制继续</el-dropdown-item>
-                        <el-dropdown-item>删除</el-dropdown-item>
-                        <el-dropdown-item>限速</el-dropdown-item>
-                        <el-dropdown-item>分类</el-dropdown-item>
-                        <el-dropdown-item>更改路径</el-dropdown-item>
-                        <el-dropdown-item>自动管理</el-dropdown-item>
-                        <el-dropdown-item>重新校验</el-dropdown-item>
-                        <el-dropdown-item>复制链接</el-dropdown-item>
-                        <el-dropdown-item>复制HASH</el-dropdown-item>
+                        <el-dropdown-item command="resume">继续</el-dropdown-item>
+                        <el-dropdown-item command="set_force_start">强制继续</el-dropdown-item>
+                        <el-dropdown-item command="pause">暂停</el-dropdown-item>
+                        <el-dropdown-item command="set_auto_management">自动管理</el-dropdown-item>
+                        <el-dropdown-item command="set_super_seeding">超级做种</el-dropdown-item>
+                        <el-dropdown-item command="recheck">重新校验</el-dropdown-item>
+                        <el-dropdown-item command="reannounce">重新汇报</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
+                <el-dropdown split-button type="success" size="mini">
+                    操作
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item @click="handleDelete">删除</el-dropdown-item>
+                        <el-dropdown-item @click="setCategory">分类</el-dropdown-item>
+                        <el-dropdown-item @click="limitSpeed">限速</el-dropdown-item>
+                        {#                        <el-dropdown-item @click="setLocation">更改路径</el-dropdown-item>#}
+                    </el-dropdown-menu>
+                </el-dropdown>
+                {#                <el-button @click="copyMagnet">复制链接</el-button>#}
+                {#                <el-button @click="copyHash">复制HASH</el-button>#}
                 <el-button size="mini" type="warning" @click="clearTimer" v-if="refresh"> 暂停刷新</el-button>
                 {#                <el-button size="mini" type="success" @click="handleRefresh" v-else="refresh"> 开始刷新</el-button>#}
                 <el-dropdown split-button type="success" size="mini" v-else="refresh" @click="handleRefresh(10)"
@@ -67,6 +74,7 @@
                     showHeaderOverflow="title"
                     @row-dblclick="handleRow"
                     @row-contextmenu="rtClick"
+                    @selection-change="tableSelected"
                     :data="torrents"
                     height="740"
                     size="mini"
@@ -299,7 +307,8 @@
                 {color: '#5cb87a', percentage: 60},
                 {color: '#1989fa', percentage: 80},
                 {color: '#6f7ad3', percentage: 100}
-            ]
+            ],
+            selected_rows: []
         },
         beforeMount() {
         },
@@ -314,10 +323,9 @@
                 })
             }
             this.stateFilters = data
-            console.log(this.stateFilters)
+            {#console.log(this.stateFilters)#}
             this.get_downloader()
             console.log("下载器：", this.downloaders.length)
-
         },
         // 清除定时器，不然页面会卡死
         beforeDestroy() {
@@ -330,6 +338,51 @@
         },
         watch: {},
         methods: {
+            tableSelected(rows) {
+                this.selected_rows = rows
+                console.log(this.selected_rows)
+            },
+            handleDelete() {
+            },
+            setCategory() {
+            },
+            limitSpeed() {
+            },
+            {#setLocation(){},#}
+            handleSelected(command) {
+                let ids = []
+                if (this.selected_rows.length <= 0) {
+                    this.$message({
+                        type: 'warning',
+                        message: '未选中任何种子！！'
+                    })
+                    return
+                }
+                this.selected_rows.forEach((item, index) => {
+                    console.log(item['hash'], index)
+                    ids.push(item['hash'])
+                })
+                let data = new FormData()
+                data.append('ids', ids)
+                data.append('command', command)
+                data.append('downloader_id', this.downloader_id)
+                axios.post(
+                    "{% url "control_torrent" %}",
+                    data
+                ).then(res => {
+                    console.log(res.data)
+                    this.get_downloading(this.downloader_id)
+                    this.$message({
+                        type: 'success',
+                        message: '指令发送成功！！'
+                    })
+                }).catch(res => {
+                    this.$message({
+                        type: 'warning',
+                        message: '指令发送失败！！'
+                    })
+                })
+            },
             get_downloader() {
                 axios.get(
                     "{% url "get_downloader" %}"
@@ -340,7 +393,7 @@
                         this.downloaders = res.data.data
                         this.downloader_id = this.downloaders[0].id
                         this.get_downloading(this.downloader_id)
-                        console.log(this.torrents)
+                        console.log(this.torrents.length)
                         this.loading = false
                     } else {
                         this.loading = false
@@ -382,10 +435,19 @@
                         }
                     }
                 ).then(res => {
-
                     if (res.data.code === 0) {
-                        console.log(res.data.data)
+                        console.log(res.data.data.length)
                         this.torrents = res.data.data
+                        this.$message({
+                            type: 'success',
+                            message: '任务加载成功！！'
+                        })
+                    } else {
+                        console.log(res.data.data)
+                        this.$message({
+                            type: 'warning',
+                            message: '任务加载出错！！'
+                        })
                     }
                 })
             },
