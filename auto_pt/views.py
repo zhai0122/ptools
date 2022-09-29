@@ -175,6 +175,9 @@ def get_downloading(request):
 def control_torrent(request):
     ids = request.POST.get('ids')
     command = request.POST.get('command')
+    delete_files = request.POST.get('delete_files')
+    category = request.POST.get('category')
+    enable = request.POST.get('enable')
     downloader_id = request.POST.get('downloader_id')
     print(request.POST)
     # print(command, type(ids), downloader_id)
@@ -192,7 +195,11 @@ def control_torrent(request):
         # 根据指令字符串定位函数
         command_exec = getattr(qb_client.torrents, command)
         print(command_exec)
-        command_exec(torrent_hashes=ids.split(','), enable=True)
+        command_exec(
+            torrent_hashes=ids.split(','),
+            category=category,
+            delete_files=delete_files,
+            enable=enable, )
         # 延缓2秒等待操作生效
         time.sleep(2)
     except Exception as e:

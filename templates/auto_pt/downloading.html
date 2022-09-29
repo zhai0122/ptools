@@ -44,183 +44,220 @@
                 <el-dropdown split-button type="success" size="mini">
                     操作
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item @click="handleDelete">删除</el-dropdown-item>
-                        <el-dropdown-item @click="setCategory">分类</el-dropdown-item>
-                        <el-dropdown-item @click="limitSpeed">限速</el-dropdown-item>
+                        <el-dropdown-item>
+                            <el-button size="mini" type="danger" @click="deleteForm = true">删除任务</el-button>
+                        </el-dropdown-item>
+                        <el-dropdown-item @click="setCategory">
+                            <el-button size="mini" type="primary" @click="categoryForm = true">修改分类</el-button>
+                        </el-dropdown-item>
+                        {#                        <el-dropdown-item @click="limitSpeed">限速</el-dropdown-item>#}
                         {#                        <el-dropdown-item @click="setLocation">更改路径</el-dropdown-item>#}
                     </el-dropdown-menu>
                 </el-dropdown>
-                {#                <el-button @click="copyMagnet">复制链接</el-button>#}
-                {#                <el-button @click="copyHash">复制HASH</el-button>#}
-                <el-button size="mini" type="warning" @click="clearTimer" v-if="refresh"> 暂停刷新</el-button>
-                {#                <el-button size="mini" type="success" @click="handleRefresh" v-else="refresh"> 开始刷新</el-button>#}
-                <el-dropdown split-button type="success" size="mini" v-else="refresh" @click="handleRefresh(1.5)"
-                             @command="handleRefresh">
-                    开始刷新
-                    <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item icon="el-icon-loading" command="3">3S</el-dropdown-item>
-                        <el-dropdown-item icon="el-icon-loading" command="5">5S</el-dropdown-item>
-                        <el-dropdown-item icon="el-icon-loading" command="10">10S</el-dropdown-item>
-                        <el-dropdown-item icon="el-icon-loading" command="15">15S</el-dropdown-item>
-                    </el-dropdown-menu>
-                </el-dropdown>
-                <div style="font-size: 13px;margin: 5px auto -5px;">
-                    <span>总分享率：
-                    <el-tag size="medium" type="danger" v-text="server_state.global_ratio"></el-tag>
+                <el-dialog
+                        title="删除任务"
+                        :visible.sync="deleteForm"
+                        min-width="180"
+                        width="30%"
+                        center>
+                    <div style="text-align: center">
+                        <el-switch
+                                v-model="delete_files"
+                                active-text="删除文件"
+                                active-color="#ff4949"
+                                inactive-text="保留文件">
+                        </el-switch>
+                    </div>
+
+                    <span slot="footer" class="dialog-footer">
+                        <el-button @click="deleteForm = false">取 消</el-button>
+                        <el-button type="danger" @click="handleDelete">确 定</el-button>
                     </span>
-                    <span>剩余空间：
-                    <el-tag size="medium" type="success" v-text="renderSize(server_state.free_space_on_disk)"></el-tag>
+                </el-dialog>
+                <el-dialog
+                        title="修改分类"
+                        :visible.sync="categoryForm"
+                        min-width="180"
+                        width="30%"
+                        center>
+                    <div style="text-align: center">
+                        <el-select v-model="category" filterable placeholder="请选择分类">
+                            <el-option
+                                    v-for="item in categories"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </div>
+
+                    <span slot="footer" class="dialog-footer">
+                        <el-button @click="categoryForm = false">取 消</el-button>
+                        <el-button type="danger" @click="setCategory">确 定</el-button>
                     </span>
-                    <span>历史下载：
-                    <el-tag size="medium" type="" v-text="renderSize(server_state.alltime_dl)"></el-tag>
+                </el-dialog>
+                <div style="font-size: 13px;margin: 5px auto -5px;text-align: center;">
+                    <span>
+                        <el-tag size="medium" type="danger" v-text="'总分享率：' + server_state.global_ratio"></el-tag>
                     </span>
-                    <span>历史上传：
-                    <el-tag size="medium" type="warning" v-text="renderSize(server_state.alltime_ul)"></el-tag>
+                    <span>
+                        <el-tag size="medium" type="success"
+                                v-text="'剩余空间：' + renderSize(server_state.free_space_on_disk)"></el-tag>
                     </span>
-                    <span>本次下载：
+                    <span>
+                    <el-tag size="medium" type="" v-text="'历史下载：' + renderSize(server_state.alltime_dl)"></el-tag>
+                    </span>
+                    <span>
+                    <el-tag size="medium" type="warning"
+                            v-text="'历史上传：' + renderSize(server_state.alltime_ul)"></el-tag>
+                    </span>
+                    <span>
                     <el-tag size="medium" effect="plain" color="#233223"
-                            v-text="renderSize(server_state.dl_info_data)"></el-tag>
+                            v-text="'本次下载：' + renderSize(server_state.dl_info_data)"></el-tag>
                     </span>
-                    <span>下载速度：
+                    <span>
                     <el-tag size="medium" effect="plain" color="#296969"
-                            v-text="renderSize(server_state.dl_info_speed)"></el-tag>
+                            v-text="'下载速度：' + renderSize(server_state.dl_info_speed)"></el-tag>
                     </span>
-                    <span>本次上传：
+                    <span>
                     <el-tag size="medium" effect="plain" color="#545454"
-                            v-text="renderSize(server_state.up_info_data)"></el-tag>
+                            v-text="'本次上传：' + renderSize(server_state.up_info_data)"></el-tag>
                     </span>
-                    <span>上传速度：
+                    <span>
                     <el-tag size="medium" color="#696969"
-                            v-text="renderSize(server_state.up_info_speed) + '/S'"></el-tag>
+                            v-text="'上传速度：' + renderSize(server_state.up_info_speed) + '/S'"></el-tag>
                     </span>
                 </div>
-                <hr/>
-                <u-table
-                        ref="plxTable"
-                        row-height="55"
-                        use-virtual
-                        showBodyOverflow="title"
-                        showHeaderOverflow="title"
-                        @row-dblclick="handleRow"
-                        @row-contextmenu="rtClick"
-                        @selection-change="tableSelected"
-                        :data="torrents"
-                        height="740"
-                        size="mini"
+            </div>
+            <hr/>
+            <u-table
+                    ref="plxTable"
+                    row-height="55"
+                    use-virtual
+                    showBodyOverflow="title"
+                    showHeaderOverflow="title"
+                    @row-dblclick="handleRow"
+                    @row-contextmenu="rtClick"
+                    @selection-change="tableSelected"
+                    :data="torrents"
+                    height="740"
+                    size="mini"
+                    :row-key="(row) => row.hash"
+                    border
+                    stripe
+                    beautify-table
+                    highlight-current-row
+                    style="width: 100%">
+                <u-table-column
+                        fixed
                         :reserve-selection="true"
-                        row-key="id"
-                        border
-                        stripe
-                        beautify-table
-                        highlight-current-row
-                        {#                    pagination-show="true"#}
-                        {#                    total="true"#}
-                        {#                    show-summary#}
-                        style="width: 100%">
-                    <u-table-column
-                            fixed
-                            type="selection">
-                    </u-table-column>
-                    <u-table-column type="index" fixed></u-table-column>
-                    <u-table-column
-                            prop="name"
-                            fixed
-                            sortable
-                            show-overflow-tooltip="true"
-                            label="种子名称" max-width="380"
-                            min-width="220">
-                    </u-table-column>
-                    <u-table-column prop="size"
-                                    sortable
-                                    width="80"
-                                    :formatter="handleSize"
-                                    label="大小">
-                    </u-table-column>
-                    {#                <u-table-column prop="downloaded" :formatter="handleSize"#}
-                    {#                                 label="已下载"></u-table-column>#}
-                    <u-table-column prop="uploaded"
-                                    :formatter="handleSize"
-                                    sortable
-                                    width="85"
-                                    label="上传"></u-table-column>
-                    <u-table-column prop="dlspeed"
-                                    sortable
-                                    width="95"
-                                    label="下载速度"></u-table-column>
-                    <u-table-column prop="upspeed"
-                                    sortable
-                                    width="95"
-                                    label="上传速度"></u-table-column>
-                    <u-table-column
-                            prop="progress"
-                            sortable
-                            width="90"
-                            label="进度">
-                        <template slot-scope="scope">
-                            <el-progress
-                                    v-if="scope.row.progress==1"
-                                    status="success"
-                                    {#                                type="circle"#}
-                                    width="20"
-                                    {#                                :text-inside="true"#}
-                                    {#                                :stroke-width="20"#}
-                                    {#                                stroke-linecap="butt"#}
-                                    :percentage="scope.row.progress * 100">
-                            </el-progress>
-                            <el-progress
-                                    v-else="scope.row.progress==1"
-                                    {#                                :text-inside="true"#}
-                                    {#                                type="circle"#}
-                                    width="20"
-                                    :color="customColors"
-                                    {#                                :stroke-width="18"#}
-                                    :percentage="scope.row.progress * 100">
-                            </el-progress>
-
-                        </template>
-                    </u-table-column>
-                    {#                <u-table-column prop="save_path"#}
-                    {#                                 label="保存路径"></u-table-column>#}
-                    <u-table-column prop="ratio"
-                                    sortable
-                                    width="85"
-                            {#                                 :formatter="handlePercent"#}
-                                    label="分享率"></u-table-column>
-                    {#                <u-table-column prop="seeding_time"#}
-                    {#                                 label="做种时间"></u-table-column>#}
-                    <u-table-column prop="state"
-                                    sortable
-                                    width="85"
-                                    :formatter="handleState"
-                                    column-key="state"
-                                    :filter-method="filterStateMethod"
-                            {#                                :filters="[{text: '做种中', value: 'stalledUP'}, {text: '上传中', value: 'uploading'}, {text: '下载中', value: 'downloading'}]"#}
-                                    :filters="stateFilters"
-                                    :filter-multiple="false"
-                                    label="状态"></u-table-column>
-                    <u-table-column prop="last_activity"
-                                    sortable
-                                    width="105"
-                                    show-overflow-tooltip
-                                    label="最后活动"></u-table-column>
-                    {#                <u-table-column prop="added_on"#}
-                    {#                                 label="添加时间"></u-table-column>#}
-                    <u-table-column prop="category"
-                                    sortable
-                                    width="85"
-                                    :filters="categoryFilters"
-                                    :filter-method="filterStateMethod"
-                                    :filter-multiple="false"
-                                    label="分类"></u-table-column>
-                    {#                <u-table-column prop="tracker"#}
-                    {#                                 label="Tracker"></u-table-column>#}
-                    {#                <u-table-column#}
-                    {#                        width="120"#}
-                    {#                        fixed="right"#}
-                    {#                        label="操作">#}
-                    {#                   #}
-                    {#                </u-table-column>#}
-                </u-table>
+                        type="selection">
+                </u-table-column>
+                <u-table-column type="index" fixed></u-table-column>
+                <u-table-column
+                        prop="name"
+                        fixed
+                        sortable
+                        show-overflow-tooltip="true"
+                        label="种子名称" max-width="280"
+                        min-width="150">
+                </u-table-column>
+                <u-table-column prop="size"
+                                sortable
+                                width="85"
+                                show-overflow-tooltip
+                                :formatter="handleSize"
+                                label="大小">
+                </u-table-column>
+                {#                <u-table-column prop="downloaded" :formatter="handleSize"#}
+                {#                                 label="已下载"></u-table-column>#}
+                <u-table-column prop="uploaded"
+                                :formatter="handleSize"
+                                sortable
+                                width="85"
+                                label="上传"></u-table-column>
+                <u-table-column prop="dlspeed"
+                                sortable
+                                width="95"
+                                :formatter="handleSpeed"
+                                label="下载速度"></u-table-column>
+                <u-table-column prop="upspeed"
+                                sortable
+                                width="95"
+                                :formatter="handleSpeed"
+                                label="上传速度"></u-table-column>
+                <u-table-column
+                        prop="progress"
+                        sortable
+                        width="90"
+                        label="进度">
+                    <template slot-scope="scope">
+                        <el-progress
+                                v-if="scope.row.progress==1"
+                                status="success"
+                                {#                                type="circle"#}
+                                width="20"
+                                {#                                :text-inside="true"#}
+                                {#                                :stroke-width="20"#}
+                                {#                                stroke-linecap="butt"#}
+                                :percentage="scope.row.progress * 100">
+                        </el-progress>
+                        <el-progress
+                                v-else="scope.row.progress==1"
+                                {#                                :text-inside="true"#}
+                                {#                                type="circle"#}
+                                width="20"
+                                :color="customColors"
+                                {#                                :stroke-width="18"#}
+                                :percentage="scope.row.progress * 100">
+                        </el-progress>
+                    </template>
+                </u-table-column>
+                <u-table-column prop="save_path"
+                                show-overflow-tooltip
+                                sortable
+                                width="150"
+                                label="保存路径"></u-table-column>
+                <u-table-column prop="ratio"
+                                sortable
+                                width="85"
+                        {#                                 :formatter="handlePercent"#}
+                                label="分享率"></u-table-column>
+                {#                <u-table-column prop="seeding_time"#}
+                {#                                 label="做种时间"></u-table-column>#}
+                <u-table-column prop="state"
+                                sortable
+                                width="85"
+                                :formatter="handleState"
+                                column-key="state"
+                                :filter-method="filterStateMethod"
+                        {#                                :filters="[{text: '做种中', value: 'stalledUP'}, {text: '上传中', value: 'uploading'}, {text: '下载中', value: 'downloading'}]"#}
+                                :filters="stateFilters"
+                                :filter-multiple="false"
+                                label="状态"></u-table-column>
+                <u-table-column prop="last_activity"
+                                sortable
+                                width="105"
+                                show-overflow-tooltip
+                                label="最后活动"></u-table-column>
+                {#                <u-table-column prop="added_on"#}
+                {#                                 label="添加时间"></u-table-column>#}
+                <u-table-column prop="category"
+                                sortable
+                                width="85"
+                                :filters="categoryFilters"
+                                :filter-method="filterStateMethod"
+                                :filter-multiple="false"
+                                label="分类"></u-table-column>
+                {#                <u-table-column prop="tracker"#}
+                {#                                 label="Tracker"></u-table-column>#}
+                {#                <u-table-column#}
+                {#                        width="120"#}
+                {#                        fixed="right"#}
+                {#                        label="操作">#}
+                {#                   #}
+                {#                </u-table-column>#}
+            </u-table>
         </el-tab-pane>
     </el-tabs>
 
@@ -316,7 +353,8 @@
             torrents: [],
             dialogFormVisible: false,
             timer: {},
-            interval: 5000,
+            deleteForm: false,
+            categoryForm: false,
             refresh: false,
             downloader_id: 0,
             torrent: {
@@ -349,7 +387,10 @@
                     value: ''
                 }
             ],
-            server_state: {}
+            categories: [],
+            category: '',
+            server_state: {},
+            delete_files: false,
         },
         beforeMount() {
         },
@@ -367,6 +408,9 @@
             {#console.log(this.stateFilters)#}
             this.get_downloader()
             console.log("下载器：", this.downloaders.length)
+            this.timer = setInterval(() => {
+                this.get_downloading(this.downloaders[0].id)
+            }, 1500)
         },
         // 清除定时器，不然页面会卡死
         beforeDestroy() {
@@ -383,14 +427,26 @@
                 this.selected_rows = rows
                 console.log(this.selected_rows)
             },
+            rowKey(row) {
+                console.log(row.hash)
+                return row.hash
+            },
             handleDelete() {
+                console.log(this.delete_files)
+                {#this.deleteForm = true#}
+                this.handleSelected('delete', '', this.delete_files)
+                this.deleteForm = false
+                this.delete_files = false
             },
             setCategory() {
+                this.handleSelected('set_category', this.category)
+                this.categoryForm = false
+                this.category = ''
             },
             limitSpeed() {
             },
             {#setLocation(){},#}
-            handleSelected(command) {
+            handleSelected(command, category = '', delete_files = false, enable = true) {
                 let ids = []
                 if (this.selected_rows.length <= 0) {
                     this.$message({
@@ -406,6 +462,8 @@
                 let data = new FormData()
                 data.append('ids', ids)
                 data.append('command', command)
+                data.append('enable', enable)
+                data.append('category', category)
                 data.append('downloader_id', this.downloader_id)
                 axios.post(
                     "{% url "control_torrent" %}",
@@ -413,12 +471,11 @@
                 ).then(res => {
                     console.log(res.data)
                     this.get_downloading(this.downloader_id)
-                    clearInterval(this.timer)
-                    this.timer = null
                     this.$message({
                         type: 'success',
                         message: '指令发送成功！！'
                     })
+                    this.$refs.plxTable.clearSelection();
                 }).catch(res => {
                     this.$message({
                         type: 'warning',
@@ -471,6 +528,8 @@
                 loading.close()
             },
             get_downloading(downloader_id) {
+                clearInterval(this.timer)
+                this.timer = null
                 axios.get(
                     "{% url "downloading" %}",
                     {
@@ -486,10 +545,16 @@
                         // 获取分类列表
                         let categories = res.data.data.categories
                         // 任务状态过滤器数据
+                        this.categoryFilters = []
+                        this.categories = []
                         for (let x in res.data.data.categories) {
                             {#console.log(download_state[x])#}
                             this.categoryFilters.push({
                                 'text': x,
+                                'value': x
+                            })
+                            this.categories.push({
+                                'label': x,
                                 'value': x
                             })
                         }
@@ -506,11 +571,18 @@
                         })
                     }
                 })
+                this.timer = setInterval(() => {
+                    this.get_downloading(downloader_id)
+                }, 1500)
             },
             // 执行格式化文件大小
             handleSize(row, column, cellValue, index) {
                 return this.renderSize(cellValue)
             },
+            handleSpeed(row, column, cellValue, index) {
+                return this.renderSize(cellValue) != 0 ? this.renderSize(cellValue) + '/S' : ''
+            },
+
             // 执行格式化文件大小
             handleState(row, column, cellValue, index) {
                 {#('state'))#}
@@ -553,19 +625,19 @@
                 // 阻止默认右键菜单弹出
                 event.preventDefault()
             },
-            handleRefresh(command) {
-                console.log(this.refresh)
-                this.refresh = true
-                this.interval = command * 1000
-                this.$message({
-                    type: 'success',
-                    message: '下载任务将每' + command + '秒刷新一次，如需暂停，请点击按钮！'
-                });
-                this.timer = setInterval(() => {
-                    this.get_downloading(this.downloader_id)
-                }, this.interval)
-
-            },
+            {#handleRefresh(command) {#}
+            {#    console.log(this.refresh)#}
+            {#    this.refresh = true#}
+            {#    this.interval = command * 1000#}
+            {#    this.$message({#}
+            {#        type: 'success',#}
+            {#        message: '下载任务将每' + command + '秒刷新一次，如需暂停，请点击按钮！'#}
+            {#    });#}
+            {#    this.timer = setInterval(() => {#}
+            {#        this.get_downloading(this.downloader_id)#}
+            {#    }, this.interval)#}
+            {##}
+            //},
             clearTimer() {
                 this.refresh = false
                 console.log(this.refresh)
