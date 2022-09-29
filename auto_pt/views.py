@@ -107,12 +107,17 @@ def get_downloading(request):
     )
     try:
         qb_client.auth_log_in()
-        torrents = qb_client.torrents_info()
-        transfer = qb_client.transfer_info()
+        # transfer = qb_client.transfer_info()
+        # torrents = qb_client.torrents_info()
         main_data = qb_client.sync_maindata()
-        print(transfer)
-        print(json.dumps(main_data))
-        for torrent in torrents:
+        torrent_list = main_data.get('torrents')
+        print(type(torrent_list))
+        # print(json.dumps(main_data))
+        torrents = []
+        for index, torrent in torrent_list.items():
+            # print(type(torrent))
+            # print(torrent)
+            # torrent = json.loads(torrent)
             # 时间处理
             # 添加于
             torrent['added_on'] = datetime.fromtimestamp(torrent.get('added_on')).strftime(
@@ -149,10 +154,15 @@ def get_downloading(request):
             torrent['uploaded'] = '' if torrent['uploaded'] == 0 else torrent['uploaded']
             torrent['upspeed'] = '' if torrent['upspeed'] == 0 else torrent['upspeed']
             torrent['dlspeed'] = '' if torrent['dlspeed'] == 0 else torrent['dlspeed']
+            torrent['hash'] = index
+            torrents.append(torrent)
         print(len(torrents))
-        return JsonResponse(CommonResponse.success(data=torrents).to_dict(), safe=False)
+        main_data['torrents'] = torrents
+        # return JsonResponse(CommonResponse.success(data=torrents).to_dict(), safe=False)
+        return JsonResponse(CommonResponse.success(data=main_data).to_dict(), safe=False)
     except Exception as e:
         print(e)
+        # raise
         return JsonResponse(CommonResponse.error(
             msg='连接下载器出错咯！'
         ).to_dict(), safe=False)
@@ -178,7 +188,7 @@ def control_torrent(request):
         # 根据指令字符串定位函数
         command_exec = getattr(qb_client.torrents, command)
         print(command_exec)
-        command_exec(torrent_hashes=ids.split(','))
+        command_exec(torrent_hashes=ids.split(','), enable=True)
         # 延缓2秒等待操作生效
         time.sleep(2)
     except Exception as e:
