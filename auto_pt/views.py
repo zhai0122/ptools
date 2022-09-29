@@ -111,7 +111,11 @@ def get_downloading(request):
         # torrents = qb_client.torrents_info()
         main_data = qb_client.sync_maindata()
         torrent_list = main_data.get('torrents')
-        print(type(torrent_list))
+        categories = main_data.get('categories')
+        # print(main_data.get('server_state'))
+        # print(transfer)
+        # print(categories)
+
         # print(json.dumps(main_data))
         torrents = []
         for index, torrent in torrent_list.items():
