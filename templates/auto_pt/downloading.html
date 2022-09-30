@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <title>任务管理</title>
-    {% include 'admin/includes/css-part.html' %}
-    <link rel="stylesheet" href="https://unpkg.com/umy-ui/lib/theme-chalk/index.css">
+    {#    <link rel="stylesheet" href="https://unpkg.com/umy-ui/lib/theme-chalk/index.css">#}
     <!-- 引入样式 -->
+    {% include 'admin/includes/css-part.html' %}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vxe-table@legacy/lib/style.css">
     <style>
         /* 用来设置当前页面element全局table 选中某行时的背景色*/
@@ -154,14 +154,16 @@
                     highlight-current-row
                     style="width: 100%">
                 <vxe-table-column
-                        fixed
+                        fixed="left"
                         :reserve-selection="true"
                         type="checkbox">
                 </vxe-table-column>
-                <vxe-table-column type="seq" fixed></vxe-table-column>
+                <vxe-table-column type="seq"
+                                  width="50"
+                                  fixed="left"></vxe-table-column>
                 <vxe-table-column
                         field="name"
-                        fixed
+                        fixed="left"
                         sortable
                         show-header-overflow show-overflow="tooltip" show-footer-overflow
                         title="种子名称" max-width="280"
@@ -322,11 +324,12 @@
     </el-dialog>
 </div>
 
-{% include 'admin/includes/js-part.html' %}
-<script src="https://unpkg.com/umy-ui@1.1.6/lib/index.js"></script>
+{#<script src="https://unpkg.com/umy-ui@1.1.6/lib/index.js"></script>#}
 <!-- 引入脚本 -->
+{% include 'admin/includes/js-part.html' %}
 <script src="https://cdn.jsdelivr.net/npm/xe-utils"></script>
 <script src="https://cdn.jsdelivr.net/npm/vxe-table@legacy"></script>
+
 <script src="{% static 'admin/simpleui-x/js/axios.min.js' %}"></script>
 <script>
     const download_state = {
@@ -598,15 +601,15 @@
                 }, 1500)
             },
             // 执行格式化文件大小
-            handleSize(row, column, cellValue, index) {
+            handleSize({row, column, cellValue, index}) {
                 return this.renderSize(cellValue)
             },
-            handleSpeed(row, column, cellValue, index) {
+            handleSpeed({row, column, cellValue, index}) {
                 return this.renderSize(cellValue) != 0 ? this.renderSize(cellValue) + '/S' : ''
             },
 
             // 执行格式化文件大小
-            handleState(row, column, cellValue, index) {
+            handleState({row, column, cellValue, index}) {
                 {#('state'))#}
 
                 return download_state[cellValue]
@@ -625,15 +628,15 @@
                 return size + ' ' + unitArr[index];
             },
             // 格式化进度
-            handlePercent(row, column, cellValue, index) {
+            handlePercent({row, column, cellValue, index}) {
                 return (cellValue * 100).toFixed(2) + '%'
             },
             // 格式化分享率
-            handleRatio(row, column, cellValue, index) {
+            handleRatio({row, column, cellValue, index}) {
                 return cellValue.toFixed(4)
             },
             // 双击任务事件
-            handleRow(row, column, event) {
+            handleRow({row, column, event}) {
                 console.log(row)
                 this.torrent = row
                 console.log(this.torrent)
@@ -643,7 +646,7 @@
                 console.log(event)
             },
             // 阻止默认右键菜单弹出
-            rtClick(row, column, event) {
+            rtClick({row, column, event}) {
                 // 阻止默认右键菜单弹出
                 event.preventDefault()
             },
