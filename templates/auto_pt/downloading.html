@@ -6,6 +6,8 @@
     <title>任务管理</title>
     {% include 'admin/includes/css-part.html' %}
     <link rel="stylesheet" href="https://unpkg.com/umy-ui/lib/theme-chalk/index.css">
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vxe-table@legacy/lib/style.css">
     <style>
         /* 用来设置当前页面element全局table 选中某行时的背景色*/
         .el-table__body tr.current-row > td {
@@ -25,7 +27,7 @@
     <el-tabs type="border-card" @tab-click="handleTabClick">
         <el-tab-pane
                 v-for="downloader in downloaders"
-                :label="downloader.name"
+                :title="downloader.name"
                 {#                :name="downloader.id"#}
                 :id="downloader.id">
             <div>
@@ -85,7 +87,7 @@
                             <el-option
                                     v-for="item in categories"
                                     :key="item.value"
-                                    :label="item.label"
+                                    :title="item.title"
                                     :value="item.value">
                             </el-option>
                         </el-select>
@@ -130,8 +132,8 @@
                 </div>
             </div>
             <hr/>
-            <u-table
-                    ref="plxTable"
+            <vxe-table
+                    :ref="'table' + downloader.id"
                     row-height="55"
                     use-virtual
                     showBodyOverflow="title"
@@ -140,57 +142,60 @@
                     @row-contextmenu="rtClick"
                     @selection-change="tableSelected"
                     :data="torrents"
-                    height="740"
+                    height="700"
                     size="mini"
                     :row-key="(row) => row.hash"
+                    round
                     border
                     stripe
+                    :column-config="{isCurrent: true, isHover: true, resizable: true}"
+                    :row-config="{isCurrent: true, isHover: true}"
                     beautify-table
                     highlight-current-row
                     style="width: 100%">
-                <u-table-column
+                <vxe-table-column
                         fixed
                         :reserve-selection="true"
-                        type="selection">
-                </u-table-column>
-                <u-table-column type="index" fixed></u-table-column>
-                <u-table-column
-                        prop="name"
+                        type="checkbox">
+                </vxe-table-column>
+                <vxe-table-column type="seq" fixed></vxe-table-column>
+                <vxe-table-column
+                        field="name"
                         fixed
                         sortable
-                        show-overflow-tooltip="true"
-                        label="种子名称" max-width="280"
+                        show-header-overflow show-overflow="tooltip" show-footer-overflow
+                        title="种子名称" max-width="280"
                         min-width="150">
-                </u-table-column>
-                <u-table-column prop="size"
-                                sortable
-                                width="85"
-                                show-overflow-tooltip
-                                :formatter="handleSize"
-                                label="大小">
-                </u-table-column>
-                {#                <u-table-column prop="downloaded" :formatter="handleSize"#}
-                {#                                 label="已下载"></u-table-column>#}
-                <u-table-column prop="uploaded"
-                                :formatter="handleSize"
-                                sortable
-                                width="85"
-                                label="上传"></u-table-column>
-                <u-table-column prop="dlspeed"
-                                sortable
-                                width="95"
-                                :formatter="handleSpeed"
-                                label="下载速度"></u-table-column>
-                <u-table-column prop="upspeed"
-                                sortable
-                                width="95"
-                                :formatter="handleSpeed"
-                                label="上传速度"></u-table-column>
-                <u-table-column
-                        prop="progress"
+                </vxe-table-column>
+                <vxe-table-column field="size"
+                                  sortable
+                                  width="85"
+                                  show-header-overflow show-overflow="tooltip" show-footer-overflow
+                                  :formatter="handleSize"
+                                  title="大小">
+                </vxe-table-column>
+                {#                <vxe-table-column field="downloaded" :formatter="handleSize"#}
+                {#                                 title="已下载"></vxe-table-column>#}
+                <vxe-table-column field="uploaded"
+                                  :formatter="handleSize"
+                                  sortable
+                                  width="85"
+                                  title="上传"></vxe-table-column>
+                <vxe-table-column field="dlspeed"
+                                  sortable
+                                  width="95"
+                                  :formatter="handleSpeed"
+                                  title="下载速度"></vxe-table-column>
+                <vxe-table-column field="upspeed"
+                                  sortable
+                                  width="95"
+                                  :formatter="handleSpeed"
+                                  title="上传速度"></vxe-table-column>
+                <vxe-table-column
+                        field="progress"
                         sortable
                         width="90"
-                        label="进度">
+                        title="进度">
                     <template slot-scope="scope">
                         <el-progress
                                 v-if="scope.row.progress==1"
@@ -212,99 +217,100 @@
                                 :percentage="scope.row.progress * 100">
                         </el-progress>
                     </template>
-                </u-table-column>
-                <u-table-column prop="save_path"
-                                show-overflow-tooltip
-                                sortable
-                                width="150"
-                                label="保存路径"></u-table-column>
-                <u-table-column prop="ratio"
-                                sortable
-                                width="85"
+                </vxe-table-column>
+                <vxe-table-column field="save_path"
+                                  show-header-overflow show-overflow="tooltip" show-footer-overflow
+                                  sortable
+                                  width="150"
+                                  title="保存路径"></vxe-table-column>
+                <vxe-table-column field="ratio"
+                                  sortable
+                                  width="85"
                         {#                                 :formatter="handlePercent"#}
-                                label="分享率"></u-table-column>
-                {#                <u-table-column prop="seeding_time"#}
-                {#                                 label="做种时间"></u-table-column>#}
-                <u-table-column prop="state"
-                                sortable
-                                width="85"
-                                :formatter="handleState"
-                                column-key="state"
-                                :filter-method="filterStateMethod"
+                                  title="分享率"></vxe-table-column>
+                {#                <vxe-table-column field="seeding_time"#}
+                {#                                 title="做种时间"></vxe-table-column>#}
+                <vxe-table-column field="state"
+                                  sortable
+                                  width="85"
+                                  :formatter="handleState"
+                                  column-key="state"
+                                  :filter-method="filterStateMethod"
                         {#                                :filters="[{text: '做种中', value: 'stalledUP'}, {text: '上传中', value: 'uploading'}, {text: '下载中', value: 'downloading'}]"#}
-                                :filters="stateFilters"
-                                :filter-multiple="false"
-                                label="状态"></u-table-column>
-                <u-table-column prop="last_activity"
-                                sortable
-                                width="105"
-                                show-overflow-tooltip
-                                label="最后活动"></u-table-column>
-                {#                <u-table-column prop="added_on"#}
-                {#                                 label="添加时间"></u-table-column>#}
-                <u-table-column prop="category"
-                                sortable
-                                width="85"
-                                :filters="categoryFilters"
-                                :filter-method="filterStateMethod"
-                                :filter-multiple="false"
-                                label="分类"></u-table-column>
-                {#                <u-table-column prop="tracker"#}
-                {#                                 label="Tracker"></u-table-column>#}
-                {#                <u-table-column#}
+                                  :filters="stateFilters"
+                                  :filter-multiple="false"
+                                  title="状态"></vxe-table-column>
+                <vxe-table-column field="last_activity"
+                                  sortable
+                                  width="105"
+                                  show-header-overflow show-overflow="tooltip" show-footer-overflow
+                                  title="最后活动"></vxe-table-column>
+                {#                <vxe-table-column field="added_on"#}
+                {#                                 title="添加时间"></vxe-table-column>#}
+                <vxe-table-column field="category"
+                                  sortable
+                                  width="85"
+                                  :filters="categoryFilters"
+                        {#                                  :filters="setCategoryFilter"#}
+                                  :filter-method="filterStateMethod"
+                                  :filter-multiple="false"
+                                  title="分类"></vxe-table-column>
+                {#                <vxe-table-column field="tracker"#}
+                {#                                 title="Tracker"></vxe-table-column>#}
+                {#                <vxe-table-column#}
                 {#                        width="120"#}
                 {#                        fixed="right"#}
-                {#                        label="操作">#}
+                {#                        title="操作">#}
                 {#                   #}
-                {#                </u-table-column>#}
-            </u-table>
+                {#                </vxe-table-column>#}
+            </vxe-table>
         </el-tab-pane>
     </el-tabs>
 
     <el-dialog title="任务详情" :visible.sync="dialogFormVisible">
         <el-form :model="torrent">
-            <el-form-item label="种子名称">
+            <el-form-item title="种子名称">
                 <el-input v-model="torrent.name"></el-input>
             </el-form-item>
-            <el-form-item label="大小">
+            <el-form-item title="大小">
                 <el-input v-model="torrent.size"></el-input>
             </el-form-item>
-            <el-form-item label="已下载">
+            <el-form-item title="已下载">
                 <el-input v-model="torrent.downloaded"></el-input>
             </el-form-item>
-            <el-form-item label="已上传">
+            <el-form-item title="已上传">
                 <el-input v-model="torrent.uploaded"></el-input>
             </el-form-item>
-            <el-form-item label="下载速度">
+            <el-form-item title="下载速度">
                 <el-input v-model="torrent.dlspeed"></el-input>
             </el-form-item>
-            <el-form-item label="上传速度">
+            <el-form-item title="上传速度">
                 <el-input v-model="torrent.upspeed"></el-input>
             </el-form-item>
-            <el-form-item label="下载进度">
+            <el-form-item title="下载进度">
                 <el-input v-model="torrent.progress"></el-input>
             </el-form-item>
             <el-form-item
                     :formatter="handleRatio"
-                    label="分享率">
+                    title="分享率">
                 <el-input v-model="torrent.ratio"></el-input>
             </el-form-item>
-            <el-form-item label="做种时间">
+            <el-form-item title="做种时间">
                 <el-input v-model="torrent.seeding_time"></el-input>
             </el-form-item>
-            <el-form-item label="当前状态">
+            <el-form-item title="当前状态">
                 <el-input v-model="torrent.state"></el-input>
             </el-form-item>
-            <el-form-item label="最后活动">
+            <el-form-item title="最后活动">
                 <el-input v-model="torrent.last_activity"></el-input>
             </el-form-item>
-            <el-form-item label="添加时间">
+            <el-form-item title="添加时间">
                 <el-input v-model="torrent.added_on"></el-input>
             </el-form-item>
-            <el-form-item label="分类">
+            <el-form-item title="分类">
                 <el-input v-model="torrent.added_on"></el-input>
             </el-form-item>
-            <el-form-item label="Tracker">
+            <el-form-item title="Tracker">
                 <el-input v-model="torrent.tracker"></el-input>
             </el-form-item>
 
@@ -318,14 +324,16 @@
 
 {% include 'admin/includes/js-part.html' %}
 <script src="https://unpkg.com/umy-ui@1.1.6/lib/index.js"></script>
-
+<!-- 引入脚本 -->
+<script src="https://cdn.jsdelivr.net/npm/xe-utils"></script>
+<script src="https://cdn.jsdelivr.net/npm/vxe-table@legacy"></script>
 <script src="{% static 'admin/simpleui-x/js/axios.min.js' %}"></script>
 <script>
     const download_state = {
         'allocating': '分配',
         'checkingDL': '校验中',
         'checkingResumeData': '校验恢复数据',
-        'checkingUP': '',
+        {#'checkingUP': '',#}
         'downloading': '下载中',
         'error': '错误',
         'forcedDL': '强制下载',
@@ -383,7 +391,7 @@
             selected_rows: [],
             categoryFilters: [
                 {
-                    text: '未分类',
+                    label: '未分类',
                     value: ''
                 }
             ],
@@ -395,12 +403,13 @@
         beforeMount() {
         },
         mounted() {
+            window.vm = this
             // 任务状态过滤器数据
             let data = []
             for (let x in download_state) {
                 {#console.log(download_state[x])#}
                 data.push({
-                    'text': download_state[x],
+                    'label': download_state[x],
                     'value': x
                 })
             }
@@ -446,7 +455,7 @@
             limitSpeed() {
             },
             {#setLocation(){},#}
-            handleSelected(command, category = '', delete_files = false, enable = true) {
+            handleSelected(command, category = '', delete_files = false, enable = 'True') {
                 let ids = []
                 if (this.selected_rows.length <= 0) {
                     this.$message({
@@ -475,7 +484,8 @@
                         type: 'success',
                         message: '指令发送成功！！'
                     })
-                    this.$refs.plxTable.clearSelection();
+                    this.selected_rows = []
+                    this.$refs.plTable.clearSelection()
                 }).catch(res => {
                     this.$message({
                         type: 'warning',
@@ -524,6 +534,7 @@
                 this.loading = true
                 {#this.torrents = []#}
                 this.downloader_id = tab.$attrs.id
+                this.torrents = []
                 this.get_downloading(this.downloader_id)
                 loading.close()
             },
@@ -540,25 +551,36 @@
                 ).then(res => {
                     {#console.log(res.data.data.torrents)#}
                     if (res.data.code === 0) {
-                        // 获取种子
-                        this.torrents = res.data.data.torrents
-                        // 获取分类列表
-                        let categories = res.data.data.categories
+
+                        {#// 获取分类列表#}
+                        {#let categories = res.data.data.categories#}
                         // 任务状态过滤器数据
-                        this.categoryFilters = []
+                        this.categoryFilters = [{label: '未分类', value: ''}]
                         this.categories = []
                         for (let x in res.data.data.categories) {
                             {#console.log(download_state[x])#}
                             this.categoryFilters.push({
-                                'text': x,
-                                'value': x
-                            })
-                            this.categories.push({
                                 'label': x,
                                 'value': x
                             })
+                            this.categories.push({
+                                'title': x,
+                                'value': x
+                            })
                         }
+                        // 异步加载筛选数据
+                        const $table = this.$refs['table' + this.downloader_id][0]
+                        console.log($table)
+                        if ($table) {
+                            const nameColumn = $table.getColumnByField('category')
+                            if (nameColumn) {
+                                $table.setFilter(nameColumn, this.categoryFilters)
+                            }
+                        }
+                        {#console.log(this.categoryFilters)#}
                         this.server_state = res.data.data.server_state
+                        // 获取种子
+                        this.torrents = res.data.data.torrents
                         //this.$message({
                         //   type: 'success',
                         //    message: '任务加载成功！！'
@@ -648,10 +670,16 @@
                 window.clearInterval(this.timer)
                 this.timer = null
             },
-            filterStateMethod(value, row, column) {
+            filterStateMethod({value, row, column}) {
+                {#console.log(value,)#}
+                {#console.log(row)#}
+                {#console.log(column)#}
                 const property = column['property'];
                 return row[property] === value;
             },
+            setCategoryFilter(fieldOrColumn, options) {
+                console.log(fieldOrColumn, options)
+            }
         }
     });
 </script>
