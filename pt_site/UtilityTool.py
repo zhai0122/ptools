@@ -608,10 +608,16 @@ class PtSpider:
         print(len(queryset))
         if len(queryset) <= 0:
             message_list += '> <font color="orange">已全部签到或无需签到！</font>  \n'
+            print(message_list)
+            return 0
         # results = pool.map(pt_spider.sign_in, site_list)
         with lock:
             results = pool.map(self.sign_in, queryset)
             for my_site, result in zip(queryset, results):
+                # U2每天九点前不签到
+                if 'u2.dmhy.org' in my_site.site.url:
+                    if datetime.now().hour < 9:
+                        continue
                 print('自动签到：', my_site, result)
                 if result.code == StatusCodeEnum.OK.code:
                     message_list += ('> ' + my_site.site.name + ' 签到成功！' + converter.convert(result.msg) + '  \n')
@@ -628,6 +634,7 @@ class PtSpider:
         site = my_site.site
         print(site.name + '开始签到')
         signin_today = my_site.signin_set.filter(created_at__date__gte=datetime.today()).first()
+
         # 如果已有签到记录
         if signin_today and (signin_today.sign_in_today is True):
             # pass
