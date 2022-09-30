@@ -37,7 +37,10 @@ try:
             '自动签到', end - start,
             time.strftime("%Y-%m-%d %H:%M:%S")
         )
-        pt_spider.send_text(message_list + consuming)
+        if message_list == 0:
+            print('已经全部签到咯！！')
+        else:
+            pt_spider.send_text(message_list + consuming)
         print('{} 任务运行成功！完成时间：{}'.format('自动签到', time.strftime("%Y-%m-%d %H:%M:%S")))
 
 
@@ -109,7 +112,8 @@ try:
                 res = pt_spider.get_torrent_info_list(my_site, result.data)
                 # 通知推送
                 if res.code == StatusCodeEnum.OK.code:
-                    message = '> {} 种子抓取成功！新增种子{}条，更新种子{}条!  \n'.format(my_site.site.name, res.data[0], res.data[1])
+                    message = '> {} 种子抓取成功！新增种子{}条，更新种子{}条!  \n'.format(my_site.site.name, res.data[0],
+                                                                                        res.data[1])
                     message_list += message
                 else:
                     message = '> <font color="red">' + my_site.site.name + '抓取种子信息失败！原因：' + res.msg + '</font>  \n'
