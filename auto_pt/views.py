@@ -97,7 +97,7 @@ def get_downloading(request):
     id = request.GET.get('id')
     print(id)
     downloader = Downloader.objects.filter(id=id).first()
-
+    tracker_filters = Site.objects.all().values('id', 'name', 'tracker')
     qb_client = qbittorrentapi.Client(
         host=downloader.host,
         port=downloader.port,
@@ -162,6 +162,8 @@ def get_downloading(request):
             torrents.append(torrent)
         print(len(torrents))
         main_data['torrents'] = torrents
+        # print(tracker_filters)
+        main_data['tracker_filters'] = list(tracker_filters)
         # return JsonResponse(CommonResponse.success(data=torrents).to_dict(), safe=False)
         return JsonResponse(CommonResponse.success(data=main_data).to_dict(), safe=False)
     except Exception as e:
