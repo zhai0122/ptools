@@ -58,6 +58,7 @@
                        @click="handleButtonClick(downloader.id)">
                 <span v-text="downloader.name"></span>
             </el-button>
+            <el-button size="small" type="danger" icon="el-icon-pause" @click="stopRefresh">停止刷新</el-button>
         </el-button-group>
         <el-dropdown split-button type="primary" size="mini" @command="handleSelected">
             操作
@@ -438,6 +439,10 @@
         },
         watch: {},
         methods: {
+            stopRefresh() {
+                clearInterval(this.timer)
+                this.timer = null
+            },
             handleButtonClick(id) {
                 const loading = this.$loading({
                     lock: true,                    //lock的修改符--默认是false
@@ -499,15 +504,15 @@
                         }
                         // 异步加载筛选数据
                         const $table = this.$refs.dataTable
-                        console.log($table)
+                        {#console.log($table)#}
                         if ($table) {
                             const nameColumn = $table.getColumnByField('category')
-                            console.log(nameColumn)
+                            {#console.log(nameColumn)#}
                             if (nameColumn) {
                                 $table.setFilter(nameColumn, this.categoryFilters)
                             }
                         }
-                        {#console.log(this.categoryFilters)#}
+                        console.log(res.data.data.tracker_filters)
                         this.server_state = res.data.data.server_state
                         // 获取种子
                         //this.$message({
@@ -566,7 +571,7 @@
                     return
                 }
                 this.selected_rows.forEach((item, index) => {
-                    console.log(item['hash'], index)
+                    {#console.log(item['hash'], index)#}
                     ids.push(item['hash'])
                 })
                 let data = new FormData()
@@ -590,7 +595,7 @@
             },
             tableSelected(rows) {
                 this.selected_rows = rows
-                console.log(this.selected_rows)
+                console.log(this.selected_rows.length)
             },
             rowKey(row) {
                 console.log(row.hash)
