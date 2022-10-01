@@ -10,318 +10,223 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vxe-table@legacy/lib/style.css">
     <style>
         /* 用来设置当前页面element全局table 选中某行时的背景色*/
-        .el-table__body tr.current-row > td {
-            background-color: #69A8EA !important;
+        .vxe-table--body tr.row--current > td {
+            background-color: #da8342 !important;
             color: #fff;
         }
 
         /* 用来设置当前页面element全局table 鼠标滑过某行时的背景色*/
-        .el-table__body .el-table__row.hover-row td {
-            background-color: #aaaaaa !important;
+        .vxe-table--body .vxe-body--row.row--hover td {
+            background-color: #df9942 !important;
+        }
+
+        .my-menus {
+            background-color: #F8F8F9;
+        }
+
+        .my-menus .vxe-ctxmenu--link {
+            width: 200px;
+        }
+
+        .my-copy-item {
+            font-weight: 700;
+            font-style: oblique;
+        }
+
+        .color-red {
+            color: red;
+        }
+
+        .color-blue {
+            color: blue;
+        }
+
+        .color-orange {
+            color: orange;
         }
     </style>
 </head>
 <body>
 
 <div id="app">
-    <el-tabs type="border-card" @tab-click="handleTabClick">
-        <el-tab-pane
-                v-for="downloader in downloaders"
-                :title="downloader.name"
-                {#                :name="downloader.id"#}
-                :id="downloader.id">
-            <div>
-                <el-dropdown split-button type="primary" size="mini" @command="handleSelected">
-                    操作
-                    <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item command="resume">继续</el-dropdown-item>
-                        <el-dropdown-item command="set_force_start">强制继续</el-dropdown-item>
-                        <el-dropdown-item command="pause">暂停</el-dropdown-item>
-                        <el-dropdown-item command="set_auto_management">自动管理</el-dropdown-item>
-                        <el-dropdown-item command="set_super_seeding">超级做种</el-dropdown-item>
-                        <el-dropdown-item command="recheck">重新校验</el-dropdown-item>
-                        <el-dropdown-item command="reannounce">重新汇报</el-dropdown-item>
-                    </el-dropdown-menu>
-                </el-dropdown>
-                <el-dropdown split-button type="success" size="mini">
-                    操作
-                    <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item>
-                            <el-button size="mini" type="danger" @click="deleteForm = true">删除任务</el-button>
-                        </el-dropdown-item>
-                        <el-dropdown-item @click="setCategory">
-                            <el-button size="mini" type="primary" @click="categoryForm = true">修改分类</el-button>
-                        </el-dropdown-item>
-                        {#                        <el-dropdown-item @click="limitSpeed">限速</el-dropdown-item>#}
-                        {#                        <el-dropdown-item @click="setLocation">更改路径</el-dropdown-item>#}
-                    </el-dropdown-menu>
-                </el-dropdown>
-                <el-dialog
-                        title="删除任务"
-                        :visible.sync="deleteForm"
-                        min-width="180"
-                        width="30%"
-                        center>
-                    <div style="text-align: center">
-                        <el-switch
-                                v-model="delete_files"
-                                active-text="删除文件"
-                                active-color="#ff4949"
-                                inactive-text="保留文件">
-                        </el-switch>
-                    </div>
+    <div style="text-align: center">
+        <el-button-group style="margin: auto;">
+            <el-button size="small"
+                       type="warning" plain
+                       v-for="downloader in downloaders"
+                       icon="el-icon-s-promotion"
+                       @click="handleButtonClick(downloader.id)">
+                <span v-text="downloader.name"></span>
+            </el-button>
+        </el-button-group>
+        <el-dropdown split-button type="primary" size="mini" @command="handleSelected">
+            操作
+            <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item command="resume">继续</el-dropdown-item>
+                <el-dropdown-item command="set_force_start">强制继续</el-dropdown-item>
+                <el-dropdown-item command="pause">暂停</el-dropdown-item>
+                <el-dropdown-item command="set_auto_management">自动管理</el-dropdown-item>
+                <el-dropdown-item command="set_super_seeding">超级做种</el-dropdown-item>
+                <el-dropdown-item command="recheck">重新校验</el-dropdown-item>
+                <el-dropdown-item command="reannounce">重新汇报</el-dropdown-item>
+            </el-dropdown-menu>
+        </el-dropdown>
+        <el-dropdown split-button type="success" size="mini">
+            操作
+            <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item>
+                    <el-button size="mini" type="danger" @click="deleteForm = true">删除任务</el-button>
+                </el-dropdown-item>
+                <el-dropdown-item @click="setCategory">
+                    <el-button size="mini" type="primary" @click="categoryForm = true">修改分类</el-button>
+                </el-dropdown-item>
+                {#                <el-dropdown-item @click="limitSpeed">限速</el-dropdown-item>#}
+                {#                <el-dropdown-item @click="setLocation">更改路径</el-dropdown-item>#}
+            </el-dropdown-menu>
+        </el-dropdown>
+    </div>
+    <div>
+        <el-dialog title="删除任务" :visible.sync="deleteForm" min-width="180" width="30%" center>
+            <div style="text-align: center">
+                <el-switch v-model="delete_files" active-text="删除文件" active-color="#ff4949"
+                           inactive-text="保留文件">
+                </el-switch>
+            </div>
 
-                    <span slot="footer" class="dialog-footer">
-                        <el-button @click="deleteForm = false">取 消</el-button>
-                        <el-button type="danger" @click="handleDelete">确 定</el-button>
-                    </span>
-                </el-dialog>
-                <el-dialog
-                        title="修改分类"
-                        :visible.sync="categoryForm"
-                        min-width="180"
-                        width="30%"
-                        center>
-                    <div style="text-align: center">
-                        <el-select v-model="category" filterable placeholder="请选择分类">
-                            <el-option
-                                    v-for="item in categories"
-                                    :key="item.value"
-                                    :title="item.title"
-                                    :value="item.value">
-                            </el-option>
-                        </el-select>
-                    </div>
-
-                    <span slot="footer" class="dialog-footer">
-                        <el-button @click="categoryForm = false">取 消</el-button>
-                        <el-button type="danger" @click="setCategory">确 定</el-button>
-                    </span>
-                </el-dialog>
-                <div style="font-size: 13px;margin: 5px auto -5px;text-align: center;">
-                    <span>
-                        <el-tag size="medium" type="danger" v-text="'总分享率：' + server_state.global_ratio"></el-tag>
-                    </span>
-                    <span>
-                        <el-tag size="medium" type="success"
-                                v-text="'剩余空间：' + renderSize(server_state.free_space_on_disk)"></el-tag>
-                    </span>
-                    <span>
-                    <el-tag size="medium" type="" v-text="'历史下载：' + renderSize(server_state.alltime_dl)"></el-tag>
-                    </span>
-                    <span>
+            <span slot="footer" class="dialog-footer">
+                            <el-button @click="deleteForm = false">取 消</el-button>
+                            <el-button type="danger" @click="handleDelete">确 定</el-button>
+                        </span>
+        </el-dialog>
+        <el-dialog title="修改分类" :visible.sync="categoryForm" min-width="180" width="30%" center>
+            <div style="text-align: center">
+                <el-select v-model="category" filterable placeholder="请选择分类">
+                    <el-option v-for="item in categories" :key="item.value" :title="item.title" :value="item.value">
+                    </el-option>
+                </el-select>
+            </div>
+            <span slot="footer" class="dialog-footer">
+                            <el-button @click="categoryForm = false">取 消</el-button>
+                            <el-button type="danger" @click="setCategory">确 定</el-button>
+             </span>
+        </el-dialog>
+    </div>
+    <div ref="ddd"></div>
+    <vxe-toolbar ref="xToolbar" custom style="font-size: 13px;margin: 5px auto -5px;text-align: center;">
+        <template #buttons>
+            <el-button circle size="mini" type="primary" icon="el-icon-link"></el-button>
+            <el-button circle size="mini" type="primary" icon="el-icon-plus"></el-button>
+            <el-button circle size="mini" type="danger" icon="el-icon-delete"></el-button>
+            <el-button circle size="mini" type="success" icon="el-icon-video-play"></el-button>
+            <el-button circle size="mini" type="warning" icon="el-icon-video-pause"></el-button>
+            <span style="margin: auto;text-align: center">
+                    <el-tag size="medium" type="danger"
+                            v-text="'总分享率：' + server_state.global_ratio"></el-tag>
+                    <el-tag size="medium" type="success"
+                            v-text="'剩余空间：' + renderSize(server_state.free_space_on_disk)"></el-tag>
+                    <el-tag size="medium" type=""
+                            v-text="'历史下载：' + renderSize(server_state.alltime_dl)"></el-tag>
                     <el-tag size="medium" type="warning"
                             v-text="'历史上传：' + renderSize(server_state.alltime_ul)"></el-tag>
-                    </span>
-                    <span>
                     <el-tag size="medium" effect="plain" color="#233223"
                             v-text="'本次下载：' + renderSize(server_state.dl_info_data)"></el-tag>
-                    </span>
-                    <span>
                     <el-tag size="medium" effect="plain" color="#296969"
                             v-text="'下载速度：' + renderSize(server_state.dl_info_speed)"></el-tag>
-                    </span>
-                    <span>
                     <el-tag size="medium" effect="plain" color="#545454"
                             v-text="'本次上传：' + renderSize(server_state.up_info_data)"></el-tag>
-                    </span>
-                    <span>
                     <el-tag size="medium" color="#696969"
                             v-text="'上传速度：' + renderSize(server_state.up_info_speed) + '/S'"></el-tag>
-                    </span>
-                </div>
-            </div>
-            <hr/>
-            <vxe-table
-                    :ref="'table' + downloader.id"
-                    row-height="55"
-                    use-virtual
-                    showBodyOverflow="title"
-                    showHeaderOverflow="title"
-                    @row-dblclick="handleRow"
-                    @row-contextmenu="rtClick"
-                    @selection-change="tableSelected"
-                    :data="torrents"
-                    height="700"
-                    size="mini"
-                    :row-key="(row) => row.hash"
-                    round
-                    border
-                    stripe
-                    :column-config="{isCurrent: true, isHover: true, resizable: true}"
-                    :row-config="{isCurrent: true, isHover: true}"
-                    beautify-table
-                    highlight-current-row
-                    style="width: 100%">
-                <vxe-table-column
-                        fixed="left"
-                        :reserve-selection="true"
-                        type="checkbox">
-                </vxe-table-column>
-                <vxe-table-column type="seq"
-                                  width="50"
-                                  fixed="left"></vxe-table-column>
-                <vxe-table-column
-                        field="name"
-                        fixed="left"
-                        sortable
-                        show-header-overflow show-overflow="tooltip" show-footer-overflow
-                        title="种子名称" max-width="280"
-                        min-width="150">
-                </vxe-table-column>
-                <vxe-table-column field="size"
-                                  sortable
-                                  width="85"
-                                  show-header-overflow show-overflow="tooltip" show-footer-overflow
-                                  :formatter="handleSize"
-                                  title="大小">
-                </vxe-table-column>
-                {#                <vxe-table-column field="downloaded" :formatter="handleSize"#}
-                {#                                 title="已下载"></vxe-table-column>#}
-                <vxe-table-column field="uploaded"
-                                  :formatter="handleSize"
-                                  sortable
-                                  width="85"
-                                  title="上传"></vxe-table-column>
-                <vxe-table-column field="dlspeed"
-                                  sortable
-                                  width="95"
-                                  :formatter="handleSpeed"
-                                  title="下载速度"></vxe-table-column>
-                <vxe-table-column field="upspeed"
-                                  sortable
-                                  width="95"
-                                  :formatter="handleSpeed"
-                                  title="上传速度"></vxe-table-column>
-                <vxe-table-column
-                        field="progress"
-                        sortable
-                        width="90"
-                        title="进度">
-                    <template slot-scope="scope">
-                        <el-progress
-                                v-if="scope.row.progress==1"
-                                status="success"
-                                {#                                type="circle"#}
-                                width="20"
-                                {#                                :text-inside="true"#}
-                                {#                                :stroke-width="20"#}
-                                {#                                stroke-linecap="butt"#}
-                                :percentage="scope.row.progress * 100">
-                        </el-progress>
-                        <el-progress
-                                v-else="scope.row.progress==1"
-                                {#                                :text-inside="true"#}
-                                {#                                type="circle"#}
-                                width="20"
-                                :color="customColors"
-                                {#                                :stroke-width="18"#}
-                                :percentage="scope.row.progress * 100">
-                        </el-progress>
-                    </template>
-                </vxe-table-column>
-                <vxe-table-column field="save_path"
-                                  show-header-overflow show-overflow="tooltip" show-footer-overflow
-                                  sortable
-                                  width="150"
-                                  title="保存路径"></vxe-table-column>
-                <vxe-table-column field="ratio"
-                                  sortable
-                                  width="85"
-                        {#                                 :formatter="handlePercent"#}
-                                  title="分享率"></vxe-table-column>
-                {#                <vxe-table-column field="seeding_time"#}
-                {#                                 title="做种时间"></vxe-table-column>#}
-                <vxe-table-column field="state"
-                                  sortable
-                                  width="85"
-                                  :formatter="handleState"
-                                  column-key="state"
-                                  :filter-method="filterStateMethod"
-                        {#                                :filters="[{text: '做种中', value: 'stalledUP'}, {text: '上传中', value: 'uploading'}, {text: '下载中', value: 'downloading'}]"#}
-                                  :filters="stateFilters"
-                                  :filter-multiple="false"
-                                  title="状态"></vxe-table-column>
-                <vxe-table-column field="last_activity"
-                                  sortable
-                                  width="105"
-                                  show-header-overflow show-overflow="tooltip" show-footer-overflow
-                                  title="最后活动"></vxe-table-column>
-                {#                <vxe-table-column field="added_on"#}
-                {#                                 title="添加时间"></vxe-table-column>#}
-                <vxe-table-column field="category"
-                                  sortable
-                                  width="85"
-                                  :filters="categoryFilters"
-                        {#                                  :filters="setCategoryFilter"#}
-                                  :filter-method="filterStateMethod"
-                                  :filter-multiple="false"
-                                  title="分类"></vxe-table-column>
-                {#                <vxe-table-column field="tracker"#}
-                {#                                 title="Tracker"></vxe-table-column>#}
-                {#                <vxe-table-column#}
-                {#                        width="120"#}
-                {#                        fixed="right"#}
-                {#                        title="操作">#}
-                {#                   #}
-                {#                </vxe-table-column>#}
-            </vxe-table>
-        </el-tab-pane>
-    </el-tabs>
+                </span>
+        </template>
+    </vxe-toolbar>
+    <vxe-table ref="dataTable" row-height="55" id="table"
+               showBodyOverflow="title" showHeaderOverflow="title"
+            {#                   @row-dblclick="handleRow"#}
+            {#                   @selection-change="tableSelected"#}
+               :menu-config="tableMenu"
+               @menu-click="contextMenuClickEvent"
+               :data="torrents"
+               height="750" size="mini"
+               auto-resize
+               :row-key="(row) => row.hash"
+               round border stripe
+               :keyboard-config="{isArrow: true}"
+               :column-config="{isCurrent: true, isHover: true, resizable: true}"
+               :row-config="{isCurrent: true, isHover: true}"
+               :checkbox-config="{trigger: 'row', highlight: true, range: true}"
+               highlight-current-row
+               style="width: 100%">
+        <vxe-table-column fixed="left" :reserve-selection="true" type="checkbox">
+        </vxe-table-column>
+        <vxe-table-column type="seq" fixed="left"></vxe-table-column>
+        <vxe-table-column field="name" fixed="left" sortable show-header-overflow show-overflow="tooltip"
+                          show-footer-overflow title="种子名称" max-width="280" min-width="150">
+        </vxe-table-column>
+        <vxe-table-column field="size" sortable width="85" show-header-overflow show-overflow="tooltip"
+                          show-footer-overflow :formatter="handleSize" title="大小">
+        </vxe-table-column>
+        <vxe-table-column field="category" sortable width="85"
+                          :filters="[]"
+                          :filter-method="filterStateMethod"
+                          :filter-multiple="false"
+                          title="分类"></vxe-table-column>
+        <vxe-table-column field="state" sortable width="85" :formatter="handleState" column-key="state"
+                          :filter-method="filterStateMethod"
+                          :filters="stateFilters" :filter-multiple="false" title="状态"></vxe-table-column>
+        <vxe-table-column field="last_activity" sortable width="105"
+                          show-header-overflow show-overflow="tooltip"
+                          show-footer-overflow title="最后活动"></vxe-table-column>
+        <vxe-table-column field="downloaded" :formatter="handleSize" min-width="90" sortable
+                          title="已下载"></vxe-table-column>
+        <vxe-table-column field="uploaded" :formatter="handleSize" sortable width="85"
+                          title="上传"></vxe-table-column>
+        <vxe-table-column field="dlspeed" sortable width="95" :formatter="handleSpeed"
+                          title="下载速度"></vxe-table-column>
+        <vxe-table-column field="upspeed" sortable width="95" :formatter="handleSpeed"
+                          title="上传速度"></vxe-table-column>
+        <vxe-table-column field="progress" sortable width="90" title="进度">
+            <template slot-scope="scope">
+                <el-progress
+                        v-if="scope.row.progress==1"
+                        status="success"
+                        width="20"
+                        :percentage="scope.row.progress * 100">
+                </el-progress>
+                <el-progress
+                        v-else="scope.row.progress==1"
+                        {#                                :text-inside="true"#}
+                        {#                                type="circle"#}
+                        width="20"
+                        :color="customColors"
+                        {#                                :stroke-width="18"#}
+                        :percentage="scope.row.progress * 100">
+                </el-progress>
+            </template>
+        </vxe-table-column>
 
-    <el-dialog title="任务详情" :visible.sync="dialogFormVisible">
-        <el-form :model="torrent">
-            <el-form-item title="种子名称">
-                <el-input v-model="torrent.name"></el-input>
-            </el-form-item>
-            <el-form-item title="大小">
-                <el-input v-model="torrent.size"></el-input>
-            </el-form-item>
-            <el-form-item title="已下载">
-                <el-input v-model="torrent.downloaded"></el-input>
-            </el-form-item>
-            <el-form-item title="已上传">
-                <el-input v-model="torrent.uploaded"></el-input>
-            </el-form-item>
-            <el-form-item title="下载速度">
-                <el-input v-model="torrent.dlspeed"></el-input>
-            </el-form-item>
-            <el-form-item title="上传速度">
-                <el-input v-model="torrent.upspeed"></el-input>
-            </el-form-item>
-            <el-form-item title="下载进度">
-                <el-input v-model="torrent.progress"></el-input>
-            </el-form-item>
-            <el-form-item
-                    :formatter="handleRatio"
-                    title="分享率">
-                <el-input v-model="torrent.ratio"></el-input>
-            </el-form-item>
-            <el-form-item title="做种时间">
-                <el-input v-model="torrent.seeding_time"></el-input>
-            </el-form-item>
-            <el-form-item title="当前状态">
-                <el-input v-model="torrent.state"></el-input>
-            </el-form-item>
-            <el-form-item title="最后活动">
-                <el-input v-model="torrent.last_activity"></el-input>
-            </el-form-item>
-            <el-form-item title="添加时间">
-                <el-input v-model="torrent.added_on"></el-input>
-            </el-form-item>
-            <el-form-item title="分类">
-                <el-input v-model="torrent.added_on"></el-input>
-            </el-form-item>
-            <el-form-item title="Tracker">
-                <el-input v-model="torrent.tracker"></el-input>
-            </el-form-item>
+        <vxe-table-column field="ratio" sortable width="85" {# :formatter="handlePercent" #}
+                          title="分享率"></vxe-table-column>
+        <vxe-table-column field="seeding_time" width="100"
+                          show-header-overflow show-overflow="tooltip"
+                          show-footer-overflow
+                          title="做种时间"></vxe-table-column>
 
-        </el-form>
-        <div slot="footer" class="dialog-footer">
-            <el-button @click="dialogFormVisible = false">取 消</el-button>
-            <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
-        </div>
-    </el-dialog>
+        <vxe-table-column field="added_on" width="100"
+                          show-header-overflow show-overflow="tooltip"
+                          show-footer-overflow
+                          title="添加时间"></vxe-table-column>
+        <vxe-table-column field="tracker"
+                          title="Tracker"></vxe-table-column>
+
+        <template #empty>
+            <span style="color: red;">
+              <img src="https://pic2.zhimg.com/50/v2-f7031359103859e1ed38559715ef5f3f_hd.gif">
+              <p>搜索不到数据，可能输入的关键字姿势不对！</p>
+            </span>
+        </template>
+    </vxe-table>
+
+
 </div>
 
 {#<script src="https://unpkg.com/umy-ui@1.1.6/lib/index.js"></script>#}
@@ -333,34 +238,35 @@
 <script src="{% static 'admin/simpleui-x/js/axios.min.js' %}"></script>
 <script>
     const download_state = {
-        'allocating': '分配',
-        'checkingDL': '校验中',
-        'checkingResumeData': '校验恢复数据',
-        {#'checkingUP': '',#}
-        'downloading': '下载中',
-        'error': '错误',
+        'uploading': '正在上传',
+        'downloading': '正在下载',
+        'checkingUP': '正在校验',
         'forcedDL': '强制下载',
-        'forcedMetaDL': '强制下载元数据',
-        'forcedUP': '强制上传',
-        'metaDL': '下载元数据',
+        'stalledUP': '正在做种',
+        'forcedUP': '强制做种',
         'missingFiles': '文件丢失',
-        'moving': '移动中',
+        'moving': '正在移动',
         'pausedDL': '暂停下载',
-        'pausedUP': '完成',
+        'pausedUP': '完成上传',
         'queuedDL': '下载队列中',
-        'queuedUP': '下载队列中',
-        'stalledDL': '等待下载',
-        'stalledUP': '做种',
+        'queuedUP': '上传队列中',
+        'error': '错误',
         'unknown': '未知',
-        'uploading': '上传中',
+        'allocating': '分配',
+        'stalledDL': '等待下载',
+        'metaDL': '下载元数据',
+        'checkingDL': '下载校验中',
+        'checkingResumeData': '校验恢复数据',
+        'forcedMetaDL': '强制下载元数据',
     }
     const vm = new Vue({
         // 配置选项(option)
         // element: 指定用vue来管理页面中的哪个标签区域
         el: '#app',
         data: {
-            downloaders: '',
+            downloaders: [],
             loading: false,
+            mainData: {},
             torrents: [],
             dialogFormVisible: false,
             timer: {},
@@ -402,27 +308,117 @@
             category: '',
             server_state: {},
             delete_files: false,
+            filterName2: [],
+            tableMenu: {
+                className: 'my-menus',
+                header: {
+                    options: [
+                        []
+                    ]
+                },
+                body: {
+                    options: [
+                        [
+                            {
+                                code: 'resume',
+                                name: '继续'
+                            },
+                            {
+                                code: 'set_force_start',
+                                name: '强制继续'
+                            },
+                            {
+                                code: 'set_force_start',
+                                name: '',
+
+                                className: 'my-copy-item'
+                            }
+                        ],
+                        [
+                            {
+                                code: 'delete',
+                                name: '删除',
+                                prefixIcon: 'vxe-icon-delete color-red'
+                            },
+                        ],
+                        [
+                            {
+                                name: '分类',
+                                children: [
+                                    {code: 'handleSelected', name: '添加'},
+                                    {code: 'handleSelected', name: '重置'}
+                                ]
+                            },
+                            {
+                                name: '标签',
+                                children: [
+                                    {code: '', name: '添加'},
+                                    {code: '', name: '删除全部'}
+                                ]
+                            },
+                            {
+                                code: 'set_auto_management',
+                                name: '自动管理',
+                            },
+                        ],
+                        [
+                            {
+                                code: 'set_super_seeding',
+                                name: '超级做种',
+                            }
+                        ],
+                        [
+                            {code: 'recheck', name: '重新校验'},
+                            {code: 'reannounce', name: '重新汇报'},
+                            {
+                                code: 'copy',
+                                name: '复制',
+                                prefixIcon: 'vxe-icon-copy',
+                                children: [
+                                    {code: 'copy', name: '名称'},
+                                    {code: 'copy', name: 'HASH', prefixIcon: 'vxe-icon-sort-alpha-asc'},
+                                    {code: 'copy', name: '链接', prefixIcon: 'vxe-icon-sort-alpha-desc'}
+                                ]
+                            }
+                        ]
+                    ]
+                },
+                footer: {
+                    options: [
+                        [],
+                        [],
+                        []
+                    ]
+                }
+            }
         },
         beforeMount() {
-        },
-        mounted() {
             window.vm = this
             // 任务状态过滤器数据
             let data = []
             for (let x in download_state) {
-                {#console.log(download_state[x])#}
                 data.push({
                     'label': download_state[x],
                     'value': x
                 })
             }
             this.stateFilters = data
-            {#console.log(this.stateFilters)#}
+        },
+        mounted() {
             this.get_downloader()
-            console.log("下载器：", this.downloaders.length)
+            //this.$nextTick(() => {
+            // 将表格和工具栏进行关联
+            const $table = this.$refs.dataTable
+            console.log(this.$refs)
+            console.log($table)
+            $table.connect(this.$refs.xToolbar)
+            //})
+            {#console.log("获取下载器数量：", this.downloaders.length)#}
+            {#this.get_downloading(this.downloaders[0].id)#}
             this.timer = setInterval(() => {
                 this.get_downloading(this.downloaders[0].id)
             }, 1500)
+
         },
         // 清除定时器，不然页面会卡死
         beforeDestroy() {
@@ -433,38 +429,138 @@
                 }
             )
         },
+        created() {
+
+        },
         watch: {},
         methods: {
-            tableSelected(rows) {
-                this.selected_rows = rows
-                console.log(this.selected_rows)
+            handleButtonClick(id) {
+                const loading = this.$loading({
+                    lock: true,                    //lock的修改符--默认是false
+                    text: 'Loading',                    //显示在加载图标下方的加载文案
+                    spinner: 'el-icon-loading',                    //自定义加载图标类名
+                    background: 'rgba(0, 0, 0, 0.7)',                    //遮罩层颜色
+                    target: document.querySelector('#table')                   //loadin覆盖的dom元素节点
+                });
+                this.loading = true
+                clearInterval(this.timer)
+                this.timer = null
+                this.mainData = []
+                this.get_downloading(id)
+                loading.close()
+                {#this.loading = false#}
+                this.timer = setInterval(() => {
+                    this.get_downloading(id)
+                }, 1500)
             },
-            rowKey(row) {
-                console.log(row.hash)
-                return row.hash
+            get_downloader() {
+                axios.get(
+                    "{% url "get_downloader" %}"
+                ).then(res => {
+                    this.loading = true
+                    if (res.data.code === 0) {
+                        console.log('获取下载器列表成功', res.data.data)
+                        this.downloaders = res.data.data
+                        this.downloader_id = this.downloaders[0].id
+                        this.get_downloading(this.downloader_id)
+                    } else {
+                        this.$message({
+                            type: 'warning', message: '获取下载器列表失败！'
+                        });
+                    }
+                }).catch(res => {
+                    console.log('获取下载器列表失败', res)
+                    this.$message({type: 'warning', message: '获取下载器列表失败！' + res});
+                })
             },
-            handleDelete() {
-                console.log(this.delete_files)
-                {#this.deleteForm = true#}
-                this.handleSelected('delete', '', this.delete_files)
-                this.deleteForm = false
-                this.delete_files = false
+            get_downloading(downloader_id) {
+
+                axios.get(
+                    "{% url "downloading" %}",
+                    {
+                        params: {
+                            id: downloader_id
+                        }
+                    }
+                ).then(res => {
+                    {#console.log(res.data.data.torrents)#}
+                    if (res.data.code === 0) {
+                        this.mainData = res.data.data
+                        // 任务状态过滤器数据
+                        this.categoryFilters = [{label: '未分类', value: ''}]
+                        this.categories = []
+                        for (let x in res.data.data.categories) {
+                            {#console.log(download_state[x])#}
+                            this.categoryFilters.push({'label': x, 'value': x})
+                            this.categories.push({'title': x, 'value': x})
+                        }
+                        // 异步加载筛选数据
+                        const $table = this.$refs.dataTable
+                        console.log($table)
+                        if ($table) {
+                            const nameColumn = $table.getColumnByField('category')
+                            console.log(nameColumn)
+                            if (nameColumn) {
+                                $table.setFilter(nameColumn, this.categoryFilters)
+                            }
+                        }
+                        {#console.log(this.categoryFilters)#}
+                        this.server_state = res.data.data.server_state
+                        // 获取种子
+                        this.torrents = res.data.data.torrents
+                        //this.$message({
+                        // type: 'success',
+                        // message: '任务加载成功！！'
+                        // })
+                    } else {
+                        {#console.log(res.data.data)#}
+                        this.$message({
+                            type: 'warning', message: '任务加载出错！！'
+                        })
+                    }
+                })
+
             },
-            setCategory() {
-                this.handleSelected('set_category', this.category)
-                this.categoryForm = false
-                this.category = ''
+            handleSize({row, column, cellValue, index}) {
+                return this.renderSize(cellValue)
             },
-            limitSpeed() {
+            // 执行格式化文件大小
+            handleSpeed({row, column, cellValue, index}) {
+                return this.renderSize(cellValue) !== 0 ? this.renderSize(cellValue) + '/S' : ''
             },
-            {#setLocation(){},#}
+            // 格式化文件大小
+            renderSize(value) {
+                if (null == value || value == '') {
+                    return 0;
+                }
+                var unitArr = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+                var index = 0;
+                var srcsize = parseFloat(value);
+                index = Math.floor(Math.log(srcsize) / Math.log(1024));
+                var size = srcsize / Math.pow(1024,
+                    index);
+                size = size.toFixed(2);//保留的小数位数
+                return size + ' ' + unitArr[index];
+            },
+            // 格式化进度
+            handlePercent({row, column, cellValue, index}) {
+                return (cellValue * 100).toFixed(2) + '%'
+            },
+            // 格式化分享率
+            handleRatio({row, column, cellValue, index}) {
+                return cellValue.toFixed(4)
+            },
+            handleState({row, column, cellValue, index}) {
+                return download_state[cellValue]
+            },
+            filterStateMethod({value, row, column}) {
+                const property = column['property'];
+                return row[property] === value;
+            },
             handleSelected(command, category = '', delete_files = false, enable = 'True') {
                 let ids = []
                 if (this.selected_rows.length <= 0) {
-                    this.$message({
-                        type: 'warning',
-                        message: '未选中任何种子！！'
-                    })
+                    this.$message({type: 'warning', message: '未选中任何种子！！'})
                     return
                 }
                 this.selected_rows.forEach((item, index) => {
@@ -478,211 +574,82 @@
                 data.append('category', category)
                 data.append('downloader_id', this.downloader_id)
                 axios.post(
-                    "{% url "control_torrent" %}",
+                    // "{% url "control_torrent" %}",
                     data
                 ).then(res => {
                     console.log(res.data)
                     this.get_downloading(this.downloader_id)
-                    this.$message({
-                        type: 'success',
-                        message: '指令发送成功！！'
-                    })
+                    this.$message({type: 'success', message: '指令发送成功！！'})
                     this.selected_rows = []
-                    this.$refs.plTable.clearSelection()
-                }).catch(res => {
-                    this.$message({
-                        type: 'warning',
-                        message: '指令发送失败！！'
-                    })
+                    this.$refs.dataTable.clearSelection()
+                }).catch(() => {
+                    this.$message({type: 'warning', message: '指令发送失败！！'})
                 })
             },
-            get_downloader() {
-                axios.get(
-                    "{% url "get_downloader" %}"
-                ).then(res => {
-                    this.loading = true
-                    console.log('获取下载器列表成功', res.data)
-                    if (res.data.code === 0) {
-                        this.downloaders = res.data.data
-                        console.log(this.torrents)
-                        this.downloader_id = this.downloaders[0].id
-                        this.get_downloading(this.downloader_id)
-                        {#console.log(this.torrents.length)#}
-                        this.loading = false
-                    } else {
-                        this.loading = false
-                        this.$message({
-                            type: 'warning',
-                            message: '获取下载器列表失败！'
-                        });
-                    }
-                }).catch(res => {
-                    console.log('获取下载器列表失败', res)
-                    this.$message({
-                        type: 'warning',
-                        message: '获取下载器列表失败！' + res
-                    });
-                })
+            tableSelected(rows) {
+                this.selected_rows = rows
+                console.log(this.selected_rows)
             },
-            handleTabClick(tab, event) {
-                const loading = this.$loading({
-                    lock: true,//lock的修改符--默认是false
-                    text: 'Loading',//显示在加载图标下方的加载文案
-                    spinner: 'el-icon-loading',//自定义加载图标类名
-                    background: 'rgba(0, 0, 0, 0.7)',//遮罩层颜色
-                    target: document.querySelector('#table')//loadin覆盖的dom元素节点
-                });
-                {#console.log(tab)#}
-                console.log(tab.$attrs.id)
-                this.loading = true
-                {#this.torrents = []#}
-                this.downloader_id = tab.$attrs.id
-                this.torrents = []
-                this.get_downloading(this.downloader_id)
-                loading.close()
+            rowKey(row) {
+                console.log(row.hash)
+                return row.hash
             },
-            get_downloading(downloader_id) {
-                clearInterval(this.timer)
-                this.timer = null
-                axios.get(
-                    "{% url "downloading" %}",
-                    {
-                        params: {
-                            id: downloader_id
-                        }
-                    }
-                ).then(res => {
-                    {#console.log(res.data.data.torrents)#}
-                    if (res.data.code === 0) {
-
-                        {#// 获取分类列表#}
-                        {#let categories = res.data.data.categories#}
-                        // 任务状态过滤器数据
-                        this.categoryFilters = [{label: '未分类', value: ''}]
-                        this.categories = []
-                        for (let x in res.data.data.categories) {
-                            {#console.log(download_state[x])#}
-                            this.categoryFilters.push({
-                                'label': x,
-                                'value': x
-                            })
-                            this.categories.push({
-                                'title': x,
-                                'value': x
-                            })
-                        }
-                        // 异步加载筛选数据
-                        const $table = this.$refs['table' + this.downloader_id][0]
-                        console.log($table)
-                        if ($table) {
-                            const nameColumn = $table.getColumnByField('category')
-                            if (nameColumn) {
-                                $table.setFilter(nameColumn, this.categoryFilters)
-                            }
-                        }
-                        {#console.log(this.categoryFilters)#}
-                        this.server_state = res.data.data.server_state
-                        // 获取种子
-                        this.torrents = res.data.data.torrents
-                        //this.$message({
-                        //   type: 'success',
-                        //    message: '任务加载成功！！'
-                        //})
-                    } else {
-                        {#console.log(res.data.data)#}
-                        this.$message({
-                            type: 'warning',
-                            message: '任务加载出错！！'
-                        })
-                    }
-                })
-                this.timer = setInterval(() => {
-                    this.get_downloading(downloader_id)
-                }, 1500)
+            handleDelete() {
+                console.log(this.delete_files)
+                // { #this.deleteForm = true# }
+                this.handleSelected('delete', '', this.delete_files)
+                this.deleteForm = false
+                this.delete_files = false
             },
-            // 执行格式化文件大小
-            handleSize({row, column, cellValue, index}) {
-                return this.renderSize(cellValue)
+            setCategory() {
+                this.handleSelected('set_category', this.category)
+                this.categoryForm = false
+                this.category = ''
             },
-            handleSpeed({row, column, cellValue, index}) {
-                return this.renderSize(cellValue) != 0 ? this.renderSize(cellValue) + '/S' : ''
+            limitSpeed() {
             },
-
-            // 执行格式化文件大小
-            handleState({row, column, cellValue, index}) {
-                {#('state'))#}
-
-                return download_state[cellValue]
-            },
-            // 格式化文件大小
-            renderSize(value) {
-                if (null == value || value == '') {
-                    return "0";
-                }
-                var unitArr = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-                var index = 0;
-                var srcsize = parseFloat(value);
-                index = Math.floor(Math.log(srcsize) / Math.log(1024));
-                var size = srcsize / Math.pow(1024, index);
-                size = size.toFixed(2);//保留的小数位数
-                return size + ' ' + unitArr[index];
-            },
-            // 格式化进度
-            handlePercent({row, column, cellValue, index}) {
-                return (cellValue * 100).toFixed(2) + '%'
-            },
-            // 格式化分享率
-            handleRatio({row, column, cellValue, index}) {
-                return cellValue.toFixed(4)
-            },
-            // 双击任务事件
-            handleRow({row, column, event}) {
-                console.log(row)
-                this.torrent = row
-                console.log(this.torrent)
-                this.dialogFormVisible = true
-                console.log(row.name)
-                console.log(column)
-                console.log(event)
-            },
-            // 阻止默认右键菜单弹出
-            rtClick({row, column, event}) {
-                // 阻止默认右键菜单弹出
-                event.preventDefault()
-            },
-            {#handleRefresh(command) {#}
-            {#    console.log(this.refresh)#}
-            {#    this.refresh = true#}
-            {#    this.interval = command * 1000#}
-            {#    this.$message({#}
-            {#        type: 'success',#}
-            {#        message: '下载任务将每' + command + '秒刷新一次，如需暂停，请点击按钮！'#}
-            {#    });#}
-            {#    this.timer = setInterval(() => {#}
-            {#        this.get_downloading(this.downloader_id)#}
-            {#    }, this.interval)#}
-            {##}
-            //},
-            clearTimer() {
-                this.refresh = false
-                console.log(this.refresh)
-                this.$message({
-                    type: 'warning',
-                    message: '任务刷新已暂停！'
-                });
-                window.clearInterval(this.timer)
-                this.timer = null
-            },
-            filterStateMethod({value, row, column}) {
-                {#console.log(value,)#}
-                {#console.log(row)#}
-                {#console.log(column)#}
-                const property = column['property'];
-                return row[property] === value;
+            setLocation() {
             },
             setCategoryFilter(fieldOrColumn, options) {
                 console.log(fieldOrColumn, options)
-            }
+            },
+            contextMenuClickEvent({menu, row, column}) {
+                console.log(row)
+                console.log(column)
+                switch (menu.code) {
+                    case 'copy':
+                        // 示例
+                        if (row && column) {
+                            if (XEClipboard.copy(row[column.property])) {
+                                VXETable.modal.message({content: '已复制到剪贴板！', status: 'success'})
+                            }
+                        }
+                        break
+                    default:
+                        VXETable.modal.message(`点击了 ${menu.name} 选项`)
+                }
+            },
+            {#searchEvent2() {#}
+            {#    const filterName = XEUtils.toValueString(this.filterName2).trim().toLowerCase()#}
+            {#    if (filterName) {#}
+            {#        const filterRE = new RegExp(filterName, 'gi')#}
+            {#        const options = {children: 'children'}#}
+            {#        const searchProps = ['name', 'size', 'type', 'date']#}
+            {#        const rest = XEUtils.searchTree(this.tableData2, item => searchProps.some(key => XEUtils.toValueString(item[key]).toLowerCase().indexOf(filterName) > -1), options)#}
+            {#        XEUtils.eachTree(rest, item => {#}
+            {#            searchProps.forEach(key => {#}
+            {#                item[key] = XEUtils.toValueString(item[key]).replace(filterRE, match => `<span class="keyword-lighten">${match}</span>`)#}
+            {#            })#}
+            {#        }, options)#}
+            {#        this.list2 = rest#}
+            {#        // 搜索之后默认展开所有子节点#}
+            {#        this.$nextTick(() => {#}
+            {#            this.$refs.xTree.setAllTreeExpand(true)#}
+            {#        })#}
+            {#    } else {#}
+            {#        this.list2 = this.tableData2#}
+            {#    }#}
+            //,
         }
     });
 </script>
