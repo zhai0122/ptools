@@ -127,7 +127,7 @@
             {#                   @selection-change="tableSelected"#}
                :menu-config="tableMenu"
                @menu-click="contextMenuClickEvent"
-               :data="torrents"
+               :data="mainData.torrents"
                height="700" size="mini"
                auto-resize
                :row-key="(row) => row.hash"
@@ -266,7 +266,6 @@
             downloaders: [],
             loading: false,
             mainData: {},
-            torrents: [],
             dialogFormVisible: false,
             timer: {},
             deleteForm: false,
@@ -418,6 +417,13 @@
             }, 1500)
 
         },
+        updated() {
+            // 十分钟后停止刷新
+            setTimeout(() => {
+                clearInterval(this.timer)
+                this.timer = null
+            }, 1000 * 60 * 10)
+        },
         // 清除定时器，不然页面会卡死
         beforeDestroy() {
             this.$once('hook:beforeDestroy',
@@ -481,7 +487,6 @@
                         }
                     }
                 ).then(res => {
-                    {#console.log(res.data.data.torrents)#}
                     if (res.data.code === 0) {
                         this.mainData = res.data.data
                         // 任务状态过滤器数据
@@ -505,7 +510,6 @@
                         {#console.log(this.categoryFilters)#}
                         this.server_state = res.data.data.server_state
                         // 获取种子
-                        this.torrents = res.data.data.torrents
                         //this.$message({
                         // type: 'success',
                         // message: '任务加载成功！！'
