@@ -96,7 +96,7 @@ class SiteAdmin(ImportExportModelAdmin):  # instead of ModelAdmin
             # 'classes': ('collapse',),  # CSS
             'fields': (
                 ('name', 'url', 'logo'),
-                ('limit_speed', 'sp_full',),
+                ('limit_speed', 'sp_full', 'tracker',),
             ),
         }],
         ['功能支持', {
