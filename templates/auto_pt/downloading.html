@@ -111,7 +111,7 @@
              </span>
         </el-dialog>
     </div>
-    <div ref="ddd"></div>
+
     <vxe-toolbar ref="xToolbar" custom style="font-size: 13px;margin: 5px auto -5px;text-align: center;">
         <template #buttons>
             <el-button circle size="mini" type="primary" icon="el-icon-link"></el-button>
@@ -119,24 +119,6 @@
             <el-button circle size="mini" type="danger" icon="el-icon-delete"></el-button>
             <el-button circle size="mini" type="success" icon="el-icon-video-play"></el-button>
             <el-button circle size="mini" type="warning" icon="el-icon-video-pause"></el-button>
-            <span style="margin: auto;text-align: center">
-                    <el-tag size="medium" type="danger"
-                            v-text="'总分享率：' + server_state.global_ratio"></el-tag>
-                    <el-tag size="medium" type="success"
-                            v-text="'剩余空间：' + renderSize(server_state.free_space_on_disk)"></el-tag>
-                    <el-tag size="medium" type=""
-                            v-text="'历史下载：' + renderSize(server_state.alltime_dl)"></el-tag>
-                    <el-tag size="medium" type="warning"
-                            v-text="'历史上传：' + renderSize(server_state.alltime_ul)"></el-tag>
-                    <el-tag size="medium" effect="plain" color="#233223"
-                            v-text="'本次下载：' + renderSize(server_state.dl_info_data)"></el-tag>
-                    <el-tag size="medium" effect="plain" color="#296969"
-                            v-text="'下载速度：' + renderSize(server_state.dl_info_speed)"></el-tag>
-                    <el-tag size="medium" effect="plain" color="#545454"
-                            v-text="'本次上传：' + renderSize(server_state.up_info_data)"></el-tag>
-                    <el-tag size="medium" color="#696969"
-                            v-text="'上传速度：' + renderSize(server_state.up_info_speed) + '/S'"></el-tag>
-                </span>
         </template>
     </vxe-toolbar>
     <vxe-table ref="dataTable" row-height="55" id="table"
@@ -146,7 +128,7 @@
                :menu-config="tableMenu"
                @menu-click="contextMenuClickEvent"
                :data="torrents"
-               height="750" size="mini"
+               height="700" size="mini"
                auto-resize
                :row-key="(row) => row.hash"
                round border stripe
@@ -225,7 +207,24 @@
             </span>
         </template>
     </vxe-table>
-
+    <div style="width:100%;margin-bottom:0;margin-top: 8px;position:absolute;text-align: center;">
+        <el-tag size="medium" type="danger"
+                v-text="'总分享率：' + server_state.global_ratio"></el-tag>
+        <el-tag size="medium" type="success"
+                v-text="'剩余空间：' + renderSize(server_state.free_space_on_disk)"></el-tag>
+        <el-tag size="medium" type=""
+                v-text="'历史下载：' + renderSize(server_state.alltime_dl)"></el-tag>
+        <el-tag size="medium" type="warning"
+                v-text="'历史上传：' + renderSize(server_state.alltime_ul)"></el-tag>
+        <el-tag size="medium" effect="plain" color="#233223"
+                v-text="'本次下载：' + renderSize(server_state.dl_info_data)"></el-tag>
+        <el-tag size="medium" effect="plain" color="#296969"
+                v-text="'下载速度：' + renderSize(server_state.dl_info_speed)"></el-tag>
+        <el-tag size="medium" effect="plain" color="#545454"
+                v-text="'本次上传：' + renderSize(server_state.up_info_data)"></el-tag>
+        <el-tag size="medium" color="#696969"
+                v-text="'上传速度：' + renderSize(server_state.up_info_speed) + '/S'"></el-tag>
+    </div>
 
 </div>
 
@@ -308,7 +307,6 @@
             category: '',
             server_state: {},
             delete_files: false,
-            filterName2: [],
             tableMenu: {
                 className: 'my-menus',
                 header: {
