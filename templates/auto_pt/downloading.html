@@ -58,7 +58,10 @@
                        @click="handleButtonClick(downloader.id)">
                 <span v-text="downloader.name"></span>
             </el-button>
-            <el-button size="small" type="danger" icon="el-icon-pause" @click="stopRefresh">停止刷新</el-button>
+            <el-button size="small" type="danger" v-if="refresh" icon="el-icon-pause" @click="stopRefresh">停止刷新
+            </el-button>
+            <el-button size="small" type="success" v-else="refresh" icon="el-icon-pause" @click="stopRefresh">停止刷新
+            </el-button>
         </el-button-group>
         <el-dropdown split-button type="primary" size="mini" @command="handleSelected">
             操作
@@ -153,6 +156,13 @@
                           :filter-method="filterStateMethod"
                           :filter-multiple="false"
                           title="分类"></vxe-table-column>
+        <vxe-table-column field="tracker" sortable
+                          :filters="[]"
+                          :formatter="handleTracker"
+                          :filter-method="filterTrackerMethod"
+                          :filter-multiple="false"
+                          min-width="110"
+                          title="Tracker"></vxe-table-column>
         <vxe-table-column field="state" sortable width="85" :formatter="handleState" column-key="state"
                           :filter-method="filterStateMethod"
                           :filters="stateFilters" :filter-multiple="false" title="状态"></vxe-table-column>
@@ -198,9 +208,6 @@
                           show-header-overflow show-overflow="tooltip"
                           show-footer-overflow
                           title="添加时间"></vxe-table-column>
-        <vxe-table-column field="tracker"
-                          title="Tracker"></vxe-table-column>
-
         <template #empty>
             <span style="color: red;">
               <img src="https://pic2.zhimg.com/50/v2-f7031359103859e1ed38559715ef5f3f_hd.gif">
@@ -267,6 +274,7 @@
             downloaders: [],
             loading: false,
             mainData: {},
+            tracker_list: [],
             dialogFormVisible: false,
             timer: {},
             deleteForm: false,
@@ -443,6 +451,11 @@
                 clearInterval(this.timer)
                 this.timer = null
             },
+            startRefresh() {
+                this.timer = setInterval(() => {
+                    this.get_downloading(this.downloaders[0].id)
+                }, 1500)
+            },
             handleButtonClick(id) {
                 const loading = this.$loading({
                     lock: true,                    //lock的修改符--默认是false
@@ -494,6 +507,13 @@
                 ).then(res => {
                     if (res.data.code === 0) {
                         this.mainData = res.data.data
+                        this.tracker_list = this.mainData.tracker_list;
+                        const trackerFilter = [{label: '无', value: ''}]
+                        this.tracker_list.forEach((value, index, array) => {
+                            {#console.log(value, index)#}
+                            trackerFilter.push({'label': value.name, 'value': value.tracker})
+                        })
+                        {#console.log(trackerFilter)#}
                         // 任务状态过滤器数据
                         this.categoryFilters = [{label: '未分类', value: ''}]
                         this.categories = []
@@ -506,13 +526,18 @@
                         const $table = this.$refs.dataTable
                         {#console.log($table)#}
                         if ($table) {
-                            const nameColumn = $table.getColumnByField('category')
+                            const categoryColumn = $table.getColumnByField('category')
                             {#console.log(nameColumn)#}
-                            if (nameColumn) {
-                                $table.setFilter(nameColumn, this.categoryFilters)
+                            if (categoryColumn) {
+                                $table.setFilter(categoryColumn, this.categoryFilters)
+                            }
+                            const trackerColumn = $table.getColumnByField('tracker')
+                            console.log(trackerColumn)
+                            if (trackerColumn) {
+                                $table.setFilter(trackerColumn, trackerFilter)
                             }
                         }
-                        console.log(res.data.data.tracker_filters)
+                        {#console.log(res.data.data.tracker_filters)#}
                         this.server_state = res.data.data.server_state
                         // 获取种子
                         //this.$message({
@@ -557,12 +582,22 @@
             handleRatio({row, column, cellValue, index}) {
                 return cellValue.toFixed(4)
             },
+            handleTracker({row, column, cellValue, index}) {
+                // 格式化输出tracker所属的站点
+                let site = this.tracker_list.find(site => cellValue.includes(site.tracker))
+                {#console.log(site)#}
+                return site ? site.name : cellValue
+            },
             handleState({row, column, cellValue, index}) {
                 return download_state[cellValue]
             },
             filterStateMethod({value, row, column}) {
                 const property = column['property'];
                 return row[property] === value;
+            },
+            filterTrackerMethod({value, row, column}) {
+                const property = column['property'];
+                return row[property].includes(value);
             },
             handleSelected(command, category = '', delete_files = false, enable = 'True') {
                 let ids = []
