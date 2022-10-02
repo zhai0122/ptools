@@ -44,6 +44,21 @@
         .color-orange {
             color: orange;
         }
+
+        .bottom_xf {
+            background-color: #1D69A9;
+            width: 100%;
+            height: 28px;
+            margin: auto;
+            padding: 5px;
+            overflow: auto;
+            position: fixed;
+            bottom: 0;
+            z-index: 999999;
+            text-align: center;
+        }
+
+
     </style>
 </head>
 <body>
@@ -58,36 +73,8 @@
                        @click="handleButtonClick(downloader.id)">
                 <span v-text="downloader.name"></span>
             </el-button>
-            <el-button size="small" type="danger" v-if="refresh" icon="el-icon-pause" @click="stopRefresh">停止刷新
-            </el-button>
-            <el-button size="small" type="success" v-else="refresh" icon="el-icon-pause" @click="stopRefresh">停止刷新
-            </el-button>
+
         </el-button-group>
-        <el-dropdown split-button type="primary" size="mini" @command="handleSelected">
-            操作
-            <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command="resume">继续</el-dropdown-item>
-                <el-dropdown-item command="set_force_start">强制继续</el-dropdown-item>
-                <el-dropdown-item command="pause">暂停</el-dropdown-item>
-                <el-dropdown-item command="set_auto_management">自动管理</el-dropdown-item>
-                <el-dropdown-item command="set_super_seeding">超级做种</el-dropdown-item>
-                <el-dropdown-item command="recheck">重新校验</el-dropdown-item>
-                <el-dropdown-item command="reannounce">重新汇报</el-dropdown-item>
-            </el-dropdown-menu>
-        </el-dropdown>
-        <el-dropdown split-button type="success" size="mini">
-            操作
-            <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item>
-                    <el-button size="mini" type="danger" @click="deleteForm = true">删除任务</el-button>
-                </el-dropdown-item>
-                <el-dropdown-item @click="setCategory">
-                    <el-button size="mini" type="primary" @click="categoryForm = true">修改分类</el-button>
-                </el-dropdown-item>
-                {#                <el-dropdown-item @click="limitSpeed">限速</el-dropdown-item>#}
-                {#                <el-dropdown-item @click="setLocation">更改路径</el-dropdown-item>#}
-            </el-dropdown-menu>
-        </el-dropdown>
     </div>
     <div>
         <el-dialog title="删除任务" :visible.sync="deleteForm" min-width="180" width="30%" center>
@@ -116,33 +103,73 @@
         </el-dialog>
     </div>
 
-    <vxe-toolbar ref="xToolbar" custom style="font-size: 13px;margin: 5px auto -5px;text-align: center;">
+    <vxe-toolbar ref="xToolbar" size="mini" custom>
         <template #buttons>
             <el-button circle size="mini" type="primary" icon="el-icon-link"></el-button>
             <el-button circle size="mini" type="primary" icon="el-icon-plus"></el-button>
             <el-button circle size="mini" type="danger" icon="el-icon-delete"></el-button>
             <el-button circle size="mini" type="success" icon="el-icon-video-play"></el-button>
             <el-button circle size="mini" type="warning" icon="el-icon-video-pause"></el-button>
+
+
+            <el-dropdown split-button type="primary" size="mini" @command="handleSelected">
+                操作
+                <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item command="resume">继续</el-dropdown-item>
+                    <el-dropdown-item command="set_force_start">强制继续</el-dropdown-item>
+                    <el-dropdown-item command="pause">暂停</el-dropdown-item>
+                    <el-dropdown-item command="set_auto_management">自动管理</el-dropdown-item>
+                    <el-dropdown-item command="set_super_seeding">超级做种</el-dropdown-item>
+                    <el-dropdown-item command="recheck">重新校验</el-dropdown-item>
+                    <el-dropdown-item command="reannounce">重新汇报</el-dropdown-item>
+                </el-dropdown-menu>
+            </el-dropdown>
+            <el-dropdown split-button type="success" size="mini">
+                操作
+                <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item>
+                        <el-button size="mini" type="danger" @click="deleteForm = true">删除任务</el-button>
+                    </el-dropdown-item>
+                    <el-dropdown-item @click="setCategory">
+                        <el-button size="mini" type="primary" @click="categoryForm = true">修改分类</el-button>
+                    </el-dropdown-item>
+                    {#                <el-dropdown-item @click="limitSpeed">限速</el-dropdown-item>#}
+                    {#                <el-dropdown-item @click="setLocation">更改路径</el-dropdown-item>#}
+                </el-dropdown-menu>
+            </el-dropdown>
+        </template>
+        <template #tools>
+            <el-button size="mini" type="success" v-if="refresh" icon="el-icon-refresh" @click="startRefresh">继续刷新
+            </el-button>
+
+            <el-button size="mini" type="danger" v-else="refresh" icon="el-icon-pause" @click="stopRefresh">停止刷新
+            </el-button>
+
+            <el-button size="mini" type="warning" icon="vxe-icon-funnel-clear" @click="clearFilters">清除筛选
+            </el-button>
+            <el-button size="mini" type="warning" icon="vxe-icon-square-checked-fill" @click="clearSelection">清除选中
+            </el-button>
         </template>
     </vxe-toolbar>
     <vxe-table ref="dataTable" row-height="55" id="table"
                showBodyOverflow="title" showHeaderOverflow="title"
             {#                   @row-dblclick="handleRow"#}
-            {#                   @selection-change="tableSelected"#}
+               @selection-change="tableSelected"
                :menu-config="tableMenu"
                @menu-click="contextMenuClickEvent"
                :data="mainData.torrents"
+               :loading="loading"
                height="700" size="mini"
                auto-resize
-               :row-key="(row) => row.hash"
                round border stripe
-               :keyboard-config="{isArrow: true}"
+               :tooltip-config="{showAll: true}"
+               :keyboard-config="{isArrow: true, isTab: true, enterToTab: true}"
                :column-config="{isCurrent: true, isHover: true, resizable: true}"
-               :row-config="{isCurrent: true, isHover: true}"
-               :checkbox-config="{trigger: 'row', highlight: true, range: true}"
+               :row-config="{isCurrent: true, isHover: true, keyField: 'hash'}"
+               :checkbox-config="{trigger: 'row', highlight: true, range: true, reserve: true}"
                highlight-current-row
                style="width: 100%">
-        <vxe-table-column fixed="left" :reserve-selection="true" type="checkbox">
+        <vxe-table-column fixed="left" type="checkbox">
         </vxe-table-column>
         <vxe-table-column type="seq" fixed="left"></vxe-table-column>
         <vxe-table-column field="name" fixed="left" sortable show-header-overflow show-overflow="tooltip"
@@ -208,14 +235,14 @@
                           show-header-overflow show-overflow="tooltip"
                           show-footer-overflow
                           title="添加时间"></vxe-table-column>
-        <template #empty>
-            <span style="color: red;">
-              <img src="https://pic2.zhimg.com/50/v2-f7031359103859e1ed38559715ef5f3f_hd.gif">
-              <p>搜索不到数据，可能输入的关键字姿势不对！</p>
-            </span>
-        </template>
+        {#        <template #empty>#}
+        {#            <span style="color: red;">#}
+        {#              <img src="https://pic2.zhimg.com/50/v2-f7031359103859e1ed38559715ef5f3f_hd.gif">#}
+        {#              <p>搜索不到数据，可能输入的关键字姿势不对！</p>#}
+        {#            </span>#}
+        {#        </template>#}
     </vxe-table>
-    <div style="width:100%;margin-bottom:0;margin-top: 8px;position:absolute;text-align: center;">
+    <div class="bottom_xf">
         <el-tag size="medium" type="danger"
                 v-text="'总分享率：' + server_state.global_ratio"></el-tag>
         <el-tag size="medium" type="success"
@@ -411,14 +438,9 @@
             this.stateFilters = data
         },
         mounted() {
+            this.loading = true
             this.get_downloader()
-            //this.$nextTick(() => {
-            // 将表格和工具栏进行关联
-            const $table = this.$refs.dataTable
-            console.log(this.$refs)
-            console.log($table)
-            $table.connect(this.$refs.xToolbar)
-            //})
+
             {#console.log("获取下载器数量：", this.downloaders.length)#}
             {#this.get_downloading(this.downloaders[0].id)#}
             this.timer = setInterval(() => {
@@ -443,33 +465,50 @@
             )
         },
         created() {
-
+            this.$nextTick(() => {
+                // 将表格和工具栏进行关联
+                const $table = this.$refs.dataTable
+                console.log(this.$refs)
+                console.log($table)
+                $table.connect(this.$refs.xToolbar)
+            })
         },
         watch: {},
         methods: {
+            clearFilters() {
+                //清除筛选
+                this.$refs.dataTable.clearFilter()
+            },
+            clearSelection() {
+                //清除选中
+                this.$refs.dataTable.clearCheckboxRow()
+            },
             stopRefresh() {
+                this.refresh = true
                 clearInterval(this.timer)
                 this.timer = null
             },
             startRefresh() {
+                this.refresh = false
                 this.timer = setInterval(() => {
-                    this.get_downloading(this.downloaders[0].id)
+                    this.get_downloading(this.downloader_id)
                 }, 1500)
             },
             handleButtonClick(id) {
-                const loading = this.$loading({
-                    lock: true,                    //lock的修改符--默认是false
-                    text: 'Loading',                    //显示在加载图标下方的加载文案
-                    spinner: 'el-icon-loading',                    //自定义加载图标类名
-                    background: 'rgba(0, 0, 0, 0.7)',                    //遮罩层颜色
-                    target: document.querySelector('#table')                   //loadin覆盖的dom元素节点
-                });
+                {#const loading = this.$loading({#}
+                {#    lock: true,                    //lock的修改符--默认是false#}
+                {#    text: 'Loading',                    //显示在加载图标下方的加载文案#}
+                {#    spinner: 'el-icon-loading',                    //自定义加载图标类名#}
+                {#    background: 'rgba(0, 0, 0, 0.7)',                    //遮罩层颜色#}
+                {#    target: document.querySelector('#table')                   //loadin覆盖的dom元素节点#}
+                //});
                 this.loading = true
                 clearInterval(this.timer)
                 this.timer = null
                 this.mainData = []
                 this.get_downloading(id)
-                loading.close()
+                {#this.loading = false#}
+                {#loading.close()#}
                 {#this.loading = false#}
                 this.timer = setInterval(() => {
                     this.get_downloading(id)
@@ -496,7 +535,6 @@
                 })
             },
             get_downloading(downloader_id) {
-
                 axios.get(
                     "{% url "downloading" %}",
                     {
@@ -532,13 +570,14 @@
                                 $table.setFilter(categoryColumn, this.categoryFilters)
                             }
                             const trackerColumn = $table.getColumnByField('tracker')
-                            console.log(trackerColumn)
+                            {#console.log(trackerColumn)#}
                             if (trackerColumn) {
                                 $table.setFilter(trackerColumn, trackerFilter)
                             }
                         }
                         {#console.log(res.data.data.tracker_filters)#}
                         this.server_state = res.data.data.server_state
+                        this.loading = false
                         // 获取种子
                         //this.$message({
                         // type: 'success',
