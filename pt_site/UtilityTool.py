@@ -602,22 +602,26 @@ class PtSpider:
 
     def do_sign_in(self, pool, queryset: QuerySet[MySite]):
         message_list = '### <font color="orange">未显示的站点已经签到过了哟！</font>  \n'
-        queryset = [my_site for my_site in queryset if
-                    my_site.cookie and my_site.passkey and my_site.site.sign_in_support and my_site.signin_set.filter(
-                        created_at__date__gte=datetime.today()).count() <= 0]
+        if datetime.now().hour < 9:
+            # U2每天九点前不签到
+            queryset = [my_site for my_site in queryset if 'u2.dmhy.org' not in my_site.site.url and
+                        my_site.signin_set.filter(created_at__date__gte=datetime.today()).count() <= 0
+                        and my_site.cookie and my_site.site.sign_in_support]
+            message = '> <font color="red">站点 U2 早上九点之前不执行签到任务哦！</font>  \n'
+            print(message)
+            message_list = message + message_list
+        else:
+            queryset = [my_site for my_site in queryset if my_site.cookie and my_site.site.sign_in_support
+                        and my_site.signin_set.filter(created_at__date__gte=datetime.today()).count() <= 0]
         print(len(queryset))
         if len(queryset) <= 0:
-            message_list += '> <font color="orange">已全部签到或无需签到！</font>  \n'
+            message_list = '> <font color="orange">已全部签到或无需签到！</font>  \n'
             print(message_list)
             return 0
         # results = pool.map(pt_spider.sign_in, site_list)
         with lock:
             results = pool.map(self.sign_in, queryset)
             for my_site, result in zip(queryset, results):
-                # U2每天九点前不签到
-                if 'u2.dmhy.org' in my_site.site.url:
-                    if datetime.now().hour < 9:
-                        continue
                 print('自动签到：', my_site, result)
                 if result.code == StatusCodeEnum.OK.code:
                     message_list += ('> ' + my_site.site.name + ' 签到成功！' + converter.convert(result.msg) + '  \n')
@@ -798,6 +802,14 @@ class PtSpider:
                     return CommonResponse.error(msg='签到失败！')
                 # print(res.text)
             if res.status_code == 200:
+                status = converter.convert(res.content.decode('utf8'))
+                # status = ''.join(self.parse(res, '//a[contains(@href,{})]/text()'.format(site.page_sign_in)))
+                # 检查是否签到成功！
+                # if '签到得魔力' in converter.convert(status):
+                if '(获得' in status or '签到已得' in status or '已签到' in status:
+                    pass
+                else:
+                    return CommonResponse.error(msg='签到失败！')
                 title_parse = self.parse(res, '//td[@id="outer"]//td[@class="embedded"]/h2/text()')
                 content_parse = self.parse(res, '//td[@id="outer"]//td[@class="embedded"]/table/tr/td//text()')
                 if len(content_parse) <= 0:
@@ -812,6 +824,7 @@ class PtSpider:
                 signin_today.sign_in_today = True
                 signin_today.sign_in_info = message
                 signin_today.save()
+                print(site.name + message)
                 return CommonResponse.success(msg=message)
             else:
                 return CommonResponse.error(msg='请确认签到是否成功？？网页返回码：' + str(res.status_code))
