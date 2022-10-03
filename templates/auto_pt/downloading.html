@@ -180,7 +180,7 @@
         </vxe-table-column>
         <vxe-table-column field="category" sortable width="85"
                           :filters="[]"
-                          :filter-method="filterStateMethod"
+                          :filter-method="filterCategoryMethod"
                           :filter-multiple="false"
                           title="分类"></vxe-table-column>
         <vxe-table-column field="tracker" sortable
@@ -444,6 +444,12 @@
             {#console.log("获取下载器数量：", this.downloaders.length)#}
             {#this.get_downloading(this.downloaders[0].id)#}
             this.timer = setInterval(() => {
+                let ff = this.$refs.dataTable.getCheckedFilters()
+                console.log(ff)
+                {#let filters = this.$refs.dataTable.isFilter()#}
+                {#let cls = this.$refs.dataTable.getCheckedFilters()#}
+                {#console.log('filters', filters)#}
+                {#console.log('cls', cls)#}
                 this.get_downloading(this.downloaders[0].id)
             }, 1500)
 
@@ -454,6 +460,9 @@
                 clearInterval(this.timer)
                 this.timer = null
             }, 1000 * 60 * 10)
+        },
+        beforeUpdated() {
+
         },
         // 清除定时器，不然页面会卡死
         beforeDestroy() {
@@ -632,6 +641,10 @@
                 return download_state[cellValue]
             },
             filterStateMethod({value, row, column}) {
+                const property = column['property'];
+                return row[property] === value;
+            },
+            filterCategoryMethod({value, row, column}) {
                 const property = column['property'];
                 return row[property] === value;
             },
