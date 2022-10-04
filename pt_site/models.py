@@ -11,7 +11,7 @@ class Site(BaseEntity):
     url = models.URLField(verbose_name='站点网址', default='', help_text='请保留网址结尾的"/"', unique=True)
     name = models.CharField(max_length=32, verbose_name='站点名称')
     logo = models.URLField(verbose_name='站点logo', default='', help_text='站点logo图标')
-    tracker = models.URLField(verbose_name='tracker', default='', help_text='tracker网址关键字')
+    tracker = models.CharField(verbose_name='tracker', default='', help_text='tracker网址关键字', max_length=32)
     # 功能支持
     sign_in_support = models.BooleanField(verbose_name="签到支持", default=True)
     get_torrent_support = models.BooleanField(verbose_name="拉取首页种子", default=True)
