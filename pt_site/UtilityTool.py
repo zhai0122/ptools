@@ -612,7 +612,8 @@ class PtSpider:
             message_list = message + message_list
         else:
             queryset = [my_site for my_site in queryset if my_site.cookie and my_site.site.sign_in_support
-                        and my_site.signin_set.filter(created_at__date__gte=datetime.today()).count() <= 0]
+                        and my_site.signin_set.filter(created_at__date__gte=datetime.today(),
+                                                      sign_in_today=True).count() <= 0]
         print(len(queryset))
         if len(queryset) <= 0:
             message_list = '> <font color="orange">已全部签到或无需签到！</font>  \n'
@@ -638,7 +639,7 @@ class PtSpider:
         site = my_site.site
         print(site.name + '开始签到')
         signin_today = my_site.signin_set.filter(created_at__date__gte=datetime.today()).first()
-
+        print(signin_today.sign_in_today is True)
         # 如果已有签到记录
         if signin_today and (signin_today.sign_in_today is True):
             # pass
@@ -800,13 +801,14 @@ class PtSpider:
                     return CommonResponse.success(msg='签到成功！')
                 else:
                     return CommonResponse.error(msg='签到失败！')
-                # print(res.text)
+            print(res.status_code, res.text)
             if res.status_code == 200:
                 status = converter.convert(res.content.decode('utf8'))
                 # status = ''.join(self.parse(res, '//a[contains(@href,{})]/text()'.format(site.page_sign_in)))
                 # 检查是否签到成功！
                 # if '签到得魔力' in converter.convert(status):
-                if '(获得' in status or '签到已得' in status or '已签到' in status:
+                haidan_sign_str = '<input type="submit" id="modalBtn" style="cursor: default;" disabled class="dt_button" value="已经打卡" />'
+                if haidan_sign_str in status or '(获得' in status or '签到已得' in status or '已签到' in status or '已经签到' in status or '签到成功' in status:
                     pass
                 else:
                     return CommonResponse.error(msg='签到失败！')
@@ -820,6 +822,8 @@ class PtSpider:
                 content = ''.join(content_parse).strip().replace('\n', '')
                 # print(content)
                 message = title + ',' + content
+                if len(message) <= 1:
+                    message = datetime.today().strftime('%Y-%m-%d %H:%M:%S') + '打卡成功！'
                 # message = ''.join(title).strip()
                 signin_today.sign_in_today = True
                 signin_today.sign_in_info = message
@@ -829,8 +833,8 @@ class PtSpider:
             else:
                 return CommonResponse.error(msg='请确认签到是否成功？？网页返回码：' + str(res.status_code))
         except Exception as e:
-            # raise
             self.send_text(site.name + '签到失败！原因：' + str(e))
+            raise
             return CommonResponse.error(msg='签到失败！' + str(e))
 
     @staticmethod

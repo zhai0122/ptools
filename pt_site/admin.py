@@ -408,7 +408,7 @@ class MySiteAdmin(ImportExportModelAdmin):  # instead of ModelAdmin
         start = time.time()
         queryset = [my_site for my_site in queryset if
                     my_site.cookie and my_site.passkey and my_site.site.sign_in_support and my_site.signin_set.filter(
-                        created_at__date__gte=datetime.today()).count() <= 0]
+                        created_at__date__gte=datetime.today(), sign_in_today=True).count() <= 0]
         if len(queryset) <= 0:
             messages.add_message(request, messages.SUCCESS, '已签到或无需签到！')
         results = pool.map(pt_spider.sign_in, queryset)
