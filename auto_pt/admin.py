@@ -67,44 +67,51 @@ class TaskJobAdmin(ImportExportModelAdmin):  # instead of ModelAdmin
     list_editable = ('task_exec',)
 
     def save_model(self, request, obj: TaskJob, form, change):
-        obj.save()
-
-        try:
-            # 从字符串获取function
-            func = getattr(tasks, obj.task.name)
-            exist_job = tasks.scheduler.get_job(obj.job_id)
-
-            new_job = None
-            if obj.trigger == Trigger.cron:
-                new_job = tasks.scheduler.add_job(func,
-                                                  trigger=CronTrigger.from_crontab(obj.expression_time),
-                                                  id=obj.job_id,
-                                                  replace_existing=obj.replace_existing,
-                                                  misfire_grace_time=obj.misfire_grace_time,
-                                                  jitter=obj.jitter, )
-            if obj.trigger == Trigger.interval:
-                time_delta = 1
-                time_str = obj.expression_time.split('*')
-                for i in time_str:
-                    time_delta *= int(i)
-                new_job = tasks.scheduler.add_job(func,
-                                                  trigger=obj.trigger,
-                                                  id=obj.job_id,
-                                                  seconds=time_delta,
-                                                  replace_existing=obj.replace_existing,
-                                                  misfire_grace_time=obj.misfire_grace_time,
-                                                  jitter=obj.jitter, )
-            if not obj.task_exec:
-                """如果任务未启用，入库后保持暂停"""
-                new_job.pause()
-                print(new_job.pending)
-            pt_spider.send_text('计划任务：' + new_job.id + (' 添加成功！' if not exist_job else '更新成功！'))
-            messages.add_message(request, messages.SUCCESS, new_job.id + (' 添加成功！' if not exist_job else '更新成功！'))
-        except Exception as e:
-            obj.task_exec = False
+        # 从字符串获取function
+        func = getattr(tasks, obj.task.name)
+        exist_job = tasks.scheduler.get_job(obj.job_id)
+        if exist_job:
+            print(exist_job.id)
+            exist_job.remove()
+            print(tasks.scheduler.get_jobs())
+        # 如果任务未启用，只保存，不入库，已存在任务就删除
+        if not obj.task_exec:
             obj.save()
-            pt_spider.send_text('计划任务：' + obj.job_id + '任务添加失败！原因：' + str(e))
-            messages.add_message(request, messages.ERROR, obj.job_id + '任务添加失败！原因：' + str(e))
+            messages.success(request, obj.job_id + ' 保存成功！如需执行任务，请勾选开启任务！')
+        else:
+            try:
+                # new_job = None
+                if obj.trigger == Trigger.cron:
+                    new_job = tasks.scheduler.add_job(func,
+                                                      trigger=CronTrigger.from_crontab(obj.expression_time),
+                                                      id=obj.job_id,
+                                                      replace_existing=obj.replace_existing,
+                                                      misfire_grace_time=obj.misfire_grace_time,
+                                                      jitter=obj.jitter, )
+                if obj.trigger == Trigger.interval:
+                    time_delta = 1
+                    time_str = obj.expression_time.split('*')
+                    for i in time_str:
+                        time_delta *= int(i)
+                    new_job = tasks.scheduler.add_job(func,
+                                                      trigger=obj.trigger,
+                                                      id=obj.job_id,
+                                                      seconds=time_delta,
+                                                      replace_existing=obj.replace_existing,
+                                                      misfire_grace_time=obj.misfire_grace_time,
+                                                      jitter=obj.jitter, )
+
+                print(new_job.pending)
+                info = ' 添加成功！' if not exist_job else '更新成功！'
+                pt_spider.send_text('计划任务：' + new_job.id + info)
+                messages.success(request, new_job.id + info)
+                obj.save()
+            except Exception as e:
+                obj.task_exec = False
+                obj.save()
+                raise
+                pt_spider.send_text('计划任务：' + obj.job_id + '任务添加失败！原因：' + str(e))
+                messages.error(request, obj.job_id + '任务添加失败！原因：' + str(e))
 
     def delete_model(self, request, obj):
         print(obj)

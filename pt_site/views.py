@@ -1,6 +1,7 @@
 # Create your views here.
 import datetime
 import logging
+import socket
 import time
 from concurrent.futures.thread import ThreadPoolExecutor
 
@@ -184,8 +185,17 @@ try:
             '> {} 任务运行成功！耗时：{}{}  \n'.format('获取种子HASH', end - start, time.strftime("%Y-%m-%d %H:%M:%S")))
 
 
-    scheduler.start()
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.bind(("127.0.0.1", 44444))
+except socket.error:
+    print("!!!scheduler started, DO NOTHING")
 except Exception as e:
-    print(e)
-    # 有错误就停止定时器
-    scheduler.shutdown()
+    print('1111', e)
+finally:
+    try:
+        scheduler.start()
+        # print('启动后台任务', scheduler.get_jobs())
+    except Exception as e:
+        print('启动后台任务启动任务失败！', e)
+        # 有错误就停止定时器
+        # scheduler.shutdown()

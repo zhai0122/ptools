@@ -1186,7 +1186,7 @@ class PtSpider:
             for seed_vol in seed_vol_list:
                 # print(etree.tostring(seed_vol))
                 vol = ''.join(seed_vol.xpath('.//text()'))
-                print(vol)
+                # print(vol)
                 if not len(vol) <= 0:
                     seed_vol_all += FileSizeConvert.parse_2_byte(
                         vol.replace('i', '')  # U2返回字符串为mib，gib
