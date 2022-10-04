@@ -12,7 +12,7 @@ if [ ! -e $CONTAINER_ALREADY_STARTED ]; then
     git remote add origin https://gitee.com/ngfchl/ptools &&
     # 设置拉取最新文件并覆盖
     git config pull.ff only &&
-    git pull origin master
+    git pull origin $DEV &&
   ls -l && pwd
   #    git branch --set-upstream-to=origin/master master &&
   pip install -r requirements.txt
@@ -28,9 +28,11 @@ if [ ! -e $CONTAINER_ALREADY_STARTED ]; then
     python manage.py createsuperuser --noinput
 else
   echo "-- Not first container startup --"
-
 fi
+
+if [ $DEV == 'dev']; then
+      echo '您当前处于开发者测试版本，请注意备份数据'
 pip install -r requirements.txt &&
   python manage.py makemigrations &&
   python manage.py migrate &&
-  python manage.py runserver 0.0.0.0:$DJANGO_WEB_PORT --noreload
+  python manage.py runserver 0.0.0.0:$DJANGO_WEB_PORT
