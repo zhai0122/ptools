@@ -639,7 +639,6 @@ class PtSpider:
         site = my_site.site
         print(site.name + '开始签到')
         signin_today = my_site.signin_set.filter(created_at__date__gte=datetime.today()).first()
-        print(signin_today.sign_in_today is True)
         # 如果已有签到记录
         if signin_today:
             if signin_today.sign_in_today is True:
