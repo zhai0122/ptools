@@ -41,4 +41,4 @@ fi
 pip install -r requirements.txt &&
   python manage.py makemigrations &&
   python manage.py migrate &&
-  python manage.py runserver $DJANGO_WEB_PORT
+  python manage.py runserver 0.0.0.0:$DJANGO_WEB_PORT
