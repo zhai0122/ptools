@@ -47,4 +47,4 @@ VOLUME ["/var/www/html/ptools/db"]
 
 EXPOSE  $DJANGO_WEB_PORT
 
-ENTRYPOINT ["/bin/bash", "/var/www/html/start.sh", "start"]
+ENTRYPOINT ["/bin/bash", "/var/www/html/start.sh"]
