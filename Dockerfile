@@ -24,7 +24,7 @@ WORKDIR /var/www/html/ptools
 
 # 将当前目录加入到工作目录中（. 表示当前目录）
 #ADD . /var/www/html/ptools
-ADD ./start.sh /var/www/html
+ADD start.sh /var/www/html
 
 # 更新pip版本
 #RUN /usr/local/bin/python -m pip install --upgrade pip
@@ -38,8 +38,8 @@ ADD ./start.sh /var/www/html
 # 给start.sh可执行权限
 RUN chmod +x /var/www/html/start.sh
 
-# 更换USTC源，并安装gcc，git
-RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list; \
+# 更换USTC源，并安装gcc，git # 写入U2的HOSTS
+RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list && echo 172.64.153.252 u2.dmhy.org >>/etc/hosts; \
     apt update && yes|apt install git; \
     apt-get autoclean && rm -rf /var/lib/apt/lists/*
 
@@ -47,4 +47,4 @@ VOLUME ["/var/www/html/ptools/db"]
 
 EXPOSE  $DJANGO_WEB_PORT
 
-ENTRYPOINT ["/bin/bash", "/var/www/html/start.sh"]
+ENTRYPOINT ["/bin/bash", "/var/www/html/start.sh", "start"]
