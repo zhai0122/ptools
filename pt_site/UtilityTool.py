@@ -487,7 +487,19 @@ class PtSpider:
         )
         print(response.content.decode('utf8'))
         if "window.location.href = 'showup.php';" in response.content.decode('utf8'):
-            return CommonResponse.success(msg='低保签到成功！')
+            result = self.send_request(
+                my_site=my_site,
+                url=url,
+            )
+            title = self.parse(result, '//h2[contains(text(),"签到区")]/following-sibling::table//h3/text()')
+            content = self.parse(
+                result,
+                '//td/span[@class="nowrap"]/a[contains(@href,"userdetails.php?id={}")]/parent::span/following-sibling::b[2]/text()'.format(
+                    my_site.user_id
+                )
+            )
+            msg = ''.join(title) + '，奖励UCoin{}'.format(''.join(content))
+            return CommonResponse.success(msg=msg)
         else:
             return CommonResponse.error(msg='签到失败！')
 
@@ -833,7 +845,7 @@ class PtSpider:
                 return CommonResponse.error(msg='请确认签到是否成功？？网页返回码：' + str(res.status_code))
         except Exception as e:
             self.send_text(site.name + '签到失败！原因：' + str(e))
-            raise
+            # raise
             return CommonResponse.error(msg='签到失败！' + str(e))
 
     @staticmethod
