@@ -24,6 +24,7 @@ scheduler.add_jobstore(DjangoJobStore(), 'default')
 
 pool = ThreadPoolExecutor(2)
 pt_spider = PtSpider()
+logger = logging.getLogger('ptools')
 # Create your views here.
 try:
 
@@ -38,11 +39,13 @@ try:
             '自动签到', end - start,
             time.strftime("%Y-%m-%d %H:%M:%S")
         )
+
         if message_list == 0:
-            print('已经全部签到咯！！')
+            logger.info('已经全部签到咯！！')
         else:
+            logger.info(message_list + consuming)
             pt_spider.send_text(message_list + consuming)
-        print('{} 任务运行成功！完成时间：{}'.format('自动签到', time.strftime("%Y-%m-%d %H:%M:%S")))
+        logger.info('{} 任务运行成功！完成时间：{}'.format('自动签到', time.strftime("%Y-%m-%d %H:%M:%S")))
 
 
     def auto_get_status():
@@ -58,7 +61,7 @@ try:
         for my_site, result in zip(site_list, results):
             if result.code == StatusCodeEnum.OK.code:
                 res = pt_spider.parse_status_html(my_site, result.data)
-                print('自动更新个人数据', my_site.site, res)
+                logger.info('自动更新个人数据: {}, {}'.format(my_site.site, res))
                 if res.code == StatusCodeEnum.OK.code:
                     status = res.data[0]
                     message = message_template.format(
@@ -74,26 +77,27 @@ try:
                         my_site.invitation,
                         my_site.my_hr
                     )
-                    print('组装Message：', message)
+                    logger.info('组装Message：{}'.format(message))
                     message_list += ('> ' + my_site.site.name + ' 信息更新成功！' + message + '  \n')
                     # pt_spider.send_text(my_site.site.name + ' 信息更新成功！' + message)
-                    logging.info(my_site.site.name + '信息更新成功！' + message)
+                    logger.info(my_site.site.name + '信息更新成功！' + message)
                 else:
                     print(res)
                     message = '> <font color="red">' + my_site.site.name + ' 信息更新失败！原因：' + res.msg + '</font>  \n'
                     message_list = message + message_list
                     # pt_spider.send_text(my_site.site.name + ' 信息更新失败！原因：' + str(res[0]))
-                    logging.error(my_site.site.name + '信息更新失败！原因：' + res.msg)
+                    logger.warning(my_site.site.name + '信息更新失败！原因：' + res.msg)
             else:
                 # pt_spider.send_text(my_site.site.name + ' 信息更新失败！原因：' + str(result[1]))
                 message = '> <font color="red">' + my_site.site.name + ' 信息更新失败！原因：' + result.msg + '</font>  \n'
                 message_list = message + message_list
-                logging.error(my_site.site.name + '信息更新失败！原因：' + result.msg)
+                logger.warning(my_site.site.name + '信息更新失败！原因：' + result.msg)
         end = time.time()
         consuming = '> <font color="blue">{} 任务运行成功！耗时：{} 完成时间：{}  </font>  \n'.format(
             '自动更新个人数据', end - start,
             time.strftime("%Y-%m-%d %H:%M:%S")
         )
+        logger.info(message_list + consuming)
         pt_spider.send_text(text=message_list + consuming)
 
 
@@ -107,32 +111,33 @@ try:
         site_list = [my_site for my_site in queryset if my_site.site.get_torrent_support]
         results = pool.map(pt_spider.send_torrent_info_request, site_list)
         for my_site, result in zip(site_list, results):
-            print('获取种子：', my_site.site, result)
+            logger.info('获取种子：{}{}'.format(my_site.site.name, result))
             # print(result is tuple[int])
             if result.code == StatusCodeEnum.OK.code:
                 res = pt_spider.get_torrent_info_list(my_site, result.data)
                 # 通知推送
                 if res.code == StatusCodeEnum.OK.code:
                     message = '> {} 种子抓取成功！新增种子{}条，更新种子{}条!  \n'.format(my_site.site.name, res.data[0],
-                                                                                        res.data[1])
+                                                                        res.data[1])
                     message_list += message
                 else:
                     message = '> <font color="red">' + my_site.site.name + '抓取种子信息失败！原因：' + res.msg + '</font>  \n'
                     message_list = message + message_list
                 # 日志
-                logging.info(
+                logger.info(
                     '{} 种子抓取成功！新增种子{}条，更新种子{}条! '.format(my_site.site.name, res.data[0], res.data[
                         1]) if res.code == StatusCodeEnum.OK.code else my_site.site.name + '抓取种子信息失败！原因：' + res.msg)
             else:
                 # pt_spider.send_text(my_site.site.name + ' 抓取种子信息失败！原因：' + result[0])
                 message = '> <font color="red">' + my_site.site.name + ' 抓取种子信息失败！原因：' + result.msg + '</font>  \n'
                 message_list = message + message_list
-                logging.error(my_site.site.name + '抓取种子信息失败！原因：' + result.msg)
+                logger.info(my_site.site.name + '抓取种子信息失败！原因：' + result.msg)
         end = time.time()
         consuming = '> {} 任务运行成功！耗时：{} 当前时间：{}  \n'.format(
             '拉取最新种子',
             end - start,
             time.strftime("%Y-%m-%d %H:%M:%S"))
+        logger.info(message_list + consuming)
         pt_spider.send_text(message_list + consuming)
 
 
@@ -187,15 +192,13 @@ try:
 
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.bind(("127.0.0.1", 44444))
+    scheduler.start()
+    logger.info('启动后台任务')
+    logger.info(scheduler.get_jobs())
 except socket.error:
-    print("!!!scheduler started, DO NOTHING")
+    logger.info("!!!scheduler started, DO NOTHING")
 except Exception as e:
-    print('1111', e)
-finally:
-    try:
-        scheduler.start()
-        # print('启动后台任务', scheduler.get_jobs())
-    except Exception as e:
-        print('启动后台任务启动任务失败！', e)
-        # 有错误就停止定时器
-        # scheduler.shutdown()
+    logger.info(e)
+    logger.info('启动后台任务启动任务失败！')
+    # 有错误就停止定时器
+    # scheduler.shutdown()

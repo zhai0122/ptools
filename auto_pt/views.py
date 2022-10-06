@@ -1,4 +1,5 @@
 import json
+import logging
 import socket
 import subprocess
 import time
@@ -13,6 +14,8 @@ from django.shortcuts import render
 from pt_site.models import SiteStatus, MySite, Site, Downloader, TorrentInfo
 from pt_site.views import scheduler, pt_spider
 from ptools.base import CommonResponse, StatusCodeEnum, DownloaderCategory
+
+logger = logging.getLogger('ptools')
 
 
 def add_task(request):
@@ -95,7 +98,7 @@ def get_downloader(request):
 
 def get_downloading(request):
     id = request.GET.get('id')
-    print(id)
+    logger.info('当前下载器id：{}'.format(id))
     downloader = Downloader.objects.filter(id=id).first()
     tracker_list = Site.objects.all().values('id', 'name', 'tracker')
     qb_client = qbittorrentapi.Client(
@@ -160,14 +163,15 @@ def get_downloading(request):
             torrent['dlspeed'] = '' if torrent['dlspeed'] == 0 else torrent['dlspeed']
             torrent['hash'] = index
             torrents.append(torrent)
-        print(len(torrents))
+        print()
+        logger.info('当前下载器共有种子：{}个'.format(len(torrents)))
         main_data['torrents'] = torrents
         # print(tracker_filters)
         main_data['tracker_list'] = list(tracker_list)
         # return JsonResponse(CommonResponse.success(data=torrents).to_dict(), safe=False)
         return JsonResponse(CommonResponse.success(data=main_data).to_dict(), safe=False)
     except Exception as e:
-        print(e)
+        logger.warning(e)
         # raise
         return JsonResponse(CommonResponse.error(
             msg='连接下载器出错咯！'
@@ -181,7 +185,7 @@ def control_torrent(request):
     category = request.POST.get('category')
     enable = request.POST.get('enable')
     downloader_id = request.POST.get('downloader_id')
-    print(request.POST)
+    logger.info(request.POST)
     # print(command, type(ids), downloader_id)
     downloader = Downloader.objects.filter(id=downloader_id).first()
     qb_client = qbittorrentapi.Client(
@@ -196,7 +200,7 @@ def control_torrent(request):
         # qb_client.torrents.resume()
         # 根据指令字符串定位函数
         command_exec = getattr(qb_client.torrents, command)
-        print(command_exec)
+        logger.info(command_exec)
         command_exec(
             torrent_hashes=ids.split(','),
             category=category,
@@ -205,7 +209,7 @@ def control_torrent(request):
         # 延缓2秒等待操作生效
         time.sleep(2)
     except Exception as e:
-        print(e)
+        logger.warning(e)
     return JsonResponse(CommonResponse.success(data={
         'ids': ids.split(','),
         'command': command,
@@ -230,7 +234,7 @@ def import_from_ptpp(request):
                 # print(data)
                 res = pt_spider.get_uid_and_passkey(data)
                 msg = res.msg
-                print(msg)
+                logger.info(msg)
                 if res.code == StatusCodeEnum.OK.code:
                     message_list.append({
                         'msg': msg,
@@ -249,6 +253,7 @@ def import_from_ptpp(request):
                     'tag': 'warning'
                 })
                 # raise
+            logger.info(message_list)
         return JsonResponse(CommonResponse.success(data={
             'messages': message_list
         }).to_dict(), safe=False)
@@ -338,16 +343,16 @@ def update_page(request):
 
 def do_update(request):
     try:
-        print('开始拉取更新')
+        logger.info('开始拉取更新')
         # print(os.system('cat ./update.sh'))
         subprocess.Popen('chmod +x ./update.sh', shell=True)
         p = subprocess.Popen('./update.sh', shell=True, stdout=subprocess.PIPE)
         p.wait()
         out = p.stdout.readlines()
         for i in out:
-            print(i.decode('utf8'))
+            logger.info(i.decode('utf8'))
         # 更新Xpath规则
-        print('拉取更新完毕，开始更新Xpath规则')
+        logger.info('拉取更新完毕，开始更新Xpath规则')
         # 字符串型的数据量转化为int型
         # status_list = SiteStatus.objects.all()
         # for status in status_list:
@@ -366,15 +371,15 @@ def do_update(request):
             # print(data[2])
             # print(data[0].get('url'))
             # xpath_update = []
-            print('更新规则中，返回结果为True为新建，为False为更新，其他是错误了')
+            logger.info('更新规则中，返回结果为True为新建，为False为更新，其他是错误了')
             for site_rules in data:
                 if site_rules.get('pk'):
                     del site_rules['pk']
                 if site_rules.get('id'):
                     del site_rules['id']
                 site_obj = Site.objects.update_or_create(defaults=site_rules, url=site_rules.get('url'))
-                print(site_obj[0].name + (' 规则新增成功！' if site_obj[1] else '规则更新成功！'))
-        print('更新完毕，开始重启')
+                logger.info(site_obj[0].name + (' 规则新增成功！' if site_obj[1] else '规则更新成功！'))
+        logger.info('更新完毕，开始重启')
         cid = request.GET.get('cid')
         flag = (cid == '')
         if not flag:
@@ -402,7 +407,7 @@ def do_restart(request):
         # container = client.containers.get(cid)
         # 重启容器
         # client.api.restart(cid)
-        print('重启中')
+        logger.info('重启中')
         reboot = subprocess.Popen('docker restart {}'.format(cid), shell=True, stdout=subprocess.PIPE, )
         # out = reboot.stdout.readline().decode('utf8')
         # print(out)
