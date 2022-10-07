@@ -65,16 +65,27 @@
 
 <div id="app">
     <div style="text-align: center">
-        <el-button-group style="margin: auto;">
-            <el-button size="small"
-                       type="warning" plain
-                       v-for="downloader in downloaders"
-                       icon="el-icon-s-promotion"
-                       @click="handleButtonClick(downloader.id)">
-                <span v-text="downloader.name"></span>
-            </el-button>
-
-        </el-button-group>
+        {#        <el-button-group style="margin: auto;">#}
+        {#            <el-button size="small"#}
+        {#                       type="warning" plain#}
+        {#                       v-for="downloader in downloaders"#}
+        {#                       icon="el-icon-s-promotion"#}
+        {#                       @click="handleButtonClick(downloader.id)">#}
+        {#                <span v-text="downloader.name"></span>#}
+        {#            </el-button>#}
+        {##}
+        {#        </el-button-group>#}
+        <el-tabs type="card" @tab-click="handleButtonClick">
+            <el-tab-pane v-for="downloader in downloaders"
+                         :label="downloader.name"
+                         icon="el-icon-s-promotion"
+                         :name="downloader.id">
+                {#                <span v-text="downloader.name"></span>#}
+            </el-tab-pane>
+            {#            <el-tab-pane label="配置管理" name="second">配置管理</el-tab-pane>#}
+            {#            <el-tab-pane label="角色管理" name="third">角色管理</el-tab-pane>#}
+            {#            <el-tab-pane label="定时任务补偿" name="fourth">定时任务补偿</el-tab-pane>#}
+        </el-tabs>
     </div>
     <div>
         <el-dialog title="删除任务" :visible.sync="deleteForm" min-width="180" width="30%" center>
@@ -110,7 +121,6 @@
             <el-button circle size="mini" type="danger" icon="el-icon-delete"></el-button>
             <el-button circle size="mini" type="success" icon="el-icon-video-play"></el-button>
             <el-button circle size="mini" type="warning" icon="el-icon-video-pause"></el-button>
-
 
             <el-dropdown split-button type="primary" size="mini" @command="handleSelected">
                 操作
@@ -188,6 +198,7 @@
                           :formatter="handleTracker"
                           :filter-method="filterTrackerMethod"
                           :filter-multiple="false"
+                          :filter-change="handlerTrackerFilter"
                           min-width="110"
                           title="Tracker"></vxe-table-column>
         <vxe-table-column field="state" sortable width="85" :formatter="handleState" column-key="state"
@@ -439,20 +450,8 @@
         },
         mounted() {
             this.loading = true
-            this.get_downloader()
-
             {#console.log("获取下载器数量：", this.downloaders.length)#}
             {#this.get_downloading(this.downloaders[0].id)#}
-            this.timer = setInterval(() => {
-                let ff = this.$refs.dataTable.getCheckedFilters()
-                console.log(ff)
-                {#let filters = this.$refs.dataTable.isFilter()#}
-                {#let cls = this.$refs.dataTable.getCheckedFilters()#}
-                {#console.log('filters', filters)#}
-                {#console.log('cls', cls)#}
-                this.get_downloading(this.downloaders[0].id)
-            }, 1500)
-
         },
         updated() {
             // 十分钟后停止刷新
@@ -481,6 +480,7 @@
                 console.log($table)
                 $table.connect(this.$refs.xToolbar)
             })
+            this.get_downloaders()
         },
         watch: {},
         methods: {
@@ -504,36 +504,81 @@
                 }, 1500)
             },
             handleButtonClick(id) {
-                {#const loading = this.$loading({#}
-                {#    lock: true,                    //lock的修改符--默认是false#}
-                {#    text: 'Loading',                    //显示在加载图标下方的加载文案#}
-                {#    spinner: 'el-icon-loading',                    //自定义加载图标类名#}
-                {#    background: 'rgba(0, 0, 0, 0.7)',                    //遮罩层颜色#}
-                {#    target: document.querySelector('#table')                   //loadin覆盖的dom元素节点#}
-                //});
+                console.log(id.name)
+                {#handleButtonClick({value, $event}) {#}
                 this.loading = true
+                this.downloader_id = id.name
                 clearInterval(this.timer)
                 this.timer = null
                 this.mainData = []
-                this.get_downloading(id)
-                this.refresh = false
-                {#this.loading = false#}
-                {#loading.close()#}
-                {#this.loading = false#}
+                this.get_downloader_categories(this.downloader_id)
                 this.timer = setInterval(() => {
-                    this.get_downloading(id)
+                    this.get_downloading(this.downloader_id)
                 }, 1500)
+                this.refresh = false
             },
-            get_downloader() {
+            get_downloaders() {
                 axios.get(
-                    "{% url "get_downloader" %}"
+                    "{% url "get_downloaders" %}"
                 ).then(res => {
                     this.loading = true
                     if (res.data.code === 0) {
                         console.log('获取下载器列表成功', res.data.data)
                         this.downloaders = res.data.data
                         this.downloader_id = this.downloaders[0].id
-                        this.get_downloading(this.downloader_id)
+                        this.get_downloader_categories(this.downloader_id)
+                        this.timer = setInterval(() => {
+                            this.get_downloading(this.downloader_id)
+                        }, 1500)
+                    } else {
+                        this.$message({
+                            type: 'warning', message: '获取下载器列表失败！'
+                        });
+                    }
+                }).catch(res => {
+                    console.log('获取下载器列表失败', res)
+                    this.$message({type: 'warning', message: '获取下载器列表失败！' + res});
+                })
+            },
+            get_downloader_categories(downloader_id) {
+                axios.get(
+                    "{% url "get_downloader_categories" %}",
+                    {
+                        params: {
+                            id: downloader_id
+                        }
+                    }
+                ).then(res => {
+                    this.loading = true
+                    if (res.data.code === 0) {
+                        console.log('获取下载器分类列表成功', res.data.data)
+                        this.tracker_list = res.data.data.tracker_list;
+                        const trackerFilter = [{label: '无', value: ''}]
+                        this.tracker_list.forEach((value, index, array) => {
+                            {#console.log(value, index)#}
+                            trackerFilter.push({'label': value.name, 'value': value.tracker})
+                        })
+                        let categoryFilters = [{label: '未分类', value: ''}]
+                        let categories = res.data.data.categories
+                        categories.forEach((value, index, array) => {
+                            categoryFilters.push({'label': value, 'value': value})
+                            this.categories.push({'title': value, 'value': value})
+                        })
+                        // 异步加载筛选数据
+                        const $table = this.$refs.dataTable
+                        {#console.log($table)#}
+                        if ($table) {
+                            const categoryColumn = $table.getColumnByField('category')
+                            {#console.log(nameColumn)#}
+                            if (categoryColumn) {
+                                $table.setFilter(categoryColumn, categoryFilters)
+                            }
+                            const trackerColumn = $table.getColumnByField('tracker')
+                            {#console.log(trackerColumn)#}
+                            if (trackerColumn) {
+                                $table.setFilter(trackerColumn, trackerFilter)
+                            }
+                        }
                     } else {
                         this.$message({
                             type: 'warning', message: '获取下载器列表失败！'
@@ -555,36 +600,6 @@
                 ).then(res => {
                     if (res.data.code === 0) {
                         this.mainData = res.data.data
-                        this.tracker_list = this.mainData.tracker_list;
-                        const trackerFilter = [{label: '无', value: ''}]
-                        this.tracker_list.forEach((value, index, array) => {
-                            {#console.log(value, index)#}
-                            trackerFilter.push({'label': value.name, 'value': value.tracker})
-                        })
-                        {#console.log(trackerFilter)#}
-                        // 任务状态过滤器数据
-                        this.categoryFilters = [{label: '未分类', value: ''}]
-                        this.categories = []
-                        for (let x in res.data.data.categories) {
-                            {#console.log(download_state[x])#}
-                            this.categoryFilters.push({'label': x, 'value': x})
-                            this.categories.push({'title': x, 'value': x})
-                        }
-                        // 异步加载筛选数据
-                        const $table = this.$refs.dataTable
-                        {#console.log($table)#}
-                        if ($table) {
-                            const categoryColumn = $table.getColumnByField('category')
-                            {#console.log(nameColumn)#}
-                            if (categoryColumn) {
-                                $table.setFilter(categoryColumn, this.categoryFilters)
-                            }
-                            const trackerColumn = $table.getColumnByField('tracker')
-                            {#console.log(trackerColumn)#}
-                            if (trackerColumn) {
-                                $table.setFilter(trackerColumn, trackerFilter)
-                            }
-                        }
                         {#console.log(res.data.data.tracker_filters)#}
                         this.server_state = res.data.data.server_state
                         this.loading = false
@@ -601,6 +616,9 @@
                     }
                 })
 
+            },
+            handlerTrackerFilter({column, property, values, datas, filterList, $event}) {
+                console.log(column, property, values, datas, filterList, $event)
             },
             handleSize({row, column, cellValue, index}) {
                 return this.renderSize(cellValue)

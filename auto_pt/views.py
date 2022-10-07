@@ -90,18 +90,17 @@ def page_downloading(request):
     return render(request, 'auto_pt/downloading.html')
 
 
-def get_downloader(request):
+def get_downloaders(request):
     downloader_list = Downloader.objects.filter(category=DownloaderCategory.qBittorrent).values('id', 'name', 'host')
     if len(downloader_list) <= 0:
         return JsonResponse(CommonResponse.error(msg='请先添加下载器！目前仅支持qBittorrent！').to_dict(), safe=False)
     return JsonResponse(CommonResponse.success(data=list(downloader_list)).to_dict(), safe=False)
 
 
-def get_downloading(request):
-    id = request.GET.get('id')
+def get_downloader(id):
+    """根据id获取下载实例"""
     logger.info('当前下载器id：{}'.format(id))
     downloader = Downloader.objects.filter(id=id).first()
-    tracker_list = Site.objects.all().values('id', 'name', 'tracker')
     qb_client = qbittorrentapi.Client(
         host=downloader.host,
         port=downloader.port,
@@ -109,18 +108,53 @@ def get_downloading(request):
         password=downloader.password,
         SIMPLE_RESPONSES=True
     )
+    return qb_client
+
+
+def get_trackers(request):
+    """从已支持的站点获取tracker关键字列表"""
+    tracker_list = Site.objects.all().values('id', 'name', 'tracker')
+    # print(tracker_filters)
+    return JsonResponse(CommonResponse.success(data={
+        'tracker_list': list(tracker_list)
+    }).to_dict(), safe=False)
+
+
+def get_downloader_categories(request):
+    id = request.GET.get('id')
+    if not id:
+        id = Downloader.objects.all().first().id
+    qb_client = get_downloader(id)
+    try:
+        qb_client.auth_log_in()
+        categories = [index for index, value in qb_client.torrents_categories().items()]
+        logger.info('下载器{}分类：'.format(id))
+        logger.info(categories)
+        tracker_list = Site.objects.all().values('id', 'name', 'tracker')
+        logger.info('当前支持的筛选tracker的站点：')
+        logger.info(tracker_list)
+        return JsonResponse(CommonResponse.success(data={
+            'categories': categories,
+            'tracker_list': list(tracker_list)
+        }).to_dict(), safe=False)
+    except Exception as e:
+        logger.warning(e)
+        # raise
+        return JsonResponse(CommonResponse.error(
+            msg='连接下载器出错咯！'
+        ).to_dict(), safe=False)
+
+
+def get_downloading(request):
+    id = request.GET.get('id')
+    logger.info('当前下载器id：{}'.format(id))
+    qb_client = get_downloader(id)
     try:
         qb_client.auth_log_in()
         # transfer = qb_client.transfer_info()
         # torrents = qb_client.torrents_info()
         main_data = qb_client.sync_maindata()
         torrent_list = main_data.get('torrents')
-        categories = main_data.get('categories')
-        # print(main_data.get('server_state'))
-        # print(transfer)
-        # print(categories)
-
-        # print(json.dumps(main_data))
         torrents = []
         for index, torrent in torrent_list.items():
             # print(type(torrent))
@@ -164,15 +198,11 @@ def get_downloading(request):
             torrent['dlspeed'] = '' if torrent['dlspeed'] == 0 else torrent['dlspeed']
             torrent['hash'] = index
             torrents.append(torrent)
-        print()
         logger.info('当前下载器共有种子：{}个'.format(len(torrents)))
         main_data['torrents'] = torrents
-        # print(tracker_filters)
-        main_data['tracker_list'] = list(tracker_list)
-        # return JsonResponse(CommonResponse.success(data=torrents).to_dict(), safe=False)
         return JsonResponse(CommonResponse.success(data=main_data).to_dict(), safe=False)
     except Exception as e:
-        logger.warning(e)
+        logger.error(e)
         # raise
         return JsonResponse(CommonResponse.error(
             msg='连接下载器出错咯！'
