@@ -314,6 +314,9 @@ def update_page(request):
         # 获取docker对象
         client = docker.from_env()
         # 从内部获取容器id
+        cid = ''
+        delta = 0
+        restart = 'false'
         for c in client.api.containers():
             if 'ngfchl/ptools' in c.get('Image'):
                 cid = c.get('Id')
@@ -379,6 +382,8 @@ def do_update(request):
                     del site_rules['id']
                 site_obj = Site.objects.update_or_create(defaults=site_rules, url=site_rules.get('url'))
                 logger.info(site_obj[0].name + (' 规则新增成功！' if site_obj[1] else '规则更新成功！'))
+        logger.info('更新完毕')
+        """
         logger.info('更新完毕，开始重启')
         cid = request.GET.get('cid')
         flag = (cid == '')
@@ -389,6 +394,10 @@ def do_update(request):
         # StartedAt = client.api.inspect_container(cid).get('State').get('StartedAt')
         return JsonResponse(data=CommonResponse.error(
             msg='更新成功，重启指令发送成功，容器重启中 ...' if not flag else '更新成功，未映射docker路径请手动重启容器 ...'
+        ).to_dict(), safe=False)
+        """
+        return JsonResponse(data=CommonResponse.error(
+            msg='更新成功，刷新页面后享用！'
         ).to_dict(), safe=False)
     except Exception as e:
         # raise

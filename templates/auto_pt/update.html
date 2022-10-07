@@ -9,33 +9,33 @@
 <div id="app">
     <el-card class="box-card">
         <div slot="header" class="clearfix">
-            <el-popover
-                    placement="top-start"
-                    title="友情提示"
-                    width="300"
-                    trigger="hover"
-                    content="更新之前会自动备份数据库，更新完毕后会自动重启容器！">
-                <el-button slot="reference" type="danger" @click="do_update"
-                           v-if="update && restart"
-                >重启更新
-                </el-button>
-            </el-popover>
+            {#            <el-popover#}
+            {#                    placement="top-start"#}
+            {#                    title="友情提示"#}
+            {#                    width="300"#}
+            {#                    trigger="hover"#}
+            {#                    content="更新之前会自动备份数据库，更新完毕后会自动重启容器！">#}
+            {#                <el-button slot="reference" type="danger" @click="do_update"#}
+            {#                           v-if="update && restart"#}
+            {#                >重启更新#}
+            {#                </el-button>#}
+            {#            </el-popover>#}
             <el-popover
                     placement="top-start"
                     title="友情提示"
                     width="300"
                     trigger="hover"
                     content="没啥特殊功能，就是重启下容器！">
-                <el-button slot="reference" type="danger" @click="do_restart" v-if="!update && restart">重启</el-button>
+                <el-button slot="reference" type="danger" @click="do_restart" v-if="restart">重启</el-button>
             </el-popover>
             <el-popover
                     placement="top-start"
                     title="友情提示"
                     width="300"
                     trigger="hover"
-                    content="未映射docker路径，更新完毕后请手动重启容器！">
+                    content="如果更新后更新功能未生效，请重启容器！！">
                 <el-button slot="reference" type="danger" @click="do_update"
-                           v-if="update && !restart">更新
+                           v-if="update">更新
                 </el-button>
             </el-popover>
             <el-popover
@@ -142,12 +142,14 @@
         watch: {
             time: function (newValue) {
                 if (newValue == 0) {
-                    this.$router.push("{% url "update_page" %}")
+                    location.reload()
+                    {#this.$route.replace("{% url "update_page" %}")#}
                 }
             }
         },
         methods: {
             timeDown() {
+                console.log(this.time)
                 this.time--
             },
             do_restart() {
@@ -184,7 +186,7 @@
             },
 
             do_update() {
-                this.$confirm('此操作会拉取代码并更新软件,并重启容器，是否继续?', '提示', {
+                this.$confirm('此操作会拉取代码并更新软件，是否继续?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
