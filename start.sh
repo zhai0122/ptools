@@ -37,4 +37,4 @@ fi
 echo "写入U2 hosts"
 echo 172.64.153.252 u2.dmhy.org >>/etc/hosts
 echo "启动服务"
-python manage.py runserver 0.0.0.0:$DJANGO_WEB_PORT >>/var/www/html/ptools/db/$(date "+%Y%m%d").log 2>&1
+python manage.py runserver 0.0.0.0:$DJANGO_WEB_PORT
