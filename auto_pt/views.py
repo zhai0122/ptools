@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 import socket
 import subprocess
 import time
@@ -303,9 +304,18 @@ def get_update_logs():
     # 拉取仓库更新记录元数据
     repo.remote().update()
     # 获取本地仓库commits更新记录
-    commits = list(repo.iter_commits('master', max_count=10))
+    branch = 'master'
+    if os.getenv('DEV'):
+        branch = os.getenv('DEV')
+    logger.info('当前分支')
+    logger.info(branch)
+    commits = list(repo.iter_commits(branch, max_count=10))
+    logger.info('本地记录')
+    logger.info(commits)
     # 获取远程仓库commits记录
-    remote_commits = list(repo.iter_commits("origin/master", max_count=10))
+    remote_commits = list(repo.iter_commits("origin/" + branch, max_count=10))
+    logger.info('远程仓库更新记录')
+    logger.info(remote_commits)
     return commits[0].hexsha == remote_commits[0].hexsha
 
 
