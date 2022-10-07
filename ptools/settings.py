@@ -35,6 +35,9 @@ SECRET_KEY = 'django-insecure-6wrh^t$@gbb^s^=79@%cv=%yhq6gl^kane#g@-n-*n6+s1lo2f
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+CORS_ORIGIN_ALLOW_ALL = True
+if os.environ.get('HTTPS_DOMAINS'):
+    CSRF_TRUSTED_ORIGINS = [os.environ.get('HTTPS_DOMAINS'), ]
 
 # Application definition
 
