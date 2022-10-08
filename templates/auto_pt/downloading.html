@@ -30,7 +30,7 @@
 
         .my-copy-item {
             font-weight: 700;
-            font-style: oblique;
+            font-style: inherit;
         }
 
         .color-red {
@@ -58,6 +58,10 @@
             text-align: center;
         }
 
+        .el-tabs__item.is-active {
+            background-color: #da8342;
+            color: #fff;
+        }
 
     </style>
 </head>
@@ -75,7 +79,7 @@
         {#            </el-button>#}
         {##}
         {#        </el-button-group>#}
-        <el-tabs type="card" @tab-click="handleButtonClick">
+        <el-tabs ref="downloaders" type="card" @tab-click="handleButtonClick">
             <el-tab-pane v-for="downloader in downloaders"
                          :label="downloader.name"
                          icon="el-icon-s-promotion"
@@ -114,7 +118,7 @@
         </el-dialog>
     </div>
 
-    <vxe-toolbar ref="xToolbar" size="mini" custom>
+    <vxe-toolbar ref="xToolbar" size="mini" custom style="margin-top: -15px;">
         <template #buttons>
             <el-button circle size="mini" type="primary" icon="el-icon-link"></el-button>
             <el-button circle size="mini" type="primary" icon="el-icon-plus"></el-button>
@@ -122,31 +126,31 @@
             <el-button circle size="mini" type="success" icon="el-icon-video-play"></el-button>
             <el-button circle size="mini" type="warning" icon="el-icon-video-pause"></el-button>
 
-            <el-dropdown split-button type="primary" size="mini" @command="handleSelected">
-                操作
-                <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item command="resume">继续</el-dropdown-item>
-                    <el-dropdown-item command="set_force_start">强制继续</el-dropdown-item>
-                    <el-dropdown-item command="pause">暂停</el-dropdown-item>
-                    <el-dropdown-item command="set_auto_management">自动管理</el-dropdown-item>
-                    <el-dropdown-item command="set_super_seeding">超级做种</el-dropdown-item>
-                    <el-dropdown-item command="recheck">重新校验</el-dropdown-item>
-                    <el-dropdown-item command="reannounce">重新汇报</el-dropdown-item>
-                </el-dropdown-menu>
-            </el-dropdown>
-            <el-dropdown split-button type="success" size="mini">
-                操作
-                <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item>
-                        <el-button size="mini" type="danger" @click="deleteForm = true">删除任务</el-button>
-                    </el-dropdown-item>
-                    <el-dropdown-item @click="setCategory">
-                        <el-button size="mini" type="primary" @click="categoryForm = true">修改分类</el-button>
-                    </el-dropdown-item>
-                    {#                <el-dropdown-item @click="limitSpeed">限速</el-dropdown-item>#}
-                    {#                <el-dropdown-item @click="setLocation">更改路径</el-dropdown-item>#}
-                </el-dropdown-menu>
-            </el-dropdown>
+            {#            <el-dropdown split-button type="primary" size="mini" @command="handleSelected">#}
+            {#                操作#}
+            {#                <el-dropdown-menu slot="dropdown">#}
+            {#                    <el-dropdown-item command="resume">继续</el-dropdown-item>#}
+            {#                    <el-dropdown-item command="set_force_start">强制继续</el-dropdown-item>#}
+            {#                    <el-dropdown-item command="pause">暂停</el-dropdown-item>#}
+            {#                    <el-dropdown-item command="set_auto_management">自动管理</el-dropdown-item>#}
+            {#                    <el-dropdown-item command="set_super_seeding">超级做种</el-dropdown-item>#}
+            {#                    <el-dropdown-item command="recheck">重新校验</el-dropdown-item>#}
+            {#                    <el-dropdown-item command="reannounce">重新汇报</el-dropdown-item>#}
+            {#                </el-dropdown-menu>#}
+            {#            </el-dropdown>#}
+            {#            <el-dropdown split-button type="success" size="mini">#}
+            {#                操作#}
+            {#                <el-dropdown-menu slot="dropdown">#}
+            {#                    <el-dropdown-item>#}
+            {#                        <el-button size="mini" type="danger" @click="deleteForm = true">删除任务</el-button>#}
+            {#                    </el-dropdown-item>#}
+            {#                    <el-dropdown-item @click="setCategory">#}
+            {#                        <el-button size="mini" type="primary" @click="categoryForm = true">修改分类</el-button>#}
+            {#                    </el-dropdown-item>#}
+            {#                <el-dropdown-item @click="limitSpeed">限速</el-dropdown-item>#}
+            {#                <el-dropdown-item @click="setLocation">更改路径</el-dropdown-item>#}
+            {#                </el-dropdown-menu>#}
+            {#            </el-dropdown>#}
         </template>
         <template #tools>
             <el-button size="mini" type="success" v-if="refresh" icon="el-icon-refresh" @click="startRefresh">继续刷新
@@ -374,6 +378,7 @@
                 }
             ],
             categories: [],
+            menuCategories: [],
             category: '',
             server_state: {},
             delete_files: false,
@@ -389,22 +394,24 @@
                         [
                             {
                                 code: 'resume',
-                                name: '继续'
+                                name: '继续',
+                                prefixIcon: 'vxe-icon-square-caret-right'
                             },
                             {
                                 code: 'set_force_start',
-                                name: '强制继续'
+                                name: '强制继续',
+                                prefixIcon: 'vxe-icon-square-caret-right-fill'
                             },
                             {
-                                code: 'set_force_start',
-                                name: '',
-
-                                className: 'my-copy-item'
+                                code: 'pause',
+                                name: '暂停',
+                                prefixIcon: 'vxe-icon-square-minus'
                             }
                         ],
                         [
                             {
-                                code: 'delete',
+                                {#code: 'delete',#}
+                                code: 'deleteForm',
                                 name: '删除',
                                 prefixIcon: 'vxe-icon-delete color-red'
                             },
@@ -412,43 +419,72 @@
                         [
                             {
                                 name: '分类',
+                                prefixIcon: 'vxe-icon-square-square',
                                 children: [
-                                    {code: 'handleSelected', name: '添加'},
-                                    {code: 'handleSelected', name: '重置'}
+                                    {code: 'create_category', name: '添加', prefixIcon: 'vxe-icon-square-plus'},
+                                    {code: 'set_category', name: '重置', prefixIcon: 'vxe-icon-square-close'},
+                                    {code: 'categoryForm', name: '修改分类', prefixIcon: 'vxe-icon-edit'},
                                 ]
                             },
-                            {
-                                name: '标签',
-                                children: [
-                                    {code: '', name: '添加'},
-                                    {code: '', name: '删除全部'}
-                                ]
-                            },
+                            {#{#}
+                            {#    name: '标签',#}
+                            {#    children: [#}
+                            {#        {code: 'create_tags', name: '添加'},#}
+                            {#        {code: 'remove_tags', name: '删除全部'}#}
+                            {#    ]#}
+                            //},
                             {
                                 code: 'set_auto_management',
                                 name: '自动管理',
+                                prefixIcon: 'vxe-icon-platform'
                             },
                         ],
                         [
                             {
                                 code: 'set_super_seeding',
                                 name: '超级做种',
+                                prefixIcon: 'vxe-icon-cloud-download'
                             }
                         ],
+
                         [
-                            {code: 'recheck', name: '重新校验'},
-                            {code: 'reannounce', name: '重新汇报'},
+                            {code: 'recheck', name: '重新校验', prefixIcon: 'vxe-icon-folder'},
+                            {code: 'reannounce', name: '重新汇报', prefixIcon: 'vxe-icon-comment'},
                             {
                                 code: 'copy',
                                 name: '复制',
                                 prefixIcon: 'vxe-icon-copy',
                                 children: [
-                                    {code: 'copy', name: '名称'},
+                                    {code: 'copy', name: '名称', prefixIcon: 'vxe-icon-table'},
                                     {code: 'copy', name: 'HASH', prefixIcon: 'vxe-icon-sort-alpha-asc'},
                                     {code: 'copy', name: '链接', prefixIcon: 'vxe-icon-sort-alpha-desc'}
                                 ]
                             }
-                        ]
+                        ],
+                        [
+                            {
+                                code: 'sort',
+                                name: '排序',
+                                prefixIcon: 'vxe-icon-sort',
+                                children: [
+                                    {code: 'clearSort', name: '清除排序', prefixIcon: 'vxe-icon-undo'},
+                                    {code: 'sortAsc', name: '升序', prefixIcon: 'vxe-icon-sort-alpha-asc'},
+                                    {code: 'sortDesc', name: '倒序', prefixIcon: 'vxe-icon-sort-alpha-desc'}
+                                ]
+                            },
+                            {
+                                name: '筛选',
+                                prefixIcon: 'vxe-icon-funnel',
+                                children: [
+                                    {code: 'clearFilter', name: '清除筛选', prefixIcon: 'vxe-icon-funnel-clear'},
+                                    {
+                                        code: 'filterSelect',
+                                        name: '按所选单元格的值筛选',
+                                        prefixIcon: 'vxe-icon-square-checked'
+                                    }
+                                ]
+                            }
+                        ],
                     ]
                 },
                 footer: {
@@ -457,7 +493,8 @@
                         [],
                         []
                     ]
-                }
+                },
+                visibleMethod: this.menuVisibleMethod
             }
         },
         beforeMount() {
@@ -502,7 +539,10 @@
                 this.table = this.$refs.dataTable
                 {#console.log(this.$refs)#}
                 this.table.connect(this.$refs.xToolbar)
+                {#let ddd = this.$refs.downloaders#}
+                {#console.log(ddd.$data.panes)#}
             })
+
             this.get_downloaders()
         },
         watch: {},
@@ -536,7 +576,8 @@
                 }, 5000)
             },
             handleButtonClick(id) {
-                console.log(id.name)
+                console.log(id.$el)
+                id.active = true
                 {#handleButtonClick({value, $event}) {#}
                 this.loading = true
                 this.downloader_id = id.name
@@ -592,9 +633,11 @@
                         })
                         let categoryFilters = [{label: '未分类', value: ''}]
                         let categories = res.data.data.categories
+
                         categories.forEach((value, index, array) => {
                             categoryFilters.push({'label': value, 'value': value})
                             this.categories.push({'title': value, 'value': value})
+                            {#this.menuCategories.push({code: 'set_category', name: value},)#}
                         })
                         // 异步加载筛选数据
                         {#this.table = this.$refs.dataTable#}
@@ -710,7 +753,7 @@
                     this.$message({type: 'warning', message: '未选中任何种子！！'})
                     return
                 }
-
+                console.log('enable', enable)
                 selectedRows.forEach((item, index) => {
                     console.log(item['hash'], index)
                     ids.push(item['hash'])
@@ -761,9 +804,19 @@
             setCategoryFilter(fieldOrColumn, options) {
                 console.log(fieldOrColumn, options)
             },
-            contextMenuClickEvent({menu, row, column}) {
-                console.log(row)
-                console.log(column)
+            menuVisibleMethod({options, column}) {
+                console.log(options)
+                return true
+            },
+            contextMenuClickEvent({menu, type, row, rowIndex, column, columnIndex, $event}) {
+                /**
+                 * 如果选中任务列表为空，则选中当前任务
+                 */
+                const selectedRows = this.table.getCheckboxRecords()
+                if (selectedRows.length <= 0) {
+                    this.table.setCheckboxRow(row, true)
+                }
+                console.log(menu, type, row, rowIndex, column, columnIndex, $event)
                 switch (menu.code) {
                     case 'copy':
                         // 示例
@@ -773,8 +826,27 @@
                             }
                         }
                         break
+                    case 'resume':
+                    case 'set_force_start':
+                    case 'pause':
+                    case 'set_auto_management':
+                    case 'recheck':
+                    case 'reannounce':
+                        this.handleSelected(menu.code)
+                        break
+                    case 'set_super_seeding':
+                        let enable = !row['super_seeding']
+                        console.log('enable1', enable)
+                        this.handleSelected(menu.code, '', '', enable)
+                        break
+                    case 'deleteForm':
+                        this.deleteForm = true
+                        break
+                    case 'categoryForm':
+                        this.categoryForm = true
+                        break
                     default:
-                        VXETable.modal.message(`点击了 ${menu.name} 选项`)
+                        VXETable.modal.message(`点击了 ${menu.name} 选项，该功能尚未开发完成！`)
                 }
             },
             {#searchEvent2() {#}
