@@ -163,12 +163,9 @@
     </vxe-toolbar>
     <vxe-table ref="dataTable" row-height="55" id="table"
                showBodyOverflow="title" showHeaderOverflow="title"
-            {#                   @row-dblclick="handleRow"#}
-               @selection-change="tableSelected"
                :menu-config="tableMenu"
                @menu-click="contextMenuClickEvent"
                @cell-dblclick="showDetails"
-            {#               @cell-click="detailClick"#}
                :data="mainData.torrents"
                :loading="loading"
                height="700" size="mini"
@@ -177,6 +174,7 @@
                :tooltip-config="{showAll: true}"
                :keyboard-config="{isArrow: true, isTab: true, enterToTab: true}"
                :column-config="{isCurrent: true, isHover: true, resizable: true}"
+               :mouse-config="{selected: true}"
                :row-config="{isCurrent: true, isHover: true, keyField: 'hash'}"
                :checkbox-config="{trigger: 'row', highlight: true, range: true, reserve: true}"
                highlight-current-row
@@ -344,6 +342,7 @@
             refresh: false,
             downloader_id: 0,
             details: false,
+            table: {},
             torrent: {
                 {#name: '',#}
                 {#category: '',#}
@@ -500,10 +499,9 @@
         created() {
             this.$nextTick(() => {
                 // 将表格和工具栏进行关联
-                const $table = this.$refs.dataTable
+                this.table = this.$refs.dataTable
                 {#console.log(this.$refs)#}
-                {#console.log($table)#}
-                $table.connect(this.$refs.xToolbar)
+                this.table.connect(this.$refs.xToolbar)
             })
             this.get_downloaders()
         },
@@ -520,11 +518,11 @@
             },
             clearFilters() {
                 //清除筛选
-                this.$refs.dataTable.clearFilter()
+                this.table.clearFilter()
             },
             clearSelection() {
                 //清除选中
-                this.$refs.dataTable.clearCheckboxRow()
+                this.table.clearCheckboxRow()
             },
             stopRefresh() {
                 this.refresh = true
@@ -535,7 +533,7 @@
                 this.refresh = false
                 this.timer = setInterval(() => {
                     this.get_downloading(this.downloader_id)
-                }, 1500)
+                }, 5000)
             },
             handleButtonClick(id) {
                 console.log(id.name)
@@ -548,7 +546,7 @@
                 this.get_downloader_categories(this.downloader_id)
                 this.timer = setInterval(() => {
                     this.get_downloading(this.downloader_id)
-                }, 1500)
+                }, 5000)
                 this.refresh = false
             },
             get_downloaders() {
@@ -563,7 +561,7 @@
                         this.get_downloader_categories(this.downloader_id)
                         this.timer = setInterval(() => {
                             this.get_downloading(this.downloader_id)
-                        }, 1500)
+                        }, 5000)
                     } else {
                         this.$message({
                             type: 'warning', message: '获取下载器列表失败！'
@@ -599,18 +597,17 @@
                             this.categories.push({'title': value, 'value': value})
                         })
                         // 异步加载筛选数据
-                        const $table = this.$refs.dataTable
-                        {#console.log($table)#}
-                        if ($table) {
-                            const categoryColumn = $table.getColumnByField('category')
+                        {#this.table = this.$refs.dataTable#}
+                        if (this.table) {
+                            const categoryColumn = this.table.getColumnByField('category')
                             {#console.log(nameColumn)#}
                             if (categoryColumn) {
-                                $table.setFilter(categoryColumn, categoryFilters)
+                                this.table.setFilter(categoryColumn, categoryFilters)
                             }
-                            const trackerColumn = $table.getColumnByField('tracker')
+                            const trackerColumn = this.table.getColumnByField('tracker')
                             {#console.log(trackerColumn)#}
                             if (trackerColumn) {
-                                $table.setFilter(trackerColumn, trackerFilter)
+                                this.table.setFilter(trackerColumn, trackerFilter)
                             }
                         }
                     } else {
@@ -708,12 +705,14 @@
             },
             handleSelected(command, category = '', delete_files = false, enable = 'True') {
                 let ids = []
-                if (this.selected_rows.length <= 0) {
+                const selectedRows = this.table.getCheckboxRecords()
+                if (selectedRows.length <= 0) {
                     this.$message({type: 'warning', message: '未选中任何种子！！'})
                     return
                 }
-                this.selected_rows.forEach((item, index) => {
-                    {#console.log(item['hash'], index)#}
+
+                selectedRows.forEach((item, index) => {
+                    console.log(item['hash'], index)
                     ids.push(item['hash'])
                 })
                 let data = new FormData()
@@ -723,21 +722,21 @@
                 data.append('category', category)
                 data.append('downloader_id', this.downloader_id)
                 axios.post(
-                    // "{% url "control_torrent" %}",
+                    "{% url "control_torrent" %}",
                     data
                 ).then(res => {
                     console.log(res.data)
                     this.get_downloading(this.downloader_id)
                     this.$message({type: 'success', message: '指令发送成功！！'})
                     this.selected_rows = []
-                    this.$refs.dataTable.clearSelection()
+                    {#this.$refs.dataTable.clearSelection()#}
+                    this.table.clearCheckboxRow()
                 }).catch(() => {
                     this.$message({type: 'warning', message: '指令发送失败！！'})
                 })
             },
-            tableSelected(rows) {
-                this.selected_rows = rows
-                console.log(this.selected_rows.length)
+            tableSelected({checked, row, rowIndex, $rowIndex, column, columnIndex, $columnIndex, $event}) {
+                this.selected_rows = this.table.getCheckboxRecords()
             },
             rowKey(row) {
                 console.log(row.hash)
