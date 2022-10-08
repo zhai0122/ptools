@@ -181,6 +181,7 @@
                :mouse-config="{selected: true}"
                :row-config="{isCurrent: true, isHover: true, keyField: 'hash'}"
                :checkbox-config="{trigger: 'row', highlight: true, range: true, reserve: true}"
+               :sort-config="{trigger: 'cell', orders: ['desc', 'asc', null]}"
                highlight-current-row
                style="width: 100%">
         <vxe-table-column fixed="left" type="checkbox">
@@ -468,8 +469,8 @@
                                 prefixIcon: 'vxe-icon-sort',
                                 children: [
                                     {code: 'clearSort', name: '清除排序', prefixIcon: 'vxe-icon-undo'},
-                                    {code: 'sortAsc', name: '升序', prefixIcon: 'vxe-icon-sort-alpha-asc'},
-                                    {code: 'sortDesc', name: '倒序', prefixIcon: 'vxe-icon-sort-alpha-desc'}
+                                    {#{code: 'sortAsc', name: '升序', prefixIcon: 'vxe-icon-sort-alpha-asc'},#}
+                                    {#{code: 'sortDesc', name: '倒序', prefixIcon: 'vxe-icon-sort-alpha-desc'}#}
                                 ]
                             },
                             {
@@ -483,6 +484,19 @@
                                         prefixIcon: 'vxe-icon-square-checked'
                                     }
                                 ]
+                            },
+                            {
+                                code: 'clearCheckboxRow',
+                                name: '清除选中',
+                                prefixIcon: 'vxe-icon-funnel',
+                                {#children: [#}
+                                {#    {code: 'clearCheckboxRow', name: '清除选中', prefixIcon: 'vxe-icon-funnel-clear'},#}
+                                {#{#}
+                                {#    code: 'setAllCheckboxRow',#}
+                                {#    name: '全选',#}
+                                {#    prefixIcon: 'vxe-icon-square-checked'#}
+                                //}
+                                {#]#}
                             }
                         ],
                     ]
@@ -844,6 +858,21 @@
                         break
                     case 'categoryForm':
                         this.categoryForm = true
+                        break
+                    case 'clearSort':
+                        this.table.clearSort()
+                        break
+                    case 'clearFilter':
+                        this.table.clearFilter()
+                        break
+                    case 'clearCheckboxRow':
+                        this.table.clearCheckboxRow()
+                        break
+                    case 'setAllCheckboxRow':
+                        this.table.setAllCheckboxRow(true)
+                        break
+                    case 'filterSelect':
+
                         break
                     default:
                         VXETable.modal.message(`点击了 ${menu.name} 选项，该功能尚未开发完成！`)
