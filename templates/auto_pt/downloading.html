@@ -167,6 +167,8 @@
                @selection-change="tableSelected"
                :menu-config="tableMenu"
                @menu-click="contextMenuClickEvent"
+               @cell-dblclick="showDetails"
+            {#               @cell-click="detailClick"#}
                :data="mainData.torrents"
                :loading="loading"
                height="700" size="mini"
@@ -271,6 +273,28 @@
         <el-tag size="medium" color="#696969"
                 v-text="'上传速度：' + renderSize(server_state.up_info_speed) + '/S'"></el-tag>
     </div>
+    <div>
+        <el-drawer
+                style="margin-bottom: 35px !important;position: fixed;z-index:99999;"
+                :title="torrent.name"
+                :visible.sync="details"
+                direction="rtl"
+                :modal="false"
+                :wrapperClosable="false"
+                :destroy-on-close="true"
+                :close-on-press-escape="true"
+                :close="closeDrawer"
+                :with-header="false"
+                show-header-overflow show-overflow="tooltip"
+                size="40%">
+            <el-descriptions :title="torrent.name" border size="mini" colon :column="1">
+                <el-descriptions-item v-for="(value,key,index) in torrent"
+                                      :label="key">
+                    <span v-text="value"></span>
+                </el-descriptions-item>
+            </el-descriptions>
+        </el-drawer>
+    </div>
 
 </div>
 
@@ -319,21 +343,22 @@
             categoryForm: false,
             refresh: false,
             downloader_id: 0,
+            details: false,
             torrent: {
-                name: '',
-                category: '',
-                size: '',
-                downloaded: '',
-                uploaded: '',
-                dlspeed: '',
-                upspeed: '',
-                progress: '',
-                ratio: '',
-                seeding_time: '',
-                state: '',
-                last_activity: '',
-                added_on: '',
-                tracker: '',
+                {#name: '',#}
+                {#category: '',#}
+                {#size: '',#}
+                {#downloaded: '',#}
+                {#uploaded: '',#}
+                {#dlspeed: '',#}
+                {#upspeed: '',#}
+                {#progress: '',#}
+                {#ratio: '',#}
+                {#seeding_time: '',#}
+                {#state: '',#}
+                {#last_activity: '',#}
+                {#added_on: '',#}
+                {#tracker: '',#}
             },
             customColors: [
                 {color: '#f56c6c', percentage: 20},
@@ -476,14 +501,23 @@
             this.$nextTick(() => {
                 // 将表格和工具栏进行关联
                 const $table = this.$refs.dataTable
-                console.log(this.$refs)
-                console.log($table)
+                {#console.log(this.$refs)#}
+                {#console.log($table)#}
                 $table.connect(this.$refs.xToolbar)
             })
             this.get_downloaders()
         },
         watch: {},
         methods: {
+            showDetails({row, rowIndex, $rowIndex, column, columnIndex, $columnIndex, $event}) {
+                console.log(row)
+                this.torrent = row
+                this.details = true
+            },
+            closeDrawer() {
+                this.details = false
+                this.torrent = {}
+            },
             clearFilters() {
                 //清除筛选
                 this.$refs.dataTable.clearFilter()
@@ -652,8 +686,10 @@
             handleTracker({row, column, cellValue, index}) {
                 // 格式化输出tracker所属的站点
                 let site = this.tracker_list.find(site => cellValue.includes(site.tracker))
-                {#console.log(site)#}
-                return site ? site.name : cellValue
+                {#console.log(row)#}
+                {#console.log(cellValue.includes('joy'))#}
+                {#return cellValue#}
+                return null != site ? site.name : cellValue
             },
             handleState({row, column, cellValue, index}) {
                 return download_state[cellValue]
