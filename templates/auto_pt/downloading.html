@@ -15,6 +15,10 @@
             color: #fff;
         }
 
+        .vxe-table--body tr > td {
+            cursor: pointer;
+        }
+
         /* 用来设置当前页面element全局table 鼠标滑过某行时的背景色*/
         .vxe-table--body .vxe-body--row.row--hover td {
             background-color: #df9942 !important;
@@ -175,7 +179,7 @@
                showBodyOverflow="title" showHeaderOverflow="title"
                :menu-config="tableMenu"
                @menu-click="contextMenuClickEvent"
-{#               @cell-dblclick="contextMenuClickEvent"#}
+            {#               @cell-dblclick="contextMenuClickEvent"#}
                @cell-dblclick="showDetails"
                :data="mainData.torrents"
                :loading="loading"
@@ -190,7 +194,7 @@
                :checkbox-config="{trigger: 'row', highlight: true, range: true, reserve: true}"
                :sort-config="{trigger: 'cell', orders: ['desc', 'asc', null]}"
                highlight-current-row
-               style="width: 100%;cursor: pointer;">
+               style="width: 100%;">
         <vxe-table-column fixed="left" type="checkbox">
         </vxe-table-column>
         <vxe-table-column type="seq" fixed="left"></vxe-table-column>
