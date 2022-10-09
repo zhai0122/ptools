@@ -46,7 +46,7 @@
         }
 
         .bottom_xf {
-            background-color: #1D69A9;
+            background-color: rgba(255 165 0 /50%);
             width: 100%;
             height: 28px;
             margin: auto;
@@ -86,9 +86,7 @@
                          :name="downloader.id">
                 {#                <span v-text="downloader.name"></span>#}
             </el-tab-pane>
-            {#            <el-tab-pane label="配置管理" name="second">配置管理</el-tab-pane>#}
-            {#            <el-tab-pane label="角色管理" name="third">角色管理</el-tab-pane>#}
-            {#            <el-tab-pane label="定时任务补偿" name="fourth">定时任务补偿</el-tab-pane>#}
+
         </el-tabs>
     </div>
     <div>
@@ -120,11 +118,13 @@
 
     <vxe-toolbar ref="xToolbar" size="mini" custom style="margin-top: -15px;">
         <template #buttons>
-            <el-button circle size="mini" type="primary" icon="el-icon-link"></el-button>
-            <el-button circle size="mini" type="primary" icon="el-icon-plus"></el-button>
-            <el-button circle size="mini" type="danger" icon="el-icon-delete"></el-button>
-            <el-button circle size="mini" type="success" icon="el-icon-video-play"></el-button>
-            <el-button circle size="mini" type="warning" icon="el-icon-video-pause"></el-button>
+            {#            <el-button circle size="mini" type="primary" icon="el-icon-link" @click="handleSelected(resume)"></el-button>#}
+            {#            <el-button circle size="mini" type="primary" icon="el-icon-plus" @click="handleSelected(resume)"></el-button>#}
+            <el-button circle size="mini" type="danger" icon="el-icon-delete" @click="handleDeleteForm"></el-button>
+            <el-button circle size="mini" type="success" icon="el-icon-video-play"
+                       @click="handleSelected('resume')"></el-button>
+            <el-button circle size="mini" type="warning" icon="el-icon-video-pause"
+                       @click="handleSelected('pause')"></el-button>
 
             {#            <el-dropdown split-button type="primary" size="mini" @command="handleSelected">#}
             {#                操作#}
@@ -153,16 +153,16 @@
             {#            </el-dropdown>#}
         </template>
         <template #tools>
-            <el-button size="mini" type="success" v-if="refresh" icon="el-icon-refresh" @click="startRefresh">继续刷新
+            <el-button size="mini" type="success" v-if="refresh" icon="el-icon-refresh" @click="startRefresh">刷新
             </el-button>
 
-            <el-button size="mini" type="danger" v-else="refresh" icon="el-icon-pause" @click="stopRefresh">停止刷新
+            <el-button size="mini" type="danger" v-else="refresh" icon="el-icon-pause" @click="stopRefresh">停止
             </el-button>
 
-            <el-button size="mini" type="warning" icon="vxe-icon-funnel-clear" @click="clearFilters">清除筛选
-            </el-button>
-            <el-button size="mini" type="warning" icon="vxe-icon-square-checked-fill" @click="clearSelection">清除选中
-            </el-button>
+            {#            <el-button size="mini" type="warning" icon="vxe-icon-funnel-clear" @click="clearFilters">清除筛选#}
+            {#            </el-button>#}
+            {#            <el-button size="mini" type="warning" icon="vxe-icon-square-checked-fill" @click="clearSelection">清除选中#}
+            {#            </el-button>#}
         </template>
     </vxe-toolbar>
     <vxe-table ref="dataTable" row-height="55" id="table"
@@ -220,21 +220,21 @@
                           title="下载速度"></vxe-table-column>
         <vxe-table-column field="upspeed" sortable width="95" :formatter="handleSpeed"
                           title="上传速度"></vxe-table-column>
-        <vxe-table-column field="progress" sortable width="90" title="进度">
+        <vxe-table-column field="progress" sortable min-width="110" title="进度">
             <template slot-scope="scope">
                 <el-progress
                         v-if="scope.row.progress==1"
+                        :text-inside="true"
                         status="success"
-                        width="20"
+                        stroke-linecap="butt"
+                        stroke-width="20"
                         :percentage="scope.row.progress * 100">
                 </el-progress>
                 <el-progress
                         v-else="scope.row.progress==1"
-                        {#                                :text-inside="true"#}
-                        {#                                type="circle"#}
-                        width="20"
+                        :text-inside="true"
                         :color="customColors"
-                        {#                                :stroke-width="18"#}
+                        :stroke-width="20"
                         :percentage="scope.row.progress * 100">
                 </el-progress>
             </template>
@@ -259,22 +259,23 @@
         {#        </template>#}
     </vxe-table>
     <div class="bottom_xf">
-        <el-tag size="medium" type="danger"
-                v-text="'总分享率：' + server_state.global_ratio"></el-tag>
-        <el-tag size="medium" type="success"
-                v-text="'剩余空间：' + renderSize(server_state.free_space_on_disk)"></el-tag>
-        <el-tag size="medium" type=""
-                v-text="'历史下载：' + renderSize(server_state.alltime_dl)"></el-tag>
-        <el-tag size="medium" type="warning"
-                v-text="'历史上传：' + renderSize(server_state.alltime_ul)"></el-tag>
-        <el-tag size="medium" effect="plain" color="#233223"
-                v-text="'本次下载：' + renderSize(server_state.dl_info_data)"></el-tag>
-        <el-tag size="medium" effect="plain" color="#296969"
-                v-text="'下载速度：' + renderSize(server_state.dl_info_speed)"></el-tag>
-        <el-tag size="medium" effect="plain" color="#545454"
-                v-text="'本次上传：' + renderSize(server_state.up_info_data)"></el-tag>
-        <el-tag size="medium" color="#696969"
-                v-text="'上传速度：' + renderSize(server_state.up_info_speed) + '/S'"></el-tag>
+        <el-tag size="medium" effect="plain" type="success">
+            <i class="vxe-icon-cloud-download"></i>
+            <span v-text="renderSize(server_state.up_info_speed) + '/S (' + renderSize(server_state.up_info_data) + '/' + renderSize(server_state.alltime_ul) + ')'"></span>
+        </el-tag>
+        <el-tag size="medium" effect="plain" type="warning">
+            <i class="vxe-icon-cloud-upload"></i>
+            <span v-text="renderSize(server_state.dl_info_speed) + '/S (' + renderSize(server_state.dl_info_data)+ '/' + renderSize(server_state.alltime_dl) + ')'"></span>
+        </el-tag>
+
+        <el-tag size="medium" type="primary">
+            <i class="fas fa-hdd"></i>
+            <span v-text="renderSize(server_state.free_space_on_disk)"></span>
+        </el-tag>
+        <el-tag size="medium" type="danger">
+            <i class="fas fa-share-alt"></i>
+            <span v-text="server_state.global_ratio"></span>
+        </el-tag>
     </div>
     <div>
         <el-drawer
@@ -760,6 +761,20 @@
                 const property = column['property'];
                 return row[property].includes(value);
             },
+            handleDeleteForm() {
+                if (this.table.getCheckboxRecords().length <= 0) {
+                    this.$message({type: 'warning', message: '未选中种子！！'})
+                    return
+                }
+                this.deleteForm = true
+            },
+            handleSetCategory() {
+                if (this.table.getCheckboxRecords().length <= 0) {
+                    this.$message({type: 'warning', message: '未选中种子！！'})
+                    return
+                }
+                this.categoryForm = true
+            },
             handleSelected(command, category = '', delete_files = false, enable = 'True') {
                 let ids = []
                 const selectedRows = this.table.getCheckboxRecords()
@@ -854,10 +869,10 @@
                         this.handleSelected(menu.code, '', '', enable)
                         break
                     case 'deleteForm':
-                        this.deleteForm = true
+                        this.handleDeleteForm()
                         break
                     case 'categoryForm':
-                        this.categoryForm = true
+                        this.handleSetCategory()
                         break
                     case 'clearSort':
                         this.table.clearSort()
