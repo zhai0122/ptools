@@ -45,17 +45,23 @@
             color: orange;
         }
 
-        .bottom_xf {
+        .footer-info {
             background-color: rgba(218 165 32 /50%);
             width: 100%;
             height: 28px;
             margin: auto;
             padding: 5px;
-            overflow: auto;
+            overflow-x: auto;
+            overflow-y: hidden;
             position: fixed;
             bottom: 0;
             z-index: 999999;
             text-align: center;
+            white-space: nowrap;
+        }
+
+        .footer-item {
+            display: inline-block;
         }
 
         .el-tabs__item.is-active {
@@ -258,21 +264,21 @@
         {#            </span>#}
         {#        </template>#}
     </vxe-table>
-    <div class="bottom_xf">
-        <el-tag size="medium" effect="plain" type="success">
+    <div class="footer-info">
+        <el-tag size="medium" effect="plain" type="success" class="footer-item">
             <i class="vxe-icon-cloud-download"></i>
             <span v-text="renderSize(server_state.up_info_speed) + '/S (' + renderSize(server_state.up_info_data) + '/' + renderSize(server_state.alltime_ul) + ')'"></span>
         </el-tag>
-        <el-tag size="medium" effect="plain" type="warning">
+        <el-tag size="medium" effect="plain" type="warning" class="footer-item">
             <i class="vxe-icon-cloud-upload"></i>
             <span v-text="renderSize(server_state.dl_info_speed) + '/S (' + renderSize(server_state.dl_info_data)+ '/' + renderSize(server_state.alltime_dl) + ')'"></span>
         </el-tag>
 
-        <el-tag size="medium" type="primary">
+        <el-tag size="medium" type="primary" class="footer-item">
             <i class="fas fa-hdd"></i>
             <span v-text="renderSize(server_state.free_space_on_disk)"></span>
         </el-tag>
-        <el-tag size="medium" type="danger">
+        <el-tag size="medium" type="danger" class="footer-item">
             <i class="fas fa-share-alt"></i>
             <span v-text="server_state.global_ratio"></span>
         </el-tag>
