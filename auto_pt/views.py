@@ -390,6 +390,7 @@ def update_page(request):
 def do_update(request):
     try:
         logger.info('开始拉取更新')
+        main_pt_site_site_mtime = os.stat('./main_pt_site_site.json').st_mtime
         # print(os.system('cat ./update.sh'))
         subprocess.Popen('chmod +x ./update.sh', shell=True)
         p = subprocess.Popen('./update.sh', shell=True, stdout=subprocess.PIPE)
@@ -398,7 +399,6 @@ def do_update(request):
         for i in out:
             logger.info(i.decode('utf8'))
         # 更新Xpath规则
-        logger.info('拉取更新完毕，开始更新Xpath规则')
         # 字符串型的数据量转化为int型
         # status_list = SiteStatus.objects.all()
         # for status in status_list:
@@ -411,20 +411,30 @@ def do_update(request):
         #     if type(status.uploaded) == str and 'B' in status.uploaded:
         #         status.uploaded = FileSizeConvert.parse_2_byte(status.uploaded)
         #     status.save()
-        with open('./main_pt_site_site.json', 'r') as f:
-            # print(f.readlines())
-            data = json.load(f)
-            # print(data[2])
-            # print(data[0].get('url'))
-            # xpath_update = []
-            logger.info('更新规则中，返回结果为True为新建，为False为更新，其他是错误了')
-            for site_rules in data:
-                if site_rules.get('pk'):
-                    del site_rules['pk']
-                if site_rules.get('id'):
-                    del site_rules['id']
-                site_obj = Site.objects.update_or_create(defaults=site_rules, url=site_rules.get('url'))
-                logger.info(site_obj[0].name + (' 规则新增成功！' if site_obj[1] else '规则更新成功！'))
+        new_fileinfo = os.stat('./main_pt_site_site.json').st_mtime
+        logger.info('更新前文件最后修改时间')
+        logger.info(main_pt_site_site_mtime)
+        logger.info('更新后文件最后修改时间')
+        logger.info(new_fileinfo)
+        if new_fileinfo == main_pt_site_site_mtime:
+            logger.info('本次更新无规则更新，跳过！')
+            pass
+        else:
+            logger.info('拉取更新完毕，开始更新Xpath规则')
+            with open('./main_pt_site_site.json', 'r') as f:
+                # print(f.readlines())
+                data = json.load(f)
+                # print(data[2])
+                # print(data[0].get('url'))
+                # xpath_update = []
+                logger.info('更新规则中，返回结果为True为新建，为False为更新，其他是错误了')
+                for site_rules in data:
+                    if site_rules.get('pk'):
+                        del site_rules['pk']
+                    if site_rules.get('id'):
+                        del site_rules['id']
+                    site_obj = Site.objects.update_or_create(defaults=site_rules, url=site_rules.get('url'))
+                    logger.info(site_obj[0].name + (' 规则新增成功！' if site_obj[1] else '规则更新成功！'))
         logger.info('更新完毕')
         """
         logger.info('更新完毕，开始重启')
