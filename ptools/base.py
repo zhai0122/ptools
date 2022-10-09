@@ -167,6 +167,7 @@ class PushConfig(models.TextChoices):
     wxpusher_push = 'wxpusher_push', 'WxPusher通知'
     pushdeer_push = 'pushdeer_push', 'PushDeer通知'
     bark_push = 'bark_push', 'Bark通知'
+    iyuu_push = 'iyuu_push', '爱语飞飞'
 
 
 class OCRConfig(models.TextChoices):

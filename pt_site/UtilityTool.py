@@ -163,6 +163,16 @@ class PtSpider:
                     res = self.get_scraper().get(url=url)
                     msg = 'bark通知' + str(res)
                     logger.info(msg)
+
+                if notify.name == PushConfig.iyuu_push:
+                    url = notify.custom_server + '{}.send'.format(notify.corpsecret)
+                    res = self.get_scraper().post(
+                        url=url,
+                        data={
+                            'text': 'PTools消息推送',
+                            'desp': text
+                        })
+                    logger.info('爱语飞飞通知：' + res)
         except Exception as e:
             logger.info("通知发送失败，" + str(e))
 
