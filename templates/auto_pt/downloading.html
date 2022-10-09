@@ -175,6 +175,7 @@
                showBodyOverflow="title" showHeaderOverflow="title"
                :menu-config="tableMenu"
                @menu-click="contextMenuClickEvent"
+{#               @cell-dblclick="contextMenuClickEvent"#}
                @cell-dblclick="showDetails"
                :data="mainData.torrents"
                :loading="loading"
@@ -189,7 +190,7 @@
                :checkbox-config="{trigger: 'row', highlight: true, range: true, reserve: true}"
                :sort-config="{trigger: 'cell', orders: ['desc', 'asc', null]}"
                highlight-current-row
-               style="width: 100%">
+               style="width: 100%;cursor: pointer;">
         <vxe-table-column fixed="left" type="checkbox">
         </vxe-table-column>
         <vxe-table-column type="seq" fixed="left"></vxe-table-column>
@@ -288,7 +289,7 @@
                 style="margin-bottom: 35px !important;position: fixed;z-index:99999;"
                 :title="torrent.name"
                 :visible.sync="details"
-                direction="rtl"
+                direction="btt"
                 :modal="false"
                 :wrapperClosable="false"
                 :destroy-on-close="true"
