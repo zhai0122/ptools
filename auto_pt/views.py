@@ -378,7 +378,10 @@ def update_page(request):
                       'delta': delta,
                       'restart': restart,
                       'local_logs': get_git_logs(),
-                      'update_notes': get_git_logs(master='origin/master'),
+                      # 'update_notes': get_git_logs(master='origin/master'),
+                      'update_notes': get_git_logs(
+                          master='origin/' + os.getenv('DEV') if os.getenv('DEV') else 'master'
+                      ),
                       'update': update,
                       'update_tips': update_tips
                   })
