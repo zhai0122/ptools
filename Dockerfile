@@ -13,38 +13,25 @@ ENV DJANGO_SUPERUSER_EMAIL=admin@eamil.com
 ENV DJANGO_SUPERUSER_PASSWORD=adminadmin
 ENV DJANGO_WEB_PORT=8000
 ENV DEV=master
-
+# 写入pip国内源
 COPY pip.conf /root/.pip/pip.conf
-
-# 创建 myproject 文件夹
-RUN mkdir -p /var/www/html/ptools
-
-# 将 myproject 文件夹为工作目录
-WORKDIR /var/www/html/ptools
-
-# 将当前目录加入到工作目录中（. 表示当前目录）
-#ADD . /var/www/html/ptools
-ADD start.sh /var/www/html
-
-# 更新pip版本
-#RUN /usr/local/bin/python -m pip install --upgrade pip
-
-# 利用 pip 安装依赖
-#RUN pip install -r requirements.txt
-
-# 去除windows系统编辑文件中多余的\r回车空格
-# RUN sed -i 's/\r//' ./start.sh
-
-# 给start.sh可执行权限
-RUN chmod +x /var/www/html/start.sh
-
-# 更换USTC源，并安装gcc，git # 写入U2的HOSTS
-RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list && echo 172.64.153.252 u2.dmhy.org >>/etc/hosts; \
+# 更新pip版本，更换USTC源，并安装git
+RUN /usr/local/bin/python -m pip install --upgrade pip; \
+    sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list; \
     apt update && yes|apt install git; \
     apt-get autoclean && rm -rf /var/lib/apt/lists/*
-
-VOLUME ["/var/www/html/ptools/db"]
-
+# 创建 ptools 文件夹
+ RUN mkdir -p /var/ptools
+#RUN git clone https://gitee.com/ngfchl/ptools /ptools
+# 将 ptools 文件夹为工作目录
+WORKDIR /var/ptools
+# 将当前目录加入到工作目录中（. 表示当前目录）
+ADD . /var/ptools
+# 给start.sh可执行权限
+RUN chmod +x /var/ptools/start.sh
+# 暴露数据库文件夹
+VOLUME ["/var/ptools/db"]
+# 暴露访问端口
 EXPOSE  $DJANGO_WEB_PORT
-
-ENTRYPOINT ["/bin/bash", "/var/www/html/start.sh"]
+# 执行启动文件
+ENTRYPOINT ["/bin/bash", "/var/ptools/start.sh"]
