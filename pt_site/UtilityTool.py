@@ -172,7 +172,7 @@ class PtSpider:
                             'text': 'PTools消息推送',
                             'desp': text
                         })
-                    logger.info('爱语飞飞通知：' + res)
+                    logger.info('爱语飞飞通知：' + str(res))
         except Exception as e:
             logger.info("通知发送失败，" + str(e))
 
