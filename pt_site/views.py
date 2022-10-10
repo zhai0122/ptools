@@ -194,7 +194,6 @@ try:
     sock.bind(("127.0.0.1", 44444))
     scheduler.start()
     logger.info('启动后台任务')
-    logger.info(scheduler.get_jobs())
 except socket.error:
     logger.info("!!!scheduler started, DO NOTHING")
 except Exception as e:
