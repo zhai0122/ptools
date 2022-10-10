@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'corsheaders',
-    'import_export',
     'django_apscheduler',
     'django_admin_inline_paginator',
     'util',
@@ -80,8 +79,7 @@ ROOT_URLCONF = 'ptools.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates']
-        ,
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -125,7 +123,7 @@ DATABASES = {
     #     'PORT': '3306',  # mysql服务端口
     # }
 }
-
+"""
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
@@ -143,7 +141,7 @@ CACHES = {
         # "KEY_PREFIX ":"test",#前缀
     }
 }
-
+"""
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 

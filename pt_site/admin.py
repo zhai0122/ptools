@@ -7,8 +7,6 @@ from django.contrib import admin, messages
 from django.http import JsonResponse
 from django.utils.html import format_html
 from django_admin_inline_paginator.admin import TabularInlinePaginated
-from import_export.admin import ImportExportModelAdmin
-from import_export.formats import base_formats
 from simpleui.admin import AjaxAdmin
 from transmission_rpc import Torrent
 
@@ -25,8 +23,7 @@ admin.site.index_title = '我在后台首页'
 
 
 @admin.register(Site)
-class SiteAdmin(ImportExportModelAdmin):  # instead of ModelAdmin
-    formats = (base_formats.XLS, base_formats.CSV, base_formats.JSON)
+class SiteAdmin(admin.ModelAdmin):  # instead of ModelAdmin
     # 显示字段
     list_display = (
         'name',
@@ -249,8 +246,7 @@ class SignInInlines(TabularInlinePaginated):
 
 
 @admin.register(MySite)
-class MySiteAdmin(ImportExportModelAdmin):  # instead of ModelAdmin
-    formats = (base_formats.XLS, base_formats.CSV, base_formats.JSON)
+class MySiteAdmin(admin.ModelAdmin):  # instead of ModelAdmin
     # 显示字段
     list_display = (
         'sort_id',
@@ -607,8 +603,7 @@ class SiteStatusAdmin(ImportExportModelAdmin):
 
 
 @admin.register(Downloader)
-class DownloaderAdmin(ImportExportModelAdmin, AjaxAdmin):  # instead of ModelAdmin
-    formats = (base_formats.XLS, base_formats.CSV, base_formats.JSON)
+class DownloaderAdmin(AjaxAdmin):  # instead of ModelAdmin
     # 显示字段
     list_display = ('name', 'category', 'reserved_space', 'created_at', 'updated_at')
     # 过滤字段
@@ -689,8 +684,7 @@ def get_downloader():
 
 
 @admin.register(TorrentInfo)
-class TorrentInfoAdmin(ImportExportModelAdmin, AjaxAdmin):  # instead of ModelAdmin
-    formats = (base_formats.XLS, base_formats.CSV, base_formats.JSON)
+class TorrentInfoAdmin(AjaxAdmin):  # instead of ModelAdmin
     # 显示字段
     list_display = (
         'name_href',
