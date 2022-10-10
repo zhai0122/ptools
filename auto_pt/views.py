@@ -271,6 +271,11 @@ def import_from_ptpp(request):
                         'msg': msg,
                         'tag': 'success'
                     })
+                elif res.code == StatusCodeEnum.NO_PASSKEY_WARNING.code:
+                    message_list.append({
+                        'msg': msg,
+                        'tag': 'warning'
+                    })
                 else:
                     # error_messages.append(msg)
                     message_list.append({

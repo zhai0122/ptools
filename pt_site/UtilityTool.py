@@ -329,6 +329,7 @@ class PtSpider:
         passkey_msg = ''
         if not passkey:
             try:
+                logger.info('PTPP未配置PASSKEY，尝试获取中')
                 response = self.send_request(my_site, site.url + site.page_control_panel)
                 passkey = self.parse(response, site.my_passkey_rule)[0]
                 my_site.passkey = passkey
@@ -336,6 +337,7 @@ class PtSpider:
             except Exception as e:
                 passkey_msg = site.name + ' PassKey获取失败，请手动添加！'
                 logger.info(passkey_msg)
+        logger.info('开始导入PTPP历史数据')
         for key, value in userdatas.items():
             logger.info(key)
             try:
@@ -358,38 +360,29 @@ class PtSpider:
                                                          created_at__date=create_time).count()
                 if count_status >= 1:
                     continue
-                status = SiteStatus.objects.create(
+                res_status = SiteStatus.objects.update_or_create(
                     site=my_site,
-                    uploaded=uploaded,
-                    downloaded=downloaded,
-                    ratio=float(ratio),
-                    seed_vol=seeding_size,
-                    my_sp=my_sp
-                )
-                # res_status = SiteStatus.objects.update_or_create(
-                #     site=my_site,
-                #     created_at__date=create_time,
-                #     defaults={
-                #         'uploaded': uploaded,
-                #         'downloaded': downloaded,
-                #         'my_sp': my_sp,
-                #         'seed_vol': seeding_size,
-                #         'ratio': float(ratio),
-                #     })
-                status.created_at = create_time
-                status.save()
-                logger.info(status)
+                    created_at__date=create_time,
+                    defaults={
+                        'uploaded': uploaded,
+                        'downloaded': downloaded,
+                        'my_sp': my_sp,
+                        'seed_vol': seeding_size,
+                        'ratio': float(ratio),
+                    })
+                logger.info('数据导入结果，True为新建，false为更新')
+                logger.info(res_status)
             except Exception as e:
                 msg = '{}{} 数据导入出错，错误原因：{}'.format(site.name, key, e)
                 logger.info(msg)
                 continue
-        # if not passkey:
-        #     return CommonResponse.success(
-        #         status=StatusCodeEnum.NO_PASSKEY_WARNING,
-        #         msg=site.name + (' 信息导入成功！' if result[1] else ' 信息更新成功！ ') + passkey_msg
-        #     )
+        if not passkey:
+            return CommonResponse.success(
+                status=StatusCodeEnum.NO_PASSKEY_WARNING,
+                msg=site.name + (' 信息导入成功！' if result[1] else ' 信息更新成功！ ') + passkey_msg
+            )
         return CommonResponse.success(
-            status=StatusCodeEnum.NO_PASSKEY_WARNING,
+            # status=StatusCodeEnum.NO_PASSKEY_WARNING,
             msg=site.name + (' 信息导入成功！' if result[1] else ' 信息更新成功！ ') + passkey_msg
         )
 
