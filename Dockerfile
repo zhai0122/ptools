@@ -21,17 +21,17 @@ RUN /usr/local/bin/python -m pip install --upgrade pip; \
     apt update && yes|apt install git; \
     apt-get autoclean && rm -rf /var/lib/apt/lists/*
 # 创建 ptools 文件夹
- RUN mkdir -p /var/ptools
+RUN mkdir -p /ptools
 #RUN git clone https://gitee.com/ngfchl/ptools /ptools
 # 将 ptools 文件夹为工作目录
-WORKDIR /var/ptools
+WORKDIR /ptools
 # 将当前目录加入到工作目录中（. 表示当前目录）
-ADD . /var/ptools
+ADD . /ptools
 # 给start.sh可执行权限
-RUN chmod +x /var/ptools/start.sh
+RUN chmod +x /ptools/start.sh && rm -rf /ptools/db/*
 # 暴露数据库文件夹
-VOLUME ["/var/ptools/db"]
+VOLUME ["/ptools/db"]
 # 暴露访问端口
 EXPOSE  $DJANGO_WEB_PORT
 # 执行启动文件
-ENTRYPOINT ["/bin/bash", "/var/ptools/start.sh"]
+ENTRYPOINT ["/bin/bash", "/ptools/start.sh"]
