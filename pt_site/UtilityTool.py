@@ -269,7 +269,7 @@ class PtSpider:
                 host = data.get('host')
                 cookie_str = ''
                 for cookie in cookie_list:
-                    cookie_str += cookie.get('name') + '=' + cookie.get('value') + ';'
+                    cookie_str += '{}={};'.format(cookie.get('name'), cookie.get('value'))
                 # logger.info(domain + cookie_str)
                 cookies.append({
                     'url': data.get('url'),
@@ -314,7 +314,7 @@ class PtSpider:
         else:
             time_join = None
         passkey = cookie.get('passkey')
-        logger.info('passkey: ' + passkey)
+        logger.info('passkey: {}'.format(passkey))
 
         result = MySite.objects.update_or_create(site=site, defaults={
             'cookie': cookie.get('cookies'),
@@ -335,7 +335,7 @@ class PtSpider:
                 my_site.passkey = passkey
                 my_site.save()
             except Exception as e:
-                passkey_msg = site.name + ' PassKey获取失败，请手动添加！'
+                passkey_msg = '{}PassKey获取失败，请手动添加！'.format(site.name)
                 logger.info(passkey_msg)
         logger.info('开始导入PTPP历史数据')
         for key, value in userdatas.items():
@@ -647,8 +647,8 @@ class PtSpider:
                 logger.info('自动签到：{}, {}'.format(my_site, result))
                 if result.code == StatusCodeEnum.OK.code:
                     message_list += (
-                                '> <font color="orange">' + my_site.site.name + '</font> 签到成功！' + converter.convert(
-                            result.msg) + '  \n\n')
+                            '> <font color="orange">' + my_site.site.name + '</font> 签到成功！' + converter.convert(
+                        result.msg) + '  \n\n')
                     logger.info(my_site.site.name + '签到成功！' + result.msg)
                 else:
                     message = '> <font color="red">' + my_site.site.name + ' 签到失败！' + result.msg + '</font>  \n\n'
