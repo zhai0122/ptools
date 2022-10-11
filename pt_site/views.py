@@ -80,18 +80,18 @@ def auto_get_status():
                     my_site.my_hr
                 )
                 logger.info('组装Message：{}'.format(message))
-                message_list += ('> ' + my_site.site.name + ' 信息更新成功！' + message + '  \n')
+                message_list += ('> <font color="orange">' + my_site.site.name + '</font> 信息更新成功！' + message + '  \n\n')
                 # pt_spider.send_text(my_site.site.name + ' 信息更新成功！' + message)
                 logger.info(my_site.site.name + '信息更新成功！' + message)
             else:
                 print(res)
-                message = '> <font color="red">' + my_site.site.name + ' 信息更新失败！原因：' + res.msg + '</font>  \n'
+                message = '> <font color="red">' + my_site.site.name + ' 信息更新失败！原因：' + res.msg + '</font>  \n\n'
                 message_list = message + message_list
                 # pt_spider.send_text(my_site.site.name + ' 信息更新失败！原因：' + str(res[0]))
                 logger.warning(my_site.site.name + '信息更新失败！原因：' + res.msg)
         else:
             # pt_spider.send_text(my_site.site.name + ' 信息更新失败！原因：' + str(result[1]))
-            message = '> <font color="red">' + my_site.site.name + ' 信息更新失败！原因：' + result.msg + '</font>  \n'
+            message = '> <font color="red">' + my_site.site.name + ' 信息更新失败！原因：' + result.msg + '</font>  \n\n'
             message_list = message + message_list
             logger.warning(my_site.site.name + '信息更新失败！原因：' + result.msg)
     end = time.time()
@@ -119,8 +119,10 @@ def auto_update_torrents():
             res = pt_spider.get_torrent_info_list(my_site, result.data)
             # 通知推送
             if res.code == StatusCodeEnum.OK.code:
-                message = '> {} 种子抓取成功！新增种子{}条，更新种子{}条!  \n'.format(my_site.site.name, res.data[0],
-                                                                    res.data[1])
+                message = '> <font color="orange">{}</font> 种子抓取成功！新增种子{}条，更新种子{}条!  \n\n'.format(
+                    my_site.site.name,
+                    res.data[0],
+                    res.data[1])
                 message_list += message
             else:
                 message = '> <font color="red">' + my_site.site.name + '抓取种子信息失败！原因：' + res.msg + '</font>  \n'

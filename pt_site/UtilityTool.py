@@ -622,13 +622,13 @@ class PtSpider:
         return '0' if len(res_list) == 0 else res_list[0]
 
     def do_sign_in(self, pool, queryset: QuerySet[MySite]):
-        message_list = '### <font color="orange">未显示的站点已经签到过了哟！</font>  \n'
+        message_list = '### <font color="orange">未显示的站点已经签到过了哟！</font>  \n\n'
         if datetime.now().hour < 9:
             # U2每天九点前不签到
             queryset = [my_site for my_site in queryset if 'u2.dmhy.org' not in my_site.site.url and
                         my_site.signin_set.filter(created_at__date__gte=datetime.today()).count() <= 0
                         and my_site.cookie and my_site.site.sign_in_support]
-            message = '> <font color="red">站点 U2 早上九点之前不执行签到任务哦！</font>  \n'
+            message = '> <font color="red">站点 U2 早上九点之前不执行签到任务哦！</font>  \n\n'
             logger.info(message)
             message_list = message + message_list
         else:
@@ -637,7 +637,7 @@ class PtSpider:
                                                       sign_in_today=True).count() <= 0]
         logger.info(len(queryset))
         if len(queryset) <= 0:
-            message_list = '> <font color="orange">已全部签到或无需签到！</font>  \n'
+            message_list = '> <font color="orange">已全部签到或无需签到！</font>  \n\n'
             logger.info(message_list)
             return 0
         # results = pool.map(pt_spider.sign_in, site_list)
@@ -646,10 +646,12 @@ class PtSpider:
             for my_site, result in zip(queryset, results):
                 logger.info('自动签到：{}, {}'.format(my_site, result))
                 if result.code == StatusCodeEnum.OK.code:
-                    message_list += ('> ' + my_site.site.name + ' 签到成功！' + converter.convert(result.msg) + '  \n')
+                    message_list += (
+                                '> <font color="orange">' + my_site.site.name + '</font> 签到成功！' + converter.convert(
+                            result.msg) + '  \n\n')
                     logger.info(my_site.site.name + '签到成功！' + result.msg)
                 else:
-                    message = '> <font color="red">' + my_site.site.name + ' 签到失败！' + result.msg + '</font>  \n'
+                    message = '> <font color="red">' + my_site.site.name + ' 签到失败！' + result.msg + '</font>  \n\n'
                     message_list = message + message_list
                 logger.error(my_site.site.name + '签到失败！原因：' + result.msg)
             return message_list
