@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from simpleui.admin import AjaxAdmin
 
 from auto_pt.models import Task, TaskJob, Notify, OCR
+from auto_pt.views import logger
 from pt_site import views as tasks
 from pt_site.views import pt_spider
 from ptools.base import Trigger
@@ -15,7 +16,7 @@ from ptools.base import Trigger
 # Register your models here.
 
 
-@admin.register(Task)
+# @admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):  # instead of ModelAdmin
     # 显示字段
     list_display = (
@@ -59,24 +60,26 @@ class TaskJobAdmin(admin.ModelAdmin):  # instead of ModelAdmin
     )
     search_fields = ('task', 'job_id')
     list_filter = ('task', 'trigger', 'task_exec',)
-    autocomplete_fields = ('task',)
+    # autocomplete_fields = ('task',)
     list_editable = ('task_exec',)
 
     def save_model(self, request, obj: TaskJob, form, change):
+        obj.save()
         # 从字符串获取function
         func = getattr(tasks, obj.task.name)
+        # 检查任务是否存在，已存在就删除任务
         exist_job = tasks.scheduler.get_job(obj.job_id)
         if exist_job:
-            print(exist_job.id)
+            logger.info(exist_job.id + '任务已存在，将移除后重新添加！')
             exist_job.remove()
-            print(tasks.scheduler.get_jobs())
-        # 如果任务未启用，只保存，不入库，已存在任务就删除
+            logger.info(exist_job.id + '任务移除成功！')
         if not obj.task_exec:
-            obj.save()
-            messages.success(request, obj.job_id + ' 保存成功！如需执行任务，请勾选开启任务！')
+            logger.info(exist_job.id + '任务未开启，将只入库不执行！')
+            super().save_model(request, obj, form, change)
         else:
             try:
-                # new_job = None
+                # 添加任务
+                logger.info(exist_job.id + ' 任务添加中！')
                 if obj.trigger == Trigger.cron:
                     new_job = tasks.scheduler.add_job(func,
                                                       trigger=CronTrigger.from_crontab(obj.expression_time),
@@ -97,15 +100,20 @@ class TaskJobAdmin(admin.ModelAdmin):  # instead of ModelAdmin
                                                       misfire_grace_time=obj.misfire_grace_time,
                                                       jitter=obj.jitter, )
 
-                print(new_job.pending)
-                info = ' 添加成功！' if not exist_job else '更新成功！'
-                pt_spider.send_text('计划任务：' + new_job.id + info)
-                messages.success(request, new_job.id + info)
-                obj.save()
+                # print(new_job.pending)
+                # pt_spider.send_text('计划任务：' + new_job.id + info)
+                # messages.success(request, new_job.id + info)
+                # 如果任务未启用，只保存，不入库，已存在任务就删除
+                logger.info(exist_job.id + ' 任务添加成功！')
+                logger.info(obj.job_id + ' 任务状态是否暂停：' + str(new_job.pending))
+                logger.info('当前存在的所有自动任务：')
+                logger.info(tasks.scheduler.get_jobs())
+                messages.success(request,
+                                 obj.job_id + ' 保存成功！' + ('如需执行任务，请勾选开启任务！' if obj.task_exec else ''))
             except Exception as e:
                 obj.task_exec = False
                 obj.save()
-                raise
+                # raise
                 pt_spider.send_text('计划任务：' + obj.job_id + '任务添加失败！原因：' + str(e))
                 messages.error(request, obj.job_id + '任务添加失败！原因：' + str(e))
 

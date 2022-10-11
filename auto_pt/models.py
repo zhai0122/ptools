@@ -29,18 +29,18 @@ class TaskJob(BaseEntity):
     task = models.ForeignKey(verbose_name='任务名称', to=Task, on_delete=models.CASCADE)
     job_id = models.CharField(verbose_name='任务ID', max_length=16, unique=True)
     trigger = models.CharField(verbose_name='任务类型', choices=Trigger.choices, default=Trigger.cron, max_length=64)
-    task_exec = models.BooleanField(verbose_name='开启任务', default=False)
+    task_exec = models.BooleanField(verbose_name='开启任务', default=True)
     replace_existing = models.BooleanField(verbose_name='覆盖任务', default=True,
                                            help_text='不设置此项重启项目后会报任务id已存在的错误, 设置此参数后会对已有的任务进行覆盖')
     expression_time = models.CharField(verbose_name='时间表达式',
-                                       help_text='在间隔任务表示间隔时长使用数字，单位：秒，corn任务中为corn表达式：“0 15 8 ? * * 2022”',
+                                       help_text='在间隔任务表示间隔时长使用数字，单位：秒，corn任务中为五位corn表达式：“15 8 * * 2022”',
                                        max_length=64)
     start_date = models.DateTimeField(verbose_name='任务开始时间', null=True, blank=True)
     end_date = models.DateTimeField(verbose_name='任务结束时间', null=True, blank=True)
-    misfire_grace_time = models.IntegerField(verbose_name='任务运行时间', default=120,
+    misfire_grace_time = models.IntegerField(verbose_name='任务运行时间', default=600,
                                              help_text='强制执行结束的时间, 为避免撞车导致任务丢失, 没执行完就别执行了')
-    jitter = models.IntegerField(verbose_name='时间浮动参数', default=120,
-                                 help_text='强制执行结束的时间, 为避免撞车导致任务丢失, 没执行完就别执行了')
+    jitter = models.IntegerField(verbose_name='时间浮动参数', default=1200,
+                                 help_text='增强时间随机性')
     args = models.CharField(verbose_name='任务参数',
                             help_text='执行代码所需要的参数。',
                             max_length=128, null=True, blank=True)
