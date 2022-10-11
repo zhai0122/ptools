@@ -55,7 +55,7 @@ def auto_get_status():
     更新个人数据
     """
     start = time.time()
-    message_list = ''
+    message_list = '# 更新个人数据  \n\n '
     queryset = MySite.objects.all()
     site_list = [my_site for my_site in queryset if my_site.site.get_userinfo_support]
     results = pool.map(pt_spider.send_status_request, site_list)
@@ -80,7 +80,8 @@ def auto_get_status():
                     my_site.my_hr
                 )
                 logger.info('组装Message：{}'.format(message))
-                message_list += ('> <font color="orange">' + my_site.site.name + '</font> 信息更新成功！' + message + '  \n\n')
+                message_list += (
+                            '> <font color="orange">' + my_site.site.name + '</font> 信息更新成功！' + message + '  \n\n')
                 # pt_spider.send_text(my_site.site.name + ' 信息更新成功！' + message)
                 logger.info(my_site.site.name + '信息更新成功！' + message)
             else:
@@ -108,7 +109,7 @@ def auto_update_torrents():
     拉取最新种子
     """
     start = time.time()
-    message_list = ''
+    message_list = '# 拉取免费种子  \n\n '
     queryset = MySite.objects.all()
     site_list = [my_site for my_site in queryset if my_site.site.get_torrent_support]
     results = pool.map(pt_spider.send_torrent_info_request, site_list)

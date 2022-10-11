@@ -154,7 +154,8 @@ class PtSpider:
                         server=notify.custom_server,
                         pushkey=notify.corpsecret)
                     # res = pushdeer.send_text(text, desp="optional description")
-                    res = pushdeer.send_markdown(text=text, desp="PushDeer消息提醒")
+                    res = pushdeer.send_markdown(text=text,
+                                                 desp="#### 欢迎使用PTools，使用中遇到问题请在微信群进行反馈！")
                     msg = 'pushdeer通知' + str(res)
                     logger.info(msg)
 
@@ -166,10 +167,11 @@ class PtSpider:
 
                 if notify.name == PushConfig.iyuu_push:
                     url = notify.custom_server + '{}.send'.format(notify.corpsecret)
+                    # text = '# '
                     res = self.get_scraper().post(
                         url=url,
                         data={
-                            'text': 'PTools消息推送',
+                            'text': '欢迎使用PTools',
                             'desp': text
                         })
                     logger.info('爱语飞飞通知：' + str(res))
@@ -452,6 +454,31 @@ class PtSpider:
             return False
         return img_data
 
+    def sign_in_hd4fans(self, my_site: MySite):
+        site = my_site.site
+        url = site.url + site.page_control_panel.lstrip('/')
+        result = self.send_request(
+            my_site=my_site,
+            url=url,
+        )
+        sign_str = self.parse(result, '//span[@id="checkin"]/a')
+        logger.info(sign_str)
+        if len(sign_str) < 1:
+            return CommonResponse.success(msg=site.name + '已签到，请勿重复操作！！')
+        sign_res = self.send_request(
+            my_site=my_site,
+            url=site.url + site.page_sign_in.lstrip('/'),
+            method=site.sign_in_method,
+            params={
+                'action': 'checkin'
+            }
+        )
+        msg = '你还需要继续努力哦！此次签到，你获得了魔力奖励：{}'.format(sign_res.content.decode('utf8'))
+        logger.info(msg)
+        return CommonResponse.success(
+            msg=msg
+        )
+
     def sign_in_hdc(self, my_site: MySite):
         site = my_site.site
         url = site.url + site.page_control_panel.lstrip('/')
@@ -543,9 +570,11 @@ class PtSpider:
                     my_site.user_id
                 )
             )
-            msg = ''.join(title) + '，奖励UCoin{}'.format(''.join(content))
+            msg = '{}，奖励UCoin{}'.format(''.join(title), ''.join(content))
+            logger.info(msg)
             return CommonResponse.success(msg=msg)
         else:
+            logger.info('签到失败！')
             return CommonResponse.error(msg='签到失败！')
 
     def sign_in_hdsky(self, my_site: MySite, captcha=False):
@@ -658,7 +687,7 @@ class PtSpider:
         return '0' if len(res_list) == 0 else res_list[0]
 
     def do_sign_in(self, pool, queryset: QuerySet[MySite]):
-        message_list = '### <font color="orange">未显示的站点已经签到过了哟！</font>  \n\n'
+        message_list = '# 自动签到通知  \n\n ### <font color="orange">未显示的站点已经签到过了哟！</font>  \n\n'
         if datetime.now().hour < 9:
             # U2每天九点前不签到
             queryset = [my_site for my_site in queryset if 'u2.dmhy.org' not in my_site.site.url and
@@ -708,6 +737,13 @@ class PtSpider:
         logger.info('签到链接：' + url)
         try:
             # with lock:
+            if 'hd4fans' in site.url:
+                result = self.sign_in_hd4fans(my_site)
+                if result.code == StatusCodeEnum.OK.code:
+                    signin_today.sign_in_today = True
+                    signin_today.sign_in_info = result.msg
+                    signin_today.save()
+                return result
             if 'hdchina' in site.url:
                 result = self.sign_in_hdc(my_site)
                 if result.code == StatusCodeEnum.OK.code:
