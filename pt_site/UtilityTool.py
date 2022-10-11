@@ -452,6 +452,42 @@ class PtSpider:
             return False
         return img_data
 
+    def sign_in_hdc(self, my_site: MySite):
+        site = my_site.site
+        url = site.url + site.page_control_panel.lstrip('/')
+        result = self.send_request(
+            my_site=my_site,
+            url=url,
+        )
+        sign_str = self.parse(result, '//a[text()="已签到"]')
+        logger.info('{}签到检测'.format(site.name, sign_str))
+        if len(sign_str) >= 1:
+            return CommonResponse.success(msg=site.name + '已签到，请勿重复操作！！')
+        csrf = ''.join(self.parse(result, '//meta[@name="x-csrf"]/@content'))
+        logger.info('CSRF字符串{}'.format(csrf))
+        sign_res = self.send_request(
+            my_site=my_site,
+            url=site.url + site.page_sign_in,
+            method=site.sign_in_method,
+            data={
+                'csrf': csrf
+            }
+        ).json()
+        logger.info('签到返回结果{}'.format(sign_res))
+        if sign_res.get('state') == 'success':
+            msg = "签到成功，您已连续签到{}天，本次增加魔力:{}。".format(sign_res.get('signindays'),
+                                                                      sign_res.get('integral'))
+            logger.info(msg)
+            return CommonResponse.success(
+                msg=msg
+            )
+        else:
+            msg = "签到失败"
+            logger.info(msg)
+            return CommonResponse.error(
+                msg=msg
+            )
+
     def sign_in_u2(self, my_site: MySite):
         site = my_site.site
         url = site.url + site.page_sign_in.lstrip('/')
@@ -672,6 +708,13 @@ class PtSpider:
         logger.info('签到链接：' + url)
         try:
             # with lock:
+            if 'hdchina' in site.url:
+                result = self.sign_in_hdc(my_site)
+                if result.code == StatusCodeEnum.OK.code:
+                    signin_today.sign_in_today = True
+                    signin_today.sign_in_info = result.msg
+                    signin_today.save()
+                return result
             if 'totheglory' in site.url:
                 result = self.sign_in_ttg(my_site)
                 if result.code == StatusCodeEnum.OK.code:
