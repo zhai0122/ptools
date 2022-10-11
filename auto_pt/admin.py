@@ -12,11 +12,13 @@ from pt_site import views as tasks
 from pt_site.views import pt_spider
 from ptools.base import Trigger
 
+scheduler = tasks.scheduler
+
 
 # Register your models here.
 
 
-# @admin.register(Task)
+@admin.register(Task)
 class TaskAdmin(admin.ModelAdmin):  # instead of ModelAdmin
     # 显示字段
     list_display = (
@@ -64,58 +66,74 @@ class TaskJobAdmin(admin.ModelAdmin):  # instead of ModelAdmin
     list_editable = ('task_exec',)
 
     def save_model(self, request, obj: TaskJob, form, change):
-        obj.save()
         # 从字符串获取function
         func = getattr(tasks, obj.task.name)
         # 检查任务是否存在，已存在就删除任务
-        exist_job = tasks.scheduler.get_job(obj.job_id)
-        if exist_job:
-            logger.info(exist_job.id + '任务已存在，将移除后重新添加！')
-            exist_job.remove()
-            logger.info(exist_job.id + '任务移除成功！')
-        if not obj.task_exec:
-            logger.info(exist_job.id + '任务未开启，将只入库不执行！')
-            super().save_model(request, obj, form, change)
-        else:
-            try:
-                # 添加任务
-                logger.info(exist_job.id + ' 任务添加中！')
-                if obj.trigger == Trigger.cron:
-                    new_job = tasks.scheduler.add_job(func,
-                                                      trigger=CronTrigger.from_crontab(obj.expression_time),
-                                                      id=obj.job_id,
-                                                      replace_existing=obj.replace_existing,
-                                                      misfire_grace_time=obj.misfire_grace_time,
-                                                      jitter=obj.jitter, )
-                if obj.trigger == Trigger.interval:
-                    time_delta = 1
-                    time_str = obj.expression_time.split('*')
-                    for i in time_str:
-                        time_delta *= int(i)
-                    new_job = tasks.scheduler.add_job(func,
-                                                      trigger=obj.trigger,
-                                                      id=obj.job_id,
-                                                      seconds=time_delta,
-                                                      replace_existing=obj.replace_existing,
-                                                      misfire_grace_time=obj.misfire_grace_time,
-                                                      jitter=obj.jitter, )
+        exist_job = scheduler.get_job(obj.job_id)
+        logger.info('当前任务：{} | {}'.format(obj.job_id, exist_job))
+        try:
+            if not obj.task_exec:
+                logger.info(obj.job_id + '任务未开启！')
+                super().save_model(request, obj, form, change)
+            # else:
+            # 添加任务
 
-                # print(new_job.pending)
-                # pt_spider.send_text('计划任务：' + new_job.id + info)
-                # messages.success(request, new_job.id + info)
-                # 如果任务未启用，只保存，不入库，已存在任务就删除
-                logger.info(exist_job.id + ' 任务添加成功！')
-                logger.info(obj.job_id + ' 任务状态是否暂停：' + str(new_job.pending))
-                logger.info('当前存在的所有自动任务：')
-                logger.info(tasks.scheduler.get_jobs())
-                messages.success(request,
-                                 obj.job_id + ' 保存成功！' + ('如需执行任务，请勾选开启任务！' if obj.task_exec else ''))
-            except Exception as e:
-                obj.task_exec = False
-                obj.save()
-                # raise
-                pt_spider.send_text('计划任务：' + obj.job_id + '任务添加失败！原因：' + str(e))
-                messages.error(request, obj.job_id + '任务添加失败！原因：' + str(e))
+            if obj.trigger == Trigger.cron:
+                if exist_job:
+                    logger.info(obj.job_id + '任务已存在，修改中！')
+                    exist_job.reschedule(trigger=CronTrigger.from_crontab(obj.expression_time))
+                    logger.info(exist_job.id + '任务修改成功！')
+                else:
+                    logger.info(obj.job_id + ' 任务添加中！')
+                    exist_job = scheduler.add_job(
+                        func,
+                        trigger=CronTrigger.from_crontab(obj.expression_time),
+                        id=obj.job_id,
+                        max_instances=1,
+                        replace_existing=obj.replace_existing,
+                        misfire_grace_time=obj.misfire_grace_time,
+                        jitter=obj.jitter
+                    )
+            if obj.trigger == Trigger.interval:
+                time_delta = 1
+                time_str = obj.expression_time.split('*')
+                for i in time_str:
+                    time_delta *= int(i)
+                if exist_job:
+                    logger.info(obj.job_id + '任务已存在，修改中！')
+                    exist_job.reschedule(trigger=obj.trigger, seconds=time_delta)
+                    logger.info(exist_job.id + '任务修改成功！')
+                else:
+                    logger.info(obj.job_id + ' 任务添加中！')
+                    exist_job = scheduler.add_job(
+                        func,
+                        trigger=obj.trigger,
+                        id=obj.job_id,
+                        seconds=time_delta,
+                        max_instances=1,
+                        replace_existing=obj.replace_existing,
+                        misfire_grace_time=obj.misfire_grace_time,
+                        jitter=obj.jitter
+                    )
+            logger.info('当前操作：{} 成功！'.format(exist_job))
+            if not obj.task_exec:
+                exist_job.pause()
+            else:
+                exist_job.resume()
+            logger.info(obj.job_id + ' 任务暂停：' + str(exist_job.pending))
+            logger.info('当前自动任务：')
+            logger.info(scheduler.get_jobs())
+            super().save_model(request, obj, form, change)
+            messages.success(request,
+                             obj.job_id + ' 保存成功！' + ('' if obj.task_exec else '如需执行任务，请勾选开启任务！'))
+        except Exception as e:
+            obj.task_exec = False
+            obj.save()
+            raise
+            msg = obj.job_id + '任务添加失败！原因：' + str(e)
+            logger.error(msg)
+            pt_spider.send_text('计划任务：' + msg)
+            messages.error(request, msg)
 
     def delete_model(self, request, obj):
         print(obj)
