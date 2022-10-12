@@ -14,6 +14,7 @@
             background-color: #e76b11 !important;
             color: #fff;
         }
+
         .vxe-table--body tr.row--checked > td {
             background-color: rgb(86, 105, 219) !important;
             color: #fff;
@@ -810,6 +811,7 @@
                     clearInterval(this.timer)
                     this.timer = null
                     this.mainData = []
+                    this.categories = []
                     this.get_downloader_categories(this.downloader_id)
                     this.timer = setInterval(() => {
                         this.get_downloading(this.downloader_id)
@@ -859,7 +861,7 @@
                             })
                             let categoryFilters = [{label: '未分类', value: ''}]
                             let categories = res.data.data.categories
-
+                            this.categories = []
                             categories.forEach((value, index, array) => {
                                 categoryFilters.push({'label': value, 'value': value})
                                 this.categories.push({'title': value, 'value': value})
