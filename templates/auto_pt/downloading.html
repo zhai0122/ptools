@@ -11,12 +11,22 @@
     <style>
         /* 用来设置当前页面element全局table 选中某行时的背景色*/
         .vxe-table--body tr.row--current > td {
-            background-color: #da8342 !important;
+            background-color: #e76b11 !important;
             color: #fff;
         }
 
         .vxe-table--body tr > td {
             cursor: pointer;
+        }
+
+        .vxe-table--body .vxe-footer--column .col-blue {
+            background-color: #2db7f5;
+            color: #fff;
+        }
+
+        .vxe-table--body .vxe-footer--column .col-blue {
+            background-color: red;
+            color: #fff;
         }
 
         /* 用来设置当前页面element全局table 鼠标滑过某行时的背景色*/
@@ -73,6 +83,12 @@
             color: #fff;
         }
 
+        .keyword-lighten {
+            color: #000;
+            background-color: #FFFF00;
+        }
+
+
     </style>
 </head>
 <body>
@@ -128,6 +144,9 @@
 
     <vxe-toolbar ref="xToolbar" size="mini" custom style="margin-top: -15px;">
         <template #buttons>
+            <vxe-input size="mini" v-model="searchModal" type="search" placeholder="试试全表搜索"
+                       style="margin-right: 10px;"
+                       @keyup="searchEvent"></vxe-input>
             {#            <el-button circle size="mini" type="primary" icon="el-icon-link" @click="handleSelected(resume)"></el-button>#}
             {#            <el-button circle size="mini" type="primary" icon="el-icon-plus" @click="handleSelected(resume)"></el-button>#}
             <el-button circle size="mini" type="danger" icon="el-icon-delete" @click="handleDeleteForm"></el-button>
@@ -165,7 +184,6 @@
         <template #tools>
             <el-button size="mini" type="success" v-if="refresh" icon="el-icon-refresh" @click="startRefresh">刷新
             </el-button>
-
             <el-button size="mini" type="danger" v-else="refresh" icon="el-icon-pause" @click="stopRefresh">停止
             </el-button>
 
@@ -175,13 +193,16 @@
             {#            </el-button>#}
         </template>
     </vxe-toolbar>
-    <vxe-table ref="dataTable" row-height="55" id="table"
+    <vxe-table ref="dataTable" id="table"
                showBodyOverflow="title" showHeaderOverflow="title"
                :menu-config="tableMenu"
                @menu-click="contextMenuClickEvent"
-            {#               @cell-dblclick="contextMenuClickEvent"#}
+               show-footer
+               :footer-method="footerMethod"
+               :footer-cell-class-name="footerCellClassName"
+               :footer-span-method="footerColspanMethod"
                @cell-dblclick="showDetails"
-               :data="mainData.torrents"
+               :data="torrents"
                :loading="loading"
                height="700" size="mini"
                auto-resize
@@ -190,27 +211,29 @@
                :keyboard-config="{isArrow: true, isTab: true, enterToTab: true}"
                :column-config="{isCurrent: true, isHover: true, resizable: true}"
                :mouse-config="{selected: true}"
-               :row-config="{isCurrent: true, isHover: true, keyField: 'hash'}"
+               :row-config="{isCurrent: true, isHover: true, keyField: 'hash', height: 25}"
                :checkbox-config="{trigger: 'row', highlight: true, range: true, reserve: true}"
                :sort-config="{trigger: 'cell', orders: ['desc', 'asc', null]}"
                highlight-current-row
                style="width: 100%;">
-        <vxe-table-column fixed="left" type="checkbox">
+        <vxe-table-column fixed="left" type="checkbox" width="44">
         </vxe-table-column>
-        <vxe-table-column type="seq" fixed="left"></vxe-table-column>
+        <vxe-table-column type="seq" fixed="left" width="50"></vxe-table-column>
         <vxe-table-column field="name" fixed="left" sortable show-header-overflow show-overflow="tooltip"
-                          show-footer-overflow title="种子名称" max-width="280" min-width="150">
+                          show-footer-overflow title="种子名称" type="html" max-width="280" min-width="150">
         </vxe-table-column>
         <vxe-table-column field="size" sortable width="85" show-header-overflow show-overflow="tooltip"
                           show-footer-overflow :formatter="handleSize" title="大小">
         </vxe-table-column>
         <vxe-table-column field="category" sortable width="85"
+                          type="html"
                           :filters="[]"
                           :filter-method="filterCategoryMethod"
                           :filter-multiple="false"
                           title="分类"></vxe-table-column>
         <vxe-table-column field="tracker" sortable
                           :filters="[]"
+                          type="html"
                           :formatter="handleTracker"
                           :filter-method="filterTrackerMethod"
                           :filter-multiple="false"
@@ -218,56 +241,56 @@
                           min-width="110"
                           title="Tracker"></vxe-table-column>
         <vxe-table-column field="state" sortable width="85" :formatter="handleState" column-key="state"
-                          :filter-method="filterStateMethod"
+                          :filter-method="filterStateMethod" type="html"
                           :filters="stateFilters" :filter-multiple="false" title="状态"></vxe-table-column>
-        <vxe-table-column field="last_activity" sortable width="105"
+        <vxe-table-column field="last_activity" sortable width="105" type="html"
                           show-header-overflow show-overflow="tooltip"
                           show-footer-overflow title="最后活动"></vxe-table-column>
         <vxe-table-column field="downloaded" :formatter="handleSize" min-width="90" sortable
-                          title="已下载"></vxe-table-column>
+                          type="html" title="已下载"></vxe-table-column>
         <vxe-table-column field="uploaded" :formatter="handleSize" sortable width="85"
-                          title="上传"></vxe-table-column>
+                          type="html" title="上传"></vxe-table-column>
         <vxe-table-column field="dlspeed" sortable width="95" :formatter="handleSpeed"
-                          title="下载速度"></vxe-table-column>
+                          type="html" title="下载速度"></vxe-table-column>
         <vxe-table-column field="upspeed" sortable width="95" :formatter="handleSpeed"
-                          title="上传速度"></vxe-table-column>
-        <vxe-table-column field="progress" sortable min-width="110" title="进度">
+                          type="html" title="上传速度"></vxe-table-column>
+        <vxe-table-column field="progress" sortable min-width="110" title="进度" type="html">
             <template slot-scope="scope">
                 <el-progress
                         v-if="scope.row.progress==1"
                         :text-inside="true"
                         status="success"
                         stroke-linecap="butt"
-                        stroke-width="20"
+                        :stroke-width="18"
                         :percentage="scope.row.progress * 100">
                 </el-progress>
                 <el-progress
                         v-else="scope.row.progress==1"
                         :text-inside="true"
                         :color="customColors"
-                        :stroke-width="20"
+                        :stroke-width="18"
                         :percentage="scope.row.progress * 100">
                 </el-progress>
             </template>
         </vxe-table-column>
 
         <vxe-table-column field="ratio" sortable width="85" {# :formatter="handlePercent" #}
-                          title="分享率"></vxe-table-column>
+                          type="html" title="分享率"></vxe-table-column>
         <vxe-table-column field="seeding_time" width="100"
                           show-header-overflow show-overflow="tooltip"
-                          show-footer-overflow
+                          show-footer-overflow type="html"
                           title="做种时间"></vxe-table-column>
 
         <vxe-table-column field="added_on" width="100"
                           show-header-overflow show-overflow="tooltip"
-                          show-footer-overflow
+                          show-footer-overflow type="html"
                           title="添加时间"></vxe-table-column>
-        {#        <template #empty>#}
-        {#            <span style="color: red;">#}
-        {#              <img src="https://pic2.zhimg.com/50/v2-f7031359103859e1ed38559715ef5f3f_hd.gif">#}
-        {#              <p>搜索不到数据，可能输入的关键字姿势不对！</p>#}
-        {#            </span>#}
-        {#        </template>#}
+        <template #empty>
+            <span style="color: red;">
+              <img src="https://pic2.zhimg.com/50/v2-f7031359103859e1ed38559715ef5f3f_hd.gif">
+              <p>搜索不到数据，可能输入的关键字姿势不对！</p>
+            </span>
+        </template>
     </vxe-table>
     <div class="footer-info">
         <el-tag size="medium" effect="plain" type="success" class="footer-item">
@@ -318,6 +341,7 @@
 {% include 'admin/includes/js-part.html' %}
 <script src="https://cdn.jsdelivr.net/npm/xe-utils"></script>
 <script src="https://cdn.jsdelivr.net/npm/vxe-table@legacy"></script>
+<script src="https://cdn.jsdelivr.net/npm/xe-clipboard"></script>
 
 <script src="{% static 'admin/simpleui-x/js/axios.min.js' %}"></script>
 <script>
@@ -344,593 +368,723 @@
         'forcedMetaDL': '强制下载元数据',
     }
     const vm = new Vue({
-        // 配置选项(option)
-        // element: 指定用vue来管理页面中的哪个标签区域
-        el: '#app',
-        data: {
-            downloaders: [],
-            loading: false,
-            mainData: {},
-            tracker_list: [],
-            dialogFormVisible: false,
-            timer: {},
-            deleteForm: false,
-            categoryForm: false,
-            refresh: false,
-            downloader_id: 0,
-            details: false,
-            table: {},
-            torrent: {
-                {#name: '',#}
-                {#category: '',#}
-                {#size: '',#}
-                {#downloaded: '',#}
-                {#uploaded: '',#}
-                {#dlspeed: '',#}
-                {#upspeed: '',#}
-                {#progress: '',#}
-                {#ratio: '',#}
-                {#seeding_time: '',#}
-                {#state: '',#}
-                {#last_activity: '',#}
-                {#added_on: '',#}
-                {#tracker: '',#}
-            },
-            customColors: [
-                {color: '#f56c6c', percentage: 20},
-                {color: '#e6a23c', percentage: 40},
-                {color: '#5cb87a', percentage: 60},
-                {color: '#1989fa', percentage: 80},
-                {color: '#6f7ad3', percentage: 100}
-            ],
-            selected_rows: [],
-            categoryFilters: [
-                {
-                    label: '未分类',
-                    value: ''
-                }
-            ],
-            categories: [],
-            menuCategories: [],
-            category: '',
-            server_state: {},
-            delete_files: false,
-            tableMenu: {
-                className: 'my-menus',
-                header: {
-                    options: [
-                        []
-                    ]
-                },
-                body: {
-                    options: [
-                        [
-                            {
-                                code: 'resume',
-                                name: '继续',
-                                prefixIcon: 'vxe-icon-square-caret-right'
-                            },
-                            {
-                                code: 'set_force_start',
-                                name: '强制继续',
-                                prefixIcon: 'vxe-icon-square-caret-right-fill'
-                            },
-                            {
-                                code: 'pause',
-                                name: '暂停',
-                                prefixIcon: 'vxe-icon-square-minus'
-                            }
-                        ],
-                        [
-                            {
-                                {#code: 'delete',#}
-                                code: 'deleteForm',
-                                name: '删除',
-                                prefixIcon: 'vxe-icon-delete color-red'
-                            },
-                        ],
-                        [
-                            {
-                                name: '分类',
-                                prefixIcon: 'vxe-icon-square-square',
-                                children: [
-                                    {code: 'create_category', name: '添加', prefixIcon: 'vxe-icon-square-plus'},
-                                    {code: 'set_category', name: '重置', prefixIcon: 'vxe-icon-square-close'},
-                                    {code: 'categoryForm', name: '修改分类', prefixIcon: 'vxe-icon-edit'},
-                                ]
-                            },
-                            {#{#}
-                            {#    name: '标签',#}
-                            {#    children: [#}
-                            {#        {code: 'create_tags', name: '添加'},#}
-                            {#        {code: 'remove_tags', name: '删除全部'}#}
-                            {#    ]#}
-                            //},
-                            {
-                                code: 'set_auto_management',
-                                name: '自动管理',
-                                prefixIcon: 'vxe-icon-platform'
-                            },
-                        ],
-                        [
-                            {
-                                code: 'set_super_seeding',
-                                name: '超级做种',
-                                prefixIcon: 'vxe-icon-cloud-download'
-                            }
-                        ],
-
-                        [
-                            {code: 'recheck', name: '重新校验', prefixIcon: 'vxe-icon-folder'},
-                            {code: 'reannounce', name: '重新汇报', prefixIcon: 'vxe-icon-comment'},
-                            {
-                                code: 'copy',
-                                name: '复制',
-                                prefixIcon: 'vxe-icon-copy',
-                                children: [
-                                    {code: 'copy', name: '名称', prefixIcon: 'vxe-icon-table'},
-                                    {code: 'copy', name: 'HASH', prefixIcon: 'vxe-icon-sort-alpha-asc'},
-                                    {code: 'copy', name: '链接', prefixIcon: 'vxe-icon-sort-alpha-desc'}
-                                ]
-                            }
-                        ],
-                        [
-                            {
-                                code: 'sort',
-                                name: '排序',
-                                prefixIcon: 'vxe-icon-sort',
-                                children: [
-                                    {code: 'clearSort', name: '清除排序', prefixIcon: 'vxe-icon-undo'},
-                                    {#{code: 'sortAsc', name: '升序', prefixIcon: 'vxe-icon-sort-alpha-asc'},#}
-                                    {#{code: 'sortDesc', name: '倒序', prefixIcon: 'vxe-icon-sort-alpha-desc'}#}
-                                ]
-                            },
-                            {
-                                name: '筛选',
-                                prefixIcon: 'vxe-icon-funnel',
-                                children: [
-                                    {code: 'clearFilter', name: '清除筛选', prefixIcon: 'vxe-icon-funnel-clear'},
-                                    {
-                                        code: 'filterSelect',
-                                        name: '按所选单元格的值筛选',
-                                        prefixIcon: 'vxe-icon-square-checked'
-                                    }
-                                ]
-                            },
-                            {
-                                code: 'clearCheckboxRow',
-                                name: '清除选中',
-                                prefixIcon: 'vxe-icon-funnel',
-                                {#children: [#}
-                                {#    {code: 'clearCheckboxRow', name: '清除选中', prefixIcon: 'vxe-icon-funnel-clear'},#}
+            // 配置选项(option)
+            // element: 指定用vue来管理页面中的哪个标签区域
+            el: '#app',
+            data: {
+                downloaders: [],
+                loading: false,
+                mainData: {},
+                tracker_list: [],
+                dialogFormVisible: false,
+                timer: {},
+                deleteForm: false,
+                categoryForm: false,
+                refresh: false,
+                downloader_id: 0,
+                details: false,
+                table: {},
+                torrent: {},
+                torrents: [],
+                searchModal: '',
+                customColors: [
+                    {color: '#f56c6c', percentage: 20},
+                    {color: '#e6a23c', percentage: 40},
+                    {color: '#5cb87a', percentage: 60},
+                    {color: '#1989fa', percentage: 80},
+                    {color: '#6f7ad3', percentage: 100}
+                ],
+                selected_rows: [],
+                categoryFilters: [
+                    {
+                        label: '未分类',
+                        value: ''
+                    }
+                ],
+                categories: [],
+                menuCategories: [],
+                category: '',
+                server_state: {},
+                delete_files: false,
+                tableMenu: {
+                    className: 'my-menus',
+                    header: {
+                        options: [
+                            []
+                        ]
+                    },
+                    body: {
+                        options: [
+                            [
+                                {
+                                    code: 'resume',
+                                    name: '继续',
+                                    prefixIcon: 'vxe-icon-square-caret-right'
+                                },
+                                {
+                                    code: 'set_force_start',
+                                    name: '强制继续',
+                                    prefixIcon: 'vxe-icon-square-caret-right-fill'
+                                },
+                                {
+                                    code: 'pause',
+                                    name: '暂停',
+                                    prefixIcon: 'vxe-icon-square-minus'
+                                }
+                            ],
+                            [
+                                {
+                                    {#code: 'delete',#}
+                                    code: 'deleteForm',
+                                    name: '删除',
+                                    prefixIcon: 'vxe-icon-delete color-red'
+                                },
+                            ],
+                            [
+                                {
+                                    name: '分类',
+                                    prefixIcon: 'vxe-icon-square-square',
+                                    children: [
+                                        {code: 'create_category', name: '添加', prefixIcon: 'vxe-icon-square-plus'},
+                                        {code: 'set_category', name: '重置', prefixIcon: 'vxe-icon-square-close'},
+                                        {code: 'categoryForm', name: '修改分类', prefixIcon: 'vxe-icon-edit'},
+                                    ]
+                                },
                                 {#{#}
-                                {#    code: 'setAllCheckboxRow',#}
-                                {#    name: '全选',#}
-                                {#    prefixIcon: 'vxe-icon-square-checked'#}
-                                //}
-                                {#]#}
-                            }
-                        ],
-                    ]
-                },
-                footer: {
-                    options: [
-                        [],
-                        [],
-                        []
-                    ]
-                },
-                visibleMethod: this.menuVisibleMethod
-            }
-        },
-        beforeMount() {
-            window.vm = this
-            // 任务状态过滤器数据
-            let data = []
-            for (let x in download_state) {
-                data.push({
-                    'label': download_state[x],
-                    'value': x
-                })
-            }
-            this.stateFilters = data
-        },
-        mounted() {
-            this.loading = true
-            this.$message({
-                type: 'warning', message: '下载器将在十分钟后停止刷新！'
-            });
-            {#console.log("获取下载器数量：", this.downloaders.length)#}
-            {#this.get_downloading(this.downloaders[0].id)#}
-        },
-        updated() {
-            // 十分钟后停止刷新
-            setTimeout(() => {
-                clearInterval(this.timer)
-                this.timer = null
-                this.refresh = true
-            }, 1000 * 60 * 10)
-        },
-        beforeUpdated() {
+                                {#    name: '标签',#}
+                                {#    children: [#}
+                                {#        {code: 'create_tags', name: '添加'},#}
+                                {#        {code: 'remove_tags', name: '删除全部'}#}
+                                {#    ]#}
+                                //},
+                                {
+                                    code: 'set_auto_management',
+                                    name: '自动管理',
+                                    prefixIcon: 'vxe-icon-platform'
+                                },
+                            ],
+                            [
+                                {
+                                    code: 'set_super_seeding',
+                                    name: '超级做种',
+                                    prefixIcon: 'vxe-icon-cloud-download'
+                                }
+                            ],
 
-        },
-        // 清除定时器，不然页面会卡死
-        beforeDestroy() {
-            this.$once('hook:beforeDestroy',
-                () => {
+                            [
+                                {code: 'recheck', name: '重新校验', prefixIcon: 'vxe-icon-folder'},
+                                {code: 'reannounce', name: '重新汇报', prefixIcon: 'vxe-icon-comment'},
+                                {
+                                    code: 'copy',
+                                    name: '复制当前',
+                                    prefixIcon: 'vxe-icon-copy',
+                                    children: [
+                                        {code: 'name', name: '名称', prefixIcon: 'vxe-icon-table'},
+                                        {code: 'hash', name: 'HASH', prefixIcon: 'vxe-icon-sort-alpha-asc'},
+                                        {code: 'magnet_uri', name: '链接', prefixIcon: 'vxe-icon-sort-alpha-desc'}
+                                    ]
+                                }
+                            ],
+                            [
+                                {
+                                    code: 'sort',
+                                    name: '排序',
+                                    prefixIcon: 'vxe-icon-sort',
+                                    children: [
+                                        {code: 'clearSort', name: '清除排序', prefixIcon: 'vxe-icon-undo'},
+                                        {#{code: 'sortAsc', name: '升序', prefixIcon: 'vxe-icon-sort-alpha-asc'},#}
+                                        {#{code: 'sortDesc', name: '倒序', prefixIcon: 'vxe-icon-sort-alpha-desc'}#}
+                                    ]
+                                },
+                                {
+                                    name: '筛选',
+                                    prefixIcon: 'vxe-icon-funnel',
+                                    children: [
+                                        {code: 'clearFilter', name: '清除筛选', prefixIcon: 'vxe-icon-funnel-clear'},
+                                        {
+                                            code: 'filterSelect',
+                                            name: '按所选单元格的值筛选',
+                                            prefixIcon: 'vxe-icon-square-checked'
+                                        }
+                                    ]
+                                },
+                                {
+                                    code: 'clearCheckboxRow',
+                                    name: '清除选中',
+                                    prefixIcon: 'vxe-icon-funnel',
+                                    {#children: [#}
+                                    {#    {code: 'clearCheckboxRow', name: '清除选中', prefixIcon: 'vxe-icon-funnel-clear'},#}
+                                    {#{#}
+                                    {#    code: 'setAllCheckboxRow',#}
+                                    {#    name: '全选',#}
+                                    {#    prefixIcon: 'vxe-icon-square-checked'#}
+                                    //}
+                                    {#]#}
+                                }
+                            ],
+                        ]
+                    },
+                    footer: {
+                        options: [
+                            [],
+                            [],
+                            []
+                        ]
+                    },
+                    visibleMethod: this.menuVisibleMethod
+                }
+            },
+            beforeMount() {
+                window.vm = this
+                // 任务状态过滤器数据
+                let data = []
+                for (let x in download_state) {
+                    data.push({
+                        'label': download_state[x],
+                        'value': x
+                    })
+                }
+                this.stateFilters = data
+            },
+            mounted() {
+                this.loading = true
+                this.$message({
+                    type: 'warning', message: '下载器将在十分钟后停止刷新！'
+                });
+                {#console.log("获取下载器数量：", this.downloaders.length)#}
+                {#this.get_downloading(this.downloaders[0].id)#}
+            },
+            updated() {
+                // 十分钟后停止刷新
+                setTimeout(() => {
                     clearInterval(this.timer)
                     this.timer = null
-                }
-            )
-        },
-        created() {
-            this.$nextTick(() => {
-                // 将表格和工具栏进行关联
-                this.table = this.$refs.dataTable
-                {#console.log(this.$refs)#}
-                this.table.connect(this.$refs.xToolbar)
-                {#let ddd = this.$refs.downloaders#}
-                {#console.log(ddd.$data.panes)#}
-            })
+                    this.refresh = true
+                }, 1000 * 60 * 10)
+            },
+            beforeUpdated() {
 
-            this.get_downloaders()
-        },
-        watch: {},
-        methods: {
-            showDetails({row, rowIndex, $rowIndex, column, columnIndex, $columnIndex, $event}) {
-                console.log(row)
-                this.torrent = row
-                this.details = true
             },
-            closeDrawer() {
-                this.details = false
-                this.torrent = {}
-            },
-            clearFilters() {
-                //清除筛选
-                this.table.clearFilter()
-            },
-            clearSelection() {
-                //清除选中
-                this.table.clearCheckboxRow()
-            },
-            stopRefresh() {
-                this.refresh = true
-                clearInterval(this.timer)
-                this.timer = null
-            },
-            startRefresh() {
-                this.refresh = false
-                this.timer = setInterval(() => {
-                    this.get_downloading(this.downloader_id)
-                }, 5000)
-            },
-            handleButtonClick(id) {
-                console.log(id.$el)
-                id.active = true
-                {#handleButtonClick({value, $event}) {#}
-                this.loading = true
-                this.downloader_id = id.name
-                clearInterval(this.timer)
-                this.timer = null
-                this.mainData = []
-                this.get_downloader_categories(this.downloader_id)
-                this.timer = setInterval(() => {
-                    this.get_downloading(this.downloader_id)
-                }, 5000)
-                this.refresh = false
-            },
-            get_downloaders() {
-                axios.get(
-                    "{% url "get_downloaders" %}"
-                ).then(res => {
-                    this.loading = true
-                    if (res.data.code === 0) {
-                        console.log('获取下载器列表成功', res.data.data)
-                        this.downloaders = res.data.data
-                        this.downloader_id = this.downloaders[0].id
-                        this.get_downloader_categories(this.downloader_id)
-                        this.timer = setInterval(() => {
-                            this.get_downloading(this.downloader_id)
-                        }, 5000)
-                    } else {
-                        this.$message({
-                            type: 'warning', message: '获取下载器列表失败！'
-                        });
+            // 清除定时器，不然页面会卡死
+            beforeDestroy() {
+                this.$once('hook:beforeDestroy',
+                    () => {
+                        clearInterval(this.timer)
+                        this.timer = null
                     }
-                }).catch(res => {
-                    console.log('获取下载器列表失败', res)
-                    this.$message({type: 'warning', message: '获取下载器列表失败！' + res});
+                )
+            },
+            created() {
+                this.$nextTick(() => {
+                    // 将表格和工具栏进行关联
+                    this.table = this.$refs.dataTable
+                    {#console.log(this.$refs)#}
+                    this.table.connect(this.$refs.xToolbar)
+                    {#let ddd = this.$refs.downloaders#}
+                    {#console.log(ddd.$data.panes)#}
                 })
-            },
-            get_downloader_categories(downloader_id) {
-                axios.get(
-                    "{% url "get_downloader_categories" %}",
-                    {
-                        params: {
-                            id: downloader_id
-                        }
-                    }
-                ).then(res => {
-                    this.loading = true
-                    if (res.data.code === 0) {
-                        console.log('获取下载器分类列表成功', res.data.data)
-                        this.tracker_list = res.data.data.tracker_list;
-                        const trackerFilter = [{label: '无', value: ''}]
-                        this.tracker_list.forEach((value, index, array) => {
-                            {#console.log(value, index)#}
-                            trackerFilter.push({'label': value.name, 'value': value.tracker})
-                        })
-                        let categoryFilters = [{label: '未分类', value: ''}]
-                        let categories = res.data.data.categories
 
-                        categories.forEach((value, index, array) => {
-                            categoryFilters.push({'label': value, 'value': value})
-                            this.categories.push({'title': value, 'value': value})
-                            {#this.menuCategories.push({code: 'set_category', name: value},)#}
-                        })
-                        // 异步加载筛选数据
-                        {#this.table = this.$refs.dataTable#}
-                        if (this.table) {
-                            const categoryColumn = this.table.getColumnByField('category')
-                            {#console.log(nameColumn)#}
-                            if (categoryColumn) {
-                                this.table.setFilter(categoryColumn, categoryFilters)
+                this.get_downloaders()
+            },
+            watch: {},
+            methods: {
+                footerMethod({columns, data}) {
+                    return [
+                        /**
+                         columns.map((column, columnIndex) => {
+                            if (columnIndex === 1) {
+                                return '总计'
                             }
-                            const trackerColumn = this.table.getColumnByField('tracker')
-                            {#console.log(trackerColumn)#}
-                            if (trackerColumn) {
-                                this.table.setFilter(trackerColumn, trackerFilter)
-                            }
-                        }
-                    } else {
-                        this.$message({
-                            type: 'warning', message: '获取下载器列表失败！'
-                        });
-                    }
-                }).catch(res => {
-                    console.log('获取下载器列表失败', res)
-                    this.$message({type: 'warning', message: '获取下载器列表失败！' + res});
-                })
-            },
-            get_downloading(downloader_id) {
-                axios.get(
-                    "{% url "downloading" %}",
-                    {
-                        params: {
-                            id: downloader_id
-                        }
-                    }
-                ).then(res => {
-                    if (res.data.code === 0) {
-                        this.mainData = res.data.data
-                        {#console.log(res.data.data.tracker_filters)#}
-                        this.server_state = res.data.data.server_state
-                        this.loading = false
-                        // 获取种子
-                        //this.$message({
-                        // type: 'success',
-                        // message: '任务加载成功！！'
-                        // })
-                    } else {
-                        {#console.log(res.data.data)#}
-                        this.$message({
-                            type: 'warning', message: '任务加载出错！！'
-                        })
-                    }
-                })
+                            return data.length
 
-            },
-            handlerTrackerFilter({column, property, values, datas, filterList, $event}) {
-                console.log(column, property, values, datas, filterList, $event)
-            },
-            handleSize({row, column, cellValue, index}) {
-                return this.renderSize(cellValue)
-            },
-            // 执行格式化文件大小
-            handleSpeed({row, column, cellValue, index}) {
-                return this.renderSize(cellValue) !== 0 ? this.renderSize(cellValue) + '/S' : ''
-            },
-            // 格式化文件大小
-            renderSize(value) {
-                if (null == value || value == '') {
-                    return 0;
-                }
-                var unitArr = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-                var index = 0;
-                var srcsize = parseFloat(value);
-                index = Math.floor(Math.log(srcsize) / Math.log(1024));
-                var size = srcsize / Math.pow(1024,
-                    index);
-                size = size.toFixed(2);//保留的小数位数
-                return size + ' ' + unitArr[index];
-            },
-            // 格式化进度
-            handlePercent({row, column, cellValue, index}) {
-                return (cellValue * 100).toFixed(2) + '%'
-            },
-            // 格式化分享率
-            handleRatio({row, column, cellValue, index}) {
-                return cellValue.toFixed(4)
-            },
-            handleTracker({row, column, cellValue, index}) {
-                // 格式化输出tracker所属的站点
-                let site = this.tracker_list.find(site => cellValue.includes(site.tracker))
-                {#console.log(row)#}
-                {#console.log(cellValue.includes('joy'))#}
-                {#return cellValue#}
-                return null != site ? site.name : cellValue
-            },
-            handleState({row, column, cellValue, index}) {
-                return download_state[cellValue]
-            },
-            filterStateMethod({value, row, column}) {
-                const property = column['property'];
-                return row[property] === value;
-            },
-            filterCategoryMethod({value, row, column}) {
-                const property = column['property'];
-                return row[property] === value;
-            },
-            filterTrackerMethod({value, row, column}) {
-                const property = column['property'];
-                return row[property].includes(value);
-            },
-            handleDeleteForm() {
-                if (this.table.getCheckboxRecords().length <= 0) {
-                    this.$message({type: 'warning', message: '未选中种子！！'})
-                    return
-                }
-                this.deleteForm = true
-            },
-            handleSetCategory() {
-                if (this.table.getCheckboxRecords().length <= 0) {
-                    this.$message({type: 'warning', message: '未选中种子！！'})
-                    return
-                }
-                this.categoryForm = true
-            },
-            handleSelected(command, category = '', delete_files = false, enable = 'True') {
-                let ids = []
-                const selectedRows = this.table.getCheckboxRecords()
-                if (selectedRows.length <= 0) {
-                    this.$message({type: 'warning', message: '未选中任何种子！！'})
-                    return
-                }
-                console.log('enable', enable)
-                selectedRows.forEach((item, index) => {
-                    console.log(item['hash'], index)
-                    ids.push(item['hash'])
-                })
-                let data = new FormData()
-                data.append('ids', ids)
-                data.append('command', command)
-                data.append('enable', enable)
-                data.append('category', category)
-                data.append('downloader_id', this.downloader_id)
-                axios.post(
-                    "{% url "control_torrent" %}",
-                    data
-                ).then(res => {
-                    console.log(res.data)
-                    this.get_downloading(this.downloader_id)
-                    this.$message({type: 'success', message: '指令发送成功！！'})
-                    this.selected_rows = []
-                    {#this.$refs.dataTable.clearSelection()#}
-                    this.table.clearCheckboxRow()
-                }).catch(() => {
-                    this.$message({type: 'warning', message: '指令发送失败！！'})
-                })
-            },
-            tableSelected({checked, row, rowIndex, $rowIndex, column, columnIndex, $columnIndex, $event}) {
-                this.selected_rows = this.table.getCheckboxRecords()
-            },
-            rowKey(row) {
-                console.log(row.hash)
-                return row.hash
-            },
-            handleDelete() {
-                console.log(this.delete_files)
-                // { #this.deleteForm = true# }
-                this.handleSelected('delete', '', this.delete_files)
-                this.deleteForm = false
-                this.delete_files = false
-            },
-            setCategory() {
-                this.handleSelected('set_category', this.category)
-                this.categoryForm = false
-                this.category = ''
-            },
-            limitSpeed() {
-            },
-            setLocation() {
-            },
-            setCategoryFilter(fieldOrColumn, options) {
-                console.log(fieldOrColumn, options)
-            },
-            menuVisibleMethod({options, column}) {
-                console.log(options)
-                return true
-            },
-            contextMenuClickEvent({menu, type, row, rowIndex, column, columnIndex, $event}) {
+                             if (['size'].includes(column.property)) {
+                                return this.renderSize(this.meanNum(data, column.property))
+                            }
+                             return null
+
+                        }),
+                         **/
+                        columns.map((column, columnIndex) => {
+                            if (columnIndex === 0) {
+                                return '总计'
+                            }
+                            if (columnIndex === 1) {
+                                return data.length
+                            }
+
+                            if (columnIndex === 2) {
+                                return '做种大小：' + this.renderSize(this.sumNum(data, 'size'))
+                            }
+
+                            if (columnIndex === 3) {
+                                return
+                            }
+
+                            if (columnIndex === 4) {
+                                return this.renderSize(this.server_state.free_space_on_disk)
+                            }
+                            if (columnIndex === 5) {
+                                return '分享率：' + this.server_state.global_ratio
+                            }
+
+                            if (columnIndex === 6) {
+                                return '上传'
+                            }
+                            if (columnIndex === 7) {
+                                return this.renderSize(this.server_state.up_info_speed) + ' / S(' +
+                                    this.renderSize(this.server_state.up_info_data) + ' / ' +
+                                    this.renderSize(this.server_state.alltime_ul) + ')'
+
+                            }
+                            if (columnIndex === 8) {
+                                return '下载'
+                            }
+                            if (columnIndex === 9) {
+                                return this.renderSize(this.server_state.dl_info_speed) + '/S (' +
+                                    this.renderSize(this.server_state.dl_info_data) + '/' +
+                                    this.renderSize(this.server_state.alltime_dl) + ')'
+
+                            }
+
+                            return null
+                        })
+                    ]
+                },
                 /**
-                 * 如果选中任务列表为空，则选中当前任务
+                 * 合并列
                  */
-                const selectedRows = this.table.getCheckboxRecords()
-                if (selectedRows.length <= 0) {
-                    this.table.setCheckboxRow(row, true)
-                }
-                console.log(menu, type, row, rowIndex, column, columnIndex, $event)
-                switch (menu.code) {
-                    case 'copy':
-                        // 示例
-                        if (row && column) {
-                            if (XEClipboard.copy(row[column.property])) {
+                footerColspanMethod({$rowIndex, _columnIndex}) {
+                    if ($rowIndex === 0) {
+                        if (_columnIndex === 7) {
+                            return {
+                                rowspan: 1,
+                                colspan: 3
+                            }
+                        }
+                        if (_columnIndex === 9) {
+                            return {
+                                rowspan: 1,
+                                colspan: 3
+                            }
+                        }
+                    }
+                },
+                meanNum(list, field) {
+                    let count = 0
+                    list.forEach(item => {
+                        count += Number(item[field])
+                    })
+                    return count / list.length
+                },
+                sumNum(list, field) {
+                    let count = 0
+                    list.forEach(item => {
+                        count += Number(item[field])
+                    })
+                    return count
+                },
+                footerCellClassName({$rowIndex, columnIndex}) {
+                    if (columnIndex === 5) {
+                        if ($rowIndex === 0) {
+                            return 'col-blue'
+                        } else {
+                            return 'col-red'
+                        }
+                    }
+                },
+                searchEvent() {
+                    const filterName = XEUtils.toValueString(this.searchModal).trim().toLowerCase()
+                    if (filterName) {
+                        const filterRE = new RegExp(filterName, 'gi')
+                        const searchProps = ['name', 'category', 'tracker', 'state']
+                        const rest = this.mainData.torrents.filter(item => searchProps.some(key => XEUtils.toValueString(item[key]).toLowerCase().indexOf(filterName) > -1))
+                        this.torrents = rest.map(row => {
+                            const item = Object.assign({}, row)
+                            searchProps.forEach(key => {
+                                item[key] = XEUtils.toValueString(item[key]).replace(filterRE, match => `<span class="keyword-lighten">${match}</span>`)
+                            })
+                            return item
+                        })
+                    } else {
+                        this.torrents = this.mainData.torrents
+                    }
+                },
+                showDetails({row, rowIndex, $rowIndex, column, columnIndex, $columnIndex, $event}) {
+                    console.log(row)
+                    this.torrent = row
+                    this.details = true
+                },
+                closeDrawer() {
+                    this.details = false
+                    this.torrent = {}
+                },
+                clearFilters() {
+                    //清除筛选
+                    this.table.clearFilter()
+                },
+                clearSelection() {
+                    //清除选中
+                    this.table.clearCheckboxRow()
+                },
+                stopRefresh() {
+                    this.refresh = true
+                    clearInterval(this.timer)
+                    this.timer = null
+                },
+                startRefresh() {
+                    this.refresh = false
+                    this.timer = setInterval(() => {
+                        this.get_downloading(this.downloader_id)
+                    }, 5000)
+                },
+                handleButtonClick(id) {
+                    console.log(id.$el)
+                    id.active = true
+                    {#handleButtonClick({value, $event}) {#}
+                    this.loading = true
+                    this.downloader_id = id.name
+                    clearInterval(this.timer)
+                    this.timer = null
+                    this.mainData = []
+                    this.get_downloader_categories(this.downloader_id)
+                    this.timer = setInterval(() => {
+                        this.get_downloading(this.downloader_id)
+                    }, 5000)
+                    this.refresh = false
+                },
+                get_downloaders() {
+                    axios.get(
+                        "{% url "get_downloaders" %}"
+                    ).then(res => {
+                        this.loading = true
+                        if (res.data.code === 0) {
+                            console.log('获取下载器列表成功', res.data.data)
+                            this.downloaders = res.data.data
+                            this.downloader_id = this.downloaders[0].id
+                            this.get_downloader_categories(this.downloader_id)
+                            this.timer = setInterval(() => {
+                                this.get_downloading(this.downloader_id)
+                            }, 5000)
+                        } else {
+                            this.$message({
+                                type: 'warning', message: '获取下载器列表失败！'
+                            });
+                        }
+                    }).catch(res => {
+                        console.log('获取下载器列表失败', res)
+                        this.$message({type: 'warning', message: '获取下载器列表失败！' + res});
+                    })
+                },
+                get_downloader_categories(downloader_id) {
+                    axios.get(
+                        "{% url "get_downloader_categories" %}",
+                        {
+                            params: {
+                                id: downloader_id
+                            }
+                        }
+                    ).then(res => {
+                        this.loading = true
+                        if (res.data.code === 0) {
+                            console.log('获取下载器分类列表成功', res.data.data)
+                            this.tracker_list = res.data.data.tracker_list;
+                            const trackerFilter = [{label: '无', value: ''}]
+                            this.tracker_list.forEach((value, index, array) => {
+                                {#console.log(value, index)#}
+                                trackerFilter.push({'label': value.name, 'value': value.tracker})
+                            })
+                            let categoryFilters = [{label: '未分类', value: ''}]
+                            let categories = res.data.data.categories
+
+                            categories.forEach((value, index, array) => {
+                                categoryFilters.push({'label': value, 'value': value})
+                                this.categories.push({'title': value, 'value': value})
+                                {#this.menuCategories.push({code: 'set_category', name: value},)#}
+                            })
+                            // 异步加载筛选数据
+                            {#this.table = this.$refs.dataTable#}
+                            if (this.table) {
+                                const categoryColumn = this.table.getColumnByField('category')
+                                {#console.log(nameColumn)#}
+                                if (categoryColumn) {
+                                    this.table.setFilter(categoryColumn, categoryFilters)
+                                }
+                                const trackerColumn = this.table.getColumnByField('tracker')
+                                {#console.log(trackerColumn)#}
+                                if (trackerColumn) {
+                                    this.table.setFilter(trackerColumn, trackerFilter)
+                                }
+                            }
+                        } else {
+                            this.$message({
+                                type: 'warning', message: '获取下载器列表失败！'
+                            });
+                        }
+                    }).catch(res => {
+                        console.log('获取下载器列表失败', res)
+                        this.$message({type: 'warning', message: '获取下载器列表失败！' + res});
+                    })
+                },
+                get_downloading(downloader_id) {
+                    axios.get(
+                        "{% url "downloading" %}",
+                        {
+                            params: {
+                                id: downloader_id
+                            }
+                        }
+                    ).then(res => {
+                        if (res.data.code === 0) {
+                            this.mainData = res.data.data
+                            this.searchEvent()
+                            {#console.log(res.data.data.tracker_filters)#}
+                            this.server_state = res.data.data.server_state
+                            this.loading = false
+                            // 获取种子
+                            //this.$message({
+                            // type: 'success',
+                            // message: '任务加载成功！！'
+                            // })
+                        } else {
+                            {#console.log(res.data.data)#}
+                            this.$message({
+                                type: 'warning', message: '任务加载出错！！'
+                            })
+                        }
+                    })
+
+                },
+                handlerTrackerFilter({column, property, values, datas, filterList, $event}) {
+                    console.log(column, property, values, datas, filterList, $event)
+                },
+                handleSize({row, column, cellValue, index}) {
+                    return this.renderSize(cellValue)
+                },
+                // 执行格式化文件大小
+                handleSpeed({row, column, cellValue, index}) {
+                    return this.renderSize(cellValue) !== 0 ? this.renderSize(cellValue) + '/S' : ''
+                },
+                // 格式化文件大小
+                renderSize(value) {
+                    if (null == value || value == '') {
+                        return 0;
+                    }
+                    var unitArr = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+                    var index = 0;
+                    var srcsize = parseFloat(value);
+                    index = Math.floor(Math.log(srcsize) / Math.log(1024));
+                    var size = srcsize / Math.pow(1024,
+                        index);
+                    size = size.toFixed(2);//保留的小数位数
+                    return size + ' ' + unitArr[index];
+                },
+                // 格式化进度
+                handlePercent({row, column, cellValue, index}) {
+                    return (cellValue * 100).toFixed(2) + '%'
+                },
+                // 格式化分享率
+                handleRatio({row, column, cellValue, index}) {
+                    return cellValue.toFixed(4)
+                },
+                handleTracker({row, column, cellValue, index}) {
+                    // 格式化输出tracker所属的站点
+                    let site = this.tracker_list.find(site => cellValue.includes(site.tracker))
+                    {#console.log(row)#}
+                    {#console.log(cellValue.includes('joy'))#}
+                    {#return cellValue#}
+                    return null != site ? site.name : cellValue
+                },
+                handleState({row, column, cellValue, index}) {
+                    return download_state[cellValue]
+                },
+                filterStateMethod({value, row, column}) {
+                    const property = column['property'];
+                    return row[property] === value;
+                },
+                filterCategoryMethod({value, row, column}) {
+                    const property = column['property'];
+                    return row[property] === value;
+                },
+                filterTrackerMethod({value, row, column}) {
+                    const property = column['property'];
+                    return row[property].includes(value);
+                },
+                handleDeleteForm() {
+                    if (this.table.getCheckboxRecords().length <= 0) {
+                        this.$message({type: 'warning', message: '未选中种子！！'})
+                        return
+                    }
+                    this.deleteForm = true
+                },
+                handleSetCategory() {
+                    if (this.table.getCheckboxRecords().length <= 0) {
+                        this.$message({type: 'warning', message: '未选中种子！！'})
+                        return
+                    }
+                    this.categoryForm = true
+                },
+                handleSelected(command, category = '', delete_files = false, enable = 'True') {
+                    let ids = []
+                    const selectedRows = this.table.getCheckboxRecords()
+                    if (selectedRows.length <= 0) {
+                        this.$message({type: 'warning', message: '未选中任何种子！！'})
+                        return
+                    }
+                    console.log('enable', enable)
+                    selectedRows.forEach((item, index) => {
+                        console.log(item['hash'], index)
+                        ids.push(item['hash'])
+                    })
+                    let data = new FormData()
+                    data.append('ids', ids)
+                    data.append('command', command)
+                    data.append('enable', enable)
+                    data.append('category', category)
+                    data.append('downloader_id', this.downloader_id)
+                    axios.post(
+                        "{% url "control_torrent" %}",
+                        data
+                    ).then(res => {
+                        console.log(res.data)
+                        this.get_downloading(this.downloader_id)
+                        this.$message({type: 'success', message: '指令发送成功！！'})
+                        this.selected_rows = []
+                        {#this.$refs.dataTable.clearSelection()#}
+                        this.table.clearCheckboxRow()
+                    }).catch(() => {
+                        this.$message({type: 'warning', message: '指令发送失败！！'})
+                    })
+                },
+                tableSelected({checked, row, rowIndex, $rowIndex, column, columnIndex, $columnIndex, $event}) {
+                    this.selected_rows = this.table.getCheckboxRecords()
+                },
+                rowKey(row) {
+                    console.log(row.hash)
+                    return row.hash
+                },
+                handleDelete() {
+                    console.log(this.delete_files)
+                    // { #this.deleteForm = true# }
+                    this.handleSelected('delete', '', this.delete_files)
+                    this.deleteForm = false
+                    this.delete_files = false
+                },
+                setCategory() {
+                    this.handleSelected('set_category', this.category)
+                    this.categoryForm = false
+                    this.category = ''
+                },
+                limitSpeed() {
+                },
+                setLocation() {
+                },
+                setCategoryFilter(fieldOrColumn, options) {
+                    console.log(fieldOrColumn, options)
+                },
+                menuVisibleMethod({options, column}) {
+                    console.log(options)
+                    return true
+                },
+                contextMenuClickEvent({menu, type, row, rowIndex, column, columnIndex, $event}) {
+                    /**
+                     * 如果选中任务列表为空，则选中当前任务
+                     */
+                    {#const selectedRows = this.table.getCheckboxRecords()#}
+                    if (this.table.getCheckboxRecords().length <= 0) {
+                        this.table.setCheckboxRow(row, true)
+                    }
+                    console.log(menu, type, row, rowIndex, column, columnIndex, $event)
+                    switch (menu.code) {
+                        case 'copy':
+                            // 示例
+                            if (row && column) {
+                                if (XEClipboard.copy(row[column.property])) {
+                                    VXETable.modal.message({content: '已复制到剪贴板！', status: 'success'})
+                                }
+                            }
+                            break
+                        case 'name':
+                        case 'hash':
+                        case 'magnet_uri':
+                            let content = []
+                            //将要复制的字段放到数组中，然后把数组写入剪贴板
+                            Array.from(this.table.getCheckboxRecords()).forEach((value, index, array) => {
+                                content.push(value[menu.code])
+                            })
+                            console.log(content)
+                            if (XEClipboard.copy(content)) {
                                 VXETable.modal.message({content: '已复制到剪贴板！', status: 'success'})
                             }
-                        }
-                        break
-                    case 'resume':
-                    case 'set_force_start':
-                    case 'pause':
-                    case 'set_auto_management':
-                    case 'recheck':
-                    case 'reannounce':
-                        this.handleSelected(menu.code)
-                        break
-                    case 'set_super_seeding':
-                        let enable = !row['super_seeding']
-                        console.log('enable1', enable)
-                        this.handleSelected(menu.code, '', '', enable)
-                        break
-                    case 'deleteForm':
-                        this.handleDeleteForm()
-                        break
-                    case 'categoryForm':
-                        this.handleSetCategory()
-                        break
-                    case 'clearSort':
-                        this.table.clearSort()
-                        break
-                    case 'clearFilter':
-                        this.table.clearFilter()
-                        break
-                    case 'clearCheckboxRow':
-                        this.table.clearCheckboxRow()
-                        break
-                    case 'setAllCheckboxRow':
-                        this.table.setAllCheckboxRow(true)
-                        break
-                    case 'filterSelect':
+                            content = []
+                            /**
+                             if (row && column) {
+                                if (XEClipboard.copy(row[menu.code])) {
+                                    VXETable.modal.message({content: '已复制到剪贴板！', status: 'success'})
+                                }
+                            } */
+                            break
+                        case 'resume':
+                        case 'set_force_start':
+                        case 'pause':
+                        case 'set_auto_management':
+                        case 'recheck':
+                        case 'reannounce':
+                            this.handleSelected(menu.code)
+                            break
+                        case 'set_super_seeding':
+                            let enable = !row['super_seeding']
+                            console.log('enable1', enable)
+                            this.handleSelected(menu.code, '', '', enable)
+                            break
+                        case 'deleteForm':
+                            this.handleDeleteForm()
+                            break
+                        case 'categoryForm':
+                            this.handleSetCategory()
+                            break
+                        case 'clearSort':
+                            this.table.clearSort()
+                            break
+                        case 'clearFilter':
+                            this.table.clearFilter()
+                            break
+                        case 'clearCheckboxRow':
+                            this.table.clearCheckboxRow()
+                            break
+                        case 'setAllCheckboxRow':
+                            this.table.setAllCheckboxRow(true)
+                            break
+                        case 'filterSelect':
 
-                        break
-                    default:
-                        VXETable.modal.message(`点击了 ${menu.name} 选项，该功能尚未开发完成！`)
-                }
-            },
-            {#searchEvent2() {#}
-            {#    const filterName = XEUtils.toValueString(this.filterName2).trim().toLowerCase()#}
-            {#    if (filterName) {#}
-            {#        const filterRE = new RegExp(filterName, 'gi')#}
-            {#        const options = {children: 'children'}#}
-            {#        const searchProps = ['name', 'size', 'type', 'date']#}
-            {#        const rest = XEUtils.searchTree(this.tableData2, item => searchProps.some(key => XEUtils.toValueString(item[key]).toLowerCase().indexOf(filterName) > -1), options)#}
-            {#        XEUtils.eachTree(rest, item => {#}
-            {#            searchProps.forEach(key => {#}
-            {#                item[key] = XEUtils.toValueString(item[key]).replace(filterRE, match => `<span class="keyword-lighten">${match}</span>`)#}
-            {#            })#}
-            {#        }, options)#}
-            {#        this.list2 = rest#}
-            {#        // 搜索之后默认展开所有子节点#}
-            {#        this.$nextTick(() => {#}
-            {#            this.$refs.xTree.setAllTreeExpand(true)#}
-            {#        })#}
-            {#    } else {#}
-            {#        this.list2 = this.tableData2#}
-            {#    }#}
-            //,
-        }
-    });
+                            break
+                        default:
+                            VXETable.modal.message(`点击了 ${menu.name} 选项，该功能尚未开发完成！`)
+                    }
+                },
+                {#searchEvent2() {#}
+                {#    const filterName = XEUtils.toValueString(this.filterName2).trim().toLowerCase()#}
+                {#    if (filterName) {#}
+                {#        const filterRE = new RegExp(filterName, 'gi')#}
+                {#        const options = {children: 'children'}#}
+                {#        const searchProps = ['name', 'size', 'type', 'date']#}
+                {#        const rest = XEUtils.searchTree(this.tableData2, item => searchProps.some(key => XEUtils.toValueString(item[key]).toLowerCase().indexOf(filterName) > -1), options)#}
+                {#        XEUtils.eachTree(rest, item => {#}
+                {#            searchProps.forEach(key => {#}
+                {#                item[key] = XEUtils.toValueString(item[key]).replace(filterRE, match => `<span class="keyword-lighten">${match}</span>`)#}
+                {#            })#}
+                {#        }, options)#}
+                {#        this.list2 = rest#}
+                {#        // 搜索之后默认展开所有子节点#}
+                {#        this.$nextTick(() => {#}
+                {#            this.$refs.xTree.setAllTreeExpand(true)#}
+                {#        })#}
+                {#    } else {#}
+                {#        this.list2 = this.tableData2#}
+                {#    }#}
+                //,
+            }
+        })
+    ;
 </script>
 </body>
 </html>
