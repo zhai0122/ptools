@@ -385,9 +385,11 @@ def do_update(request):
         main_pt_site_site_mtime = os.stat('./main_pt_site_site.json').st_mtime
         update_command = {
             # 'cp db/db.sqlite3 db/db.sqlite3-$(date "+%Y%m%d%H%M%S")',
+            '获取更新信息': 'git fetch',
+            '强制覆盖本地': 'git reset --hard',
             '拉取代码更新': 'git pull',
             '安装依赖': 'pip install -r requirements.txt',
-            '创建数据库同步文件': 'python manage.py makemigrations',
+            '创建同步文件': 'python manage.py makemigrations',
             '同步数据库': 'python manage.py migrate',
         }
         result = []
