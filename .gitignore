@@ -3,3 +3,4 @@
 **/__pycache__/
 CONTAINER_ALREADY_STARTED_PLACEHOLDER
 /supervisor/
+/.idea/
