@@ -14,6 +14,15 @@
             background-color: #e76b11 !important;
             color: #fff;
         }
+        .vxe-table--body tr.row--checked > td {
+            background-color: rgb(86, 105, 219) !important;
+            color: #fff;
+        }
+
+        .col--current {
+            background-color: #e76b11 !important;
+            color: #fff;
+        }
 
         .vxe-table--body tr > td {
             cursor: pointer;
@@ -32,6 +41,41 @@
         /* 用来设置当前页面element全局table 鼠标滑过某行时的背景色*/
         .vxe-table--body .vxe-body--row.row--hover td {
             background-color: #df9942 !important;
+        }
+
+        .table-footer .col-blue {
+            background-color: rgba(32, 63, 218, 0.8);
+            color: #fff;
+        }
+
+        .table-footer .col-red {
+            background-color: rgba(255, 22, 1, 0.8);
+            color: #fff;
+        }
+
+        .table-footer .col-orange {
+            background-color: rgba(241, 114, 46, 0.8);
+            color: #fff;
+        }
+
+        .table-footer .col-green {
+            background-color: rgba(29, 119, 8, 0.8);
+            color: #fff;
+        }
+
+        .table-footer .col-yellow {
+            background-color: rgba(231, 211, 108, 0.8);
+            color: #fff;
+        }
+
+        .table-footer .col-blueviolet {
+            background-color: rgba(155, 62, 229, 0.8);
+            color: #fff;
+        }
+
+        .table-footer .col-greenyellow {
+            background-color: rgba(12, 238, 62, 0.8);
+            color: #fff;
         }
 
         .my-menus {
@@ -194,6 +238,7 @@
         </template>
     </vxe-toolbar>
     <vxe-table ref="dataTable" id="table"
+               class="table-footer"
                showBodyOverflow="title" showHeaderOverflow="title"
                :menu-config="tableMenu"
                @menu-click="contextMenuClickEvent"
@@ -204,7 +249,7 @@
                @cell-dblclick="showDetails"
                :data="torrents"
                :loading="loading"
-               height="700" size="mini"
+               height="750" size="mini"
                auto-resize
                round border stripe
                :tooltip-config="{showAll: true}"
@@ -292,25 +337,25 @@
             </span>
         </template>
     </vxe-table>
-    <div class="footer-info">
-        <el-tag size="medium" effect="plain" type="success" class="footer-item">
-            <i class="vxe-icon-cloud-download"></i>
-            <span v-text="renderSize(server_state.up_info_speed) + '/S (' + renderSize(server_state.up_info_data) + '/' + renderSize(server_state.alltime_ul) + ')'"></span>
-        </el-tag>
-        <el-tag size="medium" effect="plain" type="warning" class="footer-item">
-            <i class="vxe-icon-cloud-upload"></i>
-            <span v-text="renderSize(server_state.dl_info_speed) + '/S (' + renderSize(server_state.dl_info_data)+ '/' + renderSize(server_state.alltime_dl) + ')'"></span>
-        </el-tag>
-
-        <el-tag size="medium" type="primary" class="footer-item">
-            <i class="fas fa-hdd"></i>
-            <span v-text="renderSize(server_state.free_space_on_disk)"></span>
-        </el-tag>
-        <el-tag size="medium" type="danger" class="footer-item">
-            <i class="fas fa-share-alt"></i>
-            <span v-text="server_state.global_ratio"></span>
-        </el-tag>
-    </div>
+    {#    <div class="footer-info">#}
+    {#        <el-tag size="medium" effect="plain" type="success" class="footer-item">#}
+    {#            <i class="vxe-icon-cloud-download"></i>#}
+    {#            <span v-text="renderSize(server_state.up_info_speed) + '/S (' + renderSize(server_state.up_info_data) + '/' + renderSize(server_state.alltime_ul) + ')'"></span>#}
+    {#        </el-tag>#}
+    {#        <el-tag size="medium" effect="plain" type="warning" class="footer-item">#}
+    {#            <i class="vxe-icon-cloud-upload"></i>#}
+    {#            <span v-text="renderSize(server_state.dl_info_speed) + '/S (' + renderSize(server_state.dl_info_data)+ '/' + renderSize(server_state.alltime_dl) + ')'"></span>#}
+    {#        </el-tag>#}
+    {##}
+    {#        <el-tag size="medium" type="primary" class="footer-item">#}
+    {#            <i class="fas fa-hdd"></i>#}
+    {#            <span v-text="renderSize(server_state.free_space_on_disk)"></span>#}
+    {#        </el-tag>#}
+    {#        <el-tag size="medium" type="danger" class="footer-item">#}
+    {#            <i class="fas fa-share-alt"></i>#}
+    {#            <span v-text="server_state.global_ratio"></span>#}
+    {#        </el-tag>#}
+    {#    </div>#}
     <div>
         <el-drawer
                 style="margin-bottom: 35px !important;position: fixed;z-index:99999;"
@@ -617,7 +662,7 @@
                             }
 
                             if (columnIndex === 3) {
-                                return
+                                return '剩余空间：'
                             }
 
                             if (columnIndex === 4) {
@@ -643,7 +688,6 @@
                                 return this.renderSize(this.server_state.dl_info_speed) + '/S (' +
                                     this.renderSize(this.server_state.dl_info_data) + '/' +
                                     this.renderSize(this.server_state.alltime_dl) + ')'
-
                             }
 
                             return null
@@ -667,6 +711,12 @@
                                 colspan: 3
                             }
                         }
+                        if (_columnIndex === 10) {
+                            return {
+                                rowspan: 1,
+                                colspan: 3
+                            }
+                        }
                     }
                 },
                 meanNum(list, field) {
@@ -684,12 +734,26 @@
                     return count
                 },
                 footerCellClassName({$rowIndex, columnIndex}) {
+                    if (columnIndex === 0 || columnIndex === 1) {
+                        return 'col-blue'
+                    }
+                    if (columnIndex === 2) {
+                        return 'col-orange'
+                    }
+                    if (columnIndex === 3 || columnIndex === 4) {
+                        return 'col-yellow'
+                    }
                     if (columnIndex === 5) {
-                        if ($rowIndex === 0) {
-                            return 'col-blue'
-                        } else {
-                            return 'col-red'
-                        }
+                        return 'col-red'
+                    }
+                    if (columnIndex === 6 || columnIndex === 7) {
+                        return 'col-green'
+                    }
+                    if (columnIndex === 8 || columnIndex === 9) {
+                        return 'col-blueviolet'
+                    }
+                    if (columnIndex === 10) {
+                        return 'col-greenyellow'
                     }
                 },
                 searchEvent() {
@@ -840,6 +904,7 @@
                             {#console.log(res.data.data.tracker_filters)#}
                             this.server_state = res.data.data.server_state
                             this.loading = false
+
                             // 获取种子
                             //this.$message({
                             // type: 'success',
@@ -1061,27 +1126,6 @@
                             VXETable.modal.message(`点击了 ${menu.name} 选项，该功能尚未开发完成！`)
                     }
                 },
-                {#searchEvent2() {#}
-                {#    const filterName = XEUtils.toValueString(this.filterName2).trim().toLowerCase()#}
-                {#    if (filterName) {#}
-                {#        const filterRE = new RegExp(filterName, 'gi')#}
-                {#        const options = {children: 'children'}#}
-                {#        const searchProps = ['name', 'size', 'type', 'date']#}
-                {#        const rest = XEUtils.searchTree(this.tableData2, item => searchProps.some(key => XEUtils.toValueString(item[key]).toLowerCase().indexOf(filterName) > -1), options)#}
-                {#        XEUtils.eachTree(rest, item => {#}
-                {#            searchProps.forEach(key => {#}
-                {#                item[key] = XEUtils.toValueString(item[key]).replace(filterRE, match => `<span class="keyword-lighten">${match}</span>`)#}
-                {#            })#}
-                {#        }, options)#}
-                {#        this.list2 = rest#}
-                {#        // 搜索之后默认展开所有子节点#}
-                {#        this.$nextTick(() => {#}
-                {#            this.$refs.xTree.setAllTreeExpand(true)#}
-                {#        })#}
-                {#    } else {#}
-                {#        this.list2 = this.tableData2#}
-                {#    }#}
-                //,
             }
         })
     ;
