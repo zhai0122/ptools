@@ -4,10 +4,12 @@ import os
 import socket
 import subprocess
 import time
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
+from uuid import UUID
 
 import docker
 import git
+import numpy as np
 import qbittorrentapi
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -295,43 +297,13 @@ def import_from_ptpp(request):
         }).to_dict(), safe=False)
 
 
-def get_git_logs(master='', n=10):
-    # 获取最新的10条更新记录
-    # master='' 本地 master='origin/master'  远程
-    p = subprocess.Popen('git log {} -{}'.format(master, n), shell=True, stdout=subprocess.PIPE, )
-    contents = p.stdout.readlines()
-    update_notes = []
-    info = {
-        'date': '',
-        'data': []
-    }
-    for i in contents:
-        string = i.decode('utf8')
-        if string == '\n' or 'commit' in string or 'Author' in string:
-            continue
-        if 'Date' in string:
-            update_notes.append(info)
-            info = {}
-            list1 = string.split(':', 1)
-            # 格式化时间
-            update_time = datetime.strptime(list1[1].strip(), '%a %b %d %H:%M:%S %Y %z')
-            info['date'] = update_time.strftime('%Y-%m-%d %H:%M:%S')
-            info['data'] = []
-            continue
-        info['data'].append(string.strip())
-    # print(update_notes)
-    update_notes.pop(0)
-    return update_notes
-
-
-def get_git_log(master='master', n=10):
+def get_git_log(branch, n=20):
     repo = git.Repo(path='.')
     # 拉取仓库更新记录元数据
     repo.remote().update()
-    # 获取本地仓库commits更新记录
-    commits = list(repo.iter_commits(master, max_count=n))
-    # 获取远程仓库commits记录
-    # remote_commits = list(repo.iter_commits("origin/master", max_count=10))
+    # commits更新记录
+    logger.info('当前分支{}'.format(branch))
+    return list(repo.iter_commits(branch, max_count=n))
 
 
 def get_update_logs():
@@ -371,22 +343,37 @@ def update_page(request):
         cid = ''
         restart = 'false'
         delta = '程序未在容器中启动？'
-    if get_update_logs():
-        update = 'false'
-        update_tips = '目前您使用的是最新版本！'
-    else:
+
+    branch = os.getenv('DEV') if os.getenv('DEV') else 'master'
+    local_log = get_git_log(branch)
+    local_logs = []
+    for log in local_log:
+        local_logs.append({
+            'date': log.committed_datetime.strftime('%Y-%m-%d %H:%M:%S'),
+            'data': log.message,
+            'hexsha': log.hexsha[:16],
+        })
+    update_note = get_git_log('origin/' + branch)
+    update_notes = []
+    for log in update_note:
+        local_logs.append({
+            'date': log.committed_datetime.strftime('%Y-%m-%d %H:%M:%S'),
+            'data': log.message,
+            'hexsha': log.hexsha[:16],
+        })
+    if update_note[0].committed_datetime > local_log[0].committed_datetime:
         update = 'true'
         update_tips = '已有新版本，请根据需要升级！'
+    else:
+        update = 'false'
+        update_tips = '目前您使用的是最新版本！'
     return render(request, 'auto_pt/update.html',
                   context={
                       'cid': cid,
                       'delta': delta,
                       'restart': restart,
-                      'local_logs': get_git_logs(),
-                      # 'update_notes': get_git_logs(master='origin/master'),
-                      'update_notes': get_git_logs(
-                          master='origin/' + os.getenv('DEV') if os.getenv('DEV') else 'master'
-                      ),
+                      'local_logs': local_logs,
+                      'update_notes': update_notes,
                       'update': update,
                       'update_tips': update_tips
                   })
@@ -396,36 +383,47 @@ def do_update(request):
     try:
         logger.info('开始拉取更新')
         main_pt_site_site_mtime = os.stat('./main_pt_site_site.json').st_mtime
-        # print(os.system('cat ./update.sh'))
-        subprocess.Popen('chmod +x ./update.sh', shell=True)
-        p = subprocess.Popen('./update.sh', shell=True, stdout=subprocess.PIPE)
-        p.wait()
-        out = p.stdout.readlines()
-        for i in out:
-            logger.info(i.decode('utf8'))
-        # 更新Xpath规则
-        # 字符串型的数据量转化为int型
-        # status_list = SiteStatus.objects.all()
-        # for status in status_list:
-        #     if not status.downloaded:
-        #         status.downloaded = 0
-        #     if not status.uploaded:
-        #         status.uploaded = 0
-        #     if type(status.downloaded) == str and 'B' in status.downloaded:
-        #         status.downloaded = FileSizeConvert.parse_2_byte(status.downloaded)
-        #     if type(status.uploaded) == str and 'B' in status.uploaded:
-        #         status.uploaded = FileSizeConvert.parse_2_byte(status.uploaded)
-        #     status.save()
+        update_command = {
+            # 'cp db/db.sqlite3 db/db.sqlite3-$(date "+%Y%m%d%H%M%S")',
+            '拉取代码更新': 'git pull',
+            '安装依赖': 'pip install -r requirements.txt',
+            '创建数据库同步文件': 'python manage.py makemigrations',
+            '同步数据库': 'python manage.py migrate',
+        }
+        result = []
+        for key, command in update_command.items():
+            p = subprocess.getstatusoutput(command)
+            logger.info('{} 命令执行结果：\n{}'.format(key, p))
+            result.append({
+                'command': key,
+                'res': p[0]
+            })
+        # subprocess.Popen('chmod +x ./update.sh', shell=True)
+        # p = subprocess.Popen('./update.sh', shell=True, stdout=subprocess.PIPE)
+        # p.wait()
+        # out = p.stdout.readlines()
+        # for i in out:
+        #     logger.info(i.decode('utf8'))
         new_fileinfo = os.stat('./main_pt_site_site.json').st_mtime
         logger.info('更新前文件最后修改时间')
         logger.info(main_pt_site_site_mtime)
         logger.info('更新后文件最后修改时间')
         logger.info(new_fileinfo)
         if new_fileinfo == main_pt_site_site_mtime:
-            logger.info('本次更新无规则更新，跳过！')
+            logger.info('本次无规则更新，跳过！')
+            result.append({
+                'command': '本次无更新规则',
+                'res': 0
+            })
             pass
         else:
             logger.info('拉取更新完毕，开始更新Xpath规则')
+            p = subprocess.getstatusoutput('cp db/db.sqlite3 db/db.sqlite3-$(date "+%Y%m%d%H%M%S")')
+            logger.info('备份数据库 命令执行结果：\n{}'.format(p))
+            result.append({
+                'command': '备份数据库',
+                'res': p[0]
+            })
             with open('./main_pt_site_site.json', 'r') as f:
                 # print(f.readlines())
                 data = json.load(f)
@@ -433,29 +431,26 @@ def do_update(request):
                 # print(data[0].get('url'))
                 # xpath_update = []
                 logger.info('更新规则中，返回结果为True为新建，为False为更新，其他是错误了')
+                update_info = ''
                 for site_rules in data:
                     if site_rules.get('pk'):
                         del site_rules['pk']
                     if site_rules.get('id'):
                         del site_rules['id']
                     site_obj = Site.objects.update_or_create(defaults=site_rules, url=site_rules.get('url'))
-                    logger.info(site_obj[0].name + (' 规则新增成功！' if site_obj[1] else '规则更新成功！'))
+                    msg = site_obj[0].name + (' 规则新增成功！' if site_obj[1] else '规则更新成功！')
+                    update_info += (msg + '\n')
+                    logger.info(msg)
+                result.append({
+                    'command': '更新规则',
+                    'res': 0
+                })
         logger.info('更新完毕')
-        """
-        logger.info('更新完毕，开始重启')
-        cid = request.GET.get('cid')
-        flag = (cid == '')
-        if not flag:
-            subprocess.Popen('docker restart {}'.format(cid), shell=True, stdout=subprocess.PIPE, )
-        # out = reboot.stdout.readline().decode('utf8')
-        # client.api.inspect_container(cid)
-        # StartedAt = client.api.inspect_container(cid).get('State').get('StartedAt')
-        return JsonResponse(data=CommonResponse.error(
-            msg='更新成功，重启指令发送成功，容器重启中 ...' if not flag else '更新成功，未映射docker路径请手动重启容器 ...'
-        ).to_dict(), safe=False)
-        """
-        return JsonResponse(data=CommonResponse.error(
-            msg='更新成功，刷新页面后享用！'
+        return JsonResponse(data=CommonResponse.success(
+            msg='更新成功，15S后自动刷新页面！',
+            data={
+                'result': result
+            }
         ).to_dict(), safe=False)
     except Exception as e:
         # raise

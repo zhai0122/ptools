@@ -35,7 +35,8 @@
                     trigger="hover"
                     content="如果更新后更新功能未生效，请重启容器！！">
                 <el-button slot="reference" type="danger" @click="do_update"
-                           v-if="update">更新
+                        {#                           v-if="update"#}
+                >更新
                 </el-button>
             </el-popover>
             <el-popover
@@ -52,6 +53,28 @@
             </el-popover>
         </div>
         <div class="text item">
+            <el-card class="box-card" shadow="hover" v-if="show">
+                <div slot="header" class="clearfix">
+                    <span>更新记录</span>
+                    {#                    <el-tag style="float: right; padding: 3px 0"#}
+                    {#                            :key="log.res[0] == 0 ? '操作成功！' : '出错啦！'"#}
+                    {#                            :type="log.res[0] == 0 ? 'success' : 'warning'">#}
+                    {#                        <span v-text="log.res[0] == 0 ? '操作成功！' : '出错啦！'"></span>#}
+                    {#                    </el-tag>#}
+                </div>
+                <div class="text item">
+                    <el-row>
+                        <el-col :sm="8" :lg="6" :xs="11" v-for="log in update_log">
+                            <el-result :icon="log.res == 0 ? 'success' : 'warning'"
+                                       :title="log.command"
+                                       :subTitle="log.command">
+                            </el-result>
+
+                        </el-col>
+                    </el-row>
+                </div>
+            </el-card>
+
             <el-row>
                 <el-col :span="12" v-if="update" :xs="24">
                     <el-card class="box-card" shadow="hover">
@@ -68,10 +91,12 @@
                                     {# :size="activity.size" #}
                                     :timestamp="update_note.date">
                                 <el-card shadow="hover">
-                                    <p v-for="content in update_note.data" v-html="content">
+                                    <p v-html="update_note.data">
                                     </p>
+                                    <h4>版本编号：
+                                        <span v-html="update_note.hexsha"></span>
+                                    </h4>
                                 </el-card>
-
                             </el-timeline-item>
                         </el-timeline>
                     </el-card>
@@ -92,7 +117,10 @@
                                     {# :size="activity.size" #}
                                     :timestamp="update_note.date">
                                 <el-card shadow="hover">
-                                    <p v-for="content in update_note.data" v-html="content">
+                                    <p v-html="update_note.data">
+                                    <h4>版本编号：
+                                        <span v-html="update_note.hexsha"></span>
+                                    </h4>
                                     </p>
                                 </el-card>
 
@@ -119,12 +147,13 @@
         data: {
             update_notes: {{  update_notes | safe   }},
             local_logs: {{   local_logs | safe   }},
-            {#local_log: [],#}
+            update_log: {},
             restart: true,
             update: {{ update }},
             local_log_width: 24,
             cid: "{{ cid }}",
-            time: ''
+            time: '',
+            show: false,
         },
         created() {
             if (this.update) {
@@ -201,13 +230,15 @@
                         if (res.data.code === 0) {
                             console.log(res, 1)
                             this.update_log = res.data.data.result
+                            this.show = true
                             {#console.log('规则更新记录', res.data.data.xpath_update)#}
                             this.$message({
                                 type: 'success',
                                 message: res.data.msg
                             });
-                            this.time = 15
-                            setTimeout(this.timeDown, 1000)
+                            setTimeout(() => {
+                                window.location.reload()
+                            }, 15000)
                         } else {
                             console.log(res, 2)
                             this.$message({

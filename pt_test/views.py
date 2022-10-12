@@ -1,10 +1,13 @@
 # Create your views here.
 import json
+import os
+import subprocess
 
+import git
 from django.http import JsonResponse
 from django.shortcuts import render
 
-from pt_site.views import pt_spider
+from pt_site.views import pt_spider, logger
 from ptools.base import CommonResponse, StatusCodeEnum
 
 
@@ -63,3 +66,26 @@ def test_post(request):
             print(j, type(j))
         print(r)
         return JsonResponse(CommonResponse.success(data=r).to_dict(), safe=False)
+
+
+def test_subprocess(request):
+    """
+    pip install -r requirements.txt
+    python manage.py makemigrations
+    python manage.py migrate
+    :param request:
+    :return:
+    """
+    # update_command = [
+    #     # 'cp db/db.sqlite3 db/db.sqlite3-$(date "+%Y%m%d%H%M%S")',
+    #     'git pull',
+    #     'pip install -r requirements.txt',
+    #     'python manage.py makemigrations',
+    #     'python manage.py migrate',
+    # ]
+    # result = []
+    # for command in update_command:
+    #     p = subprocess.getoutput(command)
+    #     result.append(p)
+
+    return JsonResponse(CommonResponse.success(data='ok').to_dict(), safe=False)
