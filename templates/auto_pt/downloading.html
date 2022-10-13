@@ -176,17 +176,26 @@
                             <el-button type="danger" @click="handleDelete">确 定</el-button>
                         </span>
         </el-dialog>
-        <el-dialog title="修改分类" :visible.sync="categoryForm" min-width="180" width="30%" center>
+        <el-dialog title="修改分类" :visible.sync="categoryForm" min-width="180" center>
             <div style="text-align: center">
-                <el-select v-model="category" filterable placeholder="请选择分类">
-                    <el-option v-for="item in categories" :key="item.value" :title="item.title" :value="item.value">
-                    </el-option>
-                </el-select>
+
+                <el-radio-group v-model="category" @change="setCategory">
+
+                    <el-radio-button v-for="item in categories"
+                                     :content="item.title"
+                                     border type="warning"
+                                     :label="item.value" size="mini">
+                        <span v-text="item.title"></span>
+                    </el-radio-button>
+                </el-radio-group>
+                <el-button type="danger" size="mini" @click="setCategory">
+                    <span>重置分类</span>
+                </el-button>
             </div>
-            <span slot="footer" class="dialog-footer">
-                            <el-button @click="categoryForm = false">取 消</el-button>
-                            <el-button type="danger" @click="setCategory">确 定</el-button>
-             </span>
+            {#            <span slot="footer" class="dialog-footer">#}
+            {#                            <el-button @click="categoryForm = false">取 消</el-button>#}
+            {#                            <el-button type="danger" @click="setCategory">确 定</el-button>#}
+            {#             </span>#}
         </el-dialog>
     </div>
 
@@ -497,11 +506,12 @@
                             [
                                 {
                                     name: '分类',
+                                    code: 'categoryForm',
                                     prefixIcon: 'vxe-icon-square-square',
                                     children: [
-                                        {code: 'create_category', name: '添加', prefixIcon: 'vxe-icon-square-plus'},
-                                        {code: 'set_category', name: '重置', prefixIcon: 'vxe-icon-square-close'},
-                                        {code: 'categoryForm', name: '修改分类', prefixIcon: 'vxe-icon-edit'},
+                                        {#{code: 'create_category', name: '添加', prefixIcon: 'vxe-icon-square-plus'},#}
+                                        {#{code: 'set_category', name: '重置', prefixIcon: 'vxe-icon-square-close'},#}
+                                        {#{code: 'categoryForm', name: '修改分类', prefixIcon: 'vxe-icon-edit'},#}
                                     ]
                                 },
                                 {#{#}
