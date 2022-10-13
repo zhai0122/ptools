@@ -372,6 +372,8 @@ def do_update(request):
         result = []
         for key, command in update_command.items():
             p = subprocess.getstatusoutput(command)
+            logger.info('休息5秒钟，等待代码下载完成！')
+            time.sleep(5)
             logger.info('{} 命令执行结果：\n{}'.format(key, p))
             result.append({
                 'command': key,
@@ -403,27 +405,27 @@ def do_update(request):
                 'command': '备份数据库',
                 'res': p[0]
             })
-            with open('./main_pt_site_site.json', 'r') as f:
-                # print(f.readlines())
-                data = json.load(f)
-                # print(data[2])
-                # print(data[0].get('url'))
-                # xpath_update = []
-                logger.info('更新规则中，返回结果为True为新建，为False为更新，其他是错误了')
-                update_info = ''
-                for site_rules in data:
-                    if site_rules.get('pk'):
-                        del site_rules['pk']
-                    if site_rules.get('id'):
-                        del site_rules['id']
-                    site_obj = Site.objects.update_or_create(defaults=site_rules, url=site_rules.get('url'))
-                    msg = site_obj[0].name + (' 规则新增成功！' if site_obj[1] else '规则更新成功！')
-                    update_info += (msg + '\n')
-                    logger.info(msg)
-                result.append({
-                    'command': '更新规则',
-                    'res': 0
-                })
+        with open('./main_pt_site_site.json', 'r') as f:
+            # print(f.readlines())
+            data = json.load(f)
+            # print(data[2])
+            # print(data[0].get('url'))
+            # xpath_update = []
+            logger.info('更新规则中，返回结果为True为新建，为False为更新，其他是错误了')
+            update_info = ''
+            for site_rules in data:
+                if site_rules.get('pk'):
+                    del site_rules['pk']
+                if site_rules.get('id'):
+                    del site_rules['id']
+                site_obj = Site.objects.update_or_create(defaults=site_rules, url=site_rules.get('url'))
+                msg = site_obj[0].name + (' 规则新增成功！' if site_obj[1] else '规则更新成功！')
+                update_info += (msg + '\n')
+                logger.info(msg)
+            result.append({
+                'command': '更新规则',
+                'res': 0
+            })
         logger.info('更新完毕')
         return JsonResponse(data=CommonResponse.success(
             msg='更新成功，15S后自动刷新页面！',
