@@ -454,6 +454,31 @@ class PtSpider:
             return False
         return img_data
 
+    def sign_in_hdupt(self, my_site: MySite):
+        site = my_site.site
+        url = site.url + site.page_control_panel.lstrip('/')
+        result = self.send_request(
+            my_site=my_site,
+            url=url,
+        )
+        sign_str = self.parse(result, '//span[@id="yiqiandao"]')
+        logger.info(sign_str)
+        if len(sign_str) == 1:
+            return CommonResponse.success(msg=site.name + '已签到，请勿重复操作！！')
+        sign_res = self.send_request(
+            my_site=my_site,
+            url=site.url + site.page_sign_in.lstrip('/'),
+            method=site.sign_in_method
+        ).content.decode('utf8')
+        if isinstance(sign_res, int):
+            msg = '你还需要继续努力哦！此次签到，你获得了魔力奖励：{}'.format(sign_res)
+        else:
+            msg = sign_res
+        logger.info(msg)
+        return CommonResponse.success(
+            msg=msg
+        )
+
     def sign_in_hd4fans(self, my_site: MySite):
         site = my_site.site
         url = site.url + site.page_control_panel.lstrip('/')
@@ -687,7 +712,7 @@ class PtSpider:
         return '0' if len(res_list) == 0 else res_list[0]
 
     def do_sign_in(self, pool, queryset: QuerySet[MySite]):
-        message_list = '# 自动签到通知  \n\n ### <font color="orange">未显示的站点已经签到过了哟！</font>  \n\n'
+        message_list = '# 自动签到通知  \n\n### <font color="orange">未显示的站点已经签到过了哟！</font>  \n\n'
         if datetime.now().hour < 9:
             # U2每天九点前不签到
             queryset = [my_site for my_site in queryset if 'u2.dmhy.org' not in my_site.site.url and
@@ -739,6 +764,13 @@ class PtSpider:
             # with lock:
             if 'hd4fans' in site.url:
                 result = self.sign_in_hd4fans(my_site)
+                if result.code == StatusCodeEnum.OK.code:
+                    signin_today.sign_in_today = True
+                    signin_today.sign_in_info = result.msg
+                    signin_today.save()
+                return result
+            if 'hdupt.com' in site.url:
+                result = self.sign_in_hdupt(my_site)
                 if result.code == StatusCodeEnum.OK.code:
                     signin_today.sign_in_today = True
                     signin_today.sign_in_info = result.msg
@@ -834,9 +866,8 @@ class PtSpider:
                     )
             res = self.send_request(my_site=my_site, method=site.sign_in_method, url=url,
                                     data=eval(site.sign_in_params))
-
+            logger.info(res.text)
             if 'hares.top' in site.url:
-                logger.info(res.text)
                 code = res.json().get('code')
                 # logger.info('白兔返回码：'+ type(code))
                 if int(code) == 0:
@@ -901,7 +932,6 @@ class PtSpider:
                     return CommonResponse.success(msg='签到成功！')
                 else:
                     return CommonResponse.error(msg='签到失败！')
-            logger.info(res.text)
             if res.status_code == 200:
                 status = converter.convert(res.content.decode('utf8'))
                 # status = ''.join(self.parse(res, '//a[contains(@href,{})]/text()'.format(site.page_sign_in)))
