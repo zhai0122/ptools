@@ -934,10 +934,10 @@ class TorrentInfoAdmin(AjaxAdmin):  # instead of ModelAdmin
                         #         'status': 'success',
                         #         'msg': torrent_info.name + '推送成功！'
                         #     })
-                        return JsonResponse(data={
-                            'status': 'success',
-                            'msg': '推送结束！请自行检查是否推送成功！'
-                        })
+                    return JsonResponse(data={
+                        'status': 'success',
+                        'msg': '推送结束！请自行检查是否推送成功！'
+                    })
                 except Exception as e:
                     return JsonResponse(data={
                         'status': 'error',
