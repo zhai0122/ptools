@@ -866,7 +866,7 @@ class PtSpider:
                     )
             res = self.send_request(my_site=my_site, method=site.sign_in_method, url=url,
                                     data=eval(site.sign_in_params))
-            logger.info(res.text)
+            logger.info(res.status_code)
             if 'hares.top' in site.url:
                 code = res.json().get('code')
                 # logger.info('白兔返回码：'+ type(code))
@@ -906,9 +906,16 @@ class PtSpider:
                     return CommonResponse.error(
                         status=StatusCodeEnum.FAILED_SIGN_IN
                     )
-            if 'btschool' in site.url:
+            if '47.242.110.63' in site.url:
+                logger.info(res.status_code)
                 logger.info(res.content.decode('utf-8'))
-                text = self.parse(res, '//script/text()')
+                text = self.parse(res, '//a[@href="index.php"]/font/text()')
+                signin_stat = self.parse(res, '//a[contains(@href,"addbouns"])')
+                logger.info('{}:{}'.format(site.name, text))
+                if len(signin_stat) <= 0:
+                    return CommonResponse.success(msg=text)
+                """
+                # text = self.parse(res, '//script/text()')
                 if len(text) > 0:
                     location = self.parse_school_location(text)
                     logger.info('学校签到链接：' + location)
@@ -931,7 +938,8 @@ class PtSpider:
                     signin_today.save()
                     return CommonResponse.success(msg='签到成功！')
                 else:
-                    return CommonResponse.error(msg='签到失败！')
+                """
+                return CommonResponse.error(msg='签到失败或网络错误！')
             if res.status_code == 200:
                 status = converter.convert(res.content.decode('utf8'))
                 # status = ''.join(self.parse(res, '//a[contains(@href,{})]/text()'.format(site.page_sign_in)))
