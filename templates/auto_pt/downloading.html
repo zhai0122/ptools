@@ -178,13 +178,11 @@
         </el-dialog>
         <el-dialog title="修改分类" :visible.sync="categoryForm" min-width="180" center>
             <div style="text-align: center">
-
-                <el-radio-group v-model="category" @change="setCategory">
-
+                <el-radio-group v-model="category" @change="setCategory" size="mini">
                     <el-radio-button v-for="item in categories"
                                      :content="item.title"
                                      border type="warning"
-                                     :label="item.value" size="mini">
+                                     :label="item.value">
                         <span v-text="item.title"></span>
                     </el-radio-button>
                 </el-radio-group>
