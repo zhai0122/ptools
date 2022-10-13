@@ -129,7 +129,7 @@ class TaskJobAdmin(admin.ModelAdmin):  # instead of ModelAdmin
         except Exception as e:
             obj.task_exec = False
             obj.save()
-            raise
+            # raise
             msg = obj.job_id + '任务添加失败！原因：' + str(e)
             logger.error(msg)
             pt_spider.send_text('计划任务：' + msg)
