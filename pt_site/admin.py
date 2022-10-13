@@ -858,15 +858,15 @@ class TorrentInfoAdmin(AjaxAdmin):  # instead of ModelAdmin
                             torrent_info.state = True
                             torrent_info.downloader = downloader
                             torrent_info.save()
-                            return JsonResponse(data={
-                                'status': 'success',
-                                'msg': torrent_info.name + '推送成功！'
-                            })
-                        else:
-                            return JsonResponse(data={
-                                'status': 'error',
-                                'msg': torrent_info.name + '推送失败！'
-                            })
+                        #     return JsonResponse(data={
+                        #         'status': 'success',
+                        #         'msg': torrent_info.name + '推送成功！'
+                        #     })
+                        # else:
+                    return JsonResponse(data={
+                        'status': 'success',
+                        'msg': '推送结束！'
+                    })
                 except Exception as e:
                     # raise
                     return JsonResponse(data={
@@ -909,7 +909,7 @@ class TorrentInfoAdmin(AjaxAdmin):  # instead of ModelAdmin
                         })
                     for torrent_info in queryset:
                         print('创建种子标签', torrent_info.detail_url)
-                        qb_client.torrents_create_category(torrent_info.detail_url)
+                        # qb_client.torrents_create_category(torrent_info.detail_url)
                         res = qb_client.torrents.add(
                             # 种子链接
                             urls=torrent_info.magnet_url,
@@ -919,21 +919,25 @@ class TorrentInfoAdmin(AjaxAdmin):  # instead of ModelAdmin
                             # 自动管理种子
                             use_auto_torrent_management=True,
                             # 任务标签，用于和种子信息关联
-                            category=torrent_info.detail_url,
+                            # category=torrent_info.detail_url,
                             # 跳过HASH检查
                             # is_skip_checking=True
                         )
                         print(res)
-                        if res == 'Ok.':
-                            print(torrent_info.magnet_url)
-                            torrent = qb_client.torrents.info(category=torrent_info.detail_url)
-                            print(len(torrent))
-                            torrent_info.hash_string = torrent[0].hash
-                            torrent_info.save()
-                            return JsonResponse(data={
-                                'status': 'success',
-                                'msg': torrent_info.name + '推送成功！'
-                            })
+                        # if res == 'Ok.':
+                        # print(torrent_info.magnet_url)
+                        # torrent = qb_client.torrents.info(category=torrent_info.detail_url)
+                        # print(len(torrent))
+                        # torrent_info.hash_string = torrent[0].hash
+                        # torrent_info.save()
+                        #     return JsonResponse(data={
+                        #         'status': 'success',
+                        #         'msg': torrent_info.name + '推送成功！'
+                        #     })
+                        return JsonResponse(data={
+                            'status': 'success',
+                            'msg': '推送结束！请自行检查是否推送成功！'
+                        })
                 except Exception as e:
                     return JsonResponse(data={
                         'status': 'error',
@@ -968,7 +972,7 @@ class TorrentInfoAdmin(AjaxAdmin):  # instead of ModelAdmin
         # 这里指定对话框的标题
         'title': '推送到下载器',
         # 提示信息
-        'tips': '仅支持推送到qBittorrent下载器！',
+        'tips': '请自行检查是否种子是否推送成功！！',
         # 确认按钮显示文本
         'confirm_button': '确认提交',
         # 取消按钮显示文本
