@@ -356,7 +356,7 @@ def update_page(request):
     update_note = get_git_log('origin/' + branch)
     update_notes = []
     for log in update_note:
-        local_logs.append({
+        update_notes.append({
             'date': log.committed_datetime.strftime('%Y-%m-%d %H:%M:%S'),
             'data': log.message,
             'hexsha': log.hexsha[:16],
