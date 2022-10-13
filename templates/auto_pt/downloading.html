@@ -44,6 +44,7 @@
             background-color: #df9942 !important;
         }
 
+
         .table-footer .col-blue {
             background-color: rgba(32, 63, 218, 0.8);
             color: #fff;
@@ -138,7 +139,7 @@
 </head>
 <body>
 
-<div id="app">
+<div id="app" style="height: 100%;">
     <div style="text-align: center">
         {#        <el-button-group style="margin: auto;">#}
         {#            <el-button size="small"#}
@@ -150,7 +151,9 @@
         {#            </el-button>#}
         {##}
         {#        </el-button-group>#}
-        <el-tabs ref="downloaders" type="card" @tab-click="handleButtonClick">
+        <el-tabs ref="downloaders" type="card" editable @tab-click="handleButtonClick"
+                 v-model="downloader_id"
+                 @edit="handleTabsEdit">
             <el-tab-pane v-for="downloader in downloaders"
                          :label="downloader.name"
                          icon="el-icon-s-promotion"
@@ -190,7 +193,7 @@
     <vxe-toolbar ref="xToolbar" size="mini" custom style="margin-top: -15px;">
         <template #buttons>
             <vxe-input size="mini" v-model="searchModal" type="search" placeholder="试试全表搜索"
-                       style="margin-right: 10px;"
+                       style="margin-right: 10px;width: 140px;"
                        @keyup="searchEvent"></vxe-input>
             {#            <el-button circle size="mini" type="primary" icon="el-icon-link" @click="handleSelected(resume)"></el-button>#}
             {#            <el-button circle size="mini" type="primary" icon="el-icon-plus" @click="handleSelected(resume)"></el-button>#}
@@ -238,106 +241,111 @@
             {#            </el-button>#}
         </template>
     </vxe-toolbar>
-    <vxe-table ref="dataTable" id="table"
-               class="table-footer"
-               showBodyOverflow="title" showHeaderOverflow="title"
-               :menu-config="tableMenu"
-               @menu-click="contextMenuClickEvent"
-               show-footer
-               :footer-method="footerMethod"
-               :footer-cell-class-name="footerCellClassName"
-               :footer-span-method="footerColspanMethod"
-               @cell-dblclick="showDetails"
-               :data="torrents"
-               :loading="loading"
-               height="750" size="mini"
-               auto-resize
-               round border stripe
-               :tooltip-config="{showAll: true}"
-               :keyboard-config="{isArrow: true, isTab: true, enterToTab: true}"
-               :column-config="{isCurrent: true, isHover: true, resizable: true}"
-               :mouse-config="{selected: true}"
-               :row-config="{isCurrent: true, isHover: true, keyField: 'hash', height: 25}"
-               :checkbox-config="{trigger: 'row', highlight: true, range: true, reserve: true}"
-               :sort-config="{trigger: 'cell', orders: ['desc', 'asc', null]}"
-               highlight-current-row
-               style="width: 100%;">
-        <vxe-table-column fixed="left" type="checkbox" width="44">
-        </vxe-table-column>
-        <vxe-table-column type="seq" fixed="left" width="50"></vxe-table-column>
-        <vxe-table-column field="name" fixed="left" sortable show-header-overflow show-overflow="tooltip"
-                          show-footer-overflow title="种子名称" type="html" max-width="280" min-width="150">
-        </vxe-table-column>
-        <vxe-table-column field="size" sortable width="85" show-header-overflow show-overflow="tooltip"
-                          show-footer-overflow :formatter="handleSize" title="大小">
-        </vxe-table-column>
-        <vxe-table-column field="category" sortable width="85"
-                          type="html"
-                          :filters="[]"
-                          :filter-method="filterCategoryMethod"
-                          :filter-multiple="false"
-                          title="分类"></vxe-table-column>
-        <vxe-table-column field="tracker" sortable
-                          :filters="[]"
-                          type="html"
-                          :formatter="handleTracker"
-                          :filter-method="filterTrackerMethod"
-                          :filter-multiple="false"
-                          :filter-change="handlerTrackerFilter"
-                          min-width="110"
-                          title="Tracker"></vxe-table-column>
-        <vxe-table-column field="state" sortable width="85" :formatter="handleState" column-key="state"
-                          :filter-method="filterStateMethod" type="html"
-                          :filters="stateFilters" :filter-multiple="false" title="状态"></vxe-table-column>
-        <vxe-table-column field="last_activity" sortable width="105" type="html"
-                          show-header-overflow show-overflow="tooltip"
-                          show-footer-overflow title="最后活动"></vxe-table-column>
-        <vxe-table-column field="downloaded" :formatter="handleSize" min-width="90" sortable
-                          type="html" title="已下载"></vxe-table-column>
-        <vxe-table-column field="uploaded" :formatter="handleSize" sortable width="85"
-                          type="html" title="上传"></vxe-table-column>
-        <vxe-table-column field="dlspeed" sortable width="95" :formatter="handleSpeed"
-                          type="html" title="下载速度"></vxe-table-column>
-        <vxe-table-column field="upspeed" sortable width="95" :formatter="handleSpeed"
-                          type="html" title="上传速度"></vxe-table-column>
-        <vxe-table-column field="progress" sortable min-width="110" title="进度" type="html">
-            <template slot-scope="scope">
-                <el-progress
-                        v-if="scope.row.progress==1"
-                        :text-inside="true"
-                        status="success"
-                        stroke-linecap="butt"
-                        :stroke-width="18"
-                        :percentage="scope.row.progress * 100">
-                </el-progress>
-                <el-progress
-                        v-else="scope.row.progress==1"
-                        :text-inside="true"
-                        :color="customColors"
-                        :stroke-width="18"
-                        :percentage="scope.row.progress * 100">
-                </el-progress>
-            </template>
-        </vxe-table-column>
+    <div style="height: 90vh;bottom:0;border: coral solid 1px;display: flex;flex-flow: column;flex-direction: row;flex-wrap: wrap;">
+        <vxe-table ref="dataTable" id="table"
+                   class="table-footer"
+                   showBodyOverflow="title" showHeaderOverflow="title"
+                   :menu-config="tableMenu"
+                   @menu-click="contextMenuClickEvent"
+                   show-footer
+                   :footer-method="footerMethod"
+                   :footer-cell-class-name="footerCellClassName"
+                   :footer-span-method="footerColspanMethod"
+                   @cell-dblclick="showDetails"
+                   :data="torrents"
+                   :loading="loading"
+                {#                   height="750" #}
+                   height="100%"
+                   size="mini"
+                   auto-resize
+                   round border stripe
+                   :tooltip-config="{showAll: true}"
+                   :keyboard-config="{isArrow: true, isTab: true, enterToTab: true}"
+                   :column-config="{isCurrent: true, isHover: true, resizable: true}"
+                   :mouse-config="{selected: true}"
+                   :row-config="{isCurrent: true, isHover: true, keyField: 'hash', height: 25}"
+                   :checkbox-config="{trigger: 'row', highlight: true, range: true, reserve: true}"
+                   :sort-config="{trigger: 'cell', orders: ['desc', 'asc', null]}"
+                   highlight-current-row
+                   style="width: 100%;">
+            <vxe-table-column fixed="left" type="checkbox" width="44">
+            </vxe-table-column>
+            <vxe-table-column type="seq" fixed="left" width="50"></vxe-table-column>
+            <vxe-table-column field="name" fixed="left" sortable show-header-overflow show-overflow="tooltip"
+                              show-footer-overflow title="种子名称" type="html" max-width="280" min-width="150">
+            </vxe-table-column>
+            <vxe-table-column field="size" sortable width="85" show-header-overflow show-overflow="tooltip"
+                              show-footer-overflow :formatter="handleSize" title="大小">
+            </vxe-table-column>
+            <vxe-table-column field="category" sortable width="85"
+                              type="html"
+                              :filters="[]"
+                              :filter-method="filterCategoryMethod"
+                              :filter-multiple="false"
+                              title="分类"></vxe-table-column>
+            <vxe-table-column field="tracker" sortable
+                              :filters="[]"
+                              type="html"
+                              :formatter="handleTracker"
+                              :filter-method="filterTrackerMethod"
+                              :filter-multiple="false"
+                              :filter-change="handlerTrackerFilter"
+                              min-width="110"
+                              title="Tracker"></vxe-table-column>
+            <vxe-table-column field="state" sortable width="85" :formatter="handleState" column-key="state"
+                              :filter-method="filterStateMethod" type="html"
+                              :filters="stateFilters" :filter-multiple="false" title="状态"></vxe-table-column>
+            <vxe-table-column field="last_activity" sortable width="105" type="html"
+                              show-header-overflow show-overflow="tooltip"
+                              show-footer-overflow title="最后活动"></vxe-table-column>
+            <vxe-table-column field="downloaded" :formatter="handleSize" min-width="90" sortable
+                              type="html" title="已下载"></vxe-table-column>
+            <vxe-table-column field="uploaded" :formatter="handleSize" sortable width="85"
+                              type="html" title="上传"></vxe-table-column>
+            <vxe-table-column field="dlspeed" sortable width="95" :formatter="handleSpeed"
+                              type="html" title="下载速度"></vxe-table-column>
+            <vxe-table-column field="upspeed" sortable width="95" :formatter="handleSpeed"
+                              type="html" title="上传速度"></vxe-table-column>
+            <vxe-table-column field="progress" sortable min-width="110" title="进度" type="html">
+                <template slot-scope="scope">
+                    <el-progress
+                            v-if="scope.row.progress==1"
+                            :text-inside="true"
+                            status="success"
+                            stroke-linecap="butt"
+                            :stroke-width="18"
+                            :percentage="scope.row.progress * 100">
+                    </el-progress>
+                    <el-progress
+                            v-else="scope.row.progress==1"
+                            :text-inside="true"
+                            :color="customColors"
+                            :stroke-width="18"
+                            :percentage="scope.row.progress * 100">
+                    </el-progress>
+                </template>
+            </vxe-table-column>
 
-        <vxe-table-column field="ratio" sortable width="85" {# :formatter="handlePercent" #}
-                          type="html" title="分享率"></vxe-table-column>
-        <vxe-table-column field="seeding_time" width="100"
-                          show-header-overflow show-overflow="tooltip"
-                          show-footer-overflow type="html"
-                          title="做种时间"></vxe-table-column>
+            <vxe-table-column field="ratio" sortable width="85" {# :formatter="handlePercent" #}
+                              type="html" title="分享率"></vxe-table-column>
+            <vxe-table-column field="seeding_time" width="100"
+                              show-header-overflow show-overflow="tooltip"
+                              show-footer-overflow type="html"
+                              title="做种时间"></vxe-table-column>
 
-        <vxe-table-column field="added_on" width="100"
-                          show-header-overflow show-overflow="tooltip"
-                          show-footer-overflow type="html"
-                          title="添加时间"></vxe-table-column>
-        <template #empty>
+            <vxe-table-column field="added_on" width="100"
+                              show-header-overflow show-overflow="tooltip"
+                              show-footer-overflow type="html"
+                              title="添加时间"></vxe-table-column>
+            <template #empty>
             <span style="color: red;">
               <img src="https://pic2.zhimg.com/50/v2-f7031359103859e1ed38559715ef5f3f_hd.gif">
               <p>搜索不到数据，可能输入的关键字姿势不对！</p>
             </span>
-        </template>
-    </vxe-table>
+            </template>
+        </vxe-table>
+
+    </div>
     {#    <div class="footer-info">#}
     {#        <el-tag size="medium" effect="plain" type="success" class="footer-item">#}
     {#            <i class="vxe-icon-cloud-download"></i>#}
@@ -634,6 +642,34 @@
             },
             watch: {},
             methods: {
+                handleTabsEdit(targetName, action) {
+                    if (action === 'add') {
+                        let newTabName = ++this.tabIndex + '';
+                        this.editableTabs.push({
+                            title: 'New Tab',
+                            name: newTabName,
+                            content: 'New Tab content'
+                        });
+                        this.downloader_id = newTabName;
+                    }
+                    if (action === 'remove') {
+                        let tabs = this.editableTabs;
+                        let activeName = this.downloader_id;
+                        if (activeName === targetName) {
+                            tabs.forEach((tab, index) => {
+                                if (tab.name === targetName) {
+                                    let nextTab = tabs[index + 1] || tabs[index - 1];
+                                    if (nextTab) {
+                                        activeName = nextTab.name;
+                                    }
+                                }
+                            });
+                        }
+
+                        this.downloader_id = activeName;
+                        this.editableTabs = tabs.filter(tab => tab.name !== targetName);
+                    }
+                },
                 footerMethod({columns, data}) {
                     return [
                         /**
