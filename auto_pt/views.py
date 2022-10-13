@@ -303,27 +303,11 @@ def get_git_log(branch, n=20):
     repo.remote().update()
     # commits更新记录
     logger.info('当前分支{}'.format(branch))
-    return list(repo.iter_commits(branch, max_count=n))
-
-
-def get_update_logs():
-    repo = git.Repo(path='.')
-    # 拉取仓库更新记录元数据
-    repo.remote().update()
-    # 获取本地仓库commits更新记录
-    branch = 'master'
-    if os.getenv('DEV'):
-        branch = os.getenv('DEV')
-    logger.info('当前分支')
-    logger.info(branch)
-    commits = list(repo.iter_commits(branch, max_count=10))
-    logger.info('本地记录')
-    logger.info(commits)
-    # 获取远程仓库commits记录
-    remote_commits = list(repo.iter_commits("origin/" + branch, max_count=10))
-    logger.info('远程仓库更新记录')
-    logger.info(remote_commits)
-    return commits[0].hexsha == remote_commits[0].hexsha
+    return [{
+        'date': log.committed_datetime.strftime('%Y-%m-%d %H:%M:%S'),
+        'data': log.message,
+        'hexsha': log.hexsha[:16],
+    } for log in list(repo.iter_commits(branch, max_count=n))]
 
 
 def update_page(request):
@@ -345,23 +329,16 @@ def update_page(request):
         delta = '程序未在容器中启动？'
 
     branch = os.getenv('DEV') if os.getenv('DEV') else 'master'
-    local_log = get_git_log(branch)
-    local_logs = []
-    for log in local_log:
-        local_logs.append({
-            'date': log.committed_datetime.strftime('%Y-%m-%d %H:%M:%S'),
-            'data': log.message,
-            'hexsha': log.hexsha[:16],
-        })
-    update_note = get_git_log('origin/' + branch)
-    update_notes = []
-    for log in update_note:
-        update_notes.append({
-            'date': log.committed_datetime.strftime('%Y-%m-%d %H:%M:%S'),
-            'data': log.message,
-            'hexsha': log.hexsha[:16],
-        })
-    if update_note[0].committed_datetime > local_log[0].committed_datetime:
+    local_logs = get_git_log(branch)
+
+    logger.info('本地代码日志{}'.format(local_logs))
+    update_notes = get_git_log('origin/' + branch)
+
+    logger.info('远程代码日志{}'.format(update_notes))
+    if datetime.strptime(
+            update_notes[0].get('date'), '%Y-%m-%d %H:%M:%S') > datetime.strptime(
+        local_logs[0].get('date'), '%Y-%m-%d %H:%M:%S'
+    ):
         update = 'true'
         update_tips = '已有新版本，请根据需要升级！'
     else:
