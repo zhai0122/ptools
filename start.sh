@@ -35,5 +35,18 @@ else
 fi
 echo "写入U2 hosts"
 echo 172.64.153.252 u2.dmhy.org >>/etc/hosts
+echo 104.25.26.31 u2.dmhy.org >>/etc/hosts
+echo 104.25.61.106 u2.dmhy.org >>/etc/hosts
+echo 104.25.62.106 u2.dmhy.org >>/etc/hosts
+echo 172.67.98.15 u2.dmhy.org >>/etc/hosts
+echo 104.25.26.31 tracker.dmhy.org >>/etc/hosts
+echo 104.25.61.106 tracker.dmhy.org >>/etc/hosts
+echo 104.25.62.106 tracker.dmhy.org >>/etc/hosts
+echo 172.67.98.15 tracker.dmhy.org >>/etc/hosts
+echo 104.25.26.31 share.dmhy.org >>/etc/hosts
+echo 104.25.61.106 share.dmhy.org >>/etc/hosts
+echo 104.25.62.106 share.dmhy.org >>/etc/hosts
+echo 172.67.98.15 share.dmhy.org >>/etc/hosts
 echo "启动服务"
+python manage.py migrate
 python manage.py runserver 0.0.0.0:$DJANGO_WEB_PORT
