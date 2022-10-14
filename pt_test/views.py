@@ -76,16 +76,22 @@ def test_subprocess(request):
     :param request:
     :return:
     """
-    # update_command = [
-    #     # 'cp db/db.sqlite3 db/db.sqlite3-$(date "+%Y%m%d%H%M%S")',
-    #     'git pull',
-    #     'pip install -r requirements.txt',
-    #     'python manage.py makemigrations',
-    #     'python manage.py migrate',
-    # ]
-    # result = []
-    # for command in update_command:
-    #     p = subprocess.getoutput(command)
-    #     result.append(p)
-
-    return JsonResponse(CommonResponse.success(data='ok').to_dict(), safe=False)
+    update_command = [
+        # 'cp db/db.sqlite3 db/db.sqlite3-$(date "+%Y%m%d%H%M%S")',
+        'git pull',
+        # 'pip install -r requirements.txt',
+        # 'python manage.py makemigrations',
+        'python manage.py migrate',
+    ]
+    result = []
+    for command in update_command:
+        p = subprocess.run(command, shell=True)
+        print(p.stderr)
+        print(p.args)
+        print(p.returncode)
+        result.append({
+            'command': p.args,
+            'res': p.returncode
+        })
+    # print(result)
+    return JsonResponse(CommonResponse.success(data=result).to_dict(), safe=False)
