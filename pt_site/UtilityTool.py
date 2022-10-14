@@ -942,6 +942,7 @@ class PtSpider:
                 return CommonResponse.error(msg='签到失败或网络错误！')
             if res.status_code == 200:
                 status = converter.convert(res.content.decode('utf8'))
+                logger.info(status)
                 # status = ''.join(self.parse(res, '//a[contains(@href,{})]/text()'.format(site.page_sign_in)))
                 # 检查是否签到成功！
                 # if '签到得魔力' in converter.convert(status):
@@ -1431,9 +1432,9 @@ class PtSpider:
             my_site.my_level = my_level if my_level != '' else ' '
             if my_hr:
                 my_site.my_hr = my_hr
-            my_site.seed = int(seed) if seed else 0
+            my_site.seed = int(get_decimals(seed)) if seed else 0
             logger.info(leech)
-            my_site.leech = int(leech) if leech else 0
+            my_site.leech = int(get_decimals(leech)) if leech else 0
 
             logger.info('站点：{}'.format(site))
             logger.info('等级：{}'.format(my_level))
