@@ -356,41 +356,52 @@ def update_page(request):
                   })
 
 
+def exec_command(commands):
+    result = []
+    for key, command in commands.items():
+        p = subprocess.getstatusoutput(command)
+        logger.info('{} 命令执行结果：\n{}'.format(key, p))
+        result.append({
+            'command': key,
+            'res': p[0]
+        })
+    return result
+
+
 def do_update(request):
     try:
-        logger.info('开始拉取更新')
-        main_pt_site_site_mtime = os.stat('./main_pt_site_site.json').st_mtime
-        update_command = {
+        logger.info('开始更新')
+        pt_site_site_mtime = os.stat('pt_site_site.json').st_mtime
+        requirements_mtime = os.stat('requirements.text').st_mtime
+        update_commands = {
             # 'cp db/db.sqlite3 db/db.sqlite3-$(date "+%Y%m%d%H%M%S")',
-            '获取更新信息': 'git fetch',
             '强制覆盖本地': 'git reset --hard',
+            '获取更新信息': 'git fetch',
             '拉取代码更新': 'git pull',
+        }
+        migrate_commands = {
             '安装依赖': 'pip install -r requirements.txt',
             '创建同步文件': 'python manage.py makemigrations',
             '同步数据库': 'python manage.py migrate',
         }
-        result = []
-        for key, command in update_command.items():
-            p = subprocess.getstatusoutput(command)
-            logger.info('休息5秒钟，等待代码下载完成！')
-            time.sleep(5)
-            logger.info('{} 命令执行结果：\n{}'.format(key, p))
-            result.append({
-                'command': key,
-                'res': p[0]
-            })
+        logger.info('拉取最新代码')
+        result = exec_command(update_commands)
+        new_requirements_mtime = os.stat('requirements.text').st_mtime
+        if new_requirements_mtime > requirements_mtime:
+            logger.info('更新环境依赖')
+            result.extend(exec_command(migrate_commands))
         # subprocess.Popen('chmod +x ./update.sh', shell=True)
         # p = subprocess.Popen('./update.sh', shell=True, stdout=subprocess.PIPE)
         # p.wait()
         # out = p.stdout.readlines()
         # for i in out:
         #     logger.info(i.decode('utf8'))
-        new_fileinfo = os.stat('./main_pt_site_site.json').st_mtime
+        new_pt_site_site = os.stat('pt_site_site.json').st_mtime
         logger.info('更新前文件最后修改时间')
-        logger.info(main_pt_site_site_mtime)
+        logger.info(pt_site_site_mtime)
         logger.info('更新后文件最后修改时间')
-        logger.info(new_fileinfo)
-        if new_fileinfo == main_pt_site_site_mtime:
+        logger.info(new_pt_site_site)
+        if new_pt_site_site == pt_site_site_mtime:
             logger.info('本次无规则更新，跳过！')
             result.append({
                 'command': '本次无更新规则',
@@ -404,27 +415,6 @@ def do_update(request):
             result.append({
                 'command': '备份数据库',
                 'res': p[0]
-            })
-        with open('./main_pt_site_site.json', 'r') as f:
-            # print(f.readlines())
-            data = json.load(f)
-            # print(data[2])
-            # print(data[0].get('url'))
-            # xpath_update = []
-            logger.info('更新规则中，返回结果为True为新建，为False为更新，其他是错误了')
-            update_info = ''
-            for site_rules in data:
-                if site_rules.get('pk'):
-                    del site_rules['pk']
-                if site_rules.get('id'):
-                    del site_rules['id']
-                site_obj = Site.objects.update_or_create(defaults=site_rules, url=site_rules.get('url'))
-                msg = site_obj[0].name + (' 规则新增成功！' if site_obj[1] else '规则更新成功！')
-                update_info += (msg + '\n')
-                logger.info(msg)
-            result.append({
-                'command': '更新规则',
-                'res': 0
             })
         logger.info('更新完毕')
         return JsonResponse(data=CommonResponse.success(
