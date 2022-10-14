@@ -1,7 +1,7 @@
 # myproject/Dockerfile
 
 # 建立 python3.9 环境
-FROM python:3.9-slim
+FROM python:3.9.14-slim
 
 # 镜像作者大江狗
 MAINTAINER ngfchl ngfchl@126.com
@@ -27,8 +27,8 @@ RUN mkdir -p /ptools
 WORKDIR /ptools
 # 将当前目录加入到工作目录中（. 表示当前目录）
 ADD . /ptools
-# 给start.sh可执行权限
-RUN chmod +x /ptools/start.sh && rm -rf /ptools/db/*
+# 给start.sh可执行权限，并安装依赖
+RUN chmod +x /ptools/start.sh && rm -rf /ptools/db/* && pip install -r requirements.txt --no-cache-dir
 # 暴露数据库文件夹
 VOLUME ["/ptools/db"]
 # 暴露访问端口
