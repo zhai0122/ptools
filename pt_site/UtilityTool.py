@@ -1005,6 +1005,8 @@ class PtSpider:
         count = 0
         new_count = 0
         site = my_site.site
+        if not my_site.passkey:
+            return CommonResponse.error(msg='{}站点未设置Passkey，无法拼接种子链接！'.format(site.name))
         # logger.info(response.text.encode('utf8'))
         try:
             with lock:
@@ -1076,21 +1078,21 @@ class PtSpider:
                         # # 下载链接，下载链接已存在则跳过
                         href = ''.join(tr.xpath(site.magnet_url_rule))
                         logger.info('href: {}'.format(href))
-                        magnet_url = site.url + href.replace('&type=zip', '').replace(site.url, '').lstrip('/')
+                        magnet_url = '{}{}'.format(
+                            site.url,
+                            href.replace('&type=zip', '').replace(site.url, '').lstrip('/')
+                        )
+                        logger.info('magnet_url: {}'.format(magnet_url))
                         if href.count('passkey') <= 0 and href.count('&sign=') <= 0:
-                            download_url = magnet_url + '&passkey=' + my_site.passkey
+                            download_url = '{}&passkey={}'.format(magnet_url, my_site.passkey)
                         else:
                             download_url = magnet_url
                         logger.info('download_url: {}'.format(download_url))
-                        logger.info('magnet_url: {}'.format(magnet_url))
-
-                        # if sale_status == '2X':
-                        #     sale_status = '2XFree'
 
                         # 如果种子有HR，则为否 HR绿色表示无需，红色表示未通过HR考核
                         hr = False if tr.xpath(site.hr_rule) else True
                         # H&R 种子有HR且站点设置不下载HR种子,跳过，
-                        if not hr and not site.hr:
+                        if not hr and not my_site.hr:
                             logger.info('hr种子，未开启HR跳过')
                             continue
                         # # 促销到期时间
