@@ -359,11 +359,11 @@ def update_page(request):
 def exec_command(commands):
     result = []
     for key, command in commands.items():
-        p = subprocess.getstatusoutput(command)
+        p = subprocess.run(command, shell=True)
         logger.info('{} 命令执行结果：\n{}'.format(key, p))
         result.append({
             'command': key,
-            'res': p[0]
+            'res': p.returncode
         })
     return result
 
@@ -379,9 +379,10 @@ def do_update(request):
             '获取更新信息': 'git fetch',
             '拉取代码更新': 'git pull',
         }
-        migrate_commands = {
+        requirements_commands = {
             '安装依赖': 'pip install -r requirements.txt',
-            '创建同步文件': 'python manage.py makemigrations',
+        }
+        migrate_commands = {
             '同步数据库': 'python manage.py migrate',
         }
         logger.info('拉取最新代码')
@@ -390,12 +391,6 @@ def do_update(request):
         if new_requirements_mtime > requirements_mtime:
             logger.info('更新环境依赖')
             result.extend(exec_command(migrate_commands))
-        # subprocess.Popen('chmod +x ./update.sh', shell=True)
-        # p = subprocess.Popen('./update.sh', shell=True, stdout=subprocess.PIPE)
-        # p.wait()
-        # out = p.stdout.readlines()
-        # for i in out:
-        #     logger.info(i.decode('utf8'))
         new_pt_site_site = os.stat('pt_site_site.json').st_mtime
         logger.info('更新前文件最后修改时间')
         logger.info(pt_site_site_mtime)
@@ -410,12 +405,14 @@ def do_update(request):
             pass
         else:
             logger.info('拉取更新完毕，开始更新Xpath规则')
-            p = subprocess.getstatusoutput('cp db/db.sqlite3 db/db.sqlite3-$(date "+%Y%m%d%H%M%S")')
+            p = subprocess.run('cp db/db.sqlite3 db/db.sqlite3-$(date "+%Y%m%d%H%M%S")', shell=True)
             logger.info('备份数据库 命令执行结果：\n{}'.format(p))
             result.append({
                 'command': '备份数据库',
-                'res': p[0]
+                'res': p.returncode
             })
+            result.extend(exec_command(migrate_commands))
+            logger.info('同步数据库 命令执行结果：\n{}'.format(p))
         logger.info('更新完毕')
         return JsonResponse(data=CommonResponse.success(
             msg='更新成功，15S后自动刷新页面！',
