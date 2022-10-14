@@ -454,6 +454,58 @@ class PtSpider:
             return False
         return img_data
 
+    def sign_in_52pt(self, my_site: MySite):
+        site = my_site.site
+        url = site.url + site.page_sign_in.lstrip('/')
+        result = self.send_request(
+            my_site=my_site,
+            url=url,
+        )
+
+        sign_str = self.parse(result, '//a[@id="game"]//text()')
+        logger.info(sign_str)
+        if len(sign_str) < 1:
+            return CommonResponse.success(msg='已签到！')
+        if len(sign_str) >= 1:
+            return CommonResponse.success(msg='52PT 签到太复杂不支持，访问网站保持活跃成功！')
+        # questionid = self.parse(result, 'questionid')
+        # choices = self.parse(result, '//input[contains(@name, "choice[]")]/@value')
+        # for choice in choices:
+        # logger.info(choice)
+        # submit = {
+        #     'submit': 'submit'
+        # }
+        # while True:
+        #     sign_res = self.send_request(
+        #         my_site=my_site,
+        #         url=site.url + site.page_sign_in.lstrip('/'),
+        #         method=site.sign_in_method,
+        #         data={
+        #             'questionid': questionid,
+        #             'choice': choices[random.randint(0, len(choices) - 1)],
+        #             'usercomment': '十步杀一人，千里不流行！',
+        #         }.update(submit)
+        #     ).content.decode('utf8')
+        #     questionid = self.parse(result, 'questionid')
+        #     choices = self.parse(result, '//input[contains(@name, "choice[]")]/@value')
+        #     logger.info(sign_res)
+        #     if '签到赚魔力' in sign_res:
+        #         submit = {
+        #             'submit': 'wantskip'
+        #         }
+        #     else:
+        #         return CommonResponse.success(
+        #             msg='签到成功！'
+        #         )
+        # return CommonResponse.error(
+        #     msg='签到shibai!'
+        # )
+        # if isinstance(sign_res, int):
+        #     msg = '你还需要继续努力哦！此次签到，你获得了魔力奖励：{}'.format(sign_res)
+        # else:
+        #     msg = sign_res
+        # logger.info(msg)
+
     def sign_in_hdupt(self, my_site: MySite):
         site = my_site.site
         url = site.url + site.page_control_panel.lstrip('/')
@@ -762,6 +814,13 @@ class PtSpider:
         logger.info('签到链接：' + url)
         try:
             # with lock:
+            if '52pt' in site.url:
+                result = self.sign_in_52pt(my_site)
+                if result.code == StatusCodeEnum.OK.code:
+                    signin_today.sign_in_today = True
+                    signin_today.sign_in_info = result.msg
+                    signin_today.save()
+                return result
             if 'hd4fans' in site.url:
                 result = self.sign_in_hd4fans(my_site)
                 if result.code == StatusCodeEnum.OK.code:
