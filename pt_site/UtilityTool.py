@@ -134,7 +134,7 @@ class PtSpider:
                         text=text,
                         to_uid=notify.touser if notify.touser else '@all'
                     )
-                    msg = '企业微信通知' + str(res)
+                    msg = '企业微信通知：{}'.format(res)
                     logger.info(msg)
 
                 if notify.name == PushConfig.wxpusher_push:
@@ -146,7 +146,7 @@ class PtSpider:
                         token=notify.corpsecret,
                         content_type=3,  # 1：文本，2：html，3：markdown
                     )
-                    msg = 'WxPusher通知' + str(res)
+                    msg = 'WxPusher通知{}'.format(res)
                     logger.info(msg)
 
                 if notify.name == PushConfig.pushdeer_push:
@@ -156,13 +156,13 @@ class PtSpider:
                     # res = pushdeer.send_text(text, desp="optional description")
                     res = pushdeer.send_markdown(text=text,
                                                  desp="#### 欢迎使用PTools，使用中遇到问题请在微信群进行反馈！")
-                    msg = 'pushdeer通知' + str(res)
+                    msg = 'pushdeer通知{}'.format(res)
                     logger.info(msg)
 
                 if notify.name == PushConfig.bark_push:
                     url = notify.custom_server + notify.corpsecret + '/' + text
                     res = self.get_scraper().get(url=url)
-                    msg = 'bark通知' + str(res)
+                    msg = 'bark通知{}'.format(res)
                     logger.info(msg)
 
                 if notify.name == PushConfig.iyuu_push:
@@ -174,9 +174,9 @@ class PtSpider:
                             'text': '欢迎使用PTools',
                             'desp': text
                         })
-                    logger.info('爱语飞飞通知：' + str(res))
+                    logger.info('爱语飞飞通知：{}'.format(res))
         except Exception as e:
-            logger.info("通知发送失败，" + str(e))
+            logger.info('通知发送失败，{}'.format(res))
 
     def send_request(self,
                      my_site: MySite,
@@ -233,11 +233,11 @@ class PtSpider:
             logger.info(res1)
             if res1.get('error_code'):
                 res1 = ocr_client.basicAccurateUrl(img_url)
-            logger.info('res1' + str(res1))
+            logger.info('res1: {}'.format(res1))
             if res1.get('error_code'):
                 return CommonResponse.error(
                     status=StatusCodeEnum.OCR_ACCESS_ERR,
-                    msg=StatusCodeEnum.OCR_ACCESS_ERR.errmsg + res1.get('error_msg')
+                    msg='{} {}'.format(StatusCodeEnum.OCR_ACCESS_ERR.errmsg, res1.get('error_msg'))
                 )
             res2 = res1.get('words_result')[0].get('words')
             # 去除杂乱字符
@@ -251,12 +251,12 @@ class PtSpider:
                 data=imagestring,
             )
         except Exception as e:
-            logger.info('百度OCR识别失败：' + str(e))
+            logger.info('百度OCR识别失败：{}'.format(e))
             # raise
-            self.send_text('百度OCR识别失败：' + str(e))
+            self.send_text('百度OCR识别失败：{}'.format(e))
             return CommonResponse.error(
                 status=StatusCodeEnum.OCR_ACCESS_ERR,
-                msg=StatusCodeEnum.OCR_ACCESS_ERR.errmsg + str(e)
+                msg='{} {}'.format(StatusCodeEnum.OCR_ACCESS_ERR.errmsg, e)
             )
 
     def parse_ptpp_cookies(self, data_list):
@@ -296,7 +296,7 @@ class PtSpider:
         site = Site.objects.filter(url__contains=host).first()
         # logger.info('查询站点信息：', site, site.url, url)
         if not site:
-            return CommonResponse.error(msg='尚未支持此站点：' + url)
+            return CommonResponse.error(msg='尚未支持此站点：{}'.format(url))
         icon = cookie.get('icon')
         if icon:
             site.logo = icon
@@ -461,9 +461,9 @@ class PtSpider:
             my_site=my_site,
             url=url,
         )
-        sign_str = self.parse(result, '//span[@id="yiqiandao"]')
+        sign_str = self.parse(result, '//span[@id="qiandao"]')
         logger.info(sign_str)
-        if len(sign_str) == 1:
+        if len(sign_str) < 1:
             return CommonResponse.success(msg=site.name + '已签到，请勿重复操作！！')
         sign_res = self.send_request(
             my_site=my_site,
