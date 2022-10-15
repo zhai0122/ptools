@@ -406,16 +406,16 @@ class MySiteAdmin(admin.ModelAdmin):  # instead of ModelAdmin
                     my_site.cookie and my_site.passkey and my_site.site.sign_in_support and my_site.signin_set.filter(
                         created_at__date__gte=datetime.today(), sign_in_today=True).count() <= 0]
         if len(queryset) <= 0:
-            messages.add_message(request, messages.SUCCESS, '已签到或无需签到！')
+            messages.success(request, '已签到或无需签到！')
         results = pool.map(pt_spider.sign_in, queryset)
         for my_site, result in zip(queryset, results):
             print(my_site, result.code)
             if result.code == StatusCodeEnum.OK.code:
-                messages.add_message(request, messages.SUCCESS, my_site.site.name + '：' + result.msg)
+                messages.success(request, '{}：{}'.format(my_site.site.name, result.msg))
             # elif result[0] == 503:
-            #     messages.add_message(request, messages.ERROR, my_site.site.name + '签到失败！原因：5秒盾起作用了，别试了！')
+            #     messages.error(request, my_site.site.name + '签到失败！原因：5秒盾起作用了，别试了！')
             else:
-                messages.add_message(request, messages.ERROR, my_site.site.name + '签到失败！原因：' + result.msg)
+                messages.error(request, '{} 签到失败！原因：{}'.format(my_site.site.name, result.msg))
         end = time.time()
         print('耗时：', end - start)
 
@@ -441,7 +441,8 @@ class MySiteAdmin(admin.ModelAdmin):  # instead of ModelAdmin
                 if res.code == StatusCodeEnum.OK.code:
                     site_status = res.data[0]
                     if isinstance(site_status, SiteStatus):
-                        message = my_site.site.name + '{}'.format('信息获取成功！' if res.data[1] else '信息更新成功！')
+                        message = '{}: {}'.format(my_site.site.name,
+                                                  '信息获取成功！' if res.data[1] else '信息更新成功！')
                         # status = my_site.sitestatus_set.filter(created_at__date__gte=datetime.today()).first()
                         # print(status.ratio)
                         message += message_template.format(
@@ -457,25 +458,21 @@ class MySiteAdmin(admin.ModelAdmin):  # instead of ModelAdmin
                             my_site.invitation,
                             my_site.my_hr
                         )
-                        messages.add_message(
+                        messages.success(
                             request,
-                            messages.SUCCESS,
                             message=message)
                     else:
-                        messages.add_message(
+                        messages.error(
                             request,
-                            messages.ERROR,
-                            my_site.site.name + '信息更新失败！原因：' + res.msg)
+                            '{} 信息更新失败！原因：{}'.format(my_site.site.name, res.msg))
                 else:
-                    messages.add_message(
+                    messages.error(
                         request,
-                        messages.ERROR,
-                        my_site.site.name + '信息更新失败！原因：' + res.msg)
+                        '{} 信息更新失败！原因：'.format(my_site.site.name, res.msg))
             else:
-                messages.add_message(
+                messages.error(
                     request,
-                    messages.ERROR,
-                    my_site.site.name + '信息更新失败！原因：' + result.msg)
+                    '{} 信息更新失败！原因：'.format(my_site.site.name, result.msg))
         end = time.time()
         print('耗时：', end - start)
 
@@ -496,20 +493,17 @@ class MySiteAdmin(admin.ModelAdmin):  # instead of ModelAdmin
                 # print(my_site.site, result[0].content.decode('utf8'))
                 res = pt_spider.get_torrent_info_list(my_site, result.data)
                 if res.code == StatusCodeEnum.OK.code:
-                    messages.add_message(
+                    messages.success(
                         request,
-                        messages.SUCCESS,
                         '{} 种子抓取成功！新增种子{}条，更新种子{}条：'.format(my_site.site.name, res.data[0], res.data[1])
                     )
                 else:
-                    messages.add_message(
+                    messages.error(
                         request,
-                        messages.ERROR,
-                        my_site.site.name + '解析种子信息失败！原因：' + res.msg
+                        '{} 解析种子信息失败！原因：{}'.format(my_site.site.name, res.msg)
                     )
             else:
-                messages.add_message(request, messages.ERROR,
-                                     my_site.site.name + '抓取种子信息失败！原因：' + result.msg)
+                messages.error(request, '{} 抓取种子信息失败！原因：{}'.format(my_site.site.name, result.msg))
 
         end = time.time()
         print('耗时：', end - start)
@@ -646,13 +640,12 @@ class DownloaderAdmin(AjaxAdmin):  # instead of ModelAdmin
             #     # return de_client.connected, ''
             #     conn = de_client.connected
             if conn:
-                messages.add_message(request, messages.SUCCESS, downloader.name + '连接成功！')
+                messages.success(request, '{} 连接成功！'.format(downloader.name))
         except Exception as e:
             # print(e)
-            messages.add_message(
+            messages.error(
                 request,
-                messages.ERROR,
-                downloader.name + '连接失败！请确认下载器信息填写正确：' + str(e)  # 输出异常
+                '连接失败！请确认下载器信息填写正确：'.format(downloader.name, e)  # 输出异常
             )
             # return False, str(e)
 
@@ -768,8 +761,8 @@ class TorrentInfoAdmin(AjaxAdmin):  # instead of ModelAdmin
         print(progress)
         speed = round(torrent.rateDownload / 1024 / 1024, 2)
         if progress < 100:
-            return format_html('<a href="#" target="_blank">{}</a>', str(speed) + 'MB/s')
-        return format_html('<a href="#" target="_blank">{}</a>', str(torrent.progress) + '%')
+            return format_html('<a href="#" target="_blank">{} MB/s</a>', speed)
+        return format_html('<a href="#" target="_blank">{}%</a>', torrent.progress)
 
     # name_href.short_description = '种子名称'
     name_href.short_description = format_html(
@@ -871,7 +864,7 @@ class TorrentInfoAdmin(AjaxAdmin):  # instead of ModelAdmin
                     # raise
                     return JsonResponse(data={
                         'status': 'error',
-                        'msg': str(e) + '！'
+                        'msg': '{}！'.format(str(e))
                     })
             if downloader.category == DownloaderCategory.qBittorrent:
                 qb_client = qbittorrentapi.Client(
@@ -941,7 +934,7 @@ class TorrentInfoAdmin(AjaxAdmin):  # instead of ModelAdmin
                 except Exception as e:
                     return JsonResponse(data={
                         'status': 'error',
-                        'msg': str(e) + '1！'
+                        'msg': '{}！'.format(str(e))
                     })
 
     # 显示的文本，与django admin一致
