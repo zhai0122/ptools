@@ -17,14 +17,16 @@ def app_ready_handler(sender, **kwargs):
             data = json.load(f)
             logger.info('正在初始化站点规则信息表')
             logger.info('更新规则中，返回结果为True为新建，为False为更新，其他是错误了')
+            btschool = Site.objects.filter(url='https://pt.btschool.club/').first()
+            if btschool:
+                btschool.url = 'http://47.242.110.63/'
+                btschool.save()
             for site_rules in data:
                 if site_rules.get('pk'):
                     del site_rules['pk']
                 if site_rules.get('id'):
                     del site_rules['id']
                 url = site_rules.get('url')
-                if '47.242.110.63' in url:
-                    url = 'https://pt.btschool.club/'
                 site_obj = Site.objects.update_or_create(defaults=site_rules, url=url)
                 msg = site_obj[0].name + (' 规则新增成功！' if site_obj[1] else '规则更新成功！')
                 logger.info(msg)
