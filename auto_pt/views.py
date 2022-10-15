@@ -350,7 +350,9 @@ def update_page(request):
                       'local_logs': local_logs,
                       'update_notes': update_notes,
                       'update': update,
-                      'update_tips': update_tips
+                      'update_tips': update_tips,
+                      'branch': ('开发版：{}，更新于{}' if branch == 'dev' else '稳定版：{}，更新于{}').format(
+                          local_logs[0].get('hexsha'), local_logs[0].get('date'))
                   })
 
 

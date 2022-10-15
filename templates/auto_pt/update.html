@@ -44,12 +44,15 @@
                     width="300"
                     trigger="hover"
                     content="如果遇到无法更新的情况，您可以选择重建容器或者进入容器命令行到项目根目录执行`git pull`命令！">
-                <el-link slot="reference"
-                         type="success">{{ update_tips }}
-                    <span v-if="{{ restart }}"> + 容器已运行：{{ delta }}</span>
+                <el-link slot="reference" type="success">
+                    <span v-if="{{ restart }}">容器已运行：{{ delta }}</span>
                     <span v-text="time"></span>
                 </el-link>
             </el-popover>
+            <el-tag type="success" style="float: right;"
+                    effect="plain">
+                <span v-text="branch"></span>
+            </el-tag>
         </div>
         <div class="text item">
             <el-card class="box-card" shadow="hover" v-if="show">
@@ -153,6 +156,7 @@
             cid: "{{ cid }}",
             time: '',
             show: false,
+            branch: "{{ branch }}"
         },
         created() {
             if (this.update) {
