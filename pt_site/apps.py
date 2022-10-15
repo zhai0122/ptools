@@ -36,7 +36,7 @@ class PtSiteConfig(AppConfig):
 
     def ready(self):
         # 环境变量不存在，说明数据库还未初始化，先跳过初始化站点数据
-        if os.getenv('CONTAINER_ALREADY_STARTED'):
+        if os.path.exists('CONTAINER_ALREADY_STARTED_PLACEHOLDER'):
             post_migrate.connect(app_ready_handler, sender=self)
         else:
             logger.info('第一次启动容器，初始化数据库中')

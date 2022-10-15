@@ -19,10 +19,16 @@ if [ ! -e $CONTAINER_ALREADY_STARTED ]; then
   ls -l
   echo "安装pip依赖"
   pip install -r requirements.txt
-  echo "初始化数据库"
+  echo "系统初始化中"
   python manage.py makemigrations
-  python manage.py migrate
-  python manage.py loaddata pt.json
+  if [ ! -f db/db.sqlite3 ]; then
+    echo '数据库不存在，初始化数据库'
+    python manage.py migrate
+    python manage.py loaddata pt.json
+  else
+    echo '数据库已存在，同步数据库结构'
+    python manage.py migrate
+  fi
   touch $CONTAINER_ALREADY_STARTED
   echo "创建超级用户"
   DJANGO_SUPERUSER_USERNAME=$DJANGO_SUPERUSER_USERNAME
