@@ -287,7 +287,8 @@ class MySiteAdmin(admin.ModelAdmin):  # instead of ModelAdmin
     def status_today(self, obj: MySite):
         is_update = obj.updated_at.date() == datetime.today().date()
 
-        return format_html('{}<img src="/static/admin/img/icon-{}.svg">', obj.updated_at.date(),
+        return format_html('{}<img src="/static/admin/img/icon-{}.svg">',
+                           datetime.strftime(obj.updated_at, '%Y-%m-%d %H:%M:%S'),
                            'yes' if is_update and obj.site.get_userinfo_support else 'no')
 
     status_today.short_description = '更新时间'
