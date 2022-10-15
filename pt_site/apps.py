@@ -22,7 +22,10 @@ def app_ready_handler(sender, **kwargs):
                     del site_rules['pk']
                 if site_rules.get('id'):
                     del site_rules['id']
-                site_obj = Site.objects.update_or_create(defaults=site_rules, url=site_rules.get('url'))
+                url = site_rules.get('url')
+                if '47.242.110.63' in url:
+                    url = 'https://pt.btschool.club/'
+                site_obj = Site.objects.update_or_create(defaults=site_rules, url=url)
                 msg = site_obj[0].name + (' 规则新增成功！' if site_obj[1] else '规则更新成功！')
                 logger.info(msg)
     except Exception as e:
