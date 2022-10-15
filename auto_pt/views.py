@@ -300,7 +300,7 @@ def import_from_ptpp(request):
 def get_git_log(branch, n=20):
     repo = git.Repo(path='.')
     # 拉取仓库更新记录元数据
-    repo.remote().update()
+    repo.remote().fetch()
     # commits更新记录
     logger.info('当前分支{}'.format(branch))
     return [{
@@ -375,7 +375,7 @@ def do_update(request):
             # 'cp db/db.sqlite3 db/db.sqlite3-$(date "+%Y%m%d%H%M%S")',
             '强制覆盖本地': 'git reset --hard',
             '获取更新信息': 'git fetch',
-            '拉取代码更新': 'git pull',
+            '拉取代码更新': 'git pull origin {}'.format(os.getenv('DEV')),
         }
         requirements_commands = {
             '安装依赖': 'pip install -r requirements.txt',
