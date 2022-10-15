@@ -13,6 +13,7 @@ if [ ! -e $CONTAINER_ALREADY_STARTED ]; then
   echo "拉取PTools最新代码"
   # 设置拉取最新文件并覆盖
   git config pull.ff only
+  git checkout $DEV
   git pull
   git pull origin $DEV
   echo "列出代码文件信息"
