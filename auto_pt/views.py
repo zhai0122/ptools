@@ -372,7 +372,7 @@ def do_update(request):
     try:
         logger.info('开始更新')
         pt_site_site_mtime = os.stat('pt_site_site.json').st_mtime
-        requirements_mtime = os.stat('requirements.text').st_mtime
+        requirements_mtime = os.stat('requirements.txt').st_mtime
         update_commands = {
             # 'cp db/db.sqlite3 db/db.sqlite3-$(date "+%Y%m%d%H%M%S")',
             '强制覆盖本地': 'git reset --hard',
@@ -387,7 +387,7 @@ def do_update(request):
         }
         logger.info('拉取最新代码')
         result = exec_command(update_commands)
-        new_requirements_mtime = os.stat('requirements.text').st_mtime
+        new_requirements_mtime = os.stat('requirements.txt').st_mtime
         if new_requirements_mtime > requirements_mtime:
             logger.info('更新环境依赖')
             result.extend(exec_command(migrate_commands))
