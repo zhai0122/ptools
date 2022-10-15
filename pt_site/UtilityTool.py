@@ -969,10 +969,14 @@ class PtSpider:
                 logger.info(res.status_code)
                 logger.info(res.content.decode('utf-8'))
                 text = self.parse(res, '//a[@href="index.php"]/font/text()')
-                signin_stat = self.parse(res, '//a[contains(@href,"addbouns"])')
+                signin_stat = self.parse(res, '//a[contains(@href,"addbouns")]')
                 logger.info('{}:{}'.format(site.name, text))
                 if len(signin_stat) <= 0:
-                    return CommonResponse.success(msg=text)
+                    message = ''.join(text) if len(text) > 0 else '签到成功！'
+                    signin_today.sign_in_today = True
+                    signin_today.sign_in_info = message
+                    signin_today.save()
+                    return CommonResponse.success(msg=message)
                 """
                 # text = self.parse(res, '//script/text()')
                 if len(text) > 0:
@@ -1033,7 +1037,7 @@ class PtSpider:
         except Exception as e:
             msg = site.name + '签到失败！原因：' + str(e)
             logger.info(msg)
-            # raise
+            raise
             self.send_text(msg)
             return CommonResponse.error(msg='签到失败！' + str(e))
 
