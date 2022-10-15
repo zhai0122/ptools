@@ -187,8 +187,11 @@
                     type: 'warning'
                 }).then(() => {
                     axios.get(
-                        "{% url "do_restart" %}"
-                    ).then(res => {
+                        "{% url "do_restart" %}", {
+                            params: {
+                                cid: this.cid
+                            }
+                        }).then(res => {
                         if (res.data.code === 0) {
                             this.$message({
                                 type: 'success',
@@ -220,11 +223,7 @@
                     type: 'warning'
                 }).then(() => {
                     axios.get(
-                        "{% url "do_update" %}", {
-                            params: {
-                                cid: this.cid
-                            }
-                        }
+                        "{% url "do_update" %}"
                     ).then(res => {
                         if (res.data.code === 0) {
                             console.log(res, 1)

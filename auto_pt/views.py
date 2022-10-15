@@ -330,11 +330,9 @@ def update_page(request):
 
     branch = os.getenv('DEV') if os.getenv('DEV') else 'master'
     local_logs = get_git_log(branch)
-
-    logger.info('本地代码日志{}'.format(local_logs))
+    logger.info('本地代码日志{} \n'.format(local_logs))
     update_notes = get_git_log('origin/' + branch)
-
-    logger.info('远程代码日志{}'.format(update_notes))
+    logger.info('远程代码日志{} \n'.format(update_notes))
     if datetime.strptime(
             update_notes[0].get('date'), '%Y-%m-%d %H:%M:%S') > datetime.strptime(
         local_logs[0].get('date'), '%Y-%m-%d %H:%M:%S'
@@ -390,7 +388,7 @@ def do_update(request):
         new_requirements_mtime = os.stat('requirements.txt').st_mtime
         if new_requirements_mtime > requirements_mtime:
             logger.info('更新环境依赖')
-            result.extend(exec_command(migrate_commands))
+            result.extend(exec_command(requirements_commands))
         new_pt_site_site = os.stat('pt_site_site.json').st_mtime
         logger.info('更新前文件最后修改时间')
         logger.info(pt_site_site_mtime)
@@ -432,7 +430,7 @@ def do_restart(request):
         # 获取docker对象
         # client = docker.from_env()
         # 从内部获取容器id
-        cid = socket.gethostname()
+        cid = request.GET.get('cid')
         # 获取容器对象
         # container = client.containers.get(cid)
         # 重启容器
