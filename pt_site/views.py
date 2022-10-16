@@ -81,7 +81,7 @@ def auto_get_status():
                 )
                 logger.info('组装Message：{}'.format(message))
                 message_list += (
-                            '> <font color="orange">' + my_site.site.name + '</font> 信息更新成功！' + message + '  \n\n')
+                        '> <font color="orange">' + my_site.site.name + '</font> 信息更新成功！' + message + '  \n\n')
                 # pt_spider.send_text(my_site.site.name + ' 信息更新成功！' + message)
                 logger.info(my_site.site.name + '信息更新成功！' + message)
             else:
@@ -151,29 +151,48 @@ def auto_remove_expire_torrents():
     删除过期种子
     """
     start = time.time()
-    torrent_info_list = TorrentInfo.objects.all().filter(downloader__isnull=False)
+    torrent_info_list = TorrentInfo.objects.all()
+    count = 0
     for torrent_info in torrent_info_list:
+        logger.info('种子名称：{}'.format(torrent_info.name))
         expire_time = torrent_info.sale_expire
         if '无限期' in expire_time:
             # ToDo 先更新种子信息，然后再判断
             continue
         if expire_time.endswith(':'):
             expire_time += '00'
+            torrent_info.sale_expire = expire_time
+            torrent_info.save()
         time_now = datetime.datetime.now()
-        expire_time_parse = datetime.datetime.strptime(expire_time, '%Y-%m-%d %H:%M:%S')
-
-        if time_now >= expire_time_parse:
-            if not torrent_info.downloader:
+        try:
+            expire_time_parse = datetime.datetime.strptime(expire_time, '%Y-%m-%d %H:%M:%S')
+            logger.info('优惠到期时间：{}'.format(expire_time))
+        except Exception as e:
+            logger.info('优惠到期时间解析错误：{}'.format(e))
+            torrent_info.delete()
+            count += 1
+            continue
+        if (expire_time_parse - time_now).days <= 0:
+            logger.info('优惠已到期时间：{}'.format(expire_time))
+            if torrent_info.downloader:
                 # 未推送到下载器，跳过或删除？
-                continue
+                pass
             if pt_spider.get_torrent_info_from_downloader(torrent_info).code == StatusCodeEnum.OK.code:
                 # todo 设定任务规则：
                 #  免费到期后，下载完毕的种子是删除还是保留？
                 #  未下载完成的，是暂停还是删除？
-                torrent_info.delete()
+                pass
+            count += 1
+            torrent_info.delete()
     end = time.time()
     pt_spider.send_text(
-        '> {} 任务运行成功！耗时：{}{}  \n'.format('签到', end - start, time.strftime("%Y-%m-%d %H:%M:%S")))
+        '> {} 任务运行成功！共清除过期种子{}个，耗时：{}{}  \n'.format(
+            '清除种子',
+            count,
+            end - start,
+            time.strftime("%Y-%m-%d %H:%M:%S")
+        )
+    )
 
 
 def auto_push_to_downloader():
