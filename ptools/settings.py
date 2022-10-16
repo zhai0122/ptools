@@ -231,7 +231,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # DATA_UPLOAD_MAX_MEMORY_SIZE：这个设置翻译过来就是：数据上传最大内存大小
-DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760
+DATA_UPLOAD_MAX_MEMORY_SIZE = 20485760
 APSCHEDULER_DATETIME_FORMAT = 'Y-m-d H:i:s'  # Default
 APSCHEDULER_RUN_NOW_TIMEOUT = 300  # 任务执行超时时间
 # 自定义配置
