@@ -926,6 +926,33 @@ class PtSpider:
             res = self.send_request(my_site=my_site, method=site.sign_in_method, url=url,
                                     data=eval(site.sign_in_params))
             logger.info(res.status_code)
+            if 'pterclub.com' in site.url:
+                status = res.json().get('status')
+                logger.info('{}：{}'.format(site.name, status))
+                '''
+                {
+                  "status": "0",
+                  "data": "抱歉",
+                  "message": "您今天已经签到过了，请勿重复刷新。"
+                }
+                {
+                  "status": "1",
+                  "data": "&nbsp;(签到已得12)",
+                  "message": "<p>这是您的第 <b>2</b> 次签到，已连续签到 <b>1</b> 天。</p><p>本次签到获得 <b>12</b> 克猫粮。</p>"
+                }
+                '''
+                if status == '0' or status == '1':
+                    message = res.json().get('message')
+                    signin_today.sign_in_today = True
+                    signin_today.sign_in_info = message
+                    signin_today.save()
+                    return CommonResponse.success(
+                        msg=message
+                    )
+                else:
+                    return CommonResponse.success(
+                        msg='签到失败！'
+                    )
             if 'hares.top' in site.url:
                 code = res.json().get('code')
                 # logger.info('白兔返回码：'+ type(code))
