@@ -1064,7 +1064,7 @@ class PtSpider:
         except Exception as e:
             msg = site.name + '签到失败！原因：' + str(e)
             logger.info(msg)
-            raise
+            # raise
             self.send_text(msg)
             return CommonResponse.error(msg='签到失败！' + str(e))
 
@@ -1422,9 +1422,17 @@ class PtSpider:
                 vol = ''.join(seed_vol.xpath('.//text()'))
                 # logger.info(vol)
                 if not len(vol) <= 0:
-                    seed_vol_all += FileSizeConvert.parse_2_byte(
+                    size = FileSizeConvert.parse_2_byte(
                         vol.replace('i', '')  # U2返回字符串为mib，gib
                     )
+                    if size:
+                        seed_vol_all += size
+                    else:
+                        msg = '## <font color="red">{} 获取做种大小失败，请检查规则信息是否匹配？</font>'.format(
+                            site.name)
+                        logger.warning(msg)
+                        self.send_text(msg)
+                        break
                 else:
                     # seed_vol_all = 0
                     pass
