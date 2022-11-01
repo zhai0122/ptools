@@ -5,6 +5,7 @@ import random
 import re
 import threading
 import time
+import traceback
 from datetime import datetime
 from urllib.request import urlopen
 
@@ -176,7 +177,7 @@ class PtSpider:
                         })
                     logger.info('爱语飞飞通知：{}'.format(res))
         except Exception as e:
-            logger.info('通知发送失败，{}'.format(res))
+            logger.info('通知发送失败，{} {}'.format(res, traceback.format_exc()))
 
     def send_request(self,
                      my_site: MySite,
@@ -251,12 +252,13 @@ class PtSpider:
                 data=imagestring,
             )
         except Exception as e:
-            logger.info('百度OCR识别失败：{}'.format(e))
+            msg = '百度OCR识别失败：{}'.format(traceback.format_exc())
+            logger.info(msg)
             # raise
-            self.send_text('百度OCR识别失败：{}'.format(e))
+            self.send_text(msg)
             return CommonResponse.error(
                 status=StatusCodeEnum.OCR_ACCESS_ERR,
-                msg='{} {}'.format(StatusCodeEnum.OCR_ACCESS_ERR.errmsg, e)
+                msg='{} {}'.format(StatusCodeEnum.OCR_ACCESS_ERR.errmsg, msg)
             )
 
     def parse_ptpp_cookies(self, data_list):
@@ -287,7 +289,9 @@ class PtSpider:
             return CommonResponse.success(data=cookies)
         except Exception as e:
             # raise
-            return CommonResponse.error(msg='Cookies解析失败，请确认导入了正确的cookies备份文件！')
+            # 打印异常详细信息
+            logger.error(traceback.format_exc())
+            return CommonResponse.error(msg='Cookies解析失败，请确认导入了正确的cookies备份文件！{}'.format(traceback.format_exc()))
 
     # @transaction.atomic
     def get_uid_and_passkey(self, cookie: dict):
@@ -337,7 +341,7 @@ class PtSpider:
                 my_site.passkey = passkey
                 my_site.save()
             except Exception as e:
-                passkey_msg = '{}PassKey获取失败，请手动添加！'.format(site.name)
+                passkey_msg = '{} PassKey获取失败，请手动添加！'.format(site.name)
                 logger.info(passkey_msg)
         logger.info('开始导入PTPP历史数据')
         for key, value in userdatas.items():
@@ -375,7 +379,7 @@ class PtSpider:
                 logger.info('数据导入结果，True为新建，false为更新')
                 logger.info(res_status)
             except Exception as e:
-                msg = '{}{} 数据导入出错，错误原因：{}'.format(site.name, key, e)
+                msg = '{}{} 数据导入出错，错误原因：{}'.format(site.name, key, traceback.format_exc())
                 logger.info(msg)
                 continue
         if not passkey:
@@ -405,11 +409,14 @@ class PtSpider:
                 tr_client = transmission_rpc.Client(host=downloader.host,
                                                     port=downloader.port,
                                                     username=downloader.username,
-                                                    password=downloader.password)
+                                                    password=downloader.password,
+                                                    timeout=30)
                 torrent = tr_client.get_torrents(ids=torrent_info.hash_string)
             except Exception as e:
+                # 打印异常详细信息
+                logger.error(traceback.format_exc())
                 return CommonResponse.error(
-                    msg='下载无法连接，请检查下载器是否正常？！'
+                    msg='下载无法连接，请检查下载器是否正常？！{}'.format(traceback.format_exc())
                 )
         elif downloader.category == DownloaderCategory.qBittorrent:
             try:
@@ -424,8 +431,10 @@ class PtSpider:
                 qb_client.auth_log_in()
                 torrent = qb_client.torrents_info(hashes=torrent_info.hash_string)
             except Exception as e:
+                # 打印异常详细信息
+                logger.error(traceback.format_exc())
                 return CommonResponse.error(
-                    msg='下载无法连接，请检查下载器是否正常？'
+                    msg='下载无法连接，请检查下载器是否正常？{}'.format(traceback.format_exc())
                 )
             # if downloader.category == DownloaderCategory.qBittorrent:
             #     pass
@@ -580,7 +589,7 @@ class PtSpider:
         logger.info('签到返回结果{}'.format(sign_res))
         if sign_res.get('state') == 'success':
             msg = "签到成功，您已连续签到{}天，本次增加魔力:{}。".format(sign_res.get('signindays'),
-                                                                      sign_res.get('integral'))
+                                                     sign_res.get('integral'))
             logger.info(msg)
             return CommonResponse.success(
                 msg=msg
@@ -751,9 +760,11 @@ class PtSpider:
                 msg=resp.content.decode('utf8')
             )
         except Exception as e:
+            # 打印异常详细信息
+            logger.error(traceback.format_exc())
             return CommonResponse.success(
                 status=StatusCodeEnum.WEB_CONNECT_ERR,
-                msg=site.name + str(e)
+                msg='{}: {}'.format(site.name, traceback.format_exc())
             )
 
     @staticmethod
@@ -1062,11 +1073,11 @@ class PtSpider:
             else:
                 return CommonResponse.error(msg='请确认签到是否成功？？网页返回码：' + str(res.status_code))
         except Exception as e:
-            msg = site.name + '签到失败！原因：' + str(e)
+            msg = '{}签到失败！原因：{}'.format(site.name, traceback.format_exc())
             logger.info(msg)
             # raise
-            self.send_text(msg)
-            return CommonResponse.error(msg='签到失败！' + str(e))
+            # self.send_text(msg)
+            return CommonResponse.error(msg=msg)
 
     @staticmethod
     def parse(response, rules):
@@ -1087,8 +1098,11 @@ class PtSpider:
                 return CommonResponse.error(msg="网站访问失败")
         except Exception as e:
             # raise
-            self.send_text(site.name + '网站访问失败！原因：' + str(e))
-            return CommonResponse.error(msg="网站访问失败" + str(e))
+            msg = '{} 网站访问失败！原因：{}'.format(site.name, traceback.format_exc())
+            # 打印异常详细信息
+            logger.error(msg)
+            self.send_text(msg)
+            return CommonResponse.error(msg=msg)
 
     # @transaction.atomic
     def get_torrent_info_list(self, my_site: MySite, response: Response):
@@ -1286,7 +1300,9 @@ class PtSpider:
         except Exception as e:
             # raise
             # self.send_text(site.name + '解析种子信息：失败！原因：' + str(e))
-            return CommonResponse.error(msg='解析种子页面失败！' + str(e))
+            msg = '解析种子页面失败！{}'.format(traceback.format_exc())
+            logger.error(msg)
+            return CommonResponse.error(msg=msg)
 
     # 从种子详情页面爬取种子HASH值
     def get_hash(self, torrent_info: TorrentInfo):
@@ -1371,7 +1387,7 @@ class PtSpider:
                 status=StatusCodeEnum.WEB_CONNECT_ERR,
                 msg='网站访问超时，请检查网站是否维护？？')
         except Exception as e:
-            message = my_site.site.name + '访问个人主页信息：失败！原因：' + str(e)
+            message = '{} 访问个人主页信息：失败！原因：{}'.format(my_site.site.name, traceback.format_exc())
             logger.error(message)
             # self.send_text(message)
             # raise
@@ -1598,7 +1614,8 @@ class PtSpider:
                 # logger.info(result) # result 本身就是元祖
                 return CommonResponse.success(data=result)
             except Exception as e:
-                message = my_site.site.name + '解析个人主页信息：失败！原因：' + str(e)
+                # 打印异常详细信息
+                message = '{} 解析个人主页信息：失败！原因：{}'.format(my_site.site.name, traceback.format_exc())
                 logger.error(message)
                 # raise
                 # self.send_text('# <font color="red">' + message + '</font>  \n')
@@ -1632,7 +1649,7 @@ class PtSpider:
                 )
             """
             res = converter.convert(response.content)
-            logger.info('时魔响应：{}'.format(response.content))
+            # logger.info('时魔响应：{}'.format(response.content))
             # logger.info('转为简体的时魔页面：', str(res))
             # res_list = self.parse(res, site.hour_sp_rule)
             res_list = etree.HTML(res).xpath(site.hour_sp_rule)
@@ -1646,7 +1663,8 @@ class PtSpider:
                 data=get_decimals(res_list[0])
             )
         except Exception as e:
-            message = '时魔获取失败！'
+            # 打印异常详细信息
+            message = '时魔获取失败！{}'.format(traceback.format_exc())
             logger.error(site.name + message)
             return CommonResponse.success(
                 msg=message,
