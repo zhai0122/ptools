@@ -470,10 +470,10 @@ class PtSpider:
             my_site=my_site,
             url=url,
         )
-        sign_str = self.parse(result, '//a[@id="game"]//text()')
+        sign_str = self.parse(result, '//font[contains(text(),"签过到")]/text()')
         logger.info(sign_str)
         if len(sign_str) < 1:
-            msg = self.parse(result, '//font[contains(text(),"签到")]/text()')
+            msg = self.parse(result, '//font[contains(text(),"签过到")]/text()')
             return CommonResponse.success(msg='已签到！{}'.format(msg))
         # if len(sign_str) >= 1:
         #     return CommonResponse.success(msg='52PT 签到太复杂不支持，访问网站保持活跃成功！')
@@ -495,12 +495,12 @@ class PtSpider:
             data=data
         ).content.decode('utf8')
         logger.info(sign_res)
-        if '签到赚魔力' in sign_res:
+        if self.parse(result, '//font[contains(text(),"签过到")]/text()'):
             return CommonResponse.error(
                 msg='签到失败!'
             )
         else:
-            msg = self.parse(sign_res, '//font[contains(text(),"签到")]/text()')
+            msg = self.parse(sign_res, '//font[contains(text(),"签过到")]/text()')
             return CommonResponse.success(
                 msg='签到成功！{}'.format(msg)
             )
@@ -815,7 +815,7 @@ class PtSpider:
         logger.info('签到链接：' + url)
         try:
             # with lock:
-            if '52pt' in site.url:
+            if '52pt' in site.url or 'chdbits' in site.url:
                 result = self.sign_in_52pt(my_site)
                 if result.code == StatusCodeEnum.OK.code:
                     signin_today.sign_in_today = True
