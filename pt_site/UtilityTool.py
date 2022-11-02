@@ -472,7 +472,7 @@ class PtSpider:
         )
         sign_str = self.parse(result, '//font[contains(text(),"签过到")]/text()')
         logger.info(sign_str)
-        if len(sign_str) < 1:
+        if len(sign_str) >= 1:
             msg = self.parse(result, '//font[contains(text(),"签过到")]/text()')
             return CommonResponse.success(msg='已签到！{}'.format(msg))
         # if len(sign_str) >= 1:
@@ -495,7 +495,8 @@ class PtSpider:
             data=data
         ).content.decode('utf8')
         logger.info(sign_res)
-        if self.parse(result, '//font[contains(text(),"签过到")]/text()'):
+        sign_str = self.parse(sign_res, '//font[contains(text(),"签过到")]/text()')
+        if len(sign_str) < 1:
             return CommonResponse.error(
                 msg='签到失败!'
             )
