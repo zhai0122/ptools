@@ -1,15 +1,12 @@
 import json
 import logging
 import os
-import socket
 import subprocess
 import time
-from datetime import datetime, timedelta, date
-from uuid import UUID
+from datetime import datetime, timedelta
 
 import docker
 import git
-import numpy as np
 import qbittorrentapi
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -371,6 +368,9 @@ def exec_command(commands):
 def do_update(request):
     try:
         logger.info('开始更新')
+        bt_school = Site.objects.filter(url=' http://47.242.110.63/').first()
+        bt_school.url = 'https://pt.btschool.club/'
+        bt_school.save()
         pt_site_site_mtime = os.stat('pt_site_site.json').st_mtime
         requirements_mtime = os.stat('requirements.txt').st_mtime
         update_commands = {

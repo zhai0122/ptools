@@ -85,7 +85,7 @@ class PtSpider:
     """爬虫"""
 
     def __init__(self, browser='chrome', platform='darwin',
-                 user_agent='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36 Edg/105.0.1343.27',
+                 user_agent='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.28',
                  *args, **kwargs):
         self.browser = browser
         self.platform = platform
@@ -1346,19 +1346,24 @@ class PtSpider:
                 details_html = etree.HTML(converter.convert(user_detail_res.content))
                 if 'btschool' in site.url:
                     text = details_html.xpath('//script/text()')
+                    logger.info('学校：{}'.format(text))
                     if len(text) > 0:
-                        location = self.parse_school_location(text)
-                        logger.info('学校重定向链接：{}'.format(location))
-                        if '__SAKURA' in location:
-                            res = self.send_request(my_site=my_site, url=site.url + location.lstrip('/'), delay=25)
-                            details_html = etree.HTML(res.text)
-                            # logger.info(res.content)
+                        try:
+                            location = self.parse_school_location(text)
+                            logger.info('学校重定向链接：{}'.format(location))
+                            if '__SAKURA' in location:
+                                res = self.send_request(my_site=my_site, url=site.url + location.lstrip('/'), delay=25)
+                                details_html = etree.HTML(res.text)
+                                # logger.info(res.content)
+                        except Exception as e:
+                            logger.info('BT学校获取做种信息有误！')
+                            pass
                 seeding_detail_res = self.send_request(my_site=my_site, url=seeding_detail_url, delay=25)
                 # leeching_detail_res = self.send_request(my_site=my_site, url=leeching_detail_url, timeout=25)
                 if seeding_detail_res.status_code != 200:
                     return CommonResponse.error(
                         status=StatusCodeEnum.WEB_CONNECT_ERR,
-                        msg=site.name + '做种信息访问错误，错误码：' + str(seeding_detail_res.status_code)
+                        msg='{} 做种信息访问错误，错误码：{}'.format(site.name, str(seeding_detail_res.status_code))
                     )
                 seeding_html = etree.HTML(converter.convert(seeding_detail_res.text))
             # leeching_html = etree.HTML(leeching_detail_res.text)
@@ -1619,7 +1624,7 @@ class PtSpider:
                 my_site=my_site,
                 url=site.url + site.page_mybonus,
             )
-            """
+            print(response.content.decode('utf8'))
             if 'btschool' in site.url:
                 # logger.info(response.content.decode('utf8'))
                 url = self.parse(response, '//form[@id="challenge-form"]/@action[1]')
@@ -1637,7 +1642,6 @@ class PtSpider:
                     data=data,
                     delay=60
                 )
-            """
             res = converter.convert(response.content)
             # logger.info('时魔响应：{}'.format(response.content))
             # logger.info('转为简体的时魔页面：', str(res))
