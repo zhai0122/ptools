@@ -368,7 +368,7 @@ def exec_command(commands):
 def do_update(request):
     try:
         logger.info('开始更新')
-        bt_school = Site.objects.filter(url=' http://47.242.110.63/').first()
+        bt_school = Site.objects.filter(url='http://47.242.110.63/').first()
         if not bt_school:
             bt_school.url = 'https://pt.btschool.club/'
             bt_school.save()
