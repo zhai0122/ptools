@@ -580,7 +580,7 @@ class PtSpider:
         logger.info('签到返回结果{}'.format(sign_res))
         if sign_res.get('state') == 'success':
             msg = "签到成功，您已连续签到{}天，本次增加魔力:{}。".format(sign_res.get('signindays'),
-                                                     sign_res.get('integral'))
+                                                                      sign_res.get('integral'))
             logger.info(msg)
             return CommonResponse.success(
                 msg=msg
@@ -1348,6 +1348,7 @@ class PtSpider:
                 seeding_html = details_html.xpath('//div[@id="ka2"]/table')[0]
             else:
                 details_html = etree.HTML(converter.convert(user_detail_res.content))
+
                 if 'btschool' in site.url:
                     text = details_html.xpath('//script/text()')
                     logger.info('学校：{}'.format(text))
@@ -1362,14 +1363,17 @@ class PtSpider:
                         except Exception as e:
                             logger.info('BT学校获取做种信息有误！')
                             pass
-                seeding_detail_res = self.send_request(my_site=my_site, url=seeding_detail_url, delay=25)
-                # leeching_detail_res = self.send_request(my_site=my_site, url=leeching_detail_url, timeout=25)
-                if seeding_detail_res.status_code != 200:
-                    return CommonResponse.error(
-                        status=StatusCodeEnum.WEB_CONNECT_ERR,
-                        msg='{} 做种信息访问错误，错误码：{}'.format(site.name, str(seeding_detail_res.status_code))
-                    )
-                seeding_html = etree.HTML(converter.convert(seeding_detail_res.text))
+                if 'lemonhd.org' in site.url:
+                    seeding_html = details_html
+                else:
+                    seeding_detail_res = self.send_request(my_site=my_site, url=seeding_detail_url, delay=25)
+                    # leeching_detail_res = self.send_request(my_site=my_site, url=leeching_detail_url, timeout=25)
+                    if seeding_detail_res.status_code != 200:
+                        return CommonResponse.error(
+                            status=StatusCodeEnum.WEB_CONNECT_ERR,
+                            msg='{} 做种信息访问错误，错误码：{}'.format(site.name, str(seeding_detail_res.status_code))
+                        )
+                    seeding_html = etree.HTML(converter.convert(seeding_detail_res.text))
             # leeching_html = etree.HTML(leeching_detail_res.text)
             # logger.info(seeding_detail_res.content.decode('utf8'))
             return CommonResponse.success(data={
@@ -1428,30 +1432,35 @@ class PtSpider:
             # title = details_html.xpath('//title/text()')
             # seed_vol_list = seeding_html.xpath(site.record_bulk_rule)
             seed_vol_list = seeding_html.xpath(site.seed_vol_rule)
-            if len(seed_vol_list) > 0:
-                seed_vol_list.pop(0)
-            logger.info('做种数量seeding_vol：{}'.format(len(seed_vol_list)))
-            # 做种体积
-            seed_vol_all = 0
-            for seed_vol in seed_vol_list:
-                # logger.info(etree.tostring(seed_vol))
-                vol = ''.join(seed_vol.xpath('.//text()'))
-                # logger.info(vol)
-                if not len(vol) <= 0:
-                    size = FileSizeConvert.parse_2_byte(
-                        vol.replace('i', '')  # U2返回字符串为mib，gib
-                    )
-                    if size:
-                        seed_vol_all += size
+            if 'lemonhd.org' in site.url:
+                logger.info('做种体积：{}'.format(seed_vol_list))
+                seed_vol_size = ''.join(seed_vol_list).split(':')[-1].strip()
+                seed_vol_all = FileSizeConvert.parse_2_byte(seed_vol_size)
+            else:
+                if len(seed_vol_list) > 0:
+                    seed_vol_list.pop(0)
+                logger.info('做种数量seeding_vol：{}'.format(len(seed_vol_list)))
+                # 做种体积
+                seed_vol_all = 0
+                for seed_vol in seed_vol_list:
+                    # logger.info(etree.tostring(seed_vol))
+                    vol = ''.join(seed_vol.xpath('.//text()'))
+                    # logger.info(vol)
+                    if not len(vol) <= 0:
+                        size = FileSizeConvert.parse_2_byte(
+                            vol.replace('i', '')  # U2返回字符串为mib，gib
+                        )
+                        if size:
+                            seed_vol_all += size
+                        else:
+                            msg = '## <font color="red">{} 获取做种大小失败，请检查规则信息是否匹配？</font>'.format(
+                                site.name)
+                            logger.warning(msg)
+                            self.send_text(msg)
+                            break
                     else:
-                        msg = '## <font color="red">{} 获取做种大小失败，请检查规则信息是否匹配？</font>'.format(
-                            site.name)
-                        logger.warning(msg)
-                        self.send_text(msg)
-                        break
-                else:
-                    # seed_vol_all = 0
-                    pass
+                        # seed_vol_all = 0
+                        pass
             logger.info('做种体积：{}'.format(FileSizeConvert.parse_2_file_size(seed_vol_all)))
             # logger.info(''.join(seed_vol_list).strip().split('：'))
             # logger.info(title)
@@ -1505,6 +1514,7 @@ class PtSpider:
                 my_level = ''.join(re.findall(r'/(.*).{4}', my_level_1)).title()
             else:
                 my_level = re.sub(u"([^\u0041-\u005a\u0061-\u007a])", "", my_level_1)
+            logger.info('用户等级：{}-{}'.format(my_level_1, my_level))
             # my_level = re.sub('[\u4e00-\u9fa5]', '', my_level_1)
             # logger.info('正则去除中文：', my_level)
             # latest_active = ''.join(
@@ -1630,7 +1640,7 @@ class PtSpider:
                 my_site=my_site,
                 url=site.url + site.page_mybonus,
             )
-            print(response.content.decode('utf8'))
+            # print(response.content.decode('utf8'))
             if 'btschool' in site.url:
                 # logger.info(response.content.decode('utf8'))
                 url = self.parse(response, '//form[@id="challenge-form"]/@action[1]')
@@ -1660,7 +1670,7 @@ class PtSpider:
             if len(res_list) <= 0:
                 CommonResponse.error(msg='时魔获取失败！')
             return CommonResponse.success(
-                data=get_decimals(res_list[0])
+                data=get_decimals(res_list[0].replace(',', ''))
             )
         except Exception as e:
             # 打印异常详细信息
