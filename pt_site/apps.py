@@ -1,6 +1,5 @@
 import json
 import logging
-import os
 
 from django.apps import AppConfig
 from django.db.models.signals import post_migrate
@@ -17,9 +16,9 @@ def app_ready_handler(sender, **kwargs):
             data = json.load(f)
             logger.info('正在初始化站点规则信息表')
             logger.info('更新规则中，返回结果为True为新建，为False为更新，其他是错误了')
-            btschool = Site.objects.filter(url='https://pt.btschool.club/').first()
+            btschool = Site.objects.filter(url='http://47.242.110.63/').first()
             if btschool:
-                btschool.url = 'http://47.242.110.63/'
+                btschool.url = 'https://pt.btschool.club/'
                 btschool.save()
             for site_rules in data:
                 if site_rules.get('pk'):
@@ -41,7 +40,6 @@ class PtSiteConfig(AppConfig):
 
     def ready(self):
         # 环境变量不存在，说明数据库还未初始化，先跳过初始化站点数据
-        if os.path.exists('CONTAINER_ALREADY_STARTED_PLACEHOLDER'):
-            post_migrate.connect(app_ready_handler, sender=self)
-        else:
-            logger.info('第一次启动容器，初始化数据库中')
+        # if os.path.exists('CONTAINER_ALREADY_STARTED_PLACEHOLDER'):
+        #     logger.info('第一次启动容器，初始化数据库中')
+        post_migrate.connect(app_ready_handler, sender=self)
