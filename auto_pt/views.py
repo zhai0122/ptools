@@ -369,7 +369,7 @@ def do_update(request):
     try:
         logger.info('开始更新')
         bt_school = Site.objects.filter(url='http://47.242.110.63/').first()
-        if not bt_school:
+        if bt_school:
             bt_school.url = 'https://pt.btschool.club/'
             bt_school.save()
         pt_site_site_mtime = os.stat('pt_site_site.json').st_mtime
@@ -377,7 +377,7 @@ def do_update(request):
         update_commands = {
             # 'cp db/db.sqlite3 db/db.sqlite3-$(date "+%Y%m%d%H%M%S")',
             '强制覆盖本地': 'git reset --hard',
-            '获取更新信息': 'git fetch',
+            '获取更新信息': 'git fetch --all',
             '拉取代码更新': 'git pull origin {}'.format(os.getenv('DEV')),
         }
         requirements_commands = {
