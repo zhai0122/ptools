@@ -3498,7 +3498,7 @@
   {
     "id": 53,
     "created_at": "2022-08-27 18:18:44.023000",
-    "updated_at": "2022-11-03 13:21:04.347353",
+    "updated_at": "2022-11-03 15:33:50.412388",
     "name": "不可说",
     "url": "https://springsunday.net/",
     "logo": "https://springsunday.net/favicon.ico",
@@ -3557,7 +3557,7 @@
     "my_sp_rule": "//div[@id=\"info_block\"]//a[@href=\"mybonus.php\"]/text()[1]",
     "hour_sp_rule": "//b[contains(text(),\"我的数据\")]/parent::td/parent::tr/td[last()]/text()",
     "my_bonus_rule": "//b[contains(text(),\"做种积分\")]/following-sibling::text()[1]",
-    "my_level_rule": "//span[@class=\"medium\"]/span[@class=\"nowrap\"]/a[contains(@class,\"_Name\")]/@class",
+    "my_level_rule": "//div[@id=\"info_block\"]//span[contains(@class,\"_Name\")]/@class",
     "my_hr_rule": "//a[@href=\"myhr.php\"]//text()",
     "leech_rule": "//div[@id=\"info_block\"]//img[@class=\"arrowdown\"]/following-sibling::text()[1]",
     "seed_rule": "//div[@id=\"info_block\"]//img[@class=\"arrowup\"]/following-sibling::text()[1]",
