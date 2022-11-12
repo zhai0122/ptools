@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'pt_site',
     'pt_test',
     'auto_pt',
+    'website',
 ]
 
 MIDDLEWARE = [

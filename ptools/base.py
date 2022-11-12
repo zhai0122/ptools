@@ -173,3 +173,16 @@ class PushConfig(models.TextChoices):
 class OCRConfig(models.TextChoices):
     # date = 'date', '单次任务'
     baidu_aip = 'baidu_aip', '百度OCR'
+
+
+class Schemas(models.TextChoices):
+    """
+    站点架构，默认对应的规则模板
+    """
+    AvistaZ = 'AvistaZ', 'AvistaZ'
+    Discuz = 'Discuz', 'Discuz'
+    Gazelle = 'Gazelle', 'Gazelle'
+    IPTorrents = 'IPTorrents', 'IPTorrents'
+    MeanTorrent = 'MeanTorrent', 'MeanTorrent'
+    NexusPHP = 'NexusPHP', 'NexusPHP'
+    NextPT = 'NextPT', 'NextPT'
