@@ -1076,7 +1076,7 @@ class PtSpider:
                     return CommonResponse.error(
                         status=StatusCodeEnum.FAILED_SIGN_IN
                     )
-            if '47.242.110.63' in site.url:
+            if 'btschool' in site.url:
                 logger.info(res.status_code)
                 logger.info(res.content.decode('utf-8'))
                 text = self.parse(res, '//a[@href="index.php"]/font/text()')
