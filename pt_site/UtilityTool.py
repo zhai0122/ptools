@@ -85,7 +85,8 @@ class PtSpider:
     """爬虫"""
 
     def __init__(self, browser='chrome', platform='darwin',
-                 user_agent='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.28',
+                 user_agent='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) '
+                            'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.42',
                  *args, **kwargs):
         self.browser = browser
         self.platform = platform
@@ -654,6 +655,47 @@ class PtSpider:
             logger.info('签到失败！')
             return CommonResponse.error(msg='签到失败！')
 
+    def sign_in_opencd(self, my_site: MySite):
+        """皇后签到"""
+        site = my_site.site
+        url = site.url + site.page_sign_in.lstrip('/')
+        logger.info('# 开启验证码！')
+        res = self.send_request(
+            my_site=my_site,
+            method='get',
+            url=url)
+        logger.info(res.content.decode('utf-8'))
+        img_src = ''.join(self.parse(res, '//form[@id="frmSignin"]//img/@src'))
+        img_get_url = site.url + img_src
+        times = 0
+        # imagestring = ''
+        ocr_result = None
+        while times <= 5:
+            ocr_result = self.ocr_captcha(img_get_url)
+            if ocr_result.code == StatusCodeEnum.OK.code:
+                imagestring = ocr_result.data
+                logger.info('验证码长度：{}'.format(len(imagestring)))
+                if len(imagestring) == 6:
+                    break
+            times += 1
+            time.sleep(1)
+        if ocr_result.code != StatusCodeEnum.OK.code:
+            return ocr_result
+        data = {
+            'imagehash': ''.join(self.parse(res, '//form[@id="frmSignin"]//input[@name="imagehash"]/@value')),
+            'imagestring': imagestring
+        }
+        logger.info('请求参数：{}'.format(data))
+        result = self.send_request(
+            my_site=my_site,
+            method=site.sign_in_method,
+            url=site.url + 'plugin_sign-in.php?cmd=signin', data=data)
+        logger.info('皇后签到返回值：{}  \n'.format(result.content))
+        return CommonResponse.success(
+            status=StatusCodeEnum.OK,
+            data=result.json()
+        )
+
     def sign_in_hdsky(self, my_site: MySite, captcha=False):
         """HDSKY签到"""
         site = my_site.site
@@ -902,6 +944,46 @@ class PtSpider:
                         # 签到失败
                         return CommonResponse.error(
                             status=StatusCodeEnum.FAILED_SIGN_IN,
+                        )
+                else:
+                    # 签到失败
+                    return result
+            if 'open.cd' in site.url:
+                result = self.sign_in_opencd(my_site=my_site)
+                if result.code == StatusCodeEnum.OK.code:
+                    res_json = result.data
+                    if res_json.get('state') == 'success':
+                        signin_today.sign_in_today = True
+                        data = res_json.get('data')
+                        message = "签到成功，您已连续签到{}天，本次增加魔力:{}。".format(
+                            data.get('signindays'),
+                            data.get('integral'),
+                        )
+                        signin_today.sign_in_info = message
+                        signin_today.save()
+                        return CommonResponse.success(
+                            status=StatusCodeEnum.OK,
+                            msg=message
+                        )
+                    elif res_json.get('state') == 'false' and len(res_json) <= 1:
+                        # 重复签到
+                        message = '您今天已经在其他地方签到了哦！'
+                        signin_today.sign_in_today = True
+                        signin_today.sign_in_info = message
+                        signin_today.save()
+                        return CommonResponse.success(
+                            msg=message
+                        )
+                    # elif res_json.get('state') == 'invalid_imagehash':
+                    #     # 验证码错误
+                    #     return CommonResponse.error(
+                    #         status=StatusCodeEnum.IMAGE_CODE_ERR,
+                    #     )
+                    else:
+                        # 签到失败
+                        return CommonResponse.error(
+                            status=StatusCodeEnum.FAILED_SIGN_IN,
+                            msg=res_json.get('msg')
                         )
                 else:
                     # 签到失败

@@ -16,13 +16,13 @@ def app_ready_handler(sender, **kwargs):
             data = json.load(f)
             logger.info('正在初始化站点规则信息表')
             logger.info('更新规则中，返回结果为True为新建，为False为更新，其他是错误了')
-            btschool = Site.objects.filter(url='http://47.242.110.63/').first()
-            if btschool:
-                bt_school = Site.objects.filter(url='https://pt.btschool.club/').first()
-                if bt_school:
-                    bt_school.delete()
-                btschool.url = 'https://pt.btschool.club/'
-                btschool.save()
+            opencd = Site.objects.filter(url='http://open.cd/').first()
+            if opencd:
+                opencd = Site.objects.filter(url='https://www.open.cd/').first()
+                if opencd:
+                    opencd.delete()
+                opencd.url = 'https://www.open.cd/'
+                opencd.save()
             for site_rules in data:
                 if site_rules.get('pk'):
                     del site_rules['pk']
