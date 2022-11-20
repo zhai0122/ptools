@@ -1,1 +1,1 @@
-python manage.py dumpdata pt_site.site auto_pt.task auto_pt.taskjob --indent 2 -o pt.json
+python manage.py dumpdata pt_site.site auto_pt.task auto_pt.taskjob django_apscheduler.djangojob --indent 2 -o pt.json

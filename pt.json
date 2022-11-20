@@ -3717,7 +3717,7 @@
   "pk": 54,
   "fields": {
     "created_at": "2022-08-27T18:24:32.917",
-    "updated_at": "2022-11-18T13:58:53.685",
+    "updated_at": "2022-11-20T22:35:59.512",
     "url": "https://www.open.cd/",
     "name": "OpenCD",
     "logo": "https://www.open.cd/favicon.ico",
@@ -3778,7 +3778,7 @@
     "my_sp_rule": "//font[@class=\"color_bonus\"]/following-sibling::text()[1]",
     "hour_sp_rule": "//div[contains(text(),\"每小时能获取\")]/text()[1]",
     "my_bonus_rule": "//font[@class=\"color_bonus\" and contains(text(),\"积分\")]/following-sibling::text()[1]",
-    "my_level_rule": "//span[@class=\"medium\"]/span[@class=\"nowrap\"]/a[contains(@class,\"_Name\")]/@class",
+    "my_level_rule": "//div/span[@class=\"nowrap\"]/a[contains(@class,\"_Name\")]/@class",
     "my_passkey_rule": "//td[contains(text(),\"密钥\")]/following-sibling::td[1]/text()",
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "my_hr_rule": "//tr[14]/td[2]/a/text()",
@@ -5967,16 +5967,16 @@
   "pk": 17,
   "fields": {
     "created_at": "2022-09-20T15:10:06.547",
-    "updated_at": "2022-11-03T23:07:30.300",
+    "updated_at": "2022-11-20T22:43:29.136",
     "task": 1,
     "job_id": "每天23点50分获取",
     "trigger": "cron",
     "task_exec": false,
     "replace_existing": true,
-    "expression_time": "50 23 * * *",
+    "expression_time": "40 23 * * *",
     "start_date": "2022-09-20T15:10:00",
     "end_date": null,
-    "misfire_grace_time": 120,
+    "misfire_grace_time": 1200,
     "jitter": 120,
     "args": null
   }
@@ -5986,18 +5986,58 @@
   "pk": 18,
   "fields": {
     "created_at": "2022-11-03T08:35:13.023",
-    "updated_at": "2022-11-03T23:07:30.286",
+    "updated_at": "2022-11-20T22:43:54.066",
     "task": 3,
     "job_id": "清楚过期种子",
     "trigger": "interval",
     "task_exec": false,
     "replace_existing": true,
-    "expression_time": "2*3600",
+    "expression_time": "12*3600",
     "start_date": "2022-11-03T08:35:00",
     "end_date": null,
     "misfire_grace_time": 600,
     "jitter": 1200,
     "args": null
+  }
+},
+{
+  "model": "django_apscheduler.djangojob",
+  "pk": "拉取最新种子",
+  "fields": {
+    "next_run_time": null,
+    "job_state": "gAWV7AEAAAAAAAB9lCiMB3ZlcnNpb26USwGMAmlklIwS5ouJ5Y+W5pyA5paw56eN5a2QlIwEZnVuY5SMInB0X3NpdGUudmlld3M6YXV0b191cGRhdGVfdG9ycmVudHOUjAd0cmlnZ2VylIwdYXBzY2hlZHVsZXIudHJpZ2dlcnMuaW50ZXJ2YWyUjA9JbnRlcnZhbFRyaWdnZXKUk5QpgZR9lChoAUsCjAh0aW1lem9uZZSMBHB5dHqUjAJfcJSTlCiMDUFzaWEvU2hhbmdoYWmUTehxSwCMA0xNVJR0lFKUjApzdGFydF9kYXRllIwIZGF0ZXRpbWWUjAhkYXRldGltZZSTlEMKB+YKEAATFQJYXJRoDyhoEE2AcEsAjANDU1SUdJRSlIaUUpSMCGVuZF9kYXRllE6MCGludGVydmFslGgVjAl0aW1lZGVsdGGUk5RLAE1QRksAh5RSlIwGaml0dGVylE51YowIZXhlY3V0b3KUjAdkZWZhdWx0lIwEYXJnc5QpjAZrd2FyZ3OUfZSMBG5hbWWUjBRhdXRvX3VwZGF0ZV90b3JyZW50c5SMEm1pc2ZpcmVfZ3JhY2VfdGltZZRLeIwIY29hbGVzY2WUiIwNbWF4X2luc3RhbmNlc5RLAYwNbmV4dF9ydW5fdGltZZROdS4="
+  }
+},
+{
+  "model": "django_apscheduler.djangojob",
+  "pk": "更新个人数据",
+  "fields": {
+    "next_run_time": null,
+    "job_state": "gAWV4gEAAAAAAAB9lCiMB3ZlcnNpb26USwGMAmlklIwS5pu05paw5Liq5Lq65pWw5o2ulIwEZnVuY5SMHXB0X3NpdGUudmlld3M6YXV0b19nZXRfc3RhdHVzlIwHdHJpZ2dlcpSMHWFwc2NoZWR1bGVyLnRyaWdnZXJzLmludGVydmFslIwPSW50ZXJ2YWxUcmlnZ2VylJOUKYGUfZQoaAFLAowIdGltZXpvbmWUjARweXR6lIwCX3CUk5QojA1Bc2lhL1NoYW5naGFplE3ocUsAjANMTVSUdJRSlIwKc3RhcnRfZGF0ZZSMCGRhdGV0aW1llIwIZGF0ZXRpbWWUk5RDCgfmCwQEBx4EzhGUaA8oaBBNgHBLAIwDQ1NUlHSUUpSGlFKUjAhlbmRfZGF0ZZROjAhpbnRlcnZhbJRoFYwJdGltZWRlbHRhlJOUSwBNUEZLAIeUUpSMBmppdHRlcpROdWKMCGV4ZWN1dG9ylIwHZGVmYXVsdJSMBGFyZ3OUKYwGa3dhcmdzlH2UjARuYW1llIwPYXV0b19nZXRfc3RhdHVzlIwSbWlzZmlyZV9ncmFjZV90aW1llEt4jAhjb2FsZXNjZZSIjA1tYXhfaW5zdGFuY2VzlEsBjA1uZXh0X3J1bl90aW1llE51Lg=="
+  }
+},
+{
+  "model": "django_apscheduler.djangojob",
+  "pk": "每天23点50分获取",
+  "fields": {
+    "next_run_time": null,
+    "job_state": "gAWVNAQAAAAAAAB9lCiMB3ZlcnNpb26USwGMAmlklIwW5q+P5aSpMjPngrk1MOWIhuiOt+WPlpSMBGZ1bmOUjB1wdF9zaXRlLnZpZXdzOmF1dG9fZ2V0X3N0YXR1c5SMB3RyaWdnZXKUjBlhcHNjaGVkdWxlci50cmlnZ2Vycy5jcm9ulIwLQ3JvblRyaWdnZXKUk5QpgZR9lChoAUsCjAh0aW1lem9uZZSMG3B5dHpfZGVwcmVjYXRpb25fc2hpbS5faW1wbJSMCXdyYXBfem9uZZSTlIwIYnVpbHRpbnOUjAdnZXRhdHRylJOUjAh6b25laW5mb5SMCFpvbmVJbmZvlJOUjAlfdW5waWNrbGWUhpRSlIwNQXNpYS9TaGFuZ2hhaZRLAYaUUpSMDUFzaWEvU2hhbmdoYWmUhpRSlIwKc3RhcnRfZGF0ZZROjAhlbmRfZGF0ZZROjAZmaWVsZHOUXZQojCBhcHNjaGVkdWxlci50cmlnZ2Vycy5jcm9uLmZpZWxkc5SMCUJhc2VGaWVsZJSTlCmBlH2UKIwEbmFtZZSMBHllYXKUjAppc19kZWZhdWx0lIiMC2V4cHJlc3Npb25zlF2UjCVhcHNjaGVkdWxlci50cmlnZ2Vycy5jcm9uLmV4cHJlc3Npb25zlIwNQWxsRXhwcmVzc2lvbpSTlCmBlH2UjARzdGVwlE5zYmF1YmgjjApNb250aEZpZWxklJOUKYGUfZQoaCiMBW1vbnRolGgqiWgrXZRoLymBlH2UaDJOc2JhdWJoI4wPRGF5T2ZNb250aEZpZWxklJOUKYGUfZQoaCiMA2RheZRoKoloK12UaC8pgZR9lGgyTnNiYXViaCOMCVdlZWtGaWVsZJSTlCmBlH2UKGgojAR3ZWVrlGgqiGgrXZRoLymBlH2UaDJOc2JhdWJoI4wORGF5T2ZXZWVrRmllbGSUk5QpgZR9lChoKIwLZGF5X29mX3dlZWuUaCqJaCtdlGgvKYGUfZRoMk5zYmF1YmglKYGUfZQoaCiMBGhvdXKUaCqJaCtdlGgtjA9SYW5nZUV4cHJlc3Npb26Uk5QpgZR9lChoMk6MBWZpcnN0lEsXjARsYXN0lEsXdWJhdWJoJSmBlH2UKGgojAZtaW51dGWUaCqJaCtdlGhYKYGUfZQoaDJOaFtLKGhcSyh1YmF1YmglKYGUfZQoaCiMBnNlY29uZJRoKohoK12UaFgpgZR9lChoMk5oW0sAaFxLAHViYXViZYwGaml0dGVylE51YowIZXhlY3V0b3KUjAdkZWZhdWx0lIwEYXJnc5QpjAZrd2FyZ3OUfZRoKIwPYXV0b19nZXRfc3RhdHVzlIwSbWlzZmlyZV9ncmFjZV90aW1llEt4jAhjb2FsZXNjZZSIjA1tYXhfaW5zdGFuY2VzlEsBjA1uZXh0X3J1bl90aW1llE51Lg=="
+  }
+},
+{
+  "model": "django_apscheduler.djangojob",
+  "pk": "清楚过期种子",
+  "fields": {
+    "next_run_time": null,
+    "job_state": "gAWV+wEAAAAAAAB9lCiMB3ZlcnNpb26USwGMAmlklIwS5riF5qWa6L+H5pyf56eN5a2QlIwEZnVuY5SMKXB0X3NpdGUudmlld3M6YXV0b19yZW1vdmVfZXhwaXJlX3RvcnJlbnRzlIwHdHJpZ2dlcpSMHWFwc2NoZWR1bGVyLnRyaWdnZXJzLmludGVydmFslIwPSW50ZXJ2YWxUcmlnZ2VylJOUKYGUfZQoaAFLAowIdGltZXpvbmWUjARweXR6lIwCX3CUk5QojA1Bc2lhL1NoYW5naGFplE3ocUsAjANMTVSUdJRSlIwKc3RhcnRfZGF0ZZSMCGRhdGV0aW1llIwIZGF0ZXRpbWWUk5RDCgfmCxUKKzYA5OWUaA8oaBBNgHBLAIwDQ1NUlHSUUpSGlFKUjAhlbmRfZGF0ZZROjAhpbnRlcnZhbJRoFYwJdGltZWRlbHRhlJOUSwBNwKhLAIeUUpSMBmppdHRlcpROdWKMCGV4ZWN1dG9ylIwHZGVmYXVsdJSMBGFyZ3OUKYwGa3dhcmdzlH2UjARuYW1llIwbYXV0b19yZW1vdmVfZXhwaXJlX3RvcnJlbnRzlIwSbWlzZmlyZV9ncmFjZV90aW1llE1YAowIY29hbGVzY2WUiIwNbWF4X2luc3RhbmNlc5RLAYwNbmV4dF9ydW5fdGltZZROdS4="
+  }
+},
+{
+  "model": "django_apscheduler.djangojob",
+  "pk": "自动签到",
+  "fields": {
+    "next_run_time": null,
+    "job_state": "gAWV1gEAAAAAAAB9lCiMB3ZlcnNpb26USwGMAmlklIwM6Ieq5Yqo562+5YiwlIwEZnVuY5SMGnB0X3NpdGUudmlld3M6YXV0b19zaWduX2lulIwHdHJpZ2dlcpSMHWFwc2NoZWR1bGVyLnRyaWdnZXJzLmludGVydmFslIwPSW50ZXJ2YWxUcmlnZ2VylJOUKYGUfZQoaAFLAowIdGltZXpvbmWUjARweXR6lIwCX3CUk5QojA1Bc2lhL1NoYW5naGFplE3ocUsAjANMTVSUdJRSlIwKc3RhcnRfZGF0ZZSMCGRhdGV0aW1llIwIZGF0ZXRpbWWUk5RDCgfmCwQGBx4EpRaUaA8oaBBNgHBLAIwDQ1NUlHSUUpSGlFKUjAhlbmRfZGF0ZZROjAhpbnRlcnZhbJRoFYwJdGltZWRlbHRhlJOUSwBNcGJLAIeUUpSMBmppdHRlcpROdWKMCGV4ZWN1dG9ylIwHZGVmYXVsdJSMBGFyZ3OUKYwGa3dhcmdzlH2UjARuYW1llIwMYXV0b19zaWduX2lulIwSbWlzZmlyZV9ncmFjZV90aW1llEt4jAhjb2FsZXNjZZSIjA1tYXhfaW5zdGFuY2VzlEsBjA1uZXh0X3J1bl90aW1llE51Lg=="
   }
 }
 ]

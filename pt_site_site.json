@@ -3574,7 +3574,7 @@
   {
     "id": 54,
     "created_at": "2022-08-27 18:24:32.917000",
-    "updated_at": "2022-11-18 13:58:53.685952",
+    "updated_at": "2022-11-20 22:35:59.512639",
     "name": "OpenCD",
     "url": "https://www.open.cd/",
     "logo": "https://www.open.cd/favicon.ico",
@@ -3633,7 +3633,7 @@
     "my_sp_rule": "//font[@class=\"color_bonus\"]/following-sibling::text()[1]",
     "hour_sp_rule": "//div[contains(text(),\"每小时能获取\")]/text()[1]",
     "my_bonus_rule": "//font[@class=\"color_bonus\" and contains(text(),\"积分\")]/following-sibling::text()[1]",
-    "my_level_rule": "//span[@class=\"medium\"]/span[@class=\"nowrap\"]/a[contains(@class,\"_Name\")]/@class",
+    "my_level_rule": "//div/span[@class=\"nowrap\"]/a[contains(@class,\"_Name\")]/@class",
     "my_hr_rule": "//tr[14]/td[2]/a/text()",
     "leech_rule": "//img[@class=\"arrowdown\"]/following-sibling::text()[1]",
     "seed_rule": "//img[@class=\"arrowup\"]/following-sibling::text()[1]",

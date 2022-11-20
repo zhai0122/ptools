@@ -658,6 +658,19 @@ class PtSpider:
     def sign_in_opencd(self, my_site: MySite):
         """皇后签到"""
         site = my_site.site
+        check_url = site.url + site.page_user
+        res_check = self.send_request(
+            my_site=my_site,
+            method='get',
+            url=check_url)
+        href_sign_in = self.parse(res_check, '//a[@href="/plugin_sign-in.php?cmd=show-log"]')
+        if len(href_sign_in) >= 1:
+            return CommonResponse.success(
+                status=StatusCodeEnum.OK,
+                data={
+                    'state': 'false'
+                }
+            )
         url = site.url + site.page_sign_in.lstrip('/')
         logger.info('# 开启验证码！')
         res = self.send_request(
@@ -690,7 +703,13 @@ class PtSpider:
             my_site=my_site,
             method=site.sign_in_method,
             url=site.url + 'plugin_sign-in.php?cmd=signin', data=data)
-        logger.info('皇后签到返回值：{}  \n'.format(result.content))
+        logger.info('皇后签到返回值：{}  \n'.format(result.content.decode('utf-8')))
+        href_sign_in = self.parse(res_check, '//a[@href="/plugin_sign-in.php?cmd=show-log"]')
+        if len(href_sign_in) < 1:
+            return CommonResponse.error(
+                status=StatusCodeEnum.FAILED_SIGN_IN,
+                data=result.json()
+            )
         return CommonResponse.success(
             status=StatusCodeEnum.OK,
             data=result.json()
@@ -950,11 +969,12 @@ class PtSpider:
                     return result
             if 'open.cd' in site.url:
                 result = self.sign_in_opencd(my_site=my_site)
+                logger.info('皇后签到结果：{}'.format(result.to_dict()))
                 if result.code == StatusCodeEnum.OK.code:
                     res_json = result.data
                     if res_json.get('state') == 'success':
                         signin_today.sign_in_today = True
-                        data = res_json.get('data')
+                        data = res_json.get('msg')
                         message = "签到成功，您已连续签到{}天，本次增加魔力:{}。".format(
                             data.get('signindays'),
                             data.get('integral'),
@@ -1592,8 +1612,8 @@ class PtSpider:
             ).replace('_Name', '').strip()
             if 'city' in site.url:
                 my_level = my_level_1.strip()
-            elif 'u2' in site.url:
-                my_level = ''.join(re.findall(r'/(.*).{4}', my_level_1)).title()
+            # elif 'u2' in site.url:
+            #     my_level = ''.join(re.findall(r'/(.*).{4}', my_level_1)).title()
             else:
                 my_level = re.sub(u"([^\u0041-\u005a\u0061-\u007a])", "", my_level_1)
             logger.info('用户等级：{}-{}'.format(my_level_1, my_level))
