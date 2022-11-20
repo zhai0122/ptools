@@ -238,7 +238,7 @@ class OCRAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request):
         # 保证只有一条记录
-        count = Notify.objects.all().count()
+        count = OCR.objects.all().count()
         if count != 1:
             return True
         return False
