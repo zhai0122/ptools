@@ -4823,7 +4823,7 @@
   "pk": 70,
   "fields": {
     "created_at": "2022-07-17T10:24:59.754",
-    "updated_at": "2022-11-17T20:05:49.511",
+    "updated_at": "2022-11-20T23:20:45.336",
     "url": "https://pt.btschool.club/",
     "name": "BT学校",
     "logo": "https://pt.btschool.club/favicon.ico",
@@ -4833,7 +4833,7 @@
     "get_userinfo_support": true,
     "search_support": false,
     "page_default": "torrents.php",
-    "page_sign_in": "attendance.php",
+    "page_sign_in": "index.php?action=addbonus",
     "page_control_panel": "usercp.php",
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",

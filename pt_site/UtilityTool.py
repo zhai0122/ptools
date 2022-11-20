@@ -1099,26 +1099,22 @@ class PtSpider:
             if 'btschool' in site.url:
                 logger.info(res.status_code)
                 logger.info(res.content.decode('utf-8'))
-                text = self.parse(res, '//a[@href="index.php"]/font/text()')
-                signin_stat = self.parse(res, '//a[contains(@href,"addbouns")]')
-                logger.info('{}:{}'.format(site.name, text))
-                if len(signin_stat) <= 0:
-                    message = ''.join(text) if len(text) > 0 else '签到成功！'
-                    signin_today.sign_in_today = True
-                    signin_today.sign_in_info = message
-                    signin_today.save()
-                    return CommonResponse.success(msg=message)
-                """
-                # text = self.parse(res, '//script/text()')
+                text = self.parse(res, '//script/text()')
                 if len(text) > 0:
                     location = self.parse_school_location(text)
                     logger.info('学校签到链接：' + location)
                     if 'addbouns.php' in location:
-                        self.send_request(my_site=my_site, url=site.url + location.lstrip('/'), delay=60)
-                        signin_today.sign_in_today = True
-                        signin_today.sign_in_info = '签到成功！'
-                        signin_today.save()
-                        return CommonResponse.success(msg='签到成功！')
+                        res_sign = self.send_request(my_site=my_site, url=site.url + location.lstrip('/'), delay=60)
+                        sign_in_text = self.parse(res_sign, '//a[@href="index.php"]/font//text()')
+                        sign_in_stat = self.parse(res_sign, '//a[contains(@href,"addbouns")]')
+                        logger.info('{}:{}'.format(site.name, text))
+                        if len(sign_in_stat) <= 0:
+                            message = ''.join(sign_in_text)
+                            signin_today.sign_in_today = True
+                            signin_today.sign_in_info = message
+                            signin_today.save()
+                            return CommonResponse.success(msg=message)
+                        return CommonResponse.error(msg='签到失败！')
                     else:
                         signin_today.sign_in_today = True
                         signin_today.sign_in_info = '签到成功！'
@@ -1132,8 +1128,7 @@ class PtSpider:
                     signin_today.save()
                     return CommonResponse.success(msg='签到成功！')
                 else:
-                """
-                return CommonResponse.error(msg='签到失败或网络错误！')
+                    return CommonResponse.error(msg='签到失败或网络错误！')
             if res.status_code == 200:
                 status = converter.convert(res.content.decode('utf8'))
                 logger.info(status)
