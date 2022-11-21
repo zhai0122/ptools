@@ -1719,6 +1719,7 @@ class PtSpider:
                 url=site.url + site.page_mybonus,
             )
             # print(response.content.decode('utf8'))
+            """
             if 'btschool' in site.url:
                 # logger.info(response.content.decode('utf8'))
                 url = self.parse(response, '//form[@id="challenge-form"]/@action[1]')
@@ -1736,6 +1737,7 @@ class PtSpider:
                     data=data,
                     delay=60
                 )
+                """
             res = converter.convert(response.content)
             # logger.info('时魔响应：{}'.format(response.content))
             # logger.info('转为简体的时魔页面：', str(res))
