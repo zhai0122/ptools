@@ -1097,38 +1097,25 @@ class PtSpider:
                         status=StatusCodeEnum.FAILED_SIGN_IN
                     )
             if 'btschool' in site.url:
-                logger.info(res.status_code)
-                logger.info(res.content.decode('utf-8'))
+                # logger.info(res.status_code)
+                logger.info('学校签到：{}'.format(res.content.decode('utf-8')))
                 text = self.parse(res, '//script/text()')
+                logger.info('解析签到返回信息：{}'.format(text))
                 if len(text) > 0:
                     location = self.parse_school_location(text)
                     logger.info('学校签到链接：' + location)
                     if 'addbouns.php' in location:
-                        res_sign = self.send_request(my_site=my_site, url=site.url + location.lstrip('/'), delay=60)
-                        sign_in_text = self.parse(res_sign, '//a[@href="index.php"]/font//text()')
-                        sign_in_stat = self.parse(res_sign, '//a[contains(@href,"addbouns")]')
-                        logger.info('{}:{}'.format(site.name, text))
-                        if len(sign_in_stat) <= 0:
-                            message = ''.join(sign_in_text)
-                            signin_today.sign_in_today = True
-                            signin_today.sign_in_info = message
-                            signin_today.save()
-                            return CommonResponse.success(msg=message)
-                        return CommonResponse.error(msg='签到失败！')
-                    else:
-                        signin_today.sign_in_today = True
-                        signin_today.sign_in_info = '签到成功！'
-                        signin_today.save()
-                        return CommonResponse.success(
-                            msg='请勿重复签到！'
-                        )
-                elif res.status_code == 200:
+                        res = self.send_request(my_site=my_site, url=site.url + location.lstrip('/'))
+                sign_in_text = self.parse(res, '//a[@href="index.php"]/font//text()')
+                sign_in_stat = self.parse(res, '//a[contains(@href,"addbouns")]')
+                logger.info('{} 签到反馈：{}'.format(site.name, sign_in_text))
+                if len(sign_in_stat) <= 0:
+                    message = ''.join(sign_in_text) if len(sign_in_text) >= 1 else '您已在其他地方签到，请勿重复操作！'
                     signin_today.sign_in_today = True
-                    signin_today.sign_in_info = '签到成功！'
+                    signin_today.sign_in_info = message
                     signin_today.save()
-                    return CommonResponse.success(msg='签到成功！')
-                else:
-                    return CommonResponse.error(msg='签到失败或网络错误！')
+                    return CommonResponse.success(msg=message)
+                return CommonResponse.error(msg='签到失败！请求响应码：{}'.format(res.status_code))
             if res.status_code == 200:
                 status = converter.convert(res.content.decode('utf8'))
                 logger.info(status)
