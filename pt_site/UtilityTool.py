@@ -704,12 +704,6 @@ class PtSpider:
             method=site.sign_in_method,
             url=site.url + 'plugin_sign-in.php?cmd=signin', data=data)
         logger.info('皇后签到返回值：{}  \n'.format(result.content.decode('utf-8')))
-        href_sign_in = self.parse(res_check, '//a[@href="/plugin_sign-in.php?cmd=show-log"]')
-        if len(href_sign_in) < 1:
-            return CommonResponse.error(
-                status=StatusCodeEnum.FAILED_SIGN_IN,
-                data=result.json()
-            )
         return CommonResponse.success(
             status=StatusCodeEnum.OK,
             data=result.json()
