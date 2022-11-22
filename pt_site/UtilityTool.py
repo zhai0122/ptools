@@ -1566,7 +1566,8 @@ class PtSpider:
             invitation = ''.join(
                 details_html.xpath(site.invitation_rule)
             ).strip(']:').replace('[', '').strip()
-            invitation = re.sub("\D", "", invitation)
+            logger.info(invitation)
+            # invitation = re.sub("\D", "", invitation)
             # time_join_1 = ''.join(
             #     details_html.xpath(site.time_join_rule)
             # ).split('(')[0].strip('\xa0').strip()
@@ -1627,10 +1628,15 @@ class PtSpider:
             # logger.info(my_bonus)
             # 更新我的站点数据
             invitation = converter.convert(invitation)
-            invitation = re.sub('[\u4e00-\u9fa5]', '', invitation)
+            # x = invitation.split('/')
+            # invitation = re.sub('[\u4e00-\u9fa5]', '', invitation)
+            logger.info(invitation)
             if invitation == '没有邀请资格':
-                invitation = 0
-            my_site.invitation = int(invitation) if invitation else 0
+                my_site.invitation = 0
+            else:
+                invitation_list = [int(n) for n in invitation.split('/')]
+                # my_site.invitation = int(invitation) if invitation else 0
+                my_site.invitation = sum(invitation_list)
 
             my_site.latest_active = datetime.now()
             my_site.my_level = my_level if my_level != '' else ' '
