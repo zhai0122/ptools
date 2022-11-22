@@ -1633,11 +1633,12 @@ class PtSpider:
             logger.info(invitation)
             if invitation == '没有邀请资格':
                 my_site.invitation = 0
-            else:
+            elif '/' in invitation:
                 invitation_list = [int(n) for n in invitation.split('/')]
                 # my_site.invitation = int(invitation) if invitation else 0
                 my_site.invitation = sum(invitation_list)
-
+            else:
+                my_site.invitation = int(re.sub('\D', '', invitation))
             my_site.latest_active = datetime.now()
             my_site.my_level = my_level if my_level != '' else ' '
             if my_hr:
