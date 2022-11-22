@@ -471,7 +471,8 @@ class PtSpider:
             my_site=my_site,
             url=url,
         )
-        sign_str = self.parse(result, '//font[contains(text(),"签过到")]/text()')
+        # sign_str = self.parse(result, '//font[contains(text(),"签过到")]/text()')
+        sign_str = etree.HTML(result.content).xpath('//font[contains(text(),"签过到")]/text()')
         logger.info(sign_str)
         if len(sign_str) >= 1:
             msg = self.parse(result, '//font[contains(text(),"签过到")]/text()')
@@ -504,7 +505,7 @@ class PtSpider:
         else:
             msg = self.parse(sign_res, '//font[contains(text(),"签过到")]/text()')
             return CommonResponse.success(
-                msg='签到成功！{}'.format(msg)
+                msg='签到成功！{}'.format(''.join(msg))
             )
 
     def sign_in_hdupt(self, my_site: MySite):
