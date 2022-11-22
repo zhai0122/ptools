@@ -362,6 +362,8 @@ def exec_command(commands):
             'command': key,
             'res': p.returncode
         })
+        # 休息2秒
+        time.sleep(3)
     return result
 
 
