@@ -1103,7 +1103,7 @@ class PtSpider:
                 sign_in_text = self.parse(res, '//a[@href="index.php"]/font//text()')
                 sign_in_stat = self.parse(res, '//a[contains(@href,"addbouns")]')
                 logger.info('{} 签到反馈：{}'.format(site.name, sign_in_text))
-                if len(sign_in_stat) <= 0:
+                if res.status_code == 200 and len(sign_in_stat) <= 0:
                     message = ''.join(sign_in_text) if len(sign_in_text) >= 1 else '您已在其他地方签到，请勿重复操作！'
                     signin_today.sign_in_today = True
                     signin_today.sign_in_info = message
