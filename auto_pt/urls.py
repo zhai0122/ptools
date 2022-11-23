@@ -11,6 +11,7 @@ urlpatterns = [
     path(r'update', views.update_page, name='update_page'),
     path(r'do_restart', views.do_restart, name='do_restart'),
     path(r'do_update', views.do_update, name='do_update'),
+    path(r'do_xpath', views.do_xpath, name='do_xpath'),
     path(r'import_from_ptpp', views.import_from_ptpp, name='import_from_ptpp'),
     path(r'page_downloading', views.page_downloading, name='page_downloading'),
     path(r'get_downloaders', views.get_downloaders, name='get_downloaders'),

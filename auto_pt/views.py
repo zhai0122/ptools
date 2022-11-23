@@ -362,18 +362,12 @@ def exec_command(commands):
             'command': key,
             'res': p.returncode
         })
-        # 休息2秒
-        time.sleep(3)
     return result
 
 
 def do_update(request):
     try:
         logger.info('开始更新')
-        bt_school = Site.objects.filter(url='http://47.242.110.63/').first()
-        if bt_school:
-            bt_school.url = 'https://pt.btschool.club/'
-            bt_school.save()
         pt_site_site_mtime = os.stat('pt_site_site.json').st_mtime
         requirements_mtime = os.stat('requirements.txt').st_mtime
         update_commands = {
@@ -425,8 +419,41 @@ def do_update(request):
         ).to_dict(), safe=False)
     except Exception as e:
         # raise
+        msg = '更新失败!{}，请初始化Xpath！'.format(str(e))
+        logger.error(msg)
         return JsonResponse(data=CommonResponse.error(
-            msg='更新失败!' + str(e)
+            msg=msg
+        ).to_dict(), safe=False)
+
+
+def do_xpath(request):
+    """初始化Xpath规则"""
+    migrate_commands = {
+        '备份数据库': 'cp db/db.sqlite3 db/db.sqlite3-$(date "+%Y%m%d%H%M%S")',
+        '同步数据库': 'python manage.py migrate',
+    }
+    try:
+        logger.info('开始初始化Xpath规则')
+        # p = subprocess.run('cp db/db.sqlite3 db/db.sqlite3-$(date "+%Y%m%d%H%M%S")', shell=True)
+        # logger.info('备份数据库 命令执行结果：\n{}'.format(p))
+        # result = {
+        #     'command': '备份数据库',
+        #     'res': p.returncode
+        # }
+        result = exec_command(migrate_commands)
+        logger.info('初始化Xpath规则 命令执行结果：\n{}'.format(result))
+        return JsonResponse(data=CommonResponse.success(
+            msg='初始化Xpath规则成功！',
+            data={
+                'result': result
+            }
+        ).to_dict(), safe=False)
+    except Exception as e:
+        # raise
+        msg = '初始化Xpath失败!{}'.format(str(e))
+        logger.error(msg)
+        return JsonResponse(data=CommonResponse.error(
+            msg=msg
         ).to_dict(), safe=False)
 
 
