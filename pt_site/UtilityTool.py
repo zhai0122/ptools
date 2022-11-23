@@ -1442,7 +1442,7 @@ class PtSpider:
                         except Exception as e:
                             logger.info('BT学校获取做种信息有误！')
                             pass
-                if 'lemonhd.org' in site.url:
+                if 'lemonhd.org' in site.url or 'greatposterwall' in site.url:
                     seeding_html = details_html
                 else:
                     seeding_detail_res = self.send_request(my_site=my_site, url=seeding_detail_url, delay=25)
