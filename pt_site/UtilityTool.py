@@ -1425,9 +1425,9 @@ class PtSpider:
                 # ttg的信息都是直接加载的，不需要再访问其他网页，直接解析就好
                 details_html = etree.HTML(user_detail_res.content)
                 seeding_html = details_html.xpath('//div[@id="ka2"]/table')[0]
-            elif 'greatposterwall' in site.url:
+            elif 'greatposterwall' in site.url or 'dicmusic' in site.url:
                 details_html = user_detail_res.json()
-                seeding_html = details_html
+                seeding_html = self.send_request(my_site=my_site, url=site.url + site.page_mybonus).json()
             else:
 
                 details_html = etree.HTML(converter.convert(user_detail_res.content))
@@ -1512,13 +1512,13 @@ class PtSpider:
             details_html = result.get('details_html')
             seeding_html = result.get('seeding_html')
             # leeching_html = result.get('leeching_html')
-            if 'greatposterwall' in site.url:
+            if 'greatposterwall' in site.url or 'dicmusic' in site.url:
                 try:
                     print(details_html)
-                    if details_html.get('status') == 'success':
-                        response = details_html.get('response')
-                        mail_str = response.get("notifications").get("messages")
-                        notice_str = response.get("notifications").get("notifications")
+                    if details_html.get('status') == 'success' and seeding_html.get('status') == 'success':
+                        seeding_response = seeding_html.get('response')
+                        mail_str = seeding_response.get("notifications").get("messages")
+                        notice_str = seeding_response.get("notifications").get("notifications")
                         my_site.mail = int(mail_str) + int(notice_str)
                         if my_site.mail > 0:
                             template = '### <font color="red">{} 有{}条新短消息，请注意及时查收！</font>  \n'
@@ -1526,21 +1526,43 @@ class PtSpider:
                             self.send_text(
                                 template.format(site.name, my_site.mail) + mail_str + '\n' + notice_str
                             )
-                        userdata = response.get('userstats')
-                        downloaded = userdata.get('downloaded')
-                        uploaded = userdata.get('uploaded')
-                        ratio = userdata.get('ratio')
-                        my_site.my_level = userdata.get('class')
-                        time_join = userdata.get('joinedDate')
-                        last_access = userdata.get('lastAccess')
-                        my_sp = userdata.get('bonusPoints')
-                        my_site.seed = userdata.get('seedingCount')
-                        seeding_size = userdata.get('seedingSize')
-                        my_site.sp_hour = userdata.get('seedingBonusPointsPerHour')
-                        my_site.leech = userdata.get('leechingCount')
+                        # ajax.php?action=user&id=
+                        details_response = details_html.get('response')
+                        stats = details_response.get('stats')
+                        downloaded = stats.get('downloaded')
+                        uploaded = stats.get('uploaded')
+                        ratio = stats.get('ratio')
                         if not my_site.time_join:
-                            my_site.time_join = time_join
-                        my_site.latest_active = last_access
+                            my_site.time_join = stats.get('joinedDate')
+                        my_site.latest_active = stats.get('lastAccess')
+                        my_site.my_level = details_response.get('personal').get('class')
+                        community = details_response.get('community')
+                        my_site.seed = community.get('seeding')
+                        my_site.leech = community.get('leeching')
+                        # ajax.php?action=index
+                        if 'greatposterwall' in site.url:
+                            userdata = seeding_response.get('userstats')
+                            my_sp = userdata.get('bonusPoints')
+                            # if userdata.get('bonusPoints') else 0
+                            seeding_size = userdata.get('seedingSize')
+                            # if userdata.get('seedingSize') else 0
+                            my_site.sp_hour = userdata.get('seedingBonusPointsPerHour')
+                            # if userdata.get('seedingBonusPointsPerHour') else 0
+                        if 'dicmusic' in site.url:
+                            print('海豚')
+                            """未取得授权前不开放本段代码，谨防ban号
+                            bonus_res = self.send_request(my_site, url=site.url + site.page_seeding, timeout=15)
+                            sp_str = self.parse(bonus_res, '//h3[contains(text(),"总积分")]/text()')
+                            my_sp = get_decimals(''.join(sp_str))
+                            hour_sp_str = self.parse(bonus_res, '//*[@id="bprates_overview"]/tbody/tr/td[3]/text()')
+                            my_site.sp_hour = ''.join(hour_sp_str)
+                            seeding_size_str = self.parse(bonus_res,
+                                                          '//*[@id="bprates_overview"]/tbody/tr/td[2]/text()')
+                            seeding_size = FileSizeConvert.parse_2_byte(''.join(seeding_size_str))
+                            """
+                            my_sp = 0
+                            my_site.sp_hour = 0
+                            seeding_size = 0
                         my_site.save()
                         res_gpw = SiteStatus.objects.update_or_create(
                             site=my_site,
@@ -1552,7 +1574,7 @@ class PtSpider:
                                 'my_sp': my_sp,
                                 'my_bonus': 0,
                                 # 做种体积
-                                'seed_vol': int(seeding_size),
+                                'seed_vol': seeding_size,
                             })
                         return CommonResponse.success(data=res_gpw)
                     else:
