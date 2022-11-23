@@ -495,7 +495,7 @@ class PtSpider:
             url=site.url + site.page_sign_in.lstrip('/'),
             method=site.sign_in_method,
             data=data
-        ).content.decode('utf8')
+        )
         logger.info(sign_res)
         sign_str = self.parse(sign_res, '//font[contains(text(),"签过到")]/text()')
         if len(sign_str) < 1:
@@ -969,10 +969,10 @@ class PtSpider:
                     res_json = result.data
                     if res_json.get('state') == 'success':
                         signin_today.sign_in_today = True
-                        data = res_json.get('msg')
+                        # data = res_json.get('msg')
                         message = "签到成功，您已连续签到{}天，本次增加魔力:{}。".format(
-                            data.get('signindays'),
-                            data.get('integral'),
+                            res_json.get('signindays'),
+                            res_json.get('integral'),
                         )
                         signin_today.sign_in_info = message
                         signin_today.save()
