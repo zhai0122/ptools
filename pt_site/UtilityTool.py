@@ -1417,7 +1417,7 @@ class PtSpider:
                     msg=site.name + '个人主页访问错误，错误码：' + str(user_detail_res.status_code)
                 )
             # logger.info(user_detail_res.status_code)
-            # logger.info('个人主页：', user_detail_res.content)
+            logger.info('个人主页：{}'.format(user_detail_res.content))
             # 解析HTML
             # logger.info(user_detail_res.is_redirect)
 
@@ -1425,7 +1425,11 @@ class PtSpider:
                 # ttg的信息都是直接加载的，不需要再访问其他网页，直接解析就好
                 details_html = etree.HTML(user_detail_res.content)
                 seeding_html = details_html.xpath('//div[@id="ka2"]/table')[0]
+            elif 'greatposterwall' in site.url:
+                details_html = user_detail_res.json()
+                seeding_html = details_html
             else:
+
                 details_html = etree.HTML(converter.convert(user_detail_res.content))
 
                 if 'btschool' in site.url:
@@ -1442,7 +1446,8 @@ class PtSpider:
                         except Exception as e:
                             logger.info('BT学校获取做种信息有误！')
                             pass
-                if 'lemonhd.org' in site.url or 'greatposterwall' in site.url:
+                if 'lemonhd.org' in site.url:
+                    logger.info(site.url)
                     seeding_html = details_html
                 else:
                     seeding_detail_res = self.send_request(my_site=my_site, url=seeding_detail_url, delay=25)
@@ -1507,216 +1512,274 @@ class PtSpider:
             details_html = result.get('details_html')
             seeding_html = result.get('seeding_html')
             # leeching_html = result.get('leeching_html')
-            # 获取指定元素
-            # title = details_html.xpath('//title/text()')
-            # seed_vol_list = seeding_html.xpath(site.record_bulk_rule)
-            seed_vol_list = seeding_html.xpath(site.seed_vol_rule)
-            if 'lemonhd.org' in site.url:
-                logger.info('做种体积：{}'.format(seed_vol_list))
-                seed_vol_size = ''.join(seed_vol_list).split(':')[-1].strip()
-                seed_vol_all = FileSizeConvert.parse_2_byte(seed_vol_size)
-            else:
-                if len(seed_vol_list) > 0:
-                    seed_vol_list.pop(0)
-                logger.info('做种数量seeding_vol：{}'.format(len(seed_vol_list)))
-                # 做种体积
-                seed_vol_all = 0
-                for seed_vol in seed_vol_list:
-                    # logger.info(etree.tostring(seed_vol))
-                    vol = ''.join(seed_vol.xpath('.//text()'))
-                    # logger.info(vol)
-                    if not len(vol) <= 0:
-                        size = FileSizeConvert.parse_2_byte(
-                            vol.replace('i', '')  # U2返回字符串为mib，gib
-                        )
-                        if size:
-                            seed_vol_all += size
-                        else:
-                            msg = '## <font color="red">{} 获取做种大小失败，请检查规则信息是否匹配？</font>'.format(
-                                site.name)
-                            logger.warning(msg)
-                            self.send_text(msg)
-                            break
+            if 'greatposterwall' in site.url:
+                try:
+                    print(details_html)
+                    if details_html.get('status') == 'success':
+                        response = details_html.get('response')
+                        mail_str = response.get("notifications").get("messages")
+                        notice_str = response.get("notifications").get("notifications")
+                        my_site.mail = int(mail_str) + int(notice_str)
+                        if my_site.mail > 0:
+                            template = '### <font color="red">{} 有{}条新短消息，请注意及时查收！</font>  \n'
+                            # 测试发送网站消息原内容
+                            self.send_text(
+                                template.format(site.name, my_site.mail) + mail_str + '\n' + notice_str
+                            )
+                        userdata = response.get('userstats')
+                        downloaded = userdata.get('downloaded')
+                        uploaded = userdata.get('uploaded')
+                        ratio = userdata.get('ratio')
+                        my_site.my_level = userdata.get('class')
+                        time_join = userdata.get('joinedDate')
+                        last_access = userdata.get('lastAccess')
+                        my_sp = userdata.get('bonusPoints')
+                        my_site.seed = userdata.get('seedingCount')
+                        seeding_size = userdata.get('seedingSize')
+                        my_site.sp_hour = userdata.get('seedingBonusPointsPerHour')
+                        my_site.leech = userdata.get('leechingCount')
+                        if not my_site.time_join:
+                            my_site.time_join = time_join
+                        my_site.latest_active = last_access
+                        my_site.save()
+                        res_gpw = SiteStatus.objects.update_or_create(
+                            site=my_site,
+                            created_at__date__gte=datetime.today(),
+                            defaults={
+                                'ratio': ratio,
+                                'downloaded': downloaded,
+                                'uploaded': uploaded,
+                                'my_sp': my_sp,
+                                'my_bonus': 0,
+                                # 做种体积
+                                'seed_vol': int(seeding_size),
+                            })
+                        return CommonResponse.success(data=res_gpw)
                     else:
-                        # seed_vol_all = 0
+                        return CommonResponse.error(data=result)
+                except Exception as e:
+                    # 打印异常详细信息
+                    message = '{} 解析个人主页信息：失败！原因：{}'.format(site.name, e)
+                    logger.error(message)
+                    logger.error(traceback.format_exc(limit=3))
+                    # raise
+                    # self.send_text('# <font color="red">' + message + '</font>  \n')
+                    return CommonResponse.error(msg=message)
+                pass
+            else:
+                # 获取指定元素
+                # title = details_html.xpath('//title/text()')
+                # seed_vol_list = seeding_html.xpath(site.record_bulk_rule)
+                seed_vol_list = seeding_html.xpath(site.seed_vol_rule)
+                if 'lemonhd.org' in site.url:
+                    logger.info('做种体积：{}'.format(seed_vol_list))
+                    seed_vol_size = ''.join(seed_vol_list).split(':')[-1].strip()
+                    seed_vol_all = FileSizeConvert.parse_2_byte(seed_vol_size)
+                else:
+                    if len(seed_vol_list) > 0:
+                        seed_vol_list.pop(0)
+                    logger.info('做种数量seeding_vol：{}'.format(len(seed_vol_list)))
+                    # 做种体积
+                    seed_vol_all = 0
+                    for seed_vol in seed_vol_list:
+                        # logger.info(etree.tostring(seed_vol))
+                        vol = ''.join(seed_vol.xpath('.//text()'))
+                        # logger.info(vol)
+                        if not len(vol) <= 0:
+                            size = FileSizeConvert.parse_2_byte(
+                                vol.replace('i', '')  # U2返回字符串为mib，gib
+                            )
+                            if size:
+                                seed_vol_all += size
+                            else:
+                                msg = '## <font color="red">{} 获取做种大小失败，请检查规则信息是否匹配？</font>'.format(
+                                    site.name)
+                                logger.warning(msg)
+                                self.send_text(msg)
+                                break
+                        else:
+                            # seed_vol_all = 0
+                            pass
+                logger.info('做种体积：{}'.format(FileSizeConvert.parse_2_file_size(seed_vol_all)))
+                # logger.info(''.join(seed_vol_list).strip().split('：'))
+                # logger.info(title)
+                # logger.info(etree.tostring(details_html))
+                # leech = self.get_user_torrent(leeching_html, site.leech_rule)
+                # seed = self.get_user_torrent(seeding_html, site.seed_rule)
+                leech = re.sub(r'\D', '', ''.join(details_html.xpath(site.leech_rule)).strip())
+                seed = ''.join(details_html.xpath(site.seed_rule)).strip()
+                if not leech and not seed:
+                    return CommonResponse.error(
+                        status=StatusCodeEnum.WEB_CONNECT_ERR,
+                        msg=StatusCodeEnum.WEB_CONNECT_ERR.errmsg + '请检查网站访问是否正常？'
+                    )
+                # seed = len(seed_vol_list)
+
+                downloaded = ''.join(
+                    details_html.xpath(site.downloaded_rule)
+                ).replace(':', '').replace('\xa0\xa0', '').replace('i', '').strip(' ')
+                downloaded = FileSizeConvert.parse_2_byte(downloaded)
+                uploaded = ''.join(
+                    details_html.xpath(site.uploaded_rule)
+                ).replace(':', '').replace('i', '').strip(' ')
+                uploaded = FileSizeConvert.parse_2_byte(uploaded)
+
+                invitation = ''.join(
+                    details_html.xpath(site.invitation_rule)
+                ).strip(']:').replace('[', '').strip()
+                logger.info(invitation)
+                # invitation = re.sub("\D", "", invitation)
+                # time_join_1 = ''.join(
+                #     details_html.xpath(site.time_join_rule)
+                # ).split('(')[0].strip('\xa0').strip()
+                # logger.info('注册时间：', time_join_1)
+                # time_join = time_join_1.replace('(', '').replace(')', '').strip('\xa0').strip()
+
+                if not my_site.time_join:
+                    time_join = ''.join(
+                        details_html.xpath(site.time_join_rule)
+                    )
+                    if time_join:
+                        my_site.time_join = time_join
+                    else:
                         pass
-            logger.info('做种体积：{}'.format(FileSizeConvert.parse_2_file_size(seed_vol_all)))
-            # logger.info(''.join(seed_vol_list).strip().split('：'))
-            # logger.info(title)
-            # logger.info(etree.tostring(details_html))
-            # leech = self.get_user_torrent(leeching_html, site.leech_rule)
-            # seed = self.get_user_torrent(seeding_html, site.seed_rule)
-            leech = re.sub(r'\D', '', ''.join(details_html.xpath(site.leech_rule)).strip())
-            seed = ''.join(details_html.xpath(site.seed_rule)).strip()
-            if not leech and not seed:
-                return CommonResponse.error(
-                    status=StatusCodeEnum.WEB_CONNECT_ERR,
-                    msg=StatusCodeEnum.WEB_CONNECT_ERR.errmsg + '请检查网站访问是否正常？'
-                )
-            # seed = len(seed_vol_list)
 
-            downloaded = ''.join(
-                details_html.xpath(site.downloaded_rule)
-            ).replace(':', '').replace('\xa0\xa0', '').replace('i', '').strip(' ')
-            downloaded = FileSizeConvert.parse_2_byte(downloaded)
-            uploaded = ''.join(
-                details_html.xpath(site.uploaded_rule)
-            ).replace(':', '').replace('i', '').strip(' ')
-            uploaded = FileSizeConvert.parse_2_byte(uploaded)
-
-            invitation = ''.join(
-                details_html.xpath(site.invitation_rule)
-            ).strip(']:').replace('[', '').strip()
-            logger.info(invitation)
-            # invitation = re.sub("\D", "", invitation)
-            # time_join_1 = ''.join(
-            #     details_html.xpath(site.time_join_rule)
-            # ).split('(')[0].strip('\xa0').strip()
-            # logger.info('注册时间：', time_join_1)
-            # time_join = time_join_1.replace('(', '').replace(')', '').strip('\xa0').strip()
-
-            if not my_site.time_join:
-                time_join = ''.join(
-                    details_html.xpath(site.time_join_rule)
-                )
-                if time_join:
-                    my_site.time_join = time_join
+                # 去除字符串中的中文
+                my_level_1 = ''.join(
+                    details_html.xpath(site.my_level_rule)
+                ).replace('_Name', '').strip()
+                if 'city' in site.url:
+                    my_level = my_level_1.strip()
+                # elif 'u2' in site.url:
+                #     my_level = ''.join(re.findall(r'/(.*).{4}', my_level_1)).title()
                 else:
-                    pass
+                    my_level = re.sub(u"([^\u0041-\u005a\u0061-\u007a])", "", my_level_1)
+                logger.info('用户等级：{}-{}'.format(my_level_1, my_level))
+                # my_level = re.sub('[\u4e00-\u9fa5]', '', my_level_1)
+                # logger.info('正则去除中文：', my_level)
+                # latest_active = ''.join(
+                #     details_html.xpath(site.latest_active_rule)
+                # ).strip('\xa0').strip()
+                # if '(' in latest_active:
+                #     latest_active = latest_active.split('(')[0].strip()
 
-            # 去除字符串中的中文
-            my_level_1 = ''.join(
-                details_html.xpath(site.my_level_rule)
-            ).replace('_Name', '').strip()
-            if 'city' in site.url:
-                my_level = my_level_1.strip()
-            # elif 'u2' in site.url:
-            #     my_level = ''.join(re.findall(r'/(.*).{4}', my_level_1)).title()
-            else:
-                my_level = re.sub(u"([^\u0041-\u005a\u0061-\u007a])", "", my_level_1)
-            logger.info('用户等级：{}-{}'.format(my_level_1, my_level))
-            # my_level = re.sub('[\u4e00-\u9fa5]', '', my_level_1)
-            # logger.info('正则去除中文：', my_level)
-            # latest_active = ''.join(
-            #     details_html.xpath(site.latest_active_rule)
-            # ).strip('\xa0').strip()
-            # if '(' in latest_active:
-            #     latest_active = latest_active.split('(')[0].strip()
+                # 获取字符串中的魔力值
+                my_sp = ''.join(
+                    details_html.xpath(site.my_sp_rule)
+                ).replace(',', '').strip()
+                logger.info('魔力：{}'.format(details_html.xpath(site.my_sp_rule)))
 
-            # 获取字符串中的魔力值
-            my_sp = ''.join(
-                details_html.xpath(site.my_sp_rule)
-            ).replace(',', '').strip()
-            logger.info('魔力：{}'.format(details_html.xpath(site.my_sp_rule)))
+                if my_sp:
+                    my_sp = get_decimals(my_sp)
 
-            if my_sp:
-                my_sp = get_decimals(my_sp)
-
-            my_bonus_1 = ''.join(
-                details_html.xpath(site.my_bonus_rule)
-            ).strip('N/A').replace(',', '').strip()
-            if my_bonus_1 != '':
-                my_bonus = get_decimals(my_bonus_1)
-            else:
-                my_bonus = 0
-            # if '（' in my_bonus:
-            #     my_bonus = my_bonus.split('（')[0]
-
-            hr = ''.join(details_html.xpath(site.my_hr_rule)).split(' ')[0]
-
-            my_hr = hr if hr else '0'
-
-            # logger.info(my_bonus)
-            # 更新我的站点数据
-            invitation = converter.convert(invitation)
-            # x = invitation.split('/')
-            # invitation = re.sub('[\u4e00-\u9fa5]', '', invitation)
-            logger.info(invitation)
-            if invitation == '没有邀请资格':
-                my_site.invitation = 0
-            elif '/' in invitation:
-                invitation_list = [int(n) for n in invitation.split('/')]
-                # my_site.invitation = int(invitation) if invitation else 0
-                my_site.invitation = sum(invitation_list)
-            else:
-                my_site.invitation = int(re.sub('\D', '', invitation))
-            my_site.latest_active = datetime.now()
-            my_site.my_level = my_level if my_level != '' else ' '
-            if my_hr:
-                my_site.my_hr = my_hr
-            my_site.seed = int(get_decimals(seed)) if seed else 0
-            logger.info(leech)
-            my_site.leech = int(get_decimals(leech)) if leech else 0
-
-            logger.info('站点：{}'.format(site))
-            logger.info('等级：{}'.format(my_level))
-            logger.info('魔力：{}'.format(my_sp))
-            logger.info('积分：{}'.format(my_bonus if my_bonus else 0))
-            # logger.info('分享率：{}'.format(ratio))
-            logger.info('下载量：{}'.format(downloaded))
-            logger.info('上传量：{}'.format(uploaded))
-            logger.info('邀请：{}'.format(invitation))
-            # logger.info('注册时间：{}'.format(time_join))
-            # logger.info('最后活动：{}'.format(latest_active))
-            logger.info('H&R：{}'.format(my_hr))
-            logger.info('上传数：{}'.format(seed))
-            logger.info('下载数：{}'.format(leech))
-            try:
-                ratio = ''.join(
-                    details_html.xpath(site.ratio_rule)
-                ).replace(',', '').replace('无限', 'inf').replace('∞', 'inf').replace('---', 'inf').strip(']:').strip()
-                # 分享率告警通知
-                logger.info('ratio：{}'.format(ratio))
-                if ratio and ratio != 'inf' and float(ratio) <= 1:
-                    message = '# <font color="red">' + site.name + ' 站点分享率告警：' + str(ratio) + '</font>  \n'
-                    self.send_text(message)
-                # 检查邮件
-                mail_str = ''.join(details_html.xpath(site.mailbox_rule))
-                notice_str = ''.join(details_html.xpath(site.notice_rule))
-                if mail_str or notice_str:
-                    mail_count = re.sub(u"([^\u0030-\u0039])", "", mail_str)
-                    notice_count = re.sub(u"([^\u0030-\u0039])", "", notice_str)
-                    mail_count = int(mail_count) if mail_count else 0
-                    notice_count = int(notice_count) if notice_count else 0
-                    my_site.mail = mail_count + notice_count
-                    if mail_count + notice_count > 0:
-                        template = '### <font color="red">{} 有{}条新短消息，请注意及时查收！</font>  \n'
-                        # 测试发送网站消息原内容
-                        self.send_text(
-                            template.format(site.name, mail_count + notice_count) + mail_str + '\n' + notice_str
-                        )
+                my_bonus_1 = ''.join(
+                    details_html.xpath(site.my_bonus_rule)
+                ).strip('N/A').replace(',', '').strip()
+                if my_bonus_1 != '':
+                    my_bonus = get_decimals(my_bonus_1)
                 else:
-                    my_site.mail = 0
-                res_sp_hour = self.get_hour_sp(my_site=my_site)
-                if res_sp_hour.code != StatusCodeEnum.OK.code:
-                    logger.error(my_site.site.name + res_sp_hour.msg)
+                    my_bonus = 0
+                # if '（' in my_bonus:
+                #     my_bonus = my_bonus.split('（')[0]
+
+                hr = ''.join(details_html.xpath(site.my_hr_rule)).split(' ')[0]
+
+                my_hr = hr if hr else '0'
+
+                # logger.info(my_bonus)
+                # 更新我的站点数据
+                invitation = converter.convert(invitation)
+                # x = invitation.split('/')
+                # invitation = re.sub('[\u4e00-\u9fa5]', '', invitation)
+                logger.info(invitation)
+                if invitation == '没有邀请资格':
+                    my_site.invitation = 0
+                elif '/' in invitation:
+                    invitation_list = [int(n) for n in invitation.split('/')]
+                    # my_site.invitation = int(invitation) if invitation else 0
+                    my_site.invitation = sum(invitation_list)
                 else:
-                    my_site.sp_hour = res_sp_hour.data
-                # 保存上传下载等信息
-                my_site.save()
-                # 外键反向查询
-                # status = my_site.sitestatus_set.filter(updated_at__date__gte=datetime.datetime.today())
-                # logger.info(status)
-                result = SiteStatus.objects.update_or_create(site=my_site, created_at__date__gte=datetime.today(),
-                                                             defaults={
-                                                                 'ratio': float(ratio) if ratio else 0,
-                                                                 'downloaded': int(downloaded),
-                                                                 'uploaded': int(uploaded),
-                                                                 'my_sp': float(my_sp),
-                                                                 'my_bonus': float(my_bonus) if my_bonus != '' else 0,
-                                                                 # 做种体积
-                                                                 'seed_vol': seed_vol_all,
-                                                             })
-                # logger.info(result) # result 本身就是元祖
-                return CommonResponse.success(data=result)
-            except Exception as e:
-                # 打印异常详细信息
-                message = '{} 解析个人主页信息：失败！原因：{}'.format(my_site.site.name, e)
-                logger.error(message)
-                logger.error(traceback.format_exc(limit=3))
-                # raise
-                # self.send_text('# <font color="red">' + message + '</font>  \n')
-                return CommonResponse.error(msg=message)
+                    my_site.invitation = int(re.sub('\D', '', invitation))
+                my_site.latest_active = datetime.now()
+                my_site.my_level = my_level if my_level != '' else ' '
+                if my_hr:
+                    my_site.my_hr = my_hr
+                my_site.seed = int(get_decimals(seed)) if seed else 0
+                logger.info(leech)
+                my_site.leech = int(get_decimals(leech)) if leech else 0
+
+                logger.info('站点：{}'.format(site))
+                logger.info('等级：{}'.format(my_level))
+                logger.info('魔力：{}'.format(my_sp))
+                logger.info('积分：{}'.format(my_bonus if my_bonus else 0))
+                # logger.info('分享率：{}'.format(ratio))
+                logger.info('下载量：{}'.format(downloaded))
+                logger.info('上传量：{}'.format(uploaded))
+                logger.info('邀请：{}'.format(invitation))
+                # logger.info('注册时间：{}'.format(time_join))
+                # logger.info('最后活动：{}'.format(latest_active))
+                logger.info('H&R：{}'.format(my_hr))
+                logger.info('上传数：{}'.format(seed))
+                logger.info('下载数：{}'.format(leech))
+                try:
+                    ratio = ''.join(
+                        details_html.xpath(site.ratio_rule)
+                    ).replace(',', '').replace('无限', 'inf').replace('∞', 'inf').replace('---', 'inf').strip(
+                        ']:').strip()
+                    # 分享率告警通知
+                    logger.info('ratio：{}'.format(ratio))
+                    if ratio and ratio != 'inf' and float(ratio) <= 1:
+                        message = '# <font color="red">' + site.name + ' 站点分享率告警：' + str(ratio) + '</font>  \n'
+                        self.send_text(message)
+                    # 检查邮件
+                    mail_str = ''.join(details_html.xpath(site.mailbox_rule))
+                    notice_str = ''.join(details_html.xpath(site.notice_rule))
+                    if mail_str or notice_str:
+                        mail_count = re.sub(u"([^\u0030-\u0039])", "", mail_str)
+                        notice_count = re.sub(u"([^\u0030-\u0039])", "", notice_str)
+                        mail_count = int(mail_count) if mail_count else 0
+                        notice_count = int(notice_count) if notice_count else 0
+                        my_site.mail = mail_count + notice_count
+                        if mail_count + notice_count > 0:
+                            template = '### <font color="red">{} 有{}条新短消息，请注意及时查收！</font>  \n'
+                            # 测试发送网站消息原内容
+                            self.send_text(
+                                template.format(site.name, mail_count + notice_count) + mail_str + '\n' + notice_str
+                            )
+                    else:
+                        my_site.mail = 0
+                    res_sp_hour = self.get_hour_sp(my_site=my_site)
+                    if res_sp_hour.code != StatusCodeEnum.OK.code:
+                        logger.error(my_site.site.name + res_sp_hour.msg)
+                    else:
+                        my_site.sp_hour = res_sp_hour.data
+                    # 保存上传下载等信息
+                    my_site.save()
+                    # 外键反向查询
+                    # status = my_site.sitestatus_set.filter(updated_at__date__gte=datetime.datetime.today())
+                    # logger.info(status)
+                    result = SiteStatus.objects.update_or_create(
+                        site=my_site, created_at__date__gte=datetime.today(),
+                        defaults={
+                            'ratio': float(ratio) if ratio else 0,
+                            'downloaded': int(downloaded),
+                            'uploaded': int(uploaded),
+                            'my_sp': float(my_sp),
+                            'my_bonus': float(
+                                my_bonus) if my_bonus != '' else 0,
+                            # 做种体积
+                            'seed_vol': seed_vol_all,
+                        })
+                    # logger.info(result) # result 本身就是元祖
+                    return CommonResponse.success(data=result)
+                except Exception as e:
+                    # 打印异常详细信息
+                    message = '{} 解析个人主页信息：失败！原因：{}'.format(my_site.site.name, e)
+                    logger.error(message)
+                    logger.error(traceback.format_exc(limit=3))
+                    # raise
+                    # self.send_text('# <font color="red">' + message + '</font>  \n')
+                    return CommonResponse.error(msg=message)
 
     def get_hour_sp(self, my_site: MySite):
         """获取时魔"""
