@@ -3194,7 +3194,7 @@
   {
     "id": 49,
     "created_at": "2022-08-27 17:32:01.405000",
-    "updated_at": "2022-11-22 21:17:14.180873",
+    "updated_at": "2022-11-23 09:37:06.781608",
     "name": "彩虹岛",
     "url": "https://chdbits.co/",
     "logo": "https://chdbits.co/favicon.ico",
@@ -3215,7 +3215,7 @@
     "page_mybonus": "mybonus.php",
     "page_viewfilelist": "viewfilelist.php?id={}",
     "page_viewpeerlist": "viewpeerlist.php?id={}",
-    "sign_in_method": "get",
+    "sign_in_method": "post",
     "sign_in_captcha": 0,
     "sign_in_params": "{}",
     "sign_in_headers": "{}",

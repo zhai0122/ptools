@@ -475,8 +475,8 @@ class PtSpider:
         sign_str = etree.HTML(result.content).xpath('//font[contains(text(),"签过到")]/text()')
         logger.info(sign_str)
         if len(sign_str) >= 1:
-            msg = self.parse(result, '//font[contains(text(),"签过到")]/text()')
-            return CommonResponse.success(msg='已签到！{}'.format(msg))
+            # msg = self.parse(result, '//font[contains(text(),"签过到")]/text()')
+            return CommonResponse.success(msg='您已成功签到，请勿重复操作！{}'.format(sign_str))
         # if len(sign_str) >= 1:
         #     return CommonResponse.success(msg='52PT 签到太复杂不支持，访问网站保持活跃成功！')
         questionid = self.parse(result, '//input[contains(@name, "questionid")]/@value')
@@ -496,16 +496,16 @@ class PtSpider:
             method=site.sign_in_method,
             data=data
         )
-        logger.info(sign_res)
+        logger.info(sign_res.content)
         sign_str = self.parse(sign_res, '//font[contains(text(),"签过到")]/text()')
         if len(sign_str) < 1:
             return CommonResponse.error(
                 msg='签到失败!'
             )
         else:
-            msg = self.parse(sign_res, '//font[contains(text(),"签过到")]/text()')
+            # msg = self.parse(sign_res, '//font[contains(text(),"签过到")]/text()')
             return CommonResponse.success(
-                msg='签到成功！{}'.format(''.join(msg))
+                msg='签到成功！{}'.format(''.join(sign_str))
             )
 
     def sign_in_hdupt(self, my_site: MySite):
@@ -853,7 +853,7 @@ class PtSpider:
                 else:
                     message = '> <font color="red">' + my_site.site.name + ' 签到失败！' + result.msg + '</font>  \n\n'
                     message_list = message + message_list
-                logger.error(my_site.site.name + '签到失败！原因：' + result.msg)
+                    logger.error(my_site.site.name + '签到失败！原因：' + result.msg)
             return message_list
 
     # @transaction.atomic
