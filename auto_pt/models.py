@@ -35,7 +35,7 @@ class TaskJob(BaseEntity):
     job_id = models.CharField(verbose_name='任务id', max_length=16, unique=True, editable=False)
     trigger = models.CharField(verbose_name='任务类型', choices=Trigger.choices, default=Trigger.cron, max_length=64)
     task_exec = models.BooleanField(verbose_name='开启任务', default=True)
-    replace_existing = models.BooleanField(verbose_name='覆盖任务', default=True,
+    replace_existing = models.BooleanField(verbose_name='覆盖任务', default=True, editable=False,
                                            help_text='不设置此项重启项目后会报任务id已存在的错误, 设置此参数后会对已有的任务进行覆盖')
     expression_time = models.CharField(verbose_name='时间表达式',
                                        help_text='在间隔任务表示间隔时长使用数字，单位：秒，corn任务中为五位corn表达式：“15 8 * * 2022”',
