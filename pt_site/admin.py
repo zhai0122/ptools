@@ -281,9 +281,9 @@ class MySiteAdmin(admin.ModelAdmin):  # instead of ModelAdmin
             '<font color="#2570a1">时魔：{} / </font>'
             '<font color="#6c4c49">魔力：{}</font><br>'
             '<font color="#708090">积分/HP：{}</font>',
-            round(float(obj.sp_hour), 3),
-            status_today.my_sp,
-            status_today.my_bonus
+            round(float(obj.sp_hour), 3) if obj.sp_hour else 0,
+            status_today.my_sp if status_today else 0,
+            status_today.my_bonus if status_today else 0
         )
 
     bonus.short_description = '魔力'
@@ -304,8 +304,8 @@ class MySiteAdmin(admin.ModelAdmin):  # instead of ModelAdmin
         status_today = obj.sitestatus_set.order_by('-pk').first()
         return format_html(
             '<font color="#2570a1">已下载：{}</font> <br> <font color="#708090">已上传：{}</font>',
-            FileSizeConvert.parse_2_file_size(status_today.downloaded),
-            FileSizeConvert.parse_2_file_size(status_today.uploaded)
+            FileSizeConvert.parse_2_file_size(status_today.downloaded) if status_today else 0,
+            FileSizeConvert.parse_2_file_size(status_today.uploaded) if status_today else 0
         )
 
     userdata.short_description = '数据量'
@@ -315,8 +315,8 @@ class MySiteAdmin(admin.ModelAdmin):  # instead of ModelAdmin
         return format_html(
             '<font color="#2570a1">做种：{}</font> / <font color="#6c4c49">下载：{} </font><br>'
             '<font color="#708090"> 做种体积：{}</font>',
-            obj.seed,obj.leech,
-            FileSizeConvert.parse_2_file_size(status_today.seed_vol),
+            obj.seed, obj.leech,
+            FileSizeConvert.parse_2_file_size(status_today.seed_vol) if status_today else 0,
         )
 
     leeching_seeding.short_description = '下载/做种'
@@ -339,9 +339,9 @@ class MySiteAdmin(admin.ModelAdmin):  # instead of ModelAdmin
             '更新：{}<img src="/static/admin/img/icon-{}.svg"><br>'
             '<font color="#525f42">注册：{}</font></font>',
             signin_str,
-            datetime.strftime(obj.updated_at, '%Y-%m-%d %H:%M:%S'),
+            datetime.strftime(obj.updated_at, '%Y-%m-%d %H:%M:%S') if obj else '',
             'yes' if is_update and obj.site.get_userinfo_support else 'no',
-            datetime.strftime(obj.time_join, '%Y-%m-%d %H:%M:%S')
+            datetime.strftime(obj.time_join, '%Y-%m-%d %H:%M:%S') if obj.time_join else ''
         )
 
     status_today.short_description = '状态'
