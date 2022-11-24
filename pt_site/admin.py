@@ -253,17 +253,14 @@ class MySiteAdmin(admin.ModelAdmin):  # instead of ModelAdmin
         # 'user_id',
         # 'site',
         'site_name',
-        'sign_in_state',
-        # 'sign_in_today',
-        'invitation',
-        'my_level',
-        'my_hr',
-        'leech',
-        'seed',
-        'sp_hour',
-        # 'publish',
-        # 'latest_active',
-        'time_join',
+        # 'invitation',
+        # 'my_level',
+        # 'my_hr',
+        'userinfo',
+        'userdata',
+        'leeching_seeding',
+        'bonus',
+        # 'time_join',
         'status_today',
         'edit',
     )
@@ -278,6 +275,52 @@ class MySiteAdmin(admin.ModelAdmin):  # instead of ModelAdmin
         SignInInlines
     )
 
+    def bonus(self, obj: MySite):
+        status_today = obj.sitestatus_set.order_by('-pk').first()
+        return format_html(
+            '<font color="#2570a1">时魔：{} / </font>'
+            '<font color="#6c4c49">魔力：{}</font><br>'
+            '<font color="#708090">积分/HP：{}</font>',
+            round(float(obj.sp_hour), 3),
+            status_today.my_sp,
+            status_today.my_bonus
+        )
+
+    bonus.short_description = '魔力'
+
+    def userinfo(self, obj: MySite):
+        return format_html(
+            '<font color="#2570a1">等级：{} / </font>'
+            '<font color="#6c4c49">邀请：{}</font><br>'
+            '<font color="Tomato">H&R：{}</font>',
+            obj.my_level,
+            obj.invitation,
+            obj.my_hr if obj.my_hr else 0
+        )
+
+    userinfo.short_description = '用户信息'
+
+    def userdata(self, obj: MySite):
+        status_today = obj.sitestatus_set.order_by('-pk').first()
+        return format_html(
+            '<font color="#2570a1">已下载：{}</font> <br> <font color="#708090">已上传：{}</font>',
+            FileSizeConvert.parse_2_file_size(status_today.downloaded),
+            FileSizeConvert.parse_2_file_size(status_today.uploaded)
+        )
+
+    userdata.short_description = '数据量'
+
+    def leeching_seeding(self, obj: MySite):
+        status_today = obj.sitestatus_set.order_by('-pk').first()
+        return format_html(
+            '<font color="#2570a1">做种：{}</font> / <font color="#6c4c49">下载：{} </font><br>'
+            '<font color="#708090"> 做种体积：{}</font>',
+            obj.seed,obj.leech,
+            FileSizeConvert.parse_2_file_size(status_today.seed_vol),
+        )
+
+    leeching_seeding.short_description = '下载/做种'
+
     def edit(self, obj: MySite):
         return '编辑'
 
@@ -286,12 +329,22 @@ class MySiteAdmin(admin.ModelAdmin):  # instead of ModelAdmin
     # 自定义更新时间，提醒今日是否更新
     def status_today(self, obj: MySite):
         is_update = obj.updated_at.date() == datetime.today().date()
+        signin_today = obj.signin_set.filter(created_at__date__gte=datetime.today()).first()
+        if not obj.site.sign_in_support:
+            signin_str = 'unknown'
+        else:
+            signin_str = 'yes' if signin_today and signin_today.sign_in_today else 'no'
+        return format_html(
+            '<font size="1">签到：<img src="/static/admin/img/icon-{}.svg"><br>'
+            '更新：{}<img src="/static/admin/img/icon-{}.svg"><br>'
+            '<font color="#525f42">注册：{}</font></font>',
+            signin_str,
+            datetime.strftime(obj.updated_at, '%Y-%m-%d %H:%M:%S'),
+            'yes' if is_update and obj.site.get_userinfo_support else 'no',
+            datetime.strftime(obj.time_join, '%Y-%m-%d %H:%M:%S')
+        )
 
-        return format_html('{}<img src="/static/admin/img/icon-{}.svg">',
-                           datetime.strftime(obj.updated_at, '%Y-%m-%d %H:%M:%S'),
-                           'yes' if is_update and obj.site.get_userinfo_support else 'no')
-
-    status_today.short_description = '更新时间'
+    status_today.short_description = '状态'
 
     # 签到过滤
     class SignInFilter(admin.SimpleListFilter):
@@ -355,6 +408,7 @@ class MySiteAdmin(admin.ModelAdmin):  # instead of ModelAdmin
 
     site_name.short_description = format_html('<a href="#">站点</a>')
 
+    """
     def sign_in_state(self, obj: MySite):
         signin_today = obj.signin_set.filter(created_at__date__gte=datetime.today()).first()
         if not obj.site.sign_in_support:
@@ -366,7 +420,7 @@ class MySiteAdmin(admin.ModelAdmin):  # instead of ModelAdmin
         return format_html(sign_template)
 
     sign_in_state.short_description = format_html('<a href="#">签到</a>')
-
+    """
     # def get_changeform_initial_data(self, request):
     #     print(request)
     #     return super(MySiteAdmin, self).get_changeform_initial_data(request)

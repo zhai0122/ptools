@@ -1417,7 +1417,7 @@ class PtSpider:
                     msg=site.name + '个人主页访问错误，错误码：' + str(user_detail_res.status_code)
                 )
             # logger.info(user_detail_res.status_code)
-            logger.info('个人主页：{}'.format(user_detail_res.content))
+            logger.info('个人主页：{}'.format(len(user_detail_res.content)))
             # 解析HTML
             # logger.info(user_detail_res.is_redirect)
 
@@ -1429,9 +1429,7 @@ class PtSpider:
                 details_html = user_detail_res.json()
                 seeding_html = self.send_request(my_site=my_site, url=site.url + site.page_mybonus).json()
             else:
-
                 details_html = etree.HTML(converter.convert(user_detail_res.content))
-
                 if 'btschool' in site.url:
                     text = details_html.xpath('//script/text()')
                     logger.info('学校：{}'.format(text))
@@ -1451,6 +1449,7 @@ class PtSpider:
                     seeding_html = details_html
                 else:
                     seeding_detail_res = self.send_request(my_site=my_site, url=seeding_detail_url, delay=25)
+                    logger.info('做种信息：{}'.format(seeding_detail_res.content))
                     # leeching_detail_res = self.send_request(my_site=my_site, url=leeching_detail_url, timeout=25)
                     if seeding_detail_res.status_code != 200:
                         return CommonResponse.error(
