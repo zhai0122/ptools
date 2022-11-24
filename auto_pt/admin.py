@@ -27,7 +27,7 @@ class TaskAdmin(admin.ModelAdmin):  # instead of ModelAdmin
     )
     # list_display_links = None
     search_fields = ('name',)
-    readonly_fields = ('name',)
+    readonly_fields = ('name', 'desc')
 
     def get_queryset(self, request):
         # print(self.kwargs['username'])
@@ -45,8 +45,8 @@ class TaskAdmin(admin.ModelAdmin):  # instead of ModelAdmin
         return False
 
     # 禁止修改按钮
-    # def has_change_permission(self, request, obj=None):
-    #     return False
+    def has_change_permission(self, request, obj=None):
+        return False
 
 
 @admin.register(TaskJob)
@@ -68,16 +68,15 @@ class TaskJobAdmin(admin.ModelAdmin):  # instead of ModelAdmin
     def save_model(self, request, obj: TaskJob, form, change):
         # 从字符串获取function
         func = getattr(tasks, obj.task.name)
-        # 检查任务是否存在，已存在就删除任务
+        # 检查任务是否存在，存在且job_id和任务名称不一致，则删除任务
         exist_job = scheduler.get_job(obj.job_id)
+        if exist_job and obj.job_id != obj.name:
+            exist_job.remove()
+            exist_job = None
+        obj.job_id = obj.name
         logger.info('当前任务：{} | {}'.format(obj.job_id, exist_job))
         try:
-            if not obj.task_exec:
-                logger.info(obj.job_id + '任务未开启！')
-                super().save_model(request, obj, form, change)
-            # else:
             # 添加任务
-
             if obj.trigger == Trigger.cron:
                 if exist_job:
                     logger.info(obj.job_id + '任务已存在，修改中！')

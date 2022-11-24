@@ -1,5 +1,7 @@
 # Create your models here.
 from django.db import models
+from django.db.models.signals import pre_save, post_save
+from django.dispatch import receiver
 
 from ptools.base import BaseEntity, Trigger, PushConfig, OCRConfig
 
@@ -26,8 +28,11 @@ class TaskJob(BaseEntity):
     next_run_time：　　datetime 开始执行时间
     misfire_grace_time: 　　强制执行结束的时间, 为避免撞车导致任务丢失, 没执行完就别执行了
     """
-    task = models.ForeignKey(verbose_name='任务名称', to=Task, on_delete=models.CASCADE)
-    job_id = models.CharField(verbose_name='任务ID', max_length=16, unique=True)
+    task = models.ForeignKey(verbose_name='选择任务', to=Task, on_delete=models.CASCADE,
+                             help_text='在这里选择你要执行的任务')
+    name = models.CharField(verbose_name='任务名称', max_length=16,
+                            help_text='你对任务的描述，此项具有唯一性')
+    job_id = models.CharField(verbose_name='任务id', max_length=16, unique=True, editable=False)
     trigger = models.CharField(verbose_name='任务类型', choices=Trigger.choices, default=Trigger.cron, max_length=64)
     task_exec = models.BooleanField(verbose_name='开启任务', default=True)
     replace_existing = models.BooleanField(verbose_name='覆盖任务', default=True,
@@ -35,14 +40,14 @@ class TaskJob(BaseEntity):
     expression_time = models.CharField(verbose_name='时间表达式',
                                        help_text='在间隔任务表示间隔时长使用数字，单位：秒，corn任务中为五位corn表达式：“15 8 * * 2022”',
                                        max_length=64)
-    start_date = models.DateTimeField(verbose_name='任务开始时间', null=True, blank=True)
-    end_date = models.DateTimeField(verbose_name='任务结束时间', null=True, blank=True)
-    misfire_grace_time = models.IntegerField(verbose_name='任务运行时间', default=600,
+    start_date = models.DateTimeField(verbose_name='任务开始时间', null=True, blank=True, editable=False)
+    end_date = models.DateTimeField(verbose_name='任务结束时间', null=True, blank=True, editable=False)
+    misfire_grace_time = models.IntegerField(verbose_name='任务运行时间', default=600, editable=False,
                                              help_text='强制执行结束的时间, 为避免撞车导致任务丢失, 没执行完就别执行了')
-    jitter = models.IntegerField(verbose_name='时间浮动参数', default=1200,
+    jitter = models.IntegerField(verbose_name='时间浮动参数', default=1200, editable=False,
                                  help_text='增强时间随机性')
     args = models.CharField(verbose_name='任务参数',
-                            help_text='执行代码所需要的参数。',
+                            help_text='执行代码所需要的参数。默认不需要填写，有需要填写参数的任务会特别说明',
                             max_length=128, null=True, blank=True)
 
     def __str__(self):
@@ -73,7 +78,8 @@ class Notify(BaseEntity):
     touser = models.CharField(verbose_name='接收者', max_length=64,
                               help_text='接收者用户名/UID',
                               null=True, blank=True)
-    custom_server = models.URLField(verbose_name='自定义服务器', null=True, blank=True, help_text='无自定义服务器的，请勿填写！')
+    custom_server = models.URLField(verbose_name='自定义服务器', null=True, blank=True,
+                                    help_text='无自定义服务器的，请勿填写！')
 
     class Meta:
         verbose_name = '通知推送'
