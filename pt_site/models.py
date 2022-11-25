@@ -249,6 +249,10 @@ class MySite(BaseEntity):
     user_id = models.CharField(verbose_name='用户ID', max_length=16)
     passkey = models.CharField(max_length=128, verbose_name='PassKey', blank=True, null=True)
     cookie = models.TextField(verbose_name='COOKIE')
+    user_agent = models.CharField(verbose_name='User-Agent', max_length=512,
+                                  help_text='请填写你获取cookie的浏览器的User-Agent',
+                                  default='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 '
+                                          '(KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.42')
     # 用户设置
     hr = models.BooleanField(verbose_name='开启HR下载', default=False, help_text='是否下载HR种子')
     sign_in = models.BooleanField(verbose_name='开启签到', default=True, help_text='是否开启签到')
