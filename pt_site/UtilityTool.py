@@ -88,18 +88,9 @@ class MessageTemplate:
 class PtSpider:
     """爬虫"""
 
-    def __init__(self, browser='chrome', platform='darwin',
-                 user_agent='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) '
-                            'AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.42',
-                 *args, **kwargs):
+    def __init__(self, browser='chrome', platform='darwin', *args, **kwargs):
         self.browser = browser
         self.platform = platform
-        self.headers = {
-            'User-Agent': user_agent,
-            # 'Connection': 'close',
-            # 'verify': 'false',
-            # 'keep_alive': 'False'
-        }
 
     @staticmethod
     def cookies2dict(source_str: str):
@@ -193,11 +184,12 @@ class PtSpider:
                      json: dict = None,
                      timeout: int = 30,
                      delay: int = 15,
-                     headers: dict = {},
                      proxies: dict = None):
         site = my_site.site
         scraper = self.get_scraper(delay=delay)
-        self.headers = headers
+        self.headers = {
+            'User-Agent': my_site.user_agent,
+        }
         for k, v in eval(site.sign_in_headers).items():
             self.headers[k] = v
         # logger.info(self.headers)
