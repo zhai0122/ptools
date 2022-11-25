@@ -246,7 +246,7 @@ class SignInInlines(TabularInlinePaginated):
 
 
 @admin.register(MySite)
-class MySiteAdmin(admin.ModelAdmin):  # instead of ModelAdmin
+class MySiteAdmin(AjaxAdmin):  # instead of ModelAdmin
     # 显示字段
     list_display = (
         'sort_id',
@@ -428,7 +428,7 @@ class MySiteAdmin(admin.ModelAdmin):  # instead of ModelAdmin
     # 过滤字段
     # list_filter = ('site', 'support')
     # 顶部显示按钮
-    actions = ['sign_in', 'get_status', 'get_torrents', 'sign_in_celery']
+    actions = ['sign_in', 'get_status', 'get_torrents', 'sign_in_celery', 'change_user_agent']
     # 底部显示按钮
     actions_on_bottom = True
 
@@ -480,6 +480,58 @@ class MySiteAdmin(admin.ModelAdmin):  # instead of ModelAdmin
     sign_in.icon = 'el-icon-star-on'
     # 指定element-ui的按钮类型，参考https://element.eleme.cn/#/zh-CN/component/button
     sign_in.type = 'success'
+
+    def change_user_agent(self, request, queryset):
+        # 这里的queryset 会有数据过滤，只包含选中的数据
+        post = request.POST
+        print(post)
+        # 这里获取到数据后，可以做些业务处理
+        # post中的_action 是方法名
+        # post中 _selected 是选中的数据，逗号分割
+        if not post.get('_selected'):
+            return JsonResponse(data={
+                'status': 'error',
+                'msg': '请先选中数据！'
+            })
+        else:
+            res = MySite.objects.filter(pk__in=post.get('_selected').split(',')).update(
+                user_agent=post.get('user_agent'))
+            return JsonResponse(data={
+                'status': 'success',
+                'msg': f'{res}个站点成功更换UA！'
+            })
+
+    # 显示的文本，与django admin一致
+    change_user_agent.short_description = '更换UA'
+    # icon，参考element-ui icon与https://fontawesome.com
+    change_user_agent.icon = 'el-icon-eleme'
+    # 指定element-ui的按钮类型，参考https://element.eleme.cn/#/zh-CN/component/button
+    change_user_agent.type = 'info'
+
+    change_user_agent.layer = {
+        # 这里指定对话框的标题
+        'title': '批量更换User-Agent',
+        # 提示信息
+        'tips': '请使用获取Cookie的浏览器的User-Agent',
+        # 确认按钮显示文本
+        'confirm_button': '确认提交',
+        # 取消按钮显示文本
+        'cancel_button': '取消',
+        # 弹出层对话框的宽度，默认50%
+        'width': '40%',
+        # 表单中 label的宽度，对应element-ui的 label-width，默认80px
+        'labelWidth': "80px",
+        'params': [{
+            # 这里的type 对应el-input的原生input属性，默认为input
+            'type': 'input',
+            # key 对应post参数中的key
+            'key': 'user_agent',
+            # 显示的文本
+            'label': 'UserAgent',
+            # 为空校验，默认为False
+            'require': True
+        }]
+    }
 
     # 获取站点个人数据
     def get_status(self, request, queryset):
