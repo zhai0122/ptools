@@ -512,7 +512,7 @@ class MySiteAdmin(AjaxAdmin):  # instead of ModelAdmin
         # 这里指定对话框的标题
         'title': '批量更换User-Agent',
         # 提示信息
-        'tips': '请使用获取Cookie的浏览器的User-Agent',
+        'tips': '请填写您获取Cookie时使用的浏览器的User-Agent',
         # 确认按钮显示文本
         'confirm_button': '确认提交',
         # 取消按钮显示文本
@@ -520,14 +520,14 @@ class MySiteAdmin(AjaxAdmin):  # instead of ModelAdmin
         # 弹出层对话框的宽度，默认50%
         'width': '40%',
         # 表单中 label的宽度，对应element-ui的 label-width，默认80px
-        'labelWidth': "80px",
+        'labelWidth': "0",
         'params': [{
             # 这里的type 对应el-input的原生input属性，默认为input
             'type': 'input',
             # key 对应post参数中的key
             'key': 'user_agent',
             # 显示的文本
-            'label': 'UserAgent',
+            # 'label': 'UserAgent',
             # 为空校验，默认为False
             'require': True
         }]
