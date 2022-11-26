@@ -331,7 +331,7 @@ class MySiteAdmin(AjaxAdmin):  # instead of ModelAdmin
         is_update = obj.updated_at.date() == datetime.today().date()
         signin_today = obj.signin_set.filter(created_at__date__gte=datetime.today()).first()
         if not obj.site.sign_in_support:
-            signin_str = 'unknown'
+            signin_str = 'yes'
         else:
             signin_str = 'yes' if signin_today and signin_today.sign_in_today else 'no'
         return format_html(
