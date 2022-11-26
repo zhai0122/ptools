@@ -580,6 +580,7 @@ def site_status_api(request):
         days = (now - my_site.time_join).days % 7
         site_info = {
             'name': my_site.site.name,
+            'icon': my_site.site.logo,
             'class': my_site.my_level,
             'invite': my_site.invitation,
             'sp_hour': my_site.sp_hour,

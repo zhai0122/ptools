@@ -40,7 +40,7 @@
                         class="chart-button"
                         v-model="begInvite"
                         active-color="#13ce66"
-                        active-text="求药模式"
+                        inactive-text="求药模式"
                         inactive-color="#ff4949">
                 </el-switch>
             </span>
@@ -78,6 +78,7 @@
                 ptData: {},
                 option: {},
                 begInvite: false,
+                showLogo: false,
             }
         },
         beforeMount() {
@@ -98,9 +99,19 @@
             }
         },
         methods: {
-
+            setChartOption(option){
+                this.option = option
+                this.$refs.charts.chart.clear()
+                this.$refs.charts.chart.setOption(this.option)
+                window.addEventListener("resize", () => {
+                    if (this.$refs.charts.chart) {
+                        this.$refs.charts.chart.resize()
+                    }
+                })
+            },
             setPie() {
                 let uploadedList = []
+                let siteList = []
                 let ptData = this.ptData
                 let begInvite = !this.begInvite
                 ptData.status_list.forEach((site, index) => {
@@ -114,6 +125,10 @@
                     //    'path': 'downloaded/' + site.name,
                     //    'name': site.name
                     //})
+                    siteList.push({
+                        name: site.name,
+                        icon: begInvite ? `image://${site.icon}` : 'roundRect'
+                    })
                 })
                 let option = {
                     title: {
@@ -152,8 +167,9 @@
                         {#show: false,#}
                         {#type: 'scroll',#}
                         {#top: 'bottom',#}
-                        right: '0',
+                        right: '2%',
                         orient: 'vertical',
+                        data: [],
                     },
                     toolbox: {
                         show: true,
@@ -178,7 +194,9 @@
                                 formatter: function (params) {
                                     {#return params.name + ' \t ' + renderSize(params.data.value)#}
                                     return `${begInvite ? params.name : ''} \t ${renderSize(params.data.value)}`
-                                }
+                                },
+                                itemHeight: 12,
+                                itemWidth: 20
                             },
                             itemStyle: {
                                 borderRadius: 7
@@ -200,9 +218,8 @@
                     ]
                 }
                 option.series[0].data = uploadedList
-                this.option = option
-                this.$refs.charts.chart.clear()
-                this.$refs.charts.chart.setOption(this.option)
+                option.legend.data = siteList
+                this.setChartOption(option)
             },
             setTree() {
                 let ptData = this.ptData
@@ -308,10 +325,7 @@
                 })
                 {#this.treeOption.series[0].data.push()#}
                 {#this.$refs.charts.chart.setOption(treeOption)#}
-                this.option = option
-                this.$refs.charts.chart.clear()
-                this.$refs.charts.chart.setOption(this.option)
-
+                this.setChartOption(option)
             },
             setBar() {
                 let option = {
@@ -385,9 +399,7 @@
                 }
                 option.series.push(downloaded, uploaded)
                 option.xAxis.data = siteList
-                this.option = option
-                this.$refs.charts.chart.clear()
-                this.$refs.charts.chart.setOption(option)
+                this.setChartOption(option)
             },
             getData() {
                 axios.get(
