@@ -29,12 +29,20 @@
         <div slot="header" class="clearfix">
             <span>数据总量</span>
             <span>
-                <el-button type="warning" size="small" class="chart-button"
+
+                <el-button type="warning" size="mini" class="chart-button"
                            @click="setTree">矩形树图</el-button>
-                <el-button type="success" size="small" class="chart-button"
+                <el-button type="success" size="mini" class="chart-button"
                            @click="setBar">柱状图</el-button>
-                <el-button type="primary" size="small" class="chart-button"
+                <el-button type="primary" size="mini" class="chart-button"
                            @click="setPie">饼图</el-button>
+                <el-switch
+                        class="chart-button"
+                        v-model="begInvite"
+                        active-color="#13ce66"
+                        active-text="求药模式"
+                        inactive-color="#ff4949">
+                </el-switch>
             </span>
         </div>
         <div class="body">
@@ -69,6 +77,7 @@
                 chart: {},
                 ptData: {},
                 option: {},
+                begInvite: false,
             }
         },
         beforeMount() {
@@ -89,9 +98,11 @@
             }
         },
         methods: {
+
             setPie() {
                 let uploadedList = []
                 let ptData = this.ptData
+                let begInvite = !this.begInvite
                 ptData.status_list.forEach((site, index) => {
                     uploadedList.push({
                         'value': site.uploaded,
@@ -105,6 +116,19 @@
                     //})
                 })
                 let option = {
+                    title: {
+                        text: 'PT站点数据',
+                        subtext: `上传量：${renderSize(ptData.total_data.uploaded)}\n做种量：${renderSize(ptData.total_data.seeding_size)}\n下载量：${renderSize(ptData.total_data.downloaded)}\n分享率：${ptData.total_data.ratio}`,
+                        subtextStyle: {
+                            color: '#969696',
+                            fontWeight: 'bold',
+                            fontFamily: '黑体',
+                            fontSize: '16',
+                            lineHeight: 32,
+                        },
+                        left: '5%',
+                        top: '10%',
+                    },
                     tooltip: {
                         show: true,
                         //formatter: function (params) {
@@ -125,11 +149,11 @@
                         '#d677f6',
                     ],
                     legend: {
-                        show: false,
+                        {#show: false,#}
                         {#type: 'scroll',#}
                         {#top: 'bottom',#}
-                        {#right: '0',#}
-                        {#orient: 'vertical',#}
+                        right: '0',
+                        orient: 'vertical',
                     },
                     toolbox: {
                         show: true,
@@ -144,15 +168,16 @@
                         {
                             name: 'PT数据展示',
                             type: 'pie',
-                            bottom: '5%',
+                            bottom: '7%',
                             radius: '55%',
                             {#visualDimension: 1,#}
-                            center: ['50%', '50%'],
+                            center: ['45%', '50%'],
                             roseType: '',
                             label: {
                                 show: true,
                                 formatter: function (params) {
-                                    return params.name + ' \t ' + renderSize(params.data.value)
+                                    {#return params.name + ' \t ' + renderSize(params.data.value)#}
+                                    return `${begInvite ? params.name : ''} \t ${renderSize(params.data.value)}`
                                 }
                             },
                             itemStyle: {
@@ -181,6 +206,7 @@
             },
             setTree() {
                 let ptData = this.ptData
+                let begInvite = !this.begInvite
                 let uploadedList = []
                 let downloadedList = []
                 ptData.status_list.forEach((site, index) => {
@@ -197,6 +223,18 @@
                 })
                 let option = {
                     backgroundColor: '#130f2c',
+                    title: {
+                        text: 'PT站点数据',
+                        subtext: `上传量：${renderSize(ptData.total_data.uploaded)}\t做种量：${renderSize(ptData.total_data.seeding_size)}\t下载量：${renderSize(ptData.total_data.downloaded)}\t分享率：${ptData.total_data.ratio}`,
+                        subtextStyle: {
+                            color: '#969696',
+                            fontWeight: 'bold',
+                            fontFamily: '黑体',
+                            fontSize: '16',
+                            lineHeight: 32,
+                        },
+                        left: '10%',
+                    },
                     tooltip: {
                         show: true,
                         //formatter: function (params) {
@@ -218,6 +256,13 @@
                         '#130f2c',
                         '#2f4155',
                     ],
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            mark: {show: true},
+                            saveAsImage: {show: true}
+                        }
+                    },
                     series: [
                         {
                             type: 'treemap',
@@ -227,7 +272,8 @@
                             label: {
                                 show: true,
                                 formatter: function (params) {
-                                    return params.name + '\t' + renderSize(params.data.value)
+                                    {#return params.name + '\t' + renderSize(params.data.value)#}
+                                    return `${begInvite ? params.name : ''} \t ${renderSize(params.data.value)}`
                                 }
                             },
                             data: [
@@ -272,6 +318,10 @@
                     title: {
                         text: 'PT数据聚合图'
                     },
+                    color: [
+                        'skyblue',
+                        'orange'
+                    ],
                     tooltip: {
                         trigger: 'axis',
                         show: true,
@@ -336,6 +386,7 @@
                 option.series.push(downloaded, uploaded)
                 option.xAxis.data = siteList
                 this.option = option
+                this.$refs.charts.chart.clear()
                 this.$refs.charts.chart.setOption(option)
             },
             getData() {
@@ -347,7 +398,7 @@
                         console.log(res.data.data)
                         {#this.ptData = res.data.data#}
                         this.ptData = res.data.data
-                        this.setBar()
+                        this.setPie()
                     } else {
                         this.loading = false
                         this.$message({

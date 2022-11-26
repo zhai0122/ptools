@@ -254,7 +254,7 @@ SIMPLEUI_CONFIG = {
             'icon': 'fa fa-user',
             'url': '/tasks/page_downloading'
         }, {
-            'name': '我的站点',
+            'name': '我的数据',
             'icon': 'fa fa-user',
             'url': '/tasks/site_status'
         }, {
