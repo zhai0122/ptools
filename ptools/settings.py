@@ -254,9 +254,13 @@ SIMPLEUI_CONFIG = {
             'icon': 'fa fa-user',
             'url': '/tasks/page_downloading'
         }, {
-            'name': '查询种子',
+            'name': '我的站点',
             'icon': 'fa fa-user',
-            'url': '/downloader/ptspider/index'
+            'url': '/tasks/site_status'
+        }, {
+            'name': '下载器展示',
+            'icon': 'fa fa-user',
+            'url': '/tasks/downloading_status'
         }]
     }, {
         'app': 'update',

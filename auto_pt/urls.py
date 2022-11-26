@@ -21,5 +21,8 @@ urlpatterns = [
     path(r'control_torrent', views.control_torrent, name='control_torrent'),
     path(r'torrent_info_page', views.render_torrents_page, name='torrent_info_page'),
     path(r'get_torrent_info_list', views.get_torrent_info_list, name='get_torrent_info_list'),
+    path(r'site_status_api', views.site_status_api, name='site_status_api'),
+    path(r'site_status', views.site_status, name='site_status'),
+    path(r'downloading_status', views.downloading_status, name='downloading_status'),
     path(r'do_sql', views.do_sql, name='do_sql'),
 ]

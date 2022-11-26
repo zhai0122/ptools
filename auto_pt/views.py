@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import random
 import subprocess
 import time
 from datetime import datetime, timedelta
@@ -8,9 +9,11 @@ from datetime import datetime, timedelta
 import docker
 import git
 import qbittorrentapi
+import transmission_rpc
 from django.http import JsonResponse
 from django.shortcuts import render
 
+from pt_site.UtilityTool import FileSizeConvert
 from pt_site.models import SiteStatus, MySite, Site, Downloader, TorrentInfo
 from pt_site.views import scheduler, pt_spider
 from ptools.base import CommonResponse, StatusCodeEnum, DownloaderCategory
@@ -100,14 +103,51 @@ def get_downloader(id):
     """根据id获取下载实例"""
     logger.info('当前下载器id：{}'.format(id))
     downloader = Downloader.objects.filter(id=id).first()
-    qb_client = qbittorrentapi.Client(
-        host=downloader.host,
-        port=downloader.port,
-        username=downloader.username,
-        password=downloader.password,
-        SIMPLE_RESPONSES=True
-    )
-    return qb_client
+    if downloader.category == DownloaderCategory.qBittorrent:
+        client = qbittorrentapi.Client(
+            host=downloader.host,
+            port=downloader.port,
+            username=downloader.username,
+            password=downloader.password,
+            SIMPLE_RESPONSES=True
+        )
+    if downloader.category == DownloaderCategory.Transmission:
+        client = transmission_rpc.Client(
+            host=downloader.host, port=downloader.port,
+            username=downloader.username, password=downloader.password
+        )
+    return client
+
+
+def downloading_status(request):
+    qb_list = Downloader.objects.filter(category=DownloaderCategory.qBittorrent)
+    tr_list = Downloader.objects.filter(category=DownloaderCategory.Transmission)
+    tr_info_list = []
+    for downloader in tr_list:
+        client = transmission_rpc.Client(
+            host=downloader.host, port=downloader.port,
+            username=downloader.username, password=downloader.password
+        )
+        session = transmission_rpc.session.Session(client=client)
+        print(type(session))
+        # print(client.get_torrents())
+        session_list = client.get_session()
+        session = {item: value for item, value in session_list.items()}
+        tr_info = {
+            # 'torrents': client.get_torrents(),
+            'free_space': client.free_space('/downloads'),
+            # 'session': session.values(),
+            'protocol_version': client.protocol_version,
+            'rpc_version': client.rpc_version,
+            'session_id': client.session_id,
+            # 'session_stats': client.session_stats(),
+            'arguments': client.torrent_get_arguments,
+
+        }
+        tr_info_list.append(tr_info)
+    return JsonResponse(CommonResponse.success(data={
+        'tr_info_list': tr_info_list
+    }).to_dict(), safe=False)
 
 
 def get_trackers(request):
@@ -520,3 +560,65 @@ def download_tasks():
     """
     downloader_list = Downloader.objects.all()
     pass
+
+
+def site_status_api(request):
+    my_site_list = MySite.objects.all()
+    uploaded = 0
+    downloaded = 0
+    seeding = 0
+    seeding_size = 0
+    status_list = []
+    now = datetime.now()
+    for my_site in my_site_list:
+        site_info = my_site.sitestatus_set.order_by('-pk').first()
+        downloaded += site_info.downloaded
+        uploaded += site_info.uploaded
+        seeding += my_site.seed
+        seeding_size += site_info.seed_vol
+        weeks = (now - my_site.time_join).days // 7
+        days = (now - my_site.time_join).days % 7
+        site_info = {
+            'name': my_site.site.name,
+            'class': my_site.my_level,
+            'invite': my_site.invitation,
+            'sp_hour': my_site.sp_hour,
+            'seeding': my_site.seed,
+            'time_join': f'{weeks}周 {days}天',
+            'hr': my_site.my_hr,
+            'mail': my_site.mail,
+            'sp': site_info.my_sp,
+            'bonus': site_info.my_bonus,
+            # 'uploaded': FileSizeConvert.parse_2_file_size(site_info.uploaded),
+            # 'downloaded': FileSizeConvert.parse_2_file_size(site_info.downloaded),
+            # 'seeding_size': FileSizeConvert.parse_2_file_size(site_info.seed_vol),
+            'uploaded': site_info.uploaded,
+            'downloaded': site_info.downloaded,
+            'seeding_size': site_info.seed_vol,
+        }
+        status_list.append(site_info)
+    # 按上传量排序
+    # status_list.sort(key=lambda x: x['uploaded'], reverse=False)
+    # sorted(status_list, key=lambda x: x['uploaded'])
+    # 随机乱序
+    random.shuffle(status_list)
+    total_data = {
+        # 'uploaded': FileSizeConvert.parse_2_file_size(uploaded),
+        # 'downloaded': FileSizeConvert.parse_2_file_size(downloaded),
+        # 'seeding_size': FileSizeConvert.parse_2_file_size(seeding_size),
+        'uploaded': uploaded,
+        'downloaded': downloaded,
+        'seeding_size': seeding_size,
+        'seeding': seeding,
+        'ratio': round(uploaded / downloaded, 3),
+    }
+    # return render(request, 'auto_pt/status.html')
+    return JsonResponse(data=CommonResponse.success(
+        data={
+            'total_data': total_data, 'status_list': status_list
+        }
+    ).to_dict(), safe=False)
+
+
+def site_status(request):
+    return render(request, 'auto_pt/status.html')

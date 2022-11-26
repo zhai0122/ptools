@@ -1,0 +1,370 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {% include 'admin/includes/css-part.html' %}
+    <style>
+        body {
+            background-color: #2f4155;
+        }
+
+        .box-card {
+            background-color: #130f2c;
+            color: #ffefef;
+        }
+
+        .chart-button {
+            float: right;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+<div id="status">
+    <el-card class="box-card" shadow="hover">
+        <div slot="header" class="clearfix">
+            <span>数据总量</span>
+            <span>
+                <el-button type="warning" size="small" class="chart-button"
+                           @click="setTree">矩形树图</el-button>
+                <el-button type="success" size="small" class="chart-button"
+                           @click="setBar">柱状图</el-button>
+                <el-button type="primary" size="small" class="chart-button"
+                           @click="setPie">饼图</el-button>
+            </span>
+        </div>
+        <div class="body">
+            <charts ref="charts" style="height: 700px;" :option="option"></charts>
+        </div>
+    </el-card>
+</div>
+
+{% include 'admin/includes/js-part.html' %}
+<script src="{% static 'admin/simpleui-x/js/axios.min.js' %}"></script>
+<script src="{% static 'js/echarts.min.js' %}"></script>
+<script src="{% static 'js/echarts-component.js' %}"></script>
+<script>
+    function renderSize(value) {
+        if (null == value || value == '') {
+            return 0;
+        }
+        var unitArr = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+        var index = 0;
+        var srcsize = parseFloat(value);
+        index = Math.floor(Math.log(srcsize) / Math.log(1024));
+        var size = srcsize / Math.pow(1024,
+            index);
+        size = size.toFixed(2);//保留的小数位数
+        return size + ' ' + unitArr[index];
+    }
+
+    const vm = new Vue({
+        el: '#status',
+        data() {
+            return {
+                chart: {},
+                ptData: {},
+                option: {},
+            }
+        },
+        beforeMount() {
+
+        },
+        mounted() {
+            this.chart = this.$refs.charts.chart
+            this.getData()
+        },
+        watch: {
+            obj: {
+                option(newValue, oldValue) {
+                    // option发生变化时自动重新渲染
+                    this.chart.setOption(newValue)
+                },
+                // immediate: true,
+                deep: true,
+            }
+        },
+        methods: {
+            setPie() {
+                let uploadedList = []
+                let ptData = this.ptData
+                ptData.status_list.forEach((site, index) => {
+                    uploadedList.push({
+                        'value': site.uploaded,
+                        'path': 'uploaded/' + site.name,
+                        'name': site.name
+                    })
+                    //downloadedList.push({
+                    //    'value': site.downloaded,
+                    //    'path': 'downloaded/' + site.name,
+                    //    'name': site.name
+                    //})
+                })
+                let option = {
+                    tooltip: {
+                        show: true,
+                        //formatter: function (params) {
+                        //    return params.name + '\t' + renderSize(params.data.value)
+                        //}
+                        valueFormatter: function (value) {
+                            return renderSize(value)
+                        }
+                    },
+                    color: [
+                        '#f66c73',
+                        '#f68645',
+                        '#7af6ad',
+                        '#f4d55f',
+                        '#488ff6',
+                        '#0fba8d',
+                        '#8a47dc',
+                        '#d677f6',
+                    ],
+                    legend: {
+                        show: false,
+                        {#type: 'scroll',#}
+                        {#top: 'bottom',#}
+                        {#right: '0',#}
+                        {#orient: 'vertical',#}
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            mark: {show: true},
+                            {#dataView: {show: true, readOnly: false},#}
+                            {#restore: {show: true},#}
+                            saveAsImage: {show: true}
+                        }
+                    },
+                    series: [
+                        {
+                            name: 'PT数据展示',
+                            type: 'pie',
+                            bottom: '5%',
+                            radius: '55%',
+                            {#visualDimension: 1,#}
+                            center: ['50%', '50%'],
+                            roseType: '',
+                            label: {
+                                show: true,
+                                formatter: function (params) {
+                                    return params.name + ' \t ' + renderSize(params.data.value)
+                                }
+                            },
+                            itemStyle: {
+                                borderRadius: 7
+                            },
+                            data: [
+                                {value: 40, name: 'rose 1'},
+                                {value: 38, name: 'rose 2'},
+                                {value: 32, name: 'rose 3'},
+                                {value: 30, name: 'rose 4'},
+                            ],
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                }
+                            }
+                        }
+                    ]
+                }
+                option.series[0].data = uploadedList
+                this.option = option
+                this.$refs.charts.chart.clear()
+                this.$refs.charts.chart.setOption(this.option)
+            },
+            setTree() {
+                let ptData = this.ptData
+                let uploadedList = []
+                let downloadedList = []
+                ptData.status_list.forEach((site, index) => {
+                    uploadedList.push({
+                        'value': site.uploaded,
+                        'path': 'uploaded/' + site.name,
+                        'name': `${site.name}\t${renderSize(site.uploaded)}`
+                    })
+                    downloadedList.push({
+                        'value': site.downloaded,
+                        'path': 'downloaded/' + site.name,
+                        'name': `${site.name}\t${renderSize(site.downloaded)}`
+                    })
+                })
+                let option = {
+                    backgroundColor: '#130f2c',
+                    tooltip: {
+                        show: true,
+                        //formatter: function (params) {
+                        //    return params.name + '\t' + renderSize(params.data.value)
+                        //}
+                        valueFormatter: function (value) {
+                            return renderSize(value)
+                        }
+                    },
+                    color: [
+                        '#f66c73',
+                        '#f68645',
+                        '#7af6ad',
+                        '#f4d55f',
+                        '#488ff6',
+                        '#0fba8d',
+                        '#8a47dc',
+                        '#d677f6',
+                        '#130f2c',
+                        '#2f4155',
+                    ],
+                    series: [
+                        {
+                            type: 'treemap',
+                            name: '数据汇总',
+                            colorMappingBy: 'index',
+                            {#colorSaturation: [0.9, 0.9],#}
+                            label: {
+                                show: true,
+                                formatter: function (params) {
+                                    return params.name + '\t' + renderSize(params.data.value)
+                                }
+                            },
+                            data: [
+                                {
+                                    name: '上传',
+                                    value: 0,
+                                }
+                            ]
+                        }
+                    ]
+                }
+                /**
+                 console.log(this.treeOption.series[0].data)
+                 this.treeOption.series[0].data.push({
+                            name: '总下载',
+                            value: ptData.total_data.downloaded,
+                        })
+                 let treeData = this.treeOption.series[0].data[0]
+                 treeData.value = ptData.total_data.uploaded
+                 treeData.children = dataList
+                 **/
+                option.series[0].data.push({
+                    name: `总上传\t${renderSize(ptData.total_data.uploaded)}`,
+                    value: ptData.total_data.uploaded,
+                    path: "uploaded",
+                    children: uploadedList
+                }, {
+                    name: `总下载\t${renderSize(ptData.total_data.downloaded)}`,
+                    value: ptData.total_data.downloaded,
+                    path: "downloaded",
+                    children: downloadedList
+                })
+                {#this.treeOption.series[0].data.push()#}
+                {#this.$refs.charts.chart.setOption(treeOption)#}
+                this.option = option
+                this.$refs.charts.chart.clear()
+                this.$refs.charts.chart.setOption(this.option)
+
+            },
+            setBar() {
+                let option = {
+                    title: {
+                        text: 'PT数据聚合图'
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        show: true,
+                        axisPointer: {
+                            type: 'shadow'
+                        },
+                        valueFormatter: function (value) {
+                            return renderSize(value)
+                        }
+                    },
+                    legend: {},
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: []
+                    },
+                    yAxis: {
+                        type: 'value',
+                        axisLabel: {
+                            formatter: function (value, index) {
+                                return renderSize(value);
+                            }
+                        },
+                        label: {
+                            formatter: function (value, index) {
+                                return renderSize(value);
+                            }
+                        },
+                        boundaryGap: [0, 0.01]
+                    },
+                    series: []
+                };
+                let ptData = this.ptData
+                let uploadedList = []
+                let downloadedList = []
+                let siteList = []
+                {#uploadedList.push(ptData.total_data.uploaded)#}
+                {#downloadedList.push(ptData.total_data.downloaded)#}
+                {#siteList.push('总量')#}
+                ptData.status_list.forEach((site, index) => {
+                    downloadedList.push(site.downloaded)
+                    uploadedList.push(site.uploaded)
+                    siteList.push(site.name)
+                })
+                let uploaded = {
+                    name: '上传量',
+                    type: 'bar',
+                    stack: 'Ad',
+                    data: uploadedList
+                }
+                let downloaded = {
+                    name: '下载量',
+                    type: 'bar',
+                    stack: 'Ad',
+                    data: downloadedList
+                }
+                option.series.push(downloaded, uploaded)
+                option.xAxis.data = siteList
+                this.option = option
+                this.$refs.charts.chart.setOption(option)
+            },
+            getData() {
+                axios.get(
+                    "{% url "site_status_api" %}"
+                ).then(res => {
+                    console.log('获取数据列表成功', res.data)
+                    if (res.data.code === 0) {
+                        console.log(res.data.data)
+                        {#this.ptData = res.data.data#}
+                        this.ptData = res.data.data
+                        this.setBar()
+                    } else {
+                        this.loading = false
+                        this.$message({
+                            type: 'warning',
+                            message: '获取数据列表失败！'
+                        });
+                    }
+                }).catch(res => {
+                    console.log('获取数据列表失败', res)
+                    this.$message({
+                        type: 'warning',
+                        message: '获取数据列表失败！' + res
+                    });
+                })
+            }
+        }
+    });
+</script>
+</body>
+</html>
