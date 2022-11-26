@@ -609,9 +609,6 @@ class PtSpider:
         message = site.sign_in_params if len(site.sign_in_params) >= 5 else '天空飘来五个字儿,幼儿园里没有事儿'
         logger.info(submit_name)
         logger.info(submit_value)
-        headers = {
-            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"
-        }
         param = []
         for name, value in zip(submit_name, submit_value):
             param.append({
@@ -629,7 +626,6 @@ class PtSpider:
             my_site,
             url=site.url + site.page_sign_in.lstrip('/') + '?action=show',
             method=site.sign_in_method,
-            headers=headers,
             data=data,
         )
         logger.info(response.content.decode('utf8'))
