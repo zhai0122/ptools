@@ -10,10 +10,10 @@ import docker
 import git
 import qbittorrentapi
 import transmission_rpc
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render
 
-from pt_site.UtilityTool import FileSizeConvert
 from pt_site.models import SiteStatus, MySite, Site, Downloader, TorrentInfo
 from pt_site.views import scheduler, pt_spider
 from ptools.base import CommonResponse, StatusCodeEnum, DownloaderCategory
@@ -572,6 +572,8 @@ def site_status_api(request):
     now = datetime.now()
     for my_site in my_site_list:
         site_info = my_site.sitestatus_set.order_by('-pk').first()
+        if not site_info:
+            continue
         downloaded += site_info.downloaded
         uploaded += site_info.uploaded
         seeding += my_site.seed
@@ -621,5 +623,6 @@ def site_status_api(request):
     ).to_dict(), safe=False)
 
 
+@login_required
 def site_status(request):
     return render(request, 'auto_pt/status.html')
