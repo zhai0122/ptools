@@ -1149,7 +1149,7 @@ class PtSpider:
     def send_torrent_info_request(self, my_site: MySite):
         site = my_site.site
         url = site.url + site.page_default.lstrip('/')
-        # logger.info(url)
+        logger.info(f'种子页面链接：{url}')
         try:
             response = self.send_request(my_site, url)
             logger.info(site.name)
@@ -1220,11 +1220,12 @@ class PtSpider:
                 else:
                     # response = self.send_request()
                     trs = self.parse(response, site.torrents_rule)
-                    # logger.info(response.text)
+                    # logger.info(f'种子页面：{response.text}')
                     # logger.info(trs)
-                    # logger.info(len(trs))
+                    logger.info(len(trs))
+                    print('=' * 50)
                     for tr in trs:
-                        # logger.info(tr)
+                        logger.info(tr)
                         # logger.info(etree.tostring(tr))
                         sale_status = ''.join(tr.xpath(site.sale_rule))
                         logger.info('sale_status: {}'.format(sale_status))
@@ -1240,7 +1241,7 @@ class PtSpider:
                             logger.info('无名无姓？跳过')
                             continue
                         # sale_status = ''.join(re.split(r'[^\x00-\xff]', sale_status))
-                        sale_status = sale_status.upper().replace(
+                        sale_status = sale_status.replace('tStatus ', '').upper().replace(
                             'FREE', 'Free'
                         ).replace('免费', 'Free').replace(' ', '')
                         # # 下载链接，下载链接已存在则跳过
@@ -1400,7 +1401,7 @@ class PtSpider:
         # leeching_detail_url = site.url + site.page_leeching.lstrip('/').format(my_site.user_id)
         try:
             # 发送请求，做种信息与正在下载信息，个人主页
-            user_detail_res = self.send_request(my_site=my_site, url=user_detail_url, timeout=25)
+            user_detail_res = self.send_request(my_site=my_site, url=user_detail_url)
             # if leeching_detail_res.status_code != 200:
             #     return site.name + '种子下载信息获取错误，错误码：' + str(leeching_detail_res.status_code), False
             if user_detail_res.status_code != 200:
@@ -1409,7 +1410,7 @@ class PtSpider:
                     msg=site.name + '个人主页访问错误，错误码：' + str(user_detail_res.status_code)
                 )
             # logger.info(user_detail_res.status_code)
-            logger.info('个人主页：{}'.format(len(user_detail_res.content)))
+            logger.info('个人主页：{}'.format(user_detail_res.content.decode('utf-8')))
             # 解析HTML
             # logger.info(user_detail_res.is_redirect)
 
@@ -1505,7 +1506,7 @@ class PtSpider:
             # leeching_html = result.get('leeching_html')
             if 'greatposterwall' in site.url or 'dicmusic' in site.url:
                 try:
-                    print(details_html)
+                    logger.info(details_html)
                     if details_html.get('status') == 'success' and seeding_html.get('status') == 'success':
                         seeding_response = seeding_html.get('response')
                         mail_str = seeding_response.get("notifications").get("messages")
@@ -1540,7 +1541,7 @@ class PtSpider:
                             my_site.sp_hour = userdata.get('seedingBonusPointsPerHour')
                             # if userdata.get('seedingBonusPointsPerHour') else 0
                         if 'dicmusic' in site.url:
-                            print('海豚')
+                            logger.info('海豚')
                             """未取得授权前不开放本段代码，谨防ban号
                             bonus_res = self.send_request(my_site, url=site.url + site.page_seeding, timeout=15)
                             sp_str = self.parse(bonus_res, '//h3[contains(text(),"总积分")]/text()')
@@ -1589,7 +1590,9 @@ class PtSpider:
                     seed_vol_size = ''.join(seed_vol_list).split(':')[-1].strip()
                     seed_vol_all = FileSizeConvert.parse_2_byte(seed_vol_size)
                 else:
-                    if len(seed_vol_list) > 0:
+                    if len(seed_vol_list) > 0 and site.url not in [
+                        'https://nextpt.net/'
+                    ]:
                         seed_vol_list.pop(0)
                     logger.info('做种数量seeding_vol：{}'.format(len(seed_vol_list)))
                     # 做种体积
@@ -1620,7 +1623,9 @@ class PtSpider:
                 # leech = self.get_user_torrent(leeching_html, site.leech_rule)
                 # seed = self.get_user_torrent(seeding_html, site.seed_rule)
                 leech = re.sub(r'\D', '', ''.join(details_html.xpath(site.leech_rule)).strip())
+                logger.info(f'当前下载数：{leech}')
                 seed = ''.join(details_html.xpath(site.seed_rule)).strip()
+                logger.info(f'当前做种数：{seed}')
                 if not leech and not seed:
                     return CommonResponse.error(
                         status=StatusCodeEnum.WEB_CONNECT_ERR,
@@ -1640,7 +1645,7 @@ class PtSpider:
                 invitation = ''.join(
                     details_html.xpath(site.invitation_rule)
                 ).strip(']:').replace('[', '').strip()
-                logger.info(invitation)
+                logger.info(f'邀请：{invitation}')
                 # invitation = re.sub("\D", "", invitation)
                 # time_join_1 = ''.join(
                 #     details_html.xpath(site.time_join_rule)
@@ -1660,7 +1665,7 @@ class PtSpider:
                 # 去除字符串中的中文
                 my_level_1 = ''.join(
                     details_html.xpath(site.my_level_rule)
-                ).replace('_Name', '').strip()
+                ).replace('_Name', '').replace('fontBold', '').strip()
                 if 'city' in site.url:
                     my_level = my_level_1.strip()
                 # elif 'u2' in site.url:
@@ -1704,13 +1709,15 @@ class PtSpider:
                 invitation = converter.convert(invitation)
                 # x = invitation.split('/')
                 # invitation = re.sub('[\u4e00-\u9fa5]', '', invitation)
-                logger.info(invitation)
+                logger.info(f'当前获取邀请数：{invitation}')
                 if invitation == '没有邀请资格':
                     my_site.invitation = 0
                 elif '/' in invitation:
                     invitation_list = [int(n) for n in invitation.split('/')]
                     # my_site.invitation = int(invitation) if invitation else 0
                     my_site.invitation = sum(invitation_list)
+                elif not invitation:
+                    my_site.invitation = 0
                 else:
                     my_site.invitation = int(re.sub('\D', '', invitation))
                 my_site.latest_active = datetime.now()
@@ -1718,7 +1725,7 @@ class PtSpider:
                 if my_hr:
                     my_site.my_hr = my_hr
                 my_site.seed = int(get_decimals(seed)) if seed else 0
-                logger.info(leech)
+                logger.info(f'当前下载数：{leech}')
                 my_site.leech = int(get_decimals(leech)) if leech else 0
 
                 logger.info('站点：{}'.format(site))
@@ -1738,7 +1745,7 @@ class PtSpider:
                     ratio = ''.join(
                         details_html.xpath(site.ratio_rule)
                     ).replace(',', '').replace('无限', 'inf').replace('∞', 'inf').replace('---', 'inf').strip(
-                        ']:').strip()
+                        ']:').strip('：').strip()
                     # 分享率告警通知
                     logger.info('ratio：{}'.format(ratio))
                     if ratio and ratio != 'inf' and float(ratio) <= 1:
@@ -1761,11 +1768,32 @@ class PtSpider:
                             )
                     else:
                         my_site.mail = 0
-                    res_sp_hour = self.get_hour_sp(my_site=my_site)
-                    if res_sp_hour.code != StatusCodeEnum.OK.code:
-                        logger.error(my_site.site.name + res_sp_hour.msg)
+                    if site.url in [
+                        'https://nextpt.net/',
+                    ]:
+                        # logger.info(site.hour_sp_rule)
+                        res_sp_hour_list = details_html.xpath(site.hour_sp_rule)
+                        # logger.info(details_html)
+                        # logger.info(res_sp_hour_list)
+                        res_sp_hour = ''.join(res_sp_hour_list)
+                        my_site.sp_hour = get_decimals(res_sp_hour)
+                        # 飞天邀请获取
+                        logger.info(f'邀请页面：{site.url}Invites')
+                        res_next_pt_invite = self.send_request(my_site, f'{site.url}Invites')
+                        logger.info(res_next_pt_invite.text)
+                        str_next_pt_invite = ''.join(self.parse(
+                            res_next_pt_invite,
+                            site.invitation_rule))
+                        print(f'邀请字符串：{str_next_pt_invite}')
+                        list_next_pt_invite = re.findall('\d+', str_next_pt_invite)
+                        print(list_next_pt_invite)
+                        my_site.invitation = int(list_next_pt_invite[0]) - int(list_next_pt_invite[1])
                     else:
-                        my_site.sp_hour = res_sp_hour.data
+                        res_sp_hour = self.get_hour_sp(my_site=my_site)
+                        if res_sp_hour.code != StatusCodeEnum.OK.code:
+                            logger.error(my_site.site.name + res_sp_hour.msg)
+                        else:
+                            my_site.sp_hour = res_sp_hour.data
                     # 保存上传下载等信息
                     my_site.save()
                     # 外键反向查询
