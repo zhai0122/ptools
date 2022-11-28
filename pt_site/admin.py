@@ -280,9 +280,11 @@ class MySiteAdmin(AjaxAdmin):  # instead of ModelAdmin
         return format_html(
             '<font color="#2570a1">时魔：{} / </font>'
             '<font color="#6c4c49">魔力：{}</font><br>'
+            '<font color="#708090">满魔：{} </font>'
             '<font color="#708090">积分/HP：{}</font>',
             round(float(obj.sp_hour), 3) if obj.sp_hour else 0,
             status_today.my_sp if status_today else 0,
+            '{:.2%}'.format((float(obj.sp_hour) / obj.site.sp_full), 3) if obj.site.sp_full != 0 else 0,
             status_today.my_bonus if status_today else 0
         )
 
