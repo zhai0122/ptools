@@ -331,7 +331,7 @@ class MySiteAdmin(AjaxAdmin):  # instead of ModelAdmin
 
     # 自定义更新时间，提醒今日是否更新
     def status_today(self, obj: MySite):
-        is_update = obj.updated_at.date() == datetime.today().date()
+        is_update = obj.sitestatus_set.filter(updated_at__date__gte=datetime.today()).first()
         signin_today = obj.signin_set.filter(created_at__date__gte=datetime.today()).first()
         if not obj.site.sign_in_support:
             signin_str = 'yes'
