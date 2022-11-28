@@ -2586,10 +2586,10 @@
   {
     "id": 41,
     "created_at": "2022-08-18 00:39:11.082000",
-    "updated_at": "2022-11-28 22:03:09.036161",
+    "updated_at": "2022-11-28 23:26:54.973975",
     "name": "梓喵",
-    "url": "https://azusa.ru/",
-    "logo": "https://azusa.ru/favicon.ico",
+    "url": "https://azusa.wiki/",
+    "logo": "https://azusa.wiki/favicon.ico",
     "sign_in_support": 1,
     "get_torrent_support": 1,
     "get_userinfo_support": 1,
@@ -2657,7 +2657,7 @@
     "my_passkey_rule": "//td[contains(text(),\"密钥\")]/following-sibling::td[1]/text()",
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
-    "tracker": "azusa.ru"
+    "tracker": "azusa"
   },
   {
     "id": 42,

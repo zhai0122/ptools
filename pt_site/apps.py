@@ -13,6 +13,11 @@ def app_ready_handler(sender, **kwargs):
     try:
         with open('pt_site_site.json', 'r') as f:
             # print(f.readlines())
+            az_wiki = Site.objects.filter(url='https://azusa.wiki/')
+            if len(az_wiki) >= 1:
+                Site.objects.filter(url='https://azusa.ru/').delete()
+            else:
+                Site.objects.filter(url='https://azusa.ru/').update(url='https://azusa.wiki/')
             data = json.load(f)
             logger.info('正在初始化站点规则信息表')
             logger.info('更新规则中，返回结果为True为新建，为False为更新，其他是错误了')
