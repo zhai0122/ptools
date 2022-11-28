@@ -182,7 +182,7 @@ class PtSpider:
                      data: dict = None,
                      params: dict = None,
                      json: dict = None,
-                     timeout: int = 30,
+                     timeout: int = 45,
                      delay: int = 15,
                      proxies: dict = None):
         site = my_site.site
@@ -1410,7 +1410,7 @@ class PtSpider:
                     msg=site.name + '个人主页访问错误，错误码：' + str(user_detail_res.status_code)
                 )
             # logger.info(user_detail_res.status_code)
-            logger.info('个人主页：{}'.format(user_detail_res.content.decode('utf-8')))
+            logger.info('个人主页：{}'.format(user_detail_res.text))
             # 解析HTML
             # logger.info(user_detail_res.is_redirect)
 
@@ -1560,7 +1560,7 @@ class PtSpider:
                             site=my_site,
                             created_at__date__gte=datetime.today(),
                             defaults={
-                                'ratio': ratio,
+                                'ratio': 'inf' if ratio == '∞' else ratio,
                                 'downloaded': downloaded,
                                 'uploaded': uploaded,
                                 'my_sp': my_sp,
@@ -1652,7 +1652,7 @@ class PtSpider:
                 # ).split('(')[0].strip('\xa0').strip()
                 # logger.info('注册时间：', time_join_1)
                 # time_join = time_join_1.replace('(', '').replace(')', '').strip('\xa0').strip()
-
+                logger.info(f'注册时间：{my_site.time_join}')
                 if not my_site.time_join:
                     time_join = ''.join(
                         details_html.xpath(site.time_join_rule)
