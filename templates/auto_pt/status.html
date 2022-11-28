@@ -43,6 +43,13 @@
                         inactive-text="求药模式"
                         inactive-color="#ff4949">
                 </el-switch>
+                <el-switch
+                        class="chart-button"
+                        v-model="showLegend"
+                        active-color="#13ce66"
+                        inactive-text="图例"
+                        inactive-color="#ff4949">
+                </el-switch>
             </span>
         </div>
         <div class="body">
@@ -79,6 +86,7 @@
                 option: {},
                 begInvite: false,
                 showLogo: false,
+                showLegend: false,
             }
         },
         beforeMount() {
@@ -99,7 +107,7 @@
             }
         },
         methods: {
-            setChartOption(option){
+            setChartOption(option) {
                 this.option = option
                 this.$refs.charts.chart.clear()
                 this.$refs.charts.chart.setOption(this.option)
@@ -164,7 +172,7 @@
                         '#d677f6',
                     ],
                     legend: {
-                        {#show: false,#}
+                        show: this.showLegend,
                         {#type: 'scroll',#}
                         {#top: 'bottom',#}
                         right: '2%',
@@ -346,7 +354,9 @@
                             return renderSize(value)
                         }
                     },
-                    legend: {},
+                    legend: {
+                        show: this.showLegend
+                    },
                     grid: {
                         left: '3%',
                         right: '4%',
