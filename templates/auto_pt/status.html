@@ -13,8 +13,7 @@
         }
 
         .box-card {
-            background-color: #130f2c;
-            color: #ffefef;
+        {#background-color: rgba(88, 200, 233, 80%);#}{#color: #ffefef;#}
         }
 
         .chart-button {
@@ -27,7 +26,7 @@
 <div id="status">
     <el-card class="box-card" shadow="hover">
         <div slot="header" class="clearfix">
-            <span>数据总量</span>
+            <span>站点数据</span>
             <span>
 
                 <el-button type="warning" size="mini" class="chart-button"
@@ -36,24 +35,111 @@
                            @click="setBar">柱状图</el-button>
                 <el-button type="primary" size="mini" class="chart-button"
                            @click="setPie">饼图</el-button>
-                <el-switch
-                        class="chart-button"
-                        v-model="begInvite"
-                        active-color="#13ce66"
-                        inactive-text="求药模式"
-                        inactive-color="#ff4949">
-                </el-switch>
-                <el-switch
-                        class="chart-button"
-                        v-model="showLegend"
-                        active-color="#13ce66"
-                        inactive-text="图例"
-                        inactive-color="#ff4949">
-                </el-switch>
+                <el-button type="info" size="mini" class="chart-button"
+                           @click="setCard">列表</el-button>
+                <div class="chart-button">
+                    <el-checkbox border fill="#E6A23C" size="mini" v-model="begInvite" label="求药模式"></el-checkbox>
+                    <el-checkbox border fill="#E6A23C" size="mini" v-model="showLegend" label="图例"></el-checkbox>
+                    <el-checkbox border fill="#E6A23C" size="mini" v-model="shuffle" label="随机"></el-checkbox>
+                </div>
+{#                <el-switch#}
+{#                        class="chart-button"#}
+{#                        v-model="begInvite"#}
+{#                        active-color="#13ce66"#}
+{#                        inactive-text="求药模式"#}
+{#                        inactive-color="#ff4949">#}
+{#                </el-switch>#}
+{#                <el-switch#}
+{#                        class="chart-button"#}
+{#                        v-model="showLegend"#}
+{#                        active-color="#13ce66"#}
+{#                        inactive-text="图例"#}
+{#                        inactive-color="#ff4949">#}
+{#                </el-switch>#}
+{#                <el-switch#}
+{#                        class="chart-button"#}
+{#                        v-model="shuffle"#}
+{#                        active-color="#13ce66"#}
+{#                        inactive-text="随机"#}
+{#                        inactive-color="#ff4949">#}
+{#                </el-switch>#}
             </span>
         </div>
         <div class="body">
-            <charts ref="charts" style="height: 700px;" :option="option"></charts>
+            <charts v-if="!showList" ref="charts" style="height: 700px;" :option="option"></charts>
+            <div v-if="showList">
+                <el-row :gutter="20">
+                    <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="4" style="margin-bottom: 10px;"
+                            v-for="site in ptData.status_list">
+                        <el-card class="box-card">
+                            <div slot="header" class="clearfix">
+                                <div style="float: left;text-align: center;margin-top: -5px;font-size: 14px;height: 32px;">
+                                    <img :src="site.icon"
+                                         style="width: 16px;border-radius: 50%;margin-bottom: -5px;">
+                                    <br>
+                                    <a :href="site.url" target="blank" style="margin-top: -5px;">
+                                        <div class="el-badge item">
+                                            <span v-text="site.name">{}</span>
+                                            <sup class="el-badge__content is-fixed" v-if="site.mail > 0"
+                                                 v-text="site.mail">{}</sup>
+                                        </div>
+                                    </a>
+                                </div>
+
+                                &nbsp;
+                                <span style="font-size: 12px;float: right;">
+                                    <i class="el-icon-user-solid" v-text="site.class" title="用户等级"></i>
+                                    <br v-if="site.hr == 0">
+                                    <i class="el-icon-postcard" v-text="site.invite" title="邀请"></i>
+                                    <i class="el-icon-date" v-text="' ' + site.weeks"
+                                       :title="'加入时间：' + site.time_join"></i>
+                                    <br v-if="site.hr != 0">
+                                    <i class="el-icon-warning" style="color: orangered" v-if="site.hr!=0" title="H&R"
+                                       v-text="site.hr"></i>
+                                    </span>
+                                {#                                <span v-text="site.class" title="用户等级"></span>#}
+                                {#                                <span v-text="site.invite" title="邀请"></span>#}
+                                {#                                <el-button style="float: right; padding: 3px 0" type="text">更新</el-button>#}
+                            </div>
+                            <div class="text item" style="font-size: 13px;text-align: center;">
+                                <div>
+                                    <i class="el-icon-upload2" style="color: green" title="上传量"
+                                       v-text="renderSize(site.uploaded)"></i> /
+                                    <i class="el-icon-download" style="color: indianred" title="下载量"
+                                       v-text="renderSize(site.downloaded)"></i>
+                                    <i class="el-icon-share" style="color: saddlebrown" title="分享率"
+                                       v-text="(site.uploaded / site.downloaded).toFixed(2)"></i>
+                                </div>
+                                <el-divider>数据量</el-divider>
+                                <div>
+                                    <i class="el-icon-magic-stick"
+                                       v-text="site.sp + ' / ' + site.bonus"
+                                       style="color: orange" title="魔力/积分"></i>
+                                    <br>
+                                    <i class="el-icon-lollipop" v-text="site.sp_hour + ' / ' + site.sp_hour_full"
+                                       style="color: coral" title="时魔"></i>
+                                </div>
+                                <el-divider>魔力积分</el-divider>
+                                <div>
+                                    <i class="el-icon-upload" title="做种量"
+                                       v-text="renderSize(site.seeding_size)"></i> /
+                                    <i class="el-icon-top" style="color: green" title="做种数量"
+                                       v-text="site.seeding"></i> /
+                                    <i class="el-icon-bottom" style="color: saddlebrown" title="正在下载"
+                                       v-text="site.leeching"></i>
+                                </div>
+                                <el-divider>实时数据</el-divider>
+                                {#                                <div v-text="site.hr.length >0 ? site.hr : 0" style="text-align: center"#}
+                                {#                                     title="H&R"></div>#}
+                                {#                                <el-divider>H&R</el-divider>#}
+                            </div>
+                        </el-card>
+                    </el-col>
+
+                </el-row>
+
+            </div>
+
         </div>
     </el-card>
 </div>
@@ -77,6 +163,10 @@
         return size + ' ' + unitArr[index];
     }
 
+    function shuffle() {
+        return Math.random() > 0.5 ? -1 : 1;
+    }
+
     const vm = new Vue({
         el: '#status',
         data() {
@@ -87,6 +177,8 @@
                 begInvite: false,
                 showLogo: false,
                 showLegend: false,
+                showList: false,
+                shuffle: false,
             }
         },
         beforeMount() {
@@ -109,6 +201,7 @@
         methods: {
             setChartOption(option) {
                 this.option = option
+                this.showList = false
                 this.$refs.charts.chart.clear()
                 this.$refs.charts.chart.setOption(this.option)
                 window.addEventListener("resize", () => {
@@ -117,12 +210,29 @@
                     }
                 })
             },
+            setCard() {
+                if (this.chart) {
+                    this.$refs.charts.chart.clear()
+                }
+                if (this.shuffle) {
+                    this.ptData.status_list.sort(shuffle)
+                } else {
+                    this.ptData.status_list.sort((a, b) => {
+                        return b.uploaded - a.uploaded
+                    })
+                }
+                this.showList = true
+            },
             setPie() {
                 let uploadedList = []
                 let siteList = []
                 let ptData = this.ptData
                 let begInvite = !this.begInvite
-                ptData.status_list.forEach((site, index) => {
+                let status_list = ptData.status_list
+                if (this.shuffle) {
+                    status_list.sort(shuffle)
+                }
+                status_list.forEach((site, index) => {
                     uploadedList.push({
                         'value': site.uploaded,
                         'path': 'uploaded/' + site.name,
@@ -143,20 +253,20 @@
                         text: 'PT站点数据',
                         subtext: `上传量：${renderSize(ptData.total_data.uploaded)}\n做种量：${renderSize(ptData.total_data.seeding_size)}\n下载量：${renderSize(ptData.total_data.downloaded)}\n分享率：${ptData.total_data.ratio}`,
                         subtextStyle: {
-                            color: '#969696',
+                            color: 'orange',
                             fontWeight: 'bold',
                             fontFamily: '黑体',
                             fontSize: '16',
                             lineHeight: 32,
                         },
                         left: '5%',
-                        top: '10%',
+                        top: '2%',
                     },
                     tooltip: {
                         show: true,
-                        //formatter: function (params) {
-                        //    return params.name + '\t' + renderSize(params.data.value)
-                        //}
+                        formatter: function (params) {
+                            return params.name + '\t' + renderSize(params.data.value)
+                        },
                         valueFormatter: function (value) {
                             return renderSize(value)
                         }
@@ -176,6 +286,8 @@
                         {#type: 'scroll',#}
                         {#top: 'bottom',#}
                         right: '2%',
+                        top: '5%',
+                        bottom: '5%',
                         orient: 'vertical',
                         data: [],
                     },
@@ -190,9 +302,9 @@
                     },
                     series: [
                         {
-                            name: 'PT数据展示',
+                            name: '站点数据',
                             type: 'pie',
-                            bottom: '7%',
+                            bottom: '2%',
                             radius: '55%',
                             {#visualDimension: 1,#}
                             center: ['45%', '50%'],
@@ -420,7 +532,8 @@
                         console.log(res.data.data)
                         {#this.ptData = res.data.data#}
                         this.ptData = res.data.data
-                        this.setPie()
+                        {#this.setPie()#}
+                        this.setCard()
                     } else {
                         this.loading = false
                         this.$message({

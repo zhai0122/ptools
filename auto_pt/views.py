@@ -563,7 +563,69 @@ def download_tasks():
 
 
 def site_status_api(request):
-    my_site_list = MySite.objects.all()
+    # my_site_list = MySite.objects.all()
+    # uploaded = 0
+    # downloaded = 0
+    # seeding = 0
+    # seeding_size = 0
+    # status_list = []
+    # now = datetime.now()
+    # for my_site in my_site_list:
+    #     site_info = my_site.sitestatus_set.order_by('-pk').first()
+    #     if not site_info:
+    #         continue
+    #     downloaded += site_info.downloaded
+    #     uploaded += site_info.uploaded
+    #     seeding += my_site.seed
+    #     seeding_size += site_info.seed_vol
+    #     weeks = (now - my_site.time_join).days // 7
+    #     days = (now - my_site.time_join).days % 7
+    #     site_info = {
+    #         'name': my_site.site.name,
+    #         'icon': my_site.site.logo,
+    #         'class': my_site.my_level,
+    #         'invite': my_site.invitation,
+    #         'sp_hour': my_site.sp_hour,
+    #         'seeding': my_site.seed,
+    #         'time_join': f'{weeks}周 {days}天',
+    #         'hr': my_site.my_hr,
+    #         'mail': my_site.mail,
+    #         'sp': site_info.my_sp,
+    #         'bonus': site_info.my_bonus,
+    #         # 'uploaded': FileSizeConvert.parse_2_file_size(site_info.uploaded),
+    #         # 'downloaded': FileSizeConvert.parse_2_file_size(site_info.downloaded),
+    #         # 'seeding_size': FileSizeConvert.parse_2_file_size(site_info.seed_vol),
+    #         'uploaded': site_info.uploaded,
+    #         'downloaded': site_info.downloaded,
+    #         'seeding_size': site_info.seed_vol,
+    #     }
+    #     status_list.append(site_info)
+    # # 按上传量排序
+    # # status_list.sort(key=lambda x: x['uploaded'], reverse=False)
+    # # sorted(status_list, key=lambda x: x['uploaded'])
+    # # 随机乱序
+    # random.shuffle(status_list)
+    # total_data = {
+    #     # 'uploaded': FileSizeConvert.parse_2_file_size(uploaded),
+    #     # 'downloaded': FileSizeConvert.parse_2_file_size(downloaded),
+    #     # 'seeding_size': FileSizeConvert.parse_2_file_size(seeding_size),
+    #     'uploaded': uploaded,
+    #     'downloaded': downloaded,
+    #     'seeding_size': seeding_size,
+    #     'seeding': seeding,
+    #     'ratio': round(uploaded / downloaded, 3),
+    # }
+    # return render(request, 'auto_pt/status.html')
+    return JsonResponse(data=CommonResponse.success(
+        data=get_status()
+    ).to_dict(), safe=False)
+
+
+def get_status(ids: list = None):
+    if ids is None:
+        my_site_list = MySite.objects.all()
+    else:
+        my_site_list = MySite.objects.filter(pk__in=ids).all()
     uploaded = 0
     downloaded = 0
     seeding = 0
@@ -583,11 +645,16 @@ def site_status_api(request):
         site_info = {
             'name': my_site.site.name,
             'icon': my_site.site.logo,
+            'url': my_site.site.url,
             'class': my_site.my_level,
             'invite': my_site.invitation,
             'sp_hour': my_site.sp_hour,
+            'sp_hour_full': '{:.2%}'.format(
+                float(my_site.sp_hour) / my_site.site.sp_full) if my_site.site.sp_full != 0 else 0,
             'seeding': my_site.seed,
-            'time_join': f'{weeks}周 {days}天',
+            'leeching': my_site.leech,
+            'weeks': f'{weeks}周 {days}天',
+            'time_join': my_site.time_join,
             'hr': my_site.my_hr,
             'mail': my_site.mail,
             'sp': site_info.my_sp,
@@ -601,10 +668,10 @@ def site_status_api(request):
         }
         status_list.append(site_info)
     # 按上传量排序
-    # status_list.sort(key=lambda x: x['uploaded'], reverse=False)
+    status_list.sort(key=lambda x: x['uploaded'], reverse=False)
     # sorted(status_list, key=lambda x: x['uploaded'])
     # 随机乱序
-    random.shuffle(status_list)
+    # random.shuffle(status_list)
     total_data = {
         # 'uploaded': FileSizeConvert.parse_2_file_size(uploaded),
         # 'downloaded': FileSizeConvert.parse_2_file_size(downloaded),
@@ -616,13 +683,18 @@ def site_status_api(request):
         'ratio': round(uploaded / downloaded, 3),
     }
     # return render(request, 'auto_pt/status.html')
-    return JsonResponse(data=CommonResponse.success(
-        data={
-            'total_data': total_data, 'status_list': status_list
-        }
-    ).to_dict(), safe=False)
+    return {
+        'total_data': total_data,
+        'status_list': status_list
+    }
 
 
 @login_required
 def site_status(request):
     return render(request, 'auto_pt/status.html')
+
+
+def user_data(request):
+    my_site_list = MySite.objects.all()
+
+    return render(request, 'auto_pt/userdata.html')
