@@ -623,7 +623,8 @@ def get_status(ids: list = None):
         }
         status_list.append(site_info)
     # 按上传量排序
-    status_list.sort(key=lambda x: x['uploaded'], reverse=False)
+    # status_list.sort(key=lambda x: x['mail'], reverse=False)
+    # status_list.sort(key=lambda x: x['mail'], reverse=True)
     # sorted(status_list, key=lambda x: x['uploaded'])
     # 随机乱序
     # random.shuffle(status_list)
