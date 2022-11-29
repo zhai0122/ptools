@@ -3,6 +3,7 @@ import json
 import logging
 import random
 import re
+import ssl
 import threading
 import time
 import traceback
@@ -27,6 +28,10 @@ from wxpusher import WxPusher
 from auto_pt.models import Notify, OCR
 from pt_site.models import MySite, SignIn, TorrentInfo, SiteStatus, Site
 from ptools.base import TorrentBaseInfo, PushConfig, CommonResponse, StatusCodeEnum, DownloaderCategory
+
+import urllib3.util.ssl_
+
+urllib3.util.ssl_.DEFAULT_CIPHERS = 'ALL'
 
 
 def cookie2dict(source_str: str):
@@ -187,27 +192,28 @@ class PtSpider:
                      proxies: dict = None):
         site = my_site.site
         scraper = self.get_scraper(delay=delay)
-        self.headers = {
+        ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+        _RESTRICTED_SERVER_CIPHERS = 'ALL'
+        ssl_context.set_ciphers(_RESTRICTED_SERVER_CIPHERS)
+        ssl_context.check_hostname = False
+        ssl_context.verify_mode = False
+        scraper.ssl_context = ssl_context
+        headers = {
             'User-Agent': my_site.user_agent,
         }
         for k, v in eval(site.sign_in_headers).items():
-            self.headers[k] = v
+            headers[k] = v
         # logger.info(self.headers)
-
-        if method.lower() == 'post':
-            return scraper.post(
-                url=url,
-                headers=self.headers,
-                cookies=self.cookies2dict(my_site.cookie),
-                data=data,
-                timeout=timeout,
-                json=json,
-                proxies=proxies,
-                params=params,
-            )
-        return scraper.get(
+        # if site.url == 'https://hdchina.org/':
+        #     pool = urllib3.HTTPSConnectionPool(host=site.url, port=443, check_hostname=False)
+        #     res = pool.request(method=method, url=url, headers=headers, data=data, params=params)
+        #     logger.info(res)
+        #     return res
+        # scraper.ssl_context = ssl_ctx
+        return scraper.request(
             url=url,
-            headers=self.headers,
+            method=method,
+            headers=headers,
             cookies=self.cookies2dict(my_site.cookie),
             data=data,
             timeout=timeout,
@@ -565,7 +571,7 @@ class PtSpider:
         if len(sign_str) >= 1:
             return CommonResponse.success(msg=site.name + '已签到，请勿重复操作！！')
         csrf = ''.join(self.parse(result, '//meta[@name="x-csrf"]/@content'))
-        logger.info('CSRF字符串{}'.format(csrf))
+        logger.info('CSRF字符串：{}'.format(csrf))
         sign_res = self.send_request(
             my_site=my_site,
             url=site.url + site.page_sign_in,
@@ -574,7 +580,7 @@ class PtSpider:
                 'csrf': csrf
             }
         ).json()
-        logger.info('签到返回结果{}'.format(sign_res))
+        logger.info('签到返回结果：{}'.format(sign_res))
         if sign_res.get('state') == 'success':
             msg = "签到成功，您已连续签到{}天，本次增加魔力:{}。".format(sign_res.get('signindays'),
                                                                       sign_res.get('integral'))
@@ -1417,14 +1423,26 @@ class PtSpider:
 
             if 'totheglory' in site.url:
                 # ttg的信息都是直接加载的，不需要再访问其他网页，直接解析就好
-                details_html = etree.HTML(user_detail_res.content)
+                details_html = etree.HTML(user_detail_res.text)
                 seeding_html = details_html.xpath('//div[@id="ka2"]/table')[0]
             elif 'greatposterwall' in site.url or 'dicmusic' in site.url:
                 details_html = user_detail_res.json()
                 seeding_html = self.send_request(my_site=my_site, url=site.url + site.page_mybonus).json()
+            elif 'lemonhd.org' in site.url:
+                logger.info(site.url)
+                details_html = etree.HTML(converter.convert(user_detail_res.text))
+                seeding_html = details_html
             else:
-                details_html = etree.HTML(converter.convert(user_detail_res.content))
-                if 'btschool' in site.url:
+                details_html = etree.HTML(converter.convert(user_detail_res.text))
+                if 'hdchina.org' in site.url:
+                    csrf = details_html.xpath('//meta[@name="x-csrf"]/@content')
+                    seeding_detail_res = self.send_request(my_site=my_site, url=seeding_detail_url, method='post', data={
+                        'userid': my_site.user_id,
+                        'type': 'seeding',
+                        'csrf': ''.join(csrf)
+                    })
+                    # seeding_html = etree.HTML(converter.convert(seeding_detail_res.text))
+                elif 'btschool' in site.url:
                     text = details_html.xpath('//script/text()')
                     logger.info('学校：{}'.format(text))
                     if len(text) > 0:
@@ -1438,19 +1456,16 @@ class PtSpider:
                         except Exception as e:
                             logger.info('BT学校获取做种信息有误！')
                             pass
-                if 'lemonhd.org' in site.url:
-                    logger.info(site.url)
-                    seeding_html = details_html
                 else:
                     seeding_detail_res = self.send_request(my_site=my_site, url=seeding_detail_url, delay=25)
-                    logger.info('做种信息：{}'.format(seeding_detail_res.content))
+                    logger.info('做种信息：{}'.format(seeding_detail_res.text))
                     # leeching_detail_res = self.send_request(my_site=my_site, url=leeching_detail_url, timeout=25)
                     if seeding_detail_res.status_code != 200:
                         return CommonResponse.error(
                             status=StatusCodeEnum.WEB_CONNECT_ERR,
                             msg='{} 做种信息访问错误，错误码：{}'.format(site.name, str(seeding_detail_res.status_code))
                         )
-                    seeding_html = etree.HTML(converter.convert(seeding_detail_res.text))
+                seeding_html = etree.HTML(converter.convert(seeding_detail_res.text))
             # leeching_html = etree.HTML(leeching_detail_res.text)
             # logger.info(seeding_detail_res.content.decode('utf8'))
             return CommonResponse.success(data={
@@ -1636,10 +1651,13 @@ class PtSpider:
                 downloaded = ''.join(
                     details_html.xpath(site.downloaded_rule)
                 ).replace(':', '').replace('\xa0\xa0', '').replace('i', '').strip(' ')
-                downloaded = FileSizeConvert.parse_2_byte(downloaded)
                 uploaded = ''.join(
                     details_html.xpath(site.uploaded_rule)
                 ).replace(':', '').replace('i', '').strip(' ')
+                if 'hdchina' in site.url:
+                    downloaded = downloaded.split('(')[0].replace(':', '').strip()
+                    uploaded = uploaded.split('(')[0].replace(':', '').strip()
+                downloaded = FileSizeConvert.parse_2_byte(downloaded)
                 uploaded = FileSizeConvert.parse_2_byte(uploaded)
 
                 invitation = ''.join(
