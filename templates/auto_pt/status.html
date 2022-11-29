@@ -78,45 +78,47 @@
 
                                 &nbsp;
                                 <span style="font-size: 12px;float: right;">
-                                    <i class="el-icon-user-solid" v-text="site.class" title="用户等级"></i>
+                                    <i class="el-icon-user-solid" v-text="' ' + site.class" style="color: indianred"
+                                       title="用户等级"></i>
                                     <br v-if="site.hr == 0">
-                                    <i class="el-icon-postcard" v-text="site.invite" title="邀请"></i>
-                                    <i class="el-icon-date" v-text="' ' + site.weeks"
+                                    <i class="el-icon-postcard" v-text="' ' + site.invite" style="color: #003366"
+                                       title="邀请"></i>
+                                    <i class="el-icon-date" v-text="' ' + site.weeks" style="color: darkgreen"
                                        :title="'加入时间：' + site.time_join"></i>
                                     <br v-if="site.hr != 0">
                                     <i class="el-icon-warning" style="color: orangered" v-if="site.hr!=0" title="H&R"
-                                       v-text="site.hr"></i>
+                                       v-text="' ' + site.hr"></i>
                                     </span>
                             </div>
                             <div class="text item" style="font-size: 13px;text-align: right;">
                                 <div>
-                                    <span style="float: left;font-weight: bold;">数据量：</span>
+                                    <span style="float: left;font-weight: bold;color: #3b5769;">数据量：</span>
                                     <i class="el-icon-upload2" style="color: green" title="上传量"
-                                       v-text="renderSize(site.uploaded)"></i> /
+                                       v-text="' ' + renderSize(site.uploaded)"></i> /
                                     <i class="el-icon-download" style="color: indianred" title="下载量"
-                                       v-text="renderSize(site.downloaded)"></i>
+                                       v-text="' ' + renderSize(site.downloaded)"></i>
                                     <i class="el-icon-share" style="color: saddlebrown" title="分享率"
-                                       v-text="(site.uploaded / site.downloaded).toFixed(2)"></i>
+                                       v-text="' ' + (site.uploaded / site.downloaded).toFixed(2)"></i>
                                 </div>
                                 <el-divider></el-divider>
                                 <div>
-                                    <span style="float: left;line-height: 36px;font-weight: bold;">魔力/积分：</span>
+                                    <span style="float: left;line-height: 36px;font-weight: bold;color: #3b5769;">魔力/积分：</span>
                                     <i class="el-icon-magic-stick"
-                                       v-text="site.sp + ' / ' + site.bonus"
+                                       v-text="' ' + site.sp + ' / ' + site.bonus"
                                        style="color: orange" title="魔力/积分"></i>
                                     <br>
-                                    <i class="el-icon-lollipop" v-text="site.sp_hour + ' / ' + site.sp_hour_full"
+                                    <i class="el-icon-lollipop" v-text="' ' + site.sp_hour + ' / ' + site.sp_hour_full"
                                        style="color: coral" title="时魔"></i>
                                 </div>
                                 <el-divider></el-divider>
                                 <div>
-                                    <span style="float: left;font-weight: bold;">实时数据：</span>
+                                    <span style="float: left;font-weight: bold;color: #3b5769;">实时数据：</span>
                                     <i class="el-icon-upload" title="做种量"
-                                       v-text="renderSize(site.seeding_size)"></i> /
+                                       v-text="' ' + renderSize(site.seeding_size)"></i> /
                                     <i class="el-icon-top" style="color: green" title="做种数量"
-                                       v-text="site.seeding"></i> /
+                                       v-text="' ' + site.seeding"></i> /
                                     <i class="el-icon-bottom" style="color: saddlebrown" title="正在下载"
-                                       v-text="site.leeching"></i>
+                                       v-text="' ' + site.leeching"></i>
                                 </div>
                             </div>
                         </el-card>
@@ -192,7 +194,7 @@
                     }
                 })
             },
-            shuffleList(){
+            shuffleList() {
                 if (this.shuffle) {
                     this.ptData.status_list.sort(() => {
                         return Math.random() > 0.5 ? -1 : 1
