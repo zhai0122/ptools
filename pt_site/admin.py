@@ -284,8 +284,7 @@ class MySiteAdmin(AjaxAdmin):  # instead of ModelAdmin
             '<font color="#708090">积分/HP：{}</font>',
             round(float(obj.sp_hour), 3) if obj.sp_hour else 0,
             status_today.my_sp if status_today else 0,
-            '{:.2%}'.format((float(obj.sp_hour) / obj.site.sp_full),
-                            3) if status_today and obj.site.sp_full != 0 else 0,
+            '{:.2%}'.format(float(obj.sp_hour) / obj.site.sp_full) if status_today and obj.site.sp_full != 0 else 0,
             status_today.my_bonus if status_today else 0
         )
 
@@ -331,7 +330,9 @@ class MySiteAdmin(AjaxAdmin):  # instead of ModelAdmin
 
     # 自定义更新时间，提醒今日是否更新
     def status_today(self, obj: MySite):
-        is_update = obj.sitestatus_set.filter(updated_at__date__gte=datetime.today()).first()
+        is_update = obj.sitestatus_set.filter(
+            updated_at__date__gte=datetime.today()
+        ).first() and obj.updated_at.date() == datetime.today().date()
         signin_today = obj.signin_set.filter(created_at__date__gte=datetime.today()).first()
         if not obj.site.sign_in_support:
             signin_str = 'yes'
@@ -343,7 +344,7 @@ class MySiteAdmin(AjaxAdmin):  # instead of ModelAdmin
             '<font color="#525f42">注册：{}</font></font>',
             signin_str,
             datetime.strftime(obj.updated_at, '%Y-%m-%d %H:%M:%S') if obj else '',
-            'yes' if is_update and obj.site.get_userinfo_support else 'no',
+            'yes' if is_update else 'no',
             datetime.strftime(obj.time_join, '%Y-%m-%d %H:%M:%S') if obj.time_join else ''
         )
 
