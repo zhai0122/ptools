@@ -261,7 +261,7 @@ class MySite(BaseEntity):
     invitation = models.IntegerField(verbose_name='邀请资格', default=0)
     time_join = models.DateTimeField(verbose_name='注册时间', blank=True, null=True)
     latest_active = models.DateTimeField(verbose_name='最近活动时间', blank=True, null=True)
-    sp_hour = models.CharField(verbose_name='时魔', max_length=8, default='')
+    sp_hour = models.FloatField(verbose_name='时魔', default=0)
     my_level = models.CharField(verbose_name='用户等级', max_length=16, default='')
     my_hr = models.CharField(verbose_name='H&R', max_length=16, default='')
     leech = models.IntegerField(verbose_name='当前下载', default=0)
