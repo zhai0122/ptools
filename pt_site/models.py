@@ -259,7 +259,7 @@ class MySite(BaseEntity):
     search = models.BooleanField(verbose_name='开启搜索', default=True, help_text='是否开启搜索')
     # 用户数据 自动拉取
     invitation = models.IntegerField(verbose_name='邀请资格', default=0)
-    time_join = models.DateTimeField(verbose_name='注册时间', blank=True, null=True)
+    time_join = models.DateTimeField(verbose_name='注册时间', blank=True, null=True, help_text='请务必填写此项！')
     latest_active = models.DateTimeField(verbose_name='最近活动时间', blank=True, null=True)
     sp_hour = models.FloatField(verbose_name='时魔', default=0)
     my_level = models.CharField(verbose_name='用户等级', max_length=16, default='')

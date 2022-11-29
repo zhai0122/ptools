@@ -312,10 +312,9 @@ class PtSpider:
             my_level = ' '
         userdatas = cookie.get('userdatas')
         time_stamp = cookie.get('info').get('joinTime')
-        if time_stamp:
-            time_join = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time_stamp / 1000))
-        else:
-            time_join = None
+
+        time_join = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time_stamp / 1000))
+
         passkey = cookie.get('passkey')
         logger.info('passkey: {}'.format(passkey))
 
@@ -1526,8 +1525,7 @@ class PtSpider:
                         downloaded = stats.get('downloaded')
                         uploaded = stats.get('uploaded')
                         ratio = stats.get('ratio')
-                        if not my_site.time_join:
-                            my_site.time_join = stats.get('joinedDate')
+                        my_site.time_join = stats.get('joinedDate')
                         my_site.latest_active = stats.get('lastAccess')
                         my_site.my_level = details_response.get('personal').get('class')
                         community = details_response.get('community')
@@ -1654,16 +1652,11 @@ class PtSpider:
                 # ).split('(')[0].strip('\xa0').strip()
                 # logger.info('注册时间：', time_join_1)
                 # time_join = time_join_1.replace('(', '').replace(')', '').strip('\xa0').strip()
-                logger.info(f'注册时间：{my_site.time_join}')
-                if not my_site.time_join:
-                    time_join = ''.join(
-                        details_html.xpath(site.time_join_rule)
-                    )
-                    if time_join:
-                        my_site.time_join = time_join
-                    else:
-                        pass
-
+                logger.info(f'注册时间：{details_html.xpath(site.time_join_rule)}')
+                time_join = re.findall(r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}', ''.join(
+                    details_html.xpath(site.time_join_rule)
+                ).strip())
+                my_site.time_join = ''.join(time_join)
                 # 去除字符串中的中文
                 my_level_1 = ''.join(
                     details_html.xpath(site.my_level_rule)
@@ -1702,10 +1695,10 @@ class PtSpider:
                 # if '（' in my_bonus:
                 #     my_bonus = my_bonus.split('（')[0]
 
-                hr = ''.join(details_html.xpath(site.my_hr_rule)).split(' ')[0]
+                hr = ''.join(details_html.xpath(site.my_hr_rule)).replace('H&R:', '').strip()
 
                 my_hr = hr if hr else '0'
-
+                logger.info(f'h&r: {hr} ,解析后：{my_hr}')
                 # logger.info(my_bonus)
                 # 更新我的站点数据
                 invitation = converter.convert(invitation)
