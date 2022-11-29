@@ -816,17 +816,18 @@ class PtSpider:
     def do_sign_in(self, pool, queryset: QuerySet[MySite]):
         message_list = '# 自动签到通知  \n\n### <font color="orange">未显示的站点已经签到过了哟！</font>  \n\n'
         if datetime.now().hour < 9:
-            # U2每天九点前不签到
-            queryset = [my_site for my_site in queryset if 'u2.dmhy.org' not in my_site.site.url and
-                        my_site.signin_set.filter(created_at__date__gte=datetime.today()).count() <= 0
-                        and my_site.cookie and my_site.site.sign_in_support]
-            message = '> <font color="red">站点 U2 早上九点之前不执行签到任务哦！</font>  \n\n'
+            # U2/52PT 每天九点前不签到
+            queryset = [my_site for my_site in queryset if my_site.site.url not in [
+                'https://u2.dmhy.org/', 'https://52pt.site/'
+            ] and my_site.signin_set.filter(created_at__date__gte=datetime.today()).count() <= 0
+                        and my_site.cookie]
+            message = '> <font color="red">站点：`U2`以及`52PT` 早上九点之前不执行签到任务哦！</font>  \n\n'
             logger.info(message)
             message_list = message + message_list
         else:
-            queryset = [my_site for my_site in queryset if my_site.cookie and my_site.site.sign_in_support
-                        and my_site.signin_set.filter(created_at__date__gte=datetime.today(),
-                                                      sign_in_today=True).count() <= 0]
+            queryset = [my_site for my_site in queryset if my_site.cookie and
+                        my_site.signin_set.filter(created_at__date__gte=datetime.today(),
+                                                  sign_in_today=True).count() <= 0]
         logger.info(len(queryset))
         if len(queryset) <= 0:
             message_list = '> <font color="orange">已全部签到或无需签到！</font>  \n\n'
@@ -1045,6 +1046,7 @@ class PtSpider:
                         msg='签到失败！'
                     )
             if 'hares.top' in site.url:
+                logger.info(res.text)
                 code = res.json().get('code')
                 # logger.info('白兔返回码：'+ type(code))
                 if int(code) == 0:

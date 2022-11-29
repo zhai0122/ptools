@@ -33,8 +33,8 @@ logger = logging.getLogger('ptools')
 def auto_sign_in():
     """自动签到"""
     start = time.time()
-    # 获取本人所有站点
-    queryset = MySite.objects.all()
+    # 获取工具支持且本人开启签到的所有站点
+    queryset = MySite.objects.filter(site__sign_in_support=True).filter(sign_in=True).all()
     message_list = pt_spider.do_sign_in(pool, queryset)
     end = time.time()
     consuming = '> <font  color="blue">{} 任务运行成功！耗时：{}完成时间：{}  </font>\n'.format(
