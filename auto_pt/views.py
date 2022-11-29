@@ -4,6 +4,7 @@ import os
 import random
 import subprocess
 import time
+import traceback
 from datetime import datetime, timedelta
 
 import docker
@@ -563,62 +564,16 @@ def download_tasks():
 
 
 def site_status_api(request):
-    # my_site_list = MySite.objects.all()
-    # uploaded = 0
-    # downloaded = 0
-    # seeding = 0
-    # seeding_size = 0
-    # status_list = []
-    # now = datetime.now()
-    # for my_site in my_site_list:
-    #     site_info = my_site.sitestatus_set.order_by('-pk').first()
-    #     if not site_info:
-    #         continue
-    #     downloaded += site_info.downloaded
-    #     uploaded += site_info.uploaded
-    #     seeding += my_site.seed
-    #     seeding_size += site_info.seed_vol
-    #     weeks = (now - my_site.time_join).days // 7
-    #     days = (now - my_site.time_join).days % 7
-    #     site_info = {
-    #         'name': my_site.site.name,
-    #         'icon': my_site.site.logo,
-    #         'class': my_site.my_level,
-    #         'invite': my_site.invitation,
-    #         'sp_hour': my_site.sp_hour,
-    #         'seeding': my_site.seed,
-    #         'time_join': f'{weeks}周 {days}天',
-    #         'hr': my_site.my_hr,
-    #         'mail': my_site.mail,
-    #         'sp': site_info.my_sp,
-    #         'bonus': site_info.my_bonus,
-    #         # 'uploaded': FileSizeConvert.parse_2_file_size(site_info.uploaded),
-    #         # 'downloaded': FileSizeConvert.parse_2_file_size(site_info.downloaded),
-    #         # 'seeding_size': FileSizeConvert.parse_2_file_size(site_info.seed_vol),
-    #         'uploaded': site_info.uploaded,
-    #         'downloaded': site_info.downloaded,
-    #         'seeding_size': site_info.seed_vol,
-    #     }
-    #     status_list.append(site_info)
-    # # 按上传量排序
-    # # status_list.sort(key=lambda x: x['uploaded'], reverse=False)
-    # # sorted(status_list, key=lambda x: x['uploaded'])
-    # # 随机乱序
-    # random.shuffle(status_list)
-    # total_data = {
-    #     # 'uploaded': FileSizeConvert.parse_2_file_size(uploaded),
-    #     # 'downloaded': FileSizeConvert.parse_2_file_size(downloaded),
-    #     # 'seeding_size': FileSizeConvert.parse_2_file_size(seeding_size),
-    #     'uploaded': uploaded,
-    #     'downloaded': downloaded,
-    #     'seeding_size': seeding_size,
-    #     'seeding': seeding,
-    #     'ratio': round(uploaded / downloaded, 3),
-    # }
-    # return render(request, 'auto_pt/status.html')
-    return JsonResponse(data=CommonResponse.success(
-        data=get_status()
-    ).to_dict(), safe=False)
+    try:
+        userdata = get_status()
+        return JsonResponse(data=CommonResponse.success(
+            data=userdata
+        ).to_dict(), safe=False)
+    except Exception as e:
+        message = f'获取数列列表失败：{e}'
+        logger.info(message)
+        logger.error(traceback.format_exc(limit=3))
+        return CommonResponse.error(msg=message)
 
 
 def get_status(ids: list = None):
