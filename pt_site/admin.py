@@ -505,7 +505,7 @@ class MySiteAdmin(AjaxAdmin):  # instead of ModelAdmin
             })
 
     # 显示的文本，与django admin一致
-    change_user_agent.short_description = '更换UA'
+    change_user_agent.short_description = '批量更换UA'
     # icon，参考element-ui icon与https://fontawesome.com
     change_user_agent.icon = 'el-icon-eleme'
     # 指定element-ui的按钮类型，参考https://element.eleme.cn/#/zh-CN/component/button
@@ -632,6 +632,7 @@ class MySiteAdmin(AjaxAdmin):  # instead of ModelAdmin
             'fields': (
                 ('site', 'sign_in', 'hr', 'search'),
                 ('user_id', 'passkey',),
+                'user_agent',
                 'cookie',
             ),
         }],
