@@ -634,7 +634,8 @@ class MySiteAdmin(AjaxAdmin):  # instead of ModelAdmin
             'classes': ('collapse',),  # CSS
             'fields': (
                 ('site', 'sign_in', 'hr', 'search'),
-                ('user_id', 'passkey', 'time_join',),
+                ('user_id', 'passkey',),
+                ('time_join',),
                 'user_agent',
                 'cookie',
             ),
