@@ -12,8 +12,10 @@ django-apscheduler==0.6.2
 django-cors-headers==3.13.0
 django-simpleui==2022.7.29
 docker==6.0.0
+gevent==22.10.2
 gitdb==4.0.9
 GitPython==3.1.29
+greenlet==2.0.1
 idna==3.4
 importlib-metadata==5.0.0
 lxml==4.9.1
@@ -37,6 +39,9 @@ typing_extensions==4.4.0
 tzdata==2022.4
 tzlocal==4.2
 urllib3==1.26.12
+websocket==0.2.1
 wechat-push==1.0.1
 wxpusher==2.2.0
 zipp==3.9.0
+zope.event==4.5.0
+zope.interface==5.5.2
