@@ -1524,7 +1524,7 @@ class PtSpider:
                         stats = details_response.get('stats')
                         downloaded = stats.get('downloaded')
                         uploaded = stats.get('uploaded')
-                        ratio = stats.get('ratio')
+                        ratio = stats.get('ratio').replace(',', '')
                         my_site.time_join = stats.get('joinedDate')
                         my_site.latest_active = stats.get('lastAccess')
                         my_site.my_level = details_response.get('personal').get('class')
