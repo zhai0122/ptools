@@ -1423,7 +1423,7 @@ class PtSpider:
 
             if 'totheglory' in site.url:
                 # ttg的信息都是直接加载的，不需要再访问其他网页，直接解析就好
-                details_html = etree.HTML(user_detail_res.text)
+                details_html = etree.HTML(user_detail_res.content)
                 seeding_html = details_html.xpath('//div[@id="ka2"]/table')[0]
             elif 'greatposterwall' in site.url or 'dicmusic' in site.url:
                 details_html = user_detail_res.json()
@@ -1432,17 +1432,20 @@ class PtSpider:
                 logger.info(site.url)
                 details_html = etree.HTML(converter.convert(user_detail_res.text))
                 seeding_html = details_html
+            elif 'hdchina.org' in site.url:
+                details_html = etree.HTML(converter.convert(user_detail_res.text))
+                csrf = details_html.xpath('//meta[@name="x-csrf"]/@content')
+                seeding_detail_res = self.send_request(my_site=my_site, url=seeding_detail_url, method='post',
+                                                       data={
+                                                           'userid': my_site.user_id,
+                                                           'type': 'seeding',
+                                                           'csrf': ''.join(csrf)
+                                                       })
+                seeding_html = etree.HTML(converter.convert(seeding_detail_res.text))
             else:
                 details_html = etree.HTML(converter.convert(user_detail_res.text))
-                if 'hdchina.org' in site.url:
-                    csrf = details_html.xpath('//meta[@name="x-csrf"]/@content')
-                    seeding_detail_res = self.send_request(my_site=my_site, url=seeding_detail_url, method='post', data={
-                        'userid': my_site.user_id,
-                        'type': 'seeding',
-                        'csrf': ''.join(csrf)
-                    })
-                    # seeding_html = etree.HTML(converter.convert(seeding_detail_res.text))
-                elif 'btschool' in site.url:
+
+                if 'btschool' in site.url:
                     text = details_html.xpath('//script/text()')
                     logger.info('学校：{}'.format(text))
                     if len(text) > 0:
@@ -1456,15 +1459,14 @@ class PtSpider:
                         except Exception as e:
                             logger.info('BT学校获取做种信息有误！')
                             pass
-                else:
-                    seeding_detail_res = self.send_request(my_site=my_site, url=seeding_detail_url, delay=25)
-                    logger.info('做种信息：{}'.format(seeding_detail_res.text))
-                    # leeching_detail_res = self.send_request(my_site=my_site, url=leeching_detail_url, timeout=25)
-                    if seeding_detail_res.status_code != 200:
-                        return CommonResponse.error(
-                            status=StatusCodeEnum.WEB_CONNECT_ERR,
-                            msg='{} 做种信息访问错误，错误码：{}'.format(site.name, str(seeding_detail_res.status_code))
-                        )
+                seeding_detail_res = self.send_request(my_site=my_site, url=seeding_detail_url, delay=25)
+                logger.info('做种信息：{}'.format(seeding_detail_res.text))
+                # leeching_detail_res = self.send_request(my_site=my_site, url=leeching_detail_url, timeout=25)
+                if seeding_detail_res.status_code != 200:
+                    return CommonResponse.error(
+                        status=StatusCodeEnum.WEB_CONNECT_ERR,
+                        msg='{} 做种信息访问错误，错误码：{}'.format(site.name, str(seeding_detail_res.status_code))
+                    )
                 seeding_html = etree.HTML(converter.convert(seeding_detail_res.text))
             # leeching_html = etree.HTML(leeching_detail_res.text)
             # logger.info(seeding_detail_res.content.decode('utf8'))
@@ -1637,6 +1639,8 @@ class PtSpider:
                 # logger.info(etree.tostring(details_html))
                 # leech = self.get_user_torrent(leeching_html, site.leech_rule)
                 # seed = self.get_user_torrent(seeding_html, site.seed_rule)
+                logger.info(f'下载数目字符串：{details_html.xpath(site.leech_rule)}')
+                logger.info(f'下上传数目字符串：{details_html.xpath(site.seed_rule)}')
                 leech = re.sub(r'\D', '', ''.join(details_html.xpath(site.leech_rule)).strip())
                 logger.info(f'当前下载数：{leech}')
                 seed = ''.join(details_html.xpath(site.seed_rule)).strip()
