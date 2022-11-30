@@ -17,11 +17,13 @@
         .info-card {
             background-color: rgba(227, 229, 229, 0.6);
             border: 2px solid skyblue;
+            width: 100%;
         }
 
         .info-card .el-card__header {
             background-color: rgba(122, 246, 173, 0.2);
             border-bottom: 2px solid skyblue;
+            height: 60px;
         }
 
         .info-card .el-card__header a {
@@ -68,39 +70,63 @@
                                          style="width: 16px;border-radius: 50%;margin-bottom: -5px;">
                                     <br>
                                     <a :href="site.url" target="blank" style="margin-top: -5px;">
-                                        <div class="el-badge item">
-                                            <span v-text="site.name">{}</span>
-                                            <sup class="el-badge__content is-fixed" v-if="site.mail > 0"
-                                                 v-text="site.mail">{}</sup>
-                                        </div>
+                                        <span v-text="site.name">{}</span>
                                     </a>
+
                                 </div>
 
-                                &nbsp;
+
                                 <span style="font-size: 12px;float: right;">
                                     <i class="el-icon-user-solid" v-text="' ' + site.class" style="color: indianred"
                                        title="用户等级"></i>
-                                    <br v-if="site.hr == 0">
+                                    <br v-if="site.hr == 0 || site.mail < 0">
                                     <i class="el-icon-postcard" v-text="' ' + site.invite" style="color: #003366"
                                        title="邀请"></i>
                                     <i class="el-icon-date" v-text="' ' + site.weeks" style="color: darkgreen"
                                        :title="'加入时间：' + site.time_join"></i>
-                                    <br v-if="site.hr != 0">
+                                    <br v-if="site.hr != 0 || site.mail > 0">
+
                                     <i class="el-icon-warning" style="color: orangered" v-if="site.hr!=0" title="H&R"
                                        v-text="' ' + site.hr"></i>
+                                    <span style="color: darkred;font-size: 13px;" v-if="site.mail > 0">
+                                    <i class="fas fa-envelope el-fade-in"></i>
+                                        <span v-text="site.mail"></span>
+                                    </span>
+{#                                    <div class="el-badge item" v-if="site.mail > 0" style="float: right">#}
+{#                                        <i class="fas fa-sms" style="color: darkred" v-text="site.mail"></i>#}
+{#                                        <sup class="el-badge__content is-fixed" v-if="site.mail > 0"#}
+{#                                             v-text="site.mail">{}</sup>#}
+{#                                    </div>#}
                                     </span>
                             </div>
                             <div class="text item" style="font-size: 13px;text-align: right;">
                                 <div>
-                                    <span style="float: left;font-weight: bold;color: #3b5769;">数据量：</span>
-                                    <i class="el-icon-upload2" style="color: green" title="上传量"
-                                       v-text="' ' + renderSize(site.uploaded)"></i> /
-                                    <i class="el-icon-download" style="color: indianred" title="下载量"
-                                       v-text="' ' + renderSize(site.downloaded)"></i>
+                                    <span style="float: left;font-weight: bold;color: #3b5769;">保种分享：</span>
+                                    <i class="el-icon-upload" title="做种量"
+                                       v-text="' ' + renderSize(site.seeding_size)"></i>
+                                    <el-divider direction="vertical"></el-divider>
                                     <i class="el-icon-share" style="color: saddlebrown" title="分享率"
                                        v-text="' ' + (site.uploaded / site.downloaded).toFixed(2)"></i>
                                 </div>
-                                <el-divider></el-divider>
+                                <hr>
+                                <div>
+                                    <span style="float: left;font-weight: bold;color: #3b5769;line-height: 36px">实时数据：</span>
+                                    <span style="text-align: center">
+                                        <span title="做种数量" v-text="site.seeding" style="color: green"></span>
+                                        <span>
+                                        <i class="el-icon-d-caret"></i>
+                                        </span>
+                                        <span title="正在下载" v-text="site.leeching" style="color: indianred"></span>
+                                        <br>
+                                        <span title="上传量" style="color: green"
+                                              v-text="renderSize(site.uploaded)"></span>
+                                        <i class="fas fa-sort"></i>
+                                        <span title="下载量" style="color: indianred"
+                                              v-text="renderSize(site.downloaded)"></span>
+                                    </span>
+
+                                </div>
+                                <hr>
                                 <div>
                                     <span style="float: left;line-height: 36px;font-weight: bold;color: #3b5769;">魔力/积分：</span>
                                     <i class="el-icon-magic-stick"
@@ -110,16 +136,7 @@
                                     <i class="el-icon-lollipop" v-text="' ' + site.sp_hour + ' / ' + site.sp_hour_full"
                                        style="color: coral" title="时魔"></i>
                                 </div>
-                                <el-divider></el-divider>
-                                <div>
-                                    <span style="float: left;font-weight: bold;color: #3b5769;">实时数据：</span>
-                                    <i class="el-icon-upload" title="做种量"
-                                       v-text="' ' + renderSize(site.seeding_size)"></i> /
-                                    <i class="el-icon-top" style="color: green" title="做种数量"
-                                       v-text="' ' + site.seeding"></i> /
-                                    <i class="el-icon-bottom" style="color: saddlebrown" title="正在下载"
-                                       v-text="' ' + site.leeching"></i>
-                                </div>
+
                             </div>
                         </el-card>
                     </el-col>
