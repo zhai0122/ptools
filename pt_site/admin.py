@@ -275,6 +275,11 @@ class MySiteAdmin(AjaxAdmin):  # instead of ModelAdmin
         SignInInlines
     )
 
+    def save_model(self, request, obj, form, change):
+        if obj.sp_hour == '':
+            obj.sp_hour = 0
+        obj.save()
+        
     def bonus(self, obj: MySite):
         status_today = obj.sitestatus_set.order_by('-pk').first()
         return format_html(
