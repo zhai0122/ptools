@@ -41,24 +41,16 @@
     <el-card class="box-card" shadow="hover">
         <div slot="header" class="clearfix">
             <span>站点数据</span>
-            <span>
-                <el-button type="warning" size="mini" class="chart-button"
-                           @click="setTree">矩形树图</el-button>
-                <el-button type="success" size="mini" class="chart-button"
-                           @click="setBar">柱状图</el-button>
-                <el-button type="primary" size="mini" class="chart-button"
-                           @click="setPie">饼图</el-button>
-                <el-button type="info" size="mini" class="chart-button"
-                           @click="setCard">列表</el-button>
-                <div class="chart-button">
-                    <el-checkbox border fill="#E6A23C" size="mini" v-model="begInvite" label="求药模式"></el-checkbox>
-                    <el-checkbox border fill="#E6A23C" size="mini" v-model="showLegend" label="图例"></el-checkbox>
-                    <el-checkbox border fill="#E6A23C" size="mini" v-model="shuffle" label="随机"></el-checkbox>
-                </div>
-            </span>
+
+            <el-button type="primary" size="mini" class="chart-button" v-if="showList"
+                       @click="setPie">图表
+            </el-button>
+            <el-button type="success" size="mini" class="chart-button" v-else="showList"
+                       @click="setCard">卡片
+            </el-button>
+
         </div>
         <div class="body">
-            <charts v-if="!showList" ref="charts" style="height: 700px;" :option="option"></charts>
             <div v-if="showList">
                 <el-row :gutter="20">
                     <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="4" style="margin-bottom: 10px;"
@@ -142,6 +134,31 @@
                     </el-col>
                 </el-row>
             </div>
+
+            <div v-else="showList" style="margin-top: -15px;">
+                <div>
+                    <el-button type="warning" size="mini" class="chart-button"
+                               @click="setTree">矩形图
+                    </el-button>
+                    <el-button type="success" size="mini" class="chart-button"
+                               @click="setBar">柱状图
+                    </el-button>
+                    <el-button type="primary" size="mini" class="chart-button"
+                               @click="setPie">饼图
+                    </el-button>
+
+                    <el-checkbox border fill="#E6A23C" size="mini" v-model="chartShow.begInvite"
+                                 label="求药"></el-checkbox>
+                    <el-checkbox border fill="#E6A23C" size="mini" v-model="chartShow.showLegend"
+                                 label="图例"></el-checkbox>
+                    <el-checkbox border fill="#E6A23C" size="mini" v-model="chartShow.shuffle"
+                                 label="随机"></el-checkbox>
+                </div>
+
+                <charts ref="charts" style="height: 700px;margin-top: 5px;" :option="option"></charts>
+
+            </div>
+
         </div>
     </el-card>
 </div>
@@ -172,21 +189,24 @@
         el: '#status',
         data() {
             return {
-                chart: {},
+                chart: null,
                 ptData: {},
                 option: {},
-                begInvite: false,
-                showLogo: false,
-                showLegend: false,
-                showList: false,
-                shuffle: false,
+                showList: true,
+                showChart: false,
+                chartShow: {
+                    begInvite: false,
+                    showLogo: false,
+                    showLegend: false,
+                    shuffle: false,
+                }
             }
         },
         beforeMount() {
 
         },
         mounted() {
-            this.chart = this.$refs.charts.chart
+            {#this.chart = this.$refs.charts.chart#}
             this.getData()
         },
         watch: {
@@ -202,14 +222,17 @@
         methods: {
             setChartOption(option) {
                 this.option = option
-                this.showList = false
-                this.$refs.charts.chart.clear()
-                this.$refs.charts.chart.setOption(this.option)
+                if (this.chart) {
+                    this.chart.clear()
+                }
+                this.chart = this.$refs.charts.chart
+                this.chart.setOption(this.option)
                 window.addEventListener("resize", () => {
-                    if (this.$refs.charts.chart) {
-                        this.$refs.charts.chart.resize()
-                    }
+                    this.chart.resize()
                 })
+                //this.$nextTick(() => {//自适应宽度
+                //   this.chart.resize();
+                //})
             },
             shuffleList() {
                 if (this.shuffle) {
@@ -227,7 +250,7 @@
             },
             setCard() {
                 if (this.chart) {
-                    this.$refs.charts.chart.clear()
+                    this.chart.clear()
                 }
                 //乱序
                 this.shuffleList()
@@ -237,9 +260,11 @@
                 let uploadedList = []
                 let siteList = []
                 let ptData = this.ptData
-                let begInvite = !this.begInvite
+                let begInvite = !this.chartShow.begInvite
                 let status_list = ptData.status_list
-                if (this.shuffle) {
+                this.showList = false
+
+                if (this.chartShow.shuffle) {
                     status_list.sort(shuffle)
                 }
                 status_list.forEach((site, index) => {
@@ -292,7 +317,7 @@
                         '#d677f6',
                     ],
                     legend: {
-                        show: this.showLegend,
+                        show: this.chartShow.showLegend,
                         {#type: 'scroll',#}
                         {#top: 'bottom',#}
                         right: '2%',
@@ -314,7 +339,8 @@
                         {
                             name: '站点数据',
                             type: 'pie',
-                            bottom: '2%',
+                            top: '10%',
+                            bottom: '10%',
                             radius: '55%',
                             {#visualDimension: 1,#}
                             center: ['45%', '50%'],
@@ -353,7 +379,7 @@
             },
             setTree() {
                 let ptData = this.ptData
-                let begInvite = !this.begInvite
+                let begInvite = !this.chartShow.begInvite
                 let uploadedList = []
                 let downloadedList = []
                 ptData.status_list.forEach((site, index) => {
