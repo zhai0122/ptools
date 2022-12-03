@@ -663,7 +663,7 @@ def site_data_api(request):
         return JsonResponse(data=CommonResponse.error(
             msg='访问出错咯！'
         ).to_dict(), safe=False)
-    site_info_list = my_site.sitestatus_set.order_by('pk').all()
+    site_info_list = my_site.sitestatus_set.order_by('created_at').all()
     site_status_list = []
     site = {
         'id': my_site.id,
