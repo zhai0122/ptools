@@ -23,6 +23,7 @@ urlpatterns = [
     path(r'get_torrent_info_list', views.get_torrent_info_list, name='get_torrent_info_list'),
     path(r'site_status_api', views.site_status_api, name='site_status_api'),
     path(r'site_status', views.site_status, name='site_status'),
+    path(r'site_data_api', views.site_data_api, name='site_data_api'),
     path(r'downloading_status', views.downloading_status, name='downloading_status'),
     path(r'do_sql', views.do_sql, name='do_sql'),
 ]

@@ -601,6 +601,7 @@ def get_status(ids: list = None):
         weeks = (now - my_site.time_join).days // 7
         days = (now - my_site.time_join).days % 7
         site_info = {
+            'id': my_site.id,
             'name': my_site.site.name,
             'icon': my_site.site.logo,
             'url': my_site.site.url,
@@ -608,7 +609,7 @@ def get_status(ids: list = None):
             'invite': my_site.invitation,
             'sp_hour': my_site.sp_hour,
             'sp_hour_full': '{:.2%}'.format(
-                float(my_site.sp_hour) / my_site.site.sp_full) if my_site.site.sp_full != 0 else 0,
+                float(my_site.sp_hour) / my_site.site.sp_full) if my_site.site.sp_full != 0 else '0%',
             'seeding': my_site.seed,
             'leeching': my_site.leech,
             'weeks': f'{weeks}周 {days}天',
@@ -623,11 +624,12 @@ def get_status(ids: list = None):
             'uploaded': site_info.uploaded,
             'downloaded': site_info.downloaded,
             'seeding_size': site_info.seed_vol,
+            'last_active': datetime.strftime(site_info.updated_at, '%Y年%m月%d日%H:%M:%S'),
         }
         status_list.append(site_info)
     # 按上传量排序
     # status_list.sort(key=lambda x: x['mail'], reverse=False)
-    # status_list.sort(key=lambda x: x['mail'], reverse=True)
+    status_list.sort(key=lambda x: (x['mail'], x['uploaded']), reverse=True)
     # sorted(status_list, key=lambda x: x['uploaded'])
     # 随机乱序
     # random.shuffle(status_list)
@@ -653,7 +655,40 @@ def site_status(request):
     return render(request, 'auto_pt/status.html')
 
 
-def user_data(request):
-    my_site_list = MySite.objects.all()
-
-    return render(request, 'auto_pt/userdata.html')
+def site_data_api(request):
+    site_id = request.GET.get('id')
+    logger.info(f'前端传来的站点ID：{site_id}')
+    my_site = MySite.objects.filter(id=site_id).first()
+    if not my_site:
+        return JsonResponse(data=CommonResponse.error(
+            msg='访问出错咯！'
+        ).to_dict(), safe=False)
+    site_info_list = my_site.sitestatus_set.order_by('pk').all()
+    site_status_list = []
+    site = {
+        'id': my_site.id,
+        'name': my_site.site.name,
+        'icon': my_site.site.logo,
+        'url': my_site.site.url,
+        'class': my_site.my_level,
+        'seeding': my_site.seed,
+        'leeching': my_site.leech,
+        'last_active': datetime.strftime(my_site.updated_at, '%Y年%m月%d日%H:%M:%S'),
+    }
+    for site_info in site_info_list:
+        my_site_status = {
+            'uploaded': site_info.uploaded,
+            'downloaded': site_info.downloaded,
+            'ratio': site_info.ratio,
+            'seedingSize': site_info.seed_vol,
+            'sp': site_info.my_sp,
+            'bonus': site_info.my_bonus,
+            'date': site_info.created_at.date()
+        }
+        site_status_list.append(my_site_status)
+    return JsonResponse(data=CommonResponse.success(
+        data={
+            'site': site,
+            'site_status_list': site_status_list
+        }
+    ).to_dict(), safe=False)

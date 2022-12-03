@@ -28,6 +28,12 @@
 
         .info-card .el-card__header a {
             color: orangered;
+            text-decoration: none;
+        }
+
+        .info-card .el-card__header a:hover {
+            text-decoration: underline orangered;
+            color: dodgerblue;
         }
 
         .chart-button {
@@ -103,6 +109,11 @@
                             </div>
                             <div class="text item" style="font-size: 13px;text-align: right;">
                                 <div>
+                                    <el-button type="success" size="mini" @click="showHistoryList(site.id)">历史数据
+                                    </el-button>
+                                </div>
+                                <hr>
+                                <div>
                                     <span style="float: left;font-weight: bold;color: #3b5769;">保种分享：</span>
                                     <i class="el-icon-upload" title="做种量"
                                        v-text="' ' + renderSize(site.seeding_size)"></i>
@@ -133,12 +144,18 @@
                                     <span style="float: left;line-height: 36px;font-weight: bold;color: #3b5769;">魔力/积分：</span>
                                     <i class="el-icon-magic-stick"
                                        v-text="' ' + site.sp + ' / ' + site.bonus"
-                                       style="color: orange" title="魔力/积分"></i>
+                                       style="color: darkorange" title="魔力/积分"></i>
                                     <br>
                                     <i class="el-icon-lollipop" v-text="' ' + site.sp_hour + ' / ' + site.sp_hour_full"
                                        style="color: coral" title="时魔"></i>
                                 </div>
-
+                                <hr>
+                                <div>
+                                    <span style="float: left;font-weight: bold;color: #3b5769;">更新时间：</span>
+                                    <i class="el-icon-date"
+                                       v-text="site.last_active"
+                                       style="color: #1b1b1b;" title="最新数据更新时间"></i>
+                                </div>
                             </div>
                         </el-card>
                     </el-col>
@@ -159,8 +176,6 @@
                                    v-if="showLegend">
                             Logo
                         </el-button>
-
-
                     </el-button-group>
 
                 </div>
@@ -171,6 +186,19 @@
 
         </div>
     </el-card>
+    <el-dialog
+            title="历史数据"
+            :visible.sync="showSiteChart"
+            width="90%"
+            center>
+
+        <charts ref="site_info_charts" style="height: 700px;margin-top: 5px;" :option="option"></charts>
+
+        <span slot="footer" class="dialog-footer">
+    <el-button @click="showSiteChart = false">取 消</el-button>
+    <el-button type="primary" @click="showSiteChart = false">确 定</el-button>
+  </span>
+    </el-dialog>
 </div>
 
 {% include 'admin/includes/js-part.html' %}
@@ -196,432 +224,552 @@
     }
 
     const vm = new Vue({
-        el: '#status',
-        data() {
-            return {
-                chart: null,
-                ptData: {},
-                option: {},
-                showList: true,
-                showChart: false,
+            el: '#status',
+            data() {
+                return {
+                    chart: null,
+                    ptData: {},
+                    option: {},
+                    showList: true,
+                    showSiteChart: false,
+                    begInvite: false,
+                    showLogo: true,
+                    showLegend: true,
+                    shuffle: false,
 
-                begInvite: false,
-                showLogo: true,
-                showLegend: true,
-                shuffle: false,
+                }
+            },
+            beforeMount() {
 
-            }
-        },
-        beforeMount() {
-
-        },
-        mounted() {
-            {#this.chart = this.$refs.charts.chart#}
-            this.getData()
-        },
-        watch: {
-            obj: {
-                option(newValue, oldValue) {
-                    // option发生变化时自动重新渲染
-                    this.chart.setOption(newValue)
+            },
+            mounted() {
+                {#this.chart = this.$refs.charts.chart#}
+                this.getData()
+            },
+            watch: {
+                obj: {
+                    option(newValue, oldValue) {
+                        // option发生变化时自动重新渲染
+                        this.chart.setOption(newValue)
+                    },
+                    // immediate: true,
+                    deep: true,
+                }
+            },
+            methods: {
+                showHistoryList(id) {
+                    axios.get(
+                        "{% url 'site_data_api' %}" + '?id=' + id
+                    ).then(res => {
+                        console.log('获取数据列表成功', res.data)
+                        if (res.data.code === 0) {
+                            console.log(res.data.data)
+                            {#this.ptData = res.data.data#}
+                            {#this.ptData = res.data.data#}
+                            {#this.setPie()#}
+                            {#this.setCard()#}
+                            this.setLine(res.data.data)
+                        } else {
+                            this.loading = false
+                            this.$message({
+                                type: 'warning',
+                                message: '获取数据列表失败！'
+                            });
+                        }
+                    }).catch(res => {
+                        console.log('获取数据列表失败', res)
+                        this.$message({
+                            type: 'warning',
+                            message: '获取数据列表失败！' + res
+                        });
+                    })
                 },
-                // immediate: true,
-                deep: true,
-            }
-        },
-        methods: {
-            begInviteMode() {
-                this.begInvite = !this.begInvite
-                if (this.begInvite) {
-                    this.showLegend = false
-                    this.showLogo = false
-                }
-
-                this.setPie()
-            },
-            showLogoMode() {
-                this.showLogo = !this.showLogo
-                this.setPie()
-            },
-            showLegendMode() {
-                this.showLegend = !this.showLegend
-                this.setPie()
-            },
-            setChartOption(option) {
-                this.option = option
-                if (this.chart) {
-                    this.chart.clear()
-                }
-                this.chart = this.$refs.charts.chart
-                this.chart.setOption(this.option)
-                window.addEventListener("resize", () => {
-                    this.chart.resize()
-                })
-                //this.$nextTick(() => {//自适应宽度
-                //   this.chart.resize();
-                //})
-            },
-            shuffleList() {
-                this.shuffle = true
-                this.ptData.status_list.sort(() => {
-                    return Math.random() > 0.5 ? -1 : 1
-                })
-
-                this.showList ? this.setCard() : this.setPie()
-            },
-            sortList() {
-                if (this.shuffle == false) {
-                    return
-                }
-                this.shuffle = false
-                this.ptData.status_list.sort((a, b) => {
-                    if (b.mail == a.mail) {
-                        return b.uploaded - a.uploaded
+                begInviteMode() {
+                    this.begInvite = !this.begInvite
+                    if (this.begInvite) {
+                        this.showLegend = false
+                        this.showLogo = false
                     }
-                    return b.mail - a.mail
-                })
-                this.showList ? this.setCard() : this.setPie()
-            },
-            setCard() {
-                if (this.chart) {
-                    this.chart.clear()
+
+                    this.setPie()
                 }
-                //乱序
-                {#this.shuffleList()#}
-                this.showList = true
-
-            },
-            setPie() {
-                let uploadedList = []
-                let siteList = []
-                let ptData = this.ptData
-                let begInvite = !this.begInvite
-                let status_list = ptData.status_list
-                this.showList = false
-
-                //if (this.shuffle) {
-                //    status_list.sort(shuffle)
-                //}
-                status_list.forEach((site, index) => {
-                    uploadedList.push({
-                        'value': site.uploaded,
-                        'path': 'uploaded/' + site.name,
-                        'name': site.name
+                ,
+                showLogoMode() {
+                    this.showLogo = !this.showLogo
+                    this.setPie()
+                }
+                ,
+                showLegendMode() {
+                    this.showLegend = !this.showLegend
+                    this.setPie()
+                }
+                ,
+                setChartOption(option) {
+                    this.option = option
+                    if (this.chart) {
+                        this.chart.clear()
+                    }
+                    this.chart.setOption(this.option)
+                    window.addEventListener("resize", () => {
+                        this.chart.resize()
                     })
-                    //downloadedList.push({
-                    //    'value': site.downloaded,
-                    //    'path': 'downloaded/' + site.name,
-                    //    'name': site.name
+                    //this.$nextTick(() => {//自适应宽度
+                    //   this.chart.resize();
                     //})
-                    siteList.push({
-                        name: site.name,
-                        icon: this.showLogo ? `image://${site.icon}` : 'roundRect'
+                }
+                ,
+                shuffleList() {
+                    this.shuffle = true
+                    this.ptData.status_list.sort(() => {
+                        return Math.random() > 0.5 ? -1 : 1
                     })
-                })
-                let option = {
-                    title: {
-                        text: 'PT站点数据',
-                        subtext: `上传量：${renderSize(ptData.total_data.uploaded)}\n做种量：${renderSize(ptData.total_data.seeding_size)}\n下载量：${renderSize(ptData.total_data.downloaded)}\n分享率：${ptData.total_data.ratio}`,
-                        subtextStyle: {
-                            color: 'orange',
-                            fontWeight: 'bold',
-                            fontFamily: '黑体',
-                            fontSize: '16',
-                            lineHeight: 32,
-                        },
-                        left: '5%',
-                        top: '2%',
-                    },
-                    tooltip: {
-                        show: true,
-                        formatter: function (params) {
-                            return params.name + '\t' + renderSize(params.data.value)
-                        },
-                        valueFormatter: function (value) {
-                            return renderSize(value)
+
+                    this.showList ? this.setCard() : this.setPie()
+                }
+                ,
+                sortList() {
+                    //if (this.shuffle == false) {
+                    //    return
+                    //}
+                    this.shuffle = false
+                    this.ptData.status_list.sort((a, b) => {
+                        if (b.mail == a.mail) {
+                            return b.uploaded - a.uploaded
                         }
-                    },
-                    color: [
-                        '#f66c73',
-                        '#f68645',
-                        '#7af6ad',
-                        '#f4d55f',
-                        '#488ff6',
-                        '#0fba8d',
-                        '#8a47dc',
-                        '#d677f6',
-                    ],
-                    legend: {
-                        show: this.showLegend,
-                        {#type: 'scroll',#}
-                        {#top: 'bottom',#}
-                        right: '2%',
-                        top: '5%',
-                        bottom: '5%',
-                        orient: 'vertical',
-                        data: [],
-                    },
-                    toolbox: {
-                        show: true,
-                        feature: {
-                            mark: {show: true},
-                            {#dataView: {show: true, readOnly: false},#}
-                            {#restore: {show: true},#}
-                            saveAsImage: {show: true}
-                        }
-                    },
-                    series: [
-                        {
-                            name: '站点数据',
-                            type: 'pie',
-                            top: '10%',
-                            bottom: '10%',
-                            radius: '55%',
-                            {#visualDimension: 1,#}
-                            center: ['45%', '50%'],
-                            roseType: '',
-                            label: {
-                                show: true,
-                                formatter: function (params) {
-                                    {#return params.name + ' \t ' + renderSize(params.data.value)#}
-                                    return `${begInvite ? params.name : ''} \t ${renderSize(params.data.value)}`
+                        return b.mail - a.mail
+                    })
+                    this.showList ? this.setCard() : this.setPie()
+                }
+                ,
+                setCard() {
+                    if (this.chart) {
+                        this.chart.clear()
+                    }
+                    //乱序
+                    {#this.shuffleList()#}
+                    this.showList = true
+                },
+                setPie() {
+                    let uploadedList = []
+                    let siteList = []
+                    let ptData = this.ptData
+                    let begInvite = !this.begInvite
+                    let status_list = ptData.status_list
+                    this.showList = false
+
+                    //if (this.shuffle) {
+                    //    status_list.sort(shuffle)
+                    //}
+                    status_list.forEach((site, index) => {
+                        uploadedList.push({
+                            'value': site.uploaded,
+                            'path': 'uploaded/' + site.name,
+                            'name': site.name
+                        })
+                        //downloadedList.push({
+                        //    'value': site.downloaded,
+                        //    'path': 'downloaded/' + site.name,
+                        //    'name': site.name
+                        //})
+                        siteList.push({
+                            name: site.name,
+                            icon: this.showLogo ? `image://${site.icon}` : 'roundRect'
+                        })
+                    })
+                    let option = {
+                        title: {
+                            text: 'PT站点数据',
+                            subtext: `上传量：${renderSize(ptData.total_data.uploaded)}\n做种量：${renderSize(ptData.total_data.seeding_size)}\n下载量：${renderSize(ptData.total_data.downloaded)}\n分享率：${ptData.total_data.ratio}`,
+                            subtextStyle: {
+                                color: 'orange',
+                                fontWeight: 'bold',
+                                fontFamily: '黑体',
+                                fontSize: '16',
+                                lineHeight: 32,
+                            },
+                            left: '5%',
+                            top: '2%',
+                        },
+                        tooltip: {
+                            show: true,
+                            formatter: function (params) {
+                                return params.name + '\t' + renderSize(params.data.value)
+                            },
+                            valueFormatter: function (value) {
+                                return renderSize(value)
+                            }
+                        },
+                        color: [
+                            '#f66c73',
+                            '#f68645',
+                            '#7af6ad',
+                            '#f4d55f',
+                            '#488ff6',
+                            '#0fba8d',
+                            '#8a47dc',
+                            '#d677f6',
+                        ],
+                        legend: {
+                            show: this.showLegend,
+                            {#type: 'scroll',#}
+                            {#top: 'bottom',#}
+                            right: '2%',
+                            top: '5%',
+                            bottom: '5%',
+                            orient: 'vertical',
+                            data: [],
+                        },
+                        toolbox: {
+                            show: true,
+                            feature: {
+                                mark: {show: true},
+                                {#dataView: {show: true, readOnly: false},#}
+                                {#restore: {show: true},#}
+                                saveAsImage: {show: true}
+                            }
+                        },
+                        series: [
+                            {
+                                name: '站点数据',
+                                type: 'pie',
+                                top: '10%',
+                                bottom: '10%',
+                                radius: '55%',
+                                {#visualDimension: 1,#}
+                                center: ['45%', '50%'],
+                                roseType: '',
+                                label: {
+                                    show: true,
+                                    formatter: function (params) {
+                                        {#return params.name + ' \t ' + renderSize(params.data.value)#}
+                                        return `${begInvite ? params.name : ''} \t ${renderSize(params.data.value)}`
+                                    },
+                                    itemHeight: 12,
+                                    itemWidth: 20
                                 },
-                                itemHeight: 12,
-                                itemWidth: 20
-                            },
-                            itemStyle: {
-                                borderRadius: 7
-                            },
-                            data: [
-                                {value: 40, name: 'rose 1'},
-                                {value: 38, name: 'rose 2'},
-                                {value: 32, name: 'rose 3'},
-                                {value: 30, name: 'rose 4'},
-                            ],
-                            emphasis: {
                                 itemStyle: {
-                                    shadowBlur: 10,
-                                    shadowOffsetX: 0,
-                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                    borderRadius: 7
+                                },
+                                data: [
+                                    {value: 40, name: 'rose 1'},
+                                    {value: 38, name: 'rose 2'},
+                                    {value: 32, name: 'rose 3'},
+                                    {value: 30, name: 'rose 4'},
+                                ],
+                                emphasis: {
+                                    itemStyle: {
+                                        shadowBlur: 10,
+                                        shadowOffsetX: 0,
+                                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                    }
                                 }
                             }
-                        }
-                    ]
-                }
-                option.series[0].data = uploadedList
-                option.legend.data = siteList
-                this.setChartOption(option)
-            },
-            setTree() {
-                let ptData = this.ptData
-                let begInvite = !this.begInvite
-                let uploadedList = []
-                let downloadedList = []
-                ptData.status_list.forEach((site, index) => {
-                    uploadedList.push({
-                        'value': site.uploaded,
-                        'path': 'uploaded/' + site.name,
-                        'name': `${site.name}\t${renderSize(site.uploaded)}`
+                        ]
+                    }
+                    option.series[0].data = uploadedList
+                    option.legend.data = siteList
+                    this.chart = this.$refs.charts.chart
+                    this.setChartOption(option)
+                },
+                setTree() {
+                    let ptData = this.ptData
+                    let begInvite = !this.begInvite
+                    let uploadedList = []
+                    let downloadedList = []
+                    ptData.status_list.forEach((site, index) => {
+                        uploadedList.push({
+                            'value': site.uploaded,
+                            'path': 'uploaded/' + site.name,
+                            'name': `${site.name}\t${renderSize(site.uploaded)}`
+                        })
+                        downloadedList.push({
+                            'value': site.downloaded,
+                            'path': 'downloaded/' + site.name,
+                            'name': `${site.name}\t${renderSize(site.downloaded)}`
+                        })
                     })
-                    downloadedList.push({
-                        'value': site.downloaded,
-                        'path': 'downloaded/' + site.name,
-                        'name': `${site.name}\t${renderSize(site.downloaded)}`
-                    })
-                })
-                let option = {
-                    backgroundColor: '#130f2c',
-                    title: {
-                        text: 'PT站点数据',
-                        subtext: `上传量：${renderSize(ptData.total_data.uploaded)}\t做种量：${renderSize(ptData.total_data.seeding_size)}\t下载量：${renderSize(ptData.total_data.downloaded)}\t分享率：${ptData.total_data.ratio}`,
-                        subtextStyle: {
-                            color: '#969696',
-                            fontWeight: 'bold',
-                            fontFamily: '黑体',
-                            fontSize: '16',
-                            lineHeight: 32,
-                        },
-                        left: '10%',
-                    },
-                    tooltip: {
-                        show: true,
-                        //formatter: function (params) {
-                        //    return params.name + '\t' + renderSize(params.data.value)
-                        //}
-                        valueFormatter: function (value) {
-                            return renderSize(value)
-                        }
-                    },
-                    color: [
-                        '#f66c73',
-                        '#f68645',
-                        '#7af6ad',
-                        '#f4d55f',
-                        '#488ff6',
-                        '#0fba8d',
-                        '#8a47dc',
-                        '#d677f6',
-                        '#130f2c',
-                        '#2f4155',
-                    ],
-                    toolbox: {
-                        show: true,
-                        feature: {
-                            mark: {show: true},
-                            saveAsImage: {show: true}
-                        }
-                    },
-                    series: [
-                        {
-                            type: 'treemap',
-                            name: '数据汇总',
-                            colorMappingBy: 'index',
-                            {#colorSaturation: [0.9, 0.9],#}
-                            label: {
-                                show: true,
-                                formatter: function (params) {
-                                    {#return params.name + '\t' + renderSize(params.data.value)#}
-                                    return `${begInvite ? params.name : ''} \t ${renderSize(params.data.value)}`
-                                }
+                    let option = {
+                        backgroundColor: '#130f2c',
+                        title: {
+                            text: 'PT站点数据',
+                            subtext: `上传量：${renderSize(ptData.total_data.uploaded)}\t做种量：${renderSize(ptData.total_data.seeding_size)}\t下载量：${renderSize(ptData.total_data.downloaded)}\t分享率：${ptData.total_data.ratio}`,
+                            subtextStyle: {
+                                color: '#969696',
+                                fontWeight: 'bold',
+                                fontFamily: '黑体',
+                                fontSize: '16',
+                                lineHeight: 32,
                             },
-                            data: [
-                                {
-                                    name: '上传',
-                                    value: 0,
-                                }
-                            ]
-                        }
-                    ]
-                }
-                /**
-                 console.log(this.treeOption.series[0].data)
-                 this.treeOption.series[0].data.push({
+                            left: '10%',
+                        },
+                        tooltip: {
+                            show: true,
+                            //formatter: function (params) {
+                            //    return params.name + '\t' + renderSize(params.data.value)
+                            //}
+                            valueFormatter: function (value) {
+                                return renderSize(value)
+                            }
+                        },
+                        color: [
+                            '#f66c73',
+                            '#f68645',
+                            '#7af6ad',
+                            '#f4d55f',
+                            '#488ff6',
+                            '#0fba8d',
+                            '#8a47dc',
+                            '#d677f6',
+                            '#130f2c',
+                            '#2f4155',
+                        ],
+                        toolbox: {
+                            show: true,
+                            feature: {
+                                mark: {show: true},
+                                saveAsImage: {show: true}
+                            }
+                        },
+                        series: [
+                            {
+                                type: 'treemap',
+                                name: '数据汇总',
+                                colorMappingBy: 'index',
+                                {#colorSaturation: [0.9, 0.9],#}
+                                label: {
+                                    show: true,
+                                    formatter: function (params) {
+                                        {#return params.name + '\t' + renderSize(params.data.value)#}
+                                        return `${begInvite ? params.name : ''} \t ${renderSize(params.data.value)}`
+                                    }
+                                },
+                                data: [
+                                    {
+                                        name: '上传',
+                                        value: 0,
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                    /**
+                     console.log(this.treeOption.series[0].data)
+                     this.treeOption.series[0].data.push({
                             name: '总下载',
                             value: ptData.total_data.downloaded,
                         })
-                 let treeData = this.treeOption.series[0].data[0]
-                 treeData.value = ptData.total_data.uploaded
-                 treeData.children = dataList
-                 **/
-                option.series[0].data.push({
-                    name: `总上传\t${renderSize(ptData.total_data.uploaded)}`,
-                    value: ptData.total_data.uploaded,
-                    path: "uploaded",
-                    children: uploadedList
-                }, {
-                    name: `总下载\t${renderSize(ptData.total_data.downloaded)}`,
-                    value: ptData.total_data.downloaded,
-                    path: "downloaded",
-                    children: downloadedList
-                })
-                {#this.treeOption.series[0].data.push()#}
-                {#this.$refs.charts.chart.setOption(treeOption)#}
-                this.setChartOption(option)
-            },
-            setBar() {
-                let option = {
-                    title: {
-                        text: 'PT数据聚合图'
-                    },
-                    color: [
-                        'skyblue',
-                        'orange'
-                    ],
-                    tooltip: {
-                        trigger: 'axis',
-                        show: true,
-                        axisPointer: {
-                            type: 'shadow'
+                     let treeData = this.treeOption.series[0].data[0]
+                     treeData.value = ptData.total_data.uploaded
+                     treeData.children = dataList
+                     **/
+                    option.series[0].data.push({
+                        name: `总上传\t${renderSize(ptData.total_data.uploaded)}`,
+                        value: ptData.total_data.uploaded,
+                        path: "uploaded",
+                        children: uploadedList
+                    }, {
+                        name: `总下载\t${renderSize(ptData.total_data.downloaded)}`,
+                        value: ptData.total_data.downloaded,
+                        path: "downloaded",
+                        children: downloadedList
+                    })
+                    {#this.treeOption.series[0].data.push()#}
+                    {#this.$refs.charts.chart.setOption(treeOption)#}
+                    this.chart = this.$refs.charts.chart
+                    this.setChartOption(option)
+                },
+                setBar() {
+                    let option = {
+                        title: {
+                            text: 'PT数据聚合图'
                         },
-                        valueFormatter: function (value) {
-                            return renderSize(value)
+                        color: [
+                            'skyblue',
+                            'orange'
+                        ],
+                        tooltip: {
+                            trigger: 'axis',
+                            show: true,
+                            axisPointer: {
+                                type: 'shadow'
+                            },
+                            valueFormatter: function (value) {
+                                return renderSize(value)
+                            }
+                        },
+                        legend: {
+                            show: this.showLegend
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        xAxis: {
+                            type: 'category',
+                            data: []
+                        },
+                        yAxis: {
+                            type: 'value',
+                            axisLabel: {
+                                formatter: function (value, index) {
+                                    return renderSize(value);
+                                }
+                            },
+                            label: {
+                                formatter: function (value, index) {
+                                    return renderSize(value);
+                                }
+                            },
+                            boundaryGap: [0, 0.01]
+                        },
+                        series: []
+                    };
+                    let ptData = this.ptData
+                    let uploadedList = []
+                    let downloadedList = []
+                    let siteList = []
+                    {#uploadedList.push(ptData.total_data.uploaded)#}
+                    {#downloadedList.push(ptData.total_data.downloaded)#}
+                    {#siteList.push('总量')#}
+                    ptData.status_list.forEach((site, index) => {
+                        downloadedList.push(site.downloaded)
+                        uploadedList.push(site.uploaded)
+                        siteList.push(site.name)
+                    })
+                    let uploaded = {
+                        name: '上传量',
+                        type: 'bar',
+                        stack: 'Ad',
+                        data: uploadedList
+                    }
+                    let downloaded = {
+                        name: '下载量',
+                        type: 'bar',
+                        stack: 'Ad',
+                        data: downloadedList
+                    }
+                    option.series.push(downloaded, uploaded)
+                    option.xAxis.data = siteList
+                    this.chart = this.$refs.charts.chart
+                    this.setChartOption(option)
+                },
+                setLine(siteData) {
+                    let site = siteData.site
+                    let dataList = siteData.site_status_list
+                    let uploadedList = []
+                    let downloadedList = []
+                    let bonusList = []
+                    let spList = []
+                    let ratioList = []
+                    let seedingSizeList = []
+                    let dateList = []
+                    dataList.forEach((info, index) => {
+                        uploadedList.push(info.uploaded)
+                        ratioList.push(info.ratio)
+                        seedingSizeList.push(info.seedingSize)
+                        downloadedList.push(info.downloaded)
+                        spList.push(info.sp)
+                        bonusList.push(info.bonus)
+                        dateList.push(info.date)
+                    })
+                    let option = {
+                        title: {
+                            text: 'Stacked Line'
+                        },
+                        tooltip: {
+                            trigger: 'axis'
+                        },
+                        legend: {
+                            show: true,
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        toolbox: {
+                            feature: {
+                                saveAsImage: {}
+                            }
+                        },
+                        xAxis: {
+                            type: 'category',
+                            boundaryGap: false,
+                            data: dateList
+                        },
+                        yAxis: {
+                            type: 'value'
+                        },
+                        series: [
+                            {
+                                name: '上传量',
+                                type: 'line',
+                                {#stack: 'Total',#}
+                                data: uploadedList
+                            },
+                            {
+                                name: '做种量',
+                                type: 'line',
+                                {#stack: 'Total',#}
+                                data: seedingSizeList
+                            },
+                            {
+                                name: '下载量',
+                                type: 'line',
+                                {#stack: 'Total',#}
+                                data: downloadedList
+                            },
+                            {
+                                name: '魔力值',
+                                type: 'line',
+                                {#stack: 'Total',#}
+                                data: spList
+                            },
+                            {
+                                name: '积分',
+                                type: 'line',
+                                {#stack: 'Total',#}
+                                data: bonusList
+                            }
+                        ]
+                    };
+                    this.showSiteChart = true
+                    this.chart = this.$refs.site_info_charts
+                    this.setChartOption(option)
+
+                },
+                getData() {
+                    axios.get(
+                        "{% url "site_status_api" %}"
+                    ).then(res => {
+                        console.log('获取数据列表成功', res.data)
+                        if (res.data.code === 0) {
+                            console.log(res.data.data)
+                            {#this.ptData = res.data.data#}
+                            this.ptData = res.data.data
+                            {#this.setPie()#}
+                            this.setCard()
+                        } else {
+                            this.loading = false
+                            this.$message({
+                                type: 'warning',
+                                message: '获取数据列表失败！'
+                            });
                         }
-                    },
-                    legend: {
-                        show: this.showLegend
-                    },
-                    grid: {
-                        left: '3%',
-                        right: '4%',
-                        bottom: '3%',
-                        containLabel: true
-                    },
-                    xAxis: {
-                        type: 'category',
-                        data: []
-                    },
-                    yAxis: {
-                        type: 'value',
-                        axisLabel: {
-                            formatter: function (value, index) {
-                                return renderSize(value);
-                            }
-                        },
-                        label: {
-                            formatter: function (value, index) {
-                                return renderSize(value);
-                            }
-                        },
-                        boundaryGap: [0, 0.01]
-                    },
-                    series: []
-                };
-                let ptData = this.ptData
-                let uploadedList = []
-                let downloadedList = []
-                let siteList = []
-                {#uploadedList.push(ptData.total_data.uploaded)#}
-                {#downloadedList.push(ptData.total_data.downloaded)#}
-                {#siteList.push('总量')#}
-                ptData.status_list.forEach((site, index) => {
-                    downloadedList.push(site.downloaded)
-                    uploadedList.push(site.uploaded)
-                    siteList.push(site.name)
-                })
-                let uploaded = {
-                    name: '上传量',
-                    type: 'bar',
-                    stack: 'Ad',
-                    data: uploadedList
-                }
-                let downloaded = {
-                    name: '下载量',
-                    type: 'bar',
-                    stack: 'Ad',
-                    data: downloadedList
-                }
-                option.series.push(downloaded, uploaded)
-                option.xAxis.data = siteList
-                this.setChartOption(option)
-            },
-            getData() {
-                axios.get(
-                    "{% url "site_status_api" %}"
-                ).then(res => {
-                    console.log('获取数据列表成功', res.data)
-                    if (res.data.code === 0) {
-                        console.log(res.data.data)
-                        {#this.ptData = res.data.data#}
-                        this.ptData = res.data.data
-                        {#this.setPie()#}
-                        this.setCard()
-                    } else {
-                        this.loading = false
+                    }).catch(res => {
+                        console.log('获取数据列表失败', res)
                         this.$message({
                             type: 'warning',
-                            message: '获取数据列表失败！'
+                            message: '获取数据列表失败！' + res
                         });
-                    }
-                }).catch(res => {
-                    console.log('获取数据列表失败', res)
-                    this.$message({
-                        type: 'warning',
-                        message: '获取数据列表失败！' + res
-                    });
-                })
+                    })
+                }
             }
-        }
-    });
+        })
+    ;
 </script>
 </body>
 </html>
