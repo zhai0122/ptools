@@ -588,9 +588,12 @@ def get_status(ids: list = None):
     status_list = []
     now = datetime.now()
     for my_site in my_site_list:
-        site_info = my_site.sitestatus_set.order_by('-pk').first()
-        if not site_info:
+        site_info_list = my_site.sitestatus_set.order_by('-pk').all()
+        logger.info(f'{my_site.site.name}: {len(site_info_list)}')
+        if len(site_info_list) <= 0:
+            logger.info(f'{my_site.site.name}: 获取站点信息列表错误！')
             continue
+        site_info = site_info_list.first()
         downloaded += site_info.downloaded
         uploaded += site_info.uploaded
         seeding += my_site.seed
