@@ -42,12 +42,22 @@
         <div slot="header" class="clearfix">
             <span>站点数据</span>
 
-            <el-button type="primary" size="mini" class="chart-button" v-if="showList"
-                       @click="setPie">图表
+            <span class="chart-button">
+
+            <el-button size="mini" :type="shuffle ? 'primary' : ''" @click="shuffleList">
+                随机
             </el-button>
-            <el-button type="success" size="mini" class="chart-button" v-else="showList"
+            <el-button size="mini" :type="!shuffle ? 'primary' : ''" @click="sortList">
+                正序
+            </el-button>
+                <el-button type="primary" size="mini" v-if="showList"
+                           @click="setPie">图表
+            </el-button>
+            <el-button type="success" size="mini" v-else="showList"
                        @click="setCard">卡片
             </el-button>
+            </span>
+
 
         </div>
         <div class="body">
@@ -136,23 +146,23 @@
             </div>
 
             <div v-else="showList" style="margin-top: -15px;">
-                <div>
-                    <el-button type="warning" size="mini" class="chart-button"
-                               @click="setTree">矩形图
-                    </el-button>
-                    <el-button type="success" size="mini" class="chart-button"
-                               @click="setBar">柱状图
-                    </el-button>
-                    <el-button type="primary" size="mini" class="chart-button"
-                               @click="setPie">饼图
-                    </el-button>
+                <div style="text-align: center">
 
-                    <el-checkbox border fill="#E6A23C" size="mini" v-model="chartShow.begInvite"
-                                 label="求药"></el-checkbox>
-                    <el-checkbox border fill="#E6A23C" size="mini" v-model="chartShow.showLegend"
-                                 label="图例"></el-checkbox>
-                    <el-checkbox border fill="#E6A23C" size="mini" v-model="chartShow.shuffle"
-                                 label="随机"></el-checkbox>
+                    <el-button-group>
+                        <el-button size="mini" :type="begInvite ? 'primary' : ''" @click="begInviteMode">
+                            求药
+                        </el-button>
+                        <el-button size="mini" :type="showLegend ? 'primary' : ''" @click="showLegendMode">
+                            图例
+                        </el-button>
+                        <el-button size="mini" :type="showLogo ? 'primary' : ''" @click="showLogoMode"
+                                   v-if="showLegend">
+                            Logo
+                        </el-button>
+
+
+                    </el-button-group>
+
                 </div>
 
                 <charts ref="charts" style="height: 700px;margin-top: 5px;" :option="option"></charts>
@@ -194,12 +204,12 @@
                 option: {},
                 showList: true,
                 showChart: false,
-                chartShow: {
-                    begInvite: false,
-                    showLogo: false,
-                    showLegend: false,
-                    shuffle: false,
-                }
+
+                begInvite: false,
+                showLogo: true,
+                showLegend: true,
+                shuffle: false,
+
             }
         },
         beforeMount() {
@@ -220,6 +230,23 @@
             }
         },
         methods: {
+            begInviteMode() {
+                this.begInvite = !this.begInvite
+                if (this.begInvite) {
+                    this.showLegend = false
+                    this.showLogo = false
+                }
+
+                this.setPie()
+            },
+            showLogoMode() {
+                this.showLogo = !this.showLogo
+                this.setPie()
+            },
+            showLegendMode() {
+                this.showLegend = !this.showLegend
+                this.setPie()
+            },
             setChartOption(option) {
                 this.option = option
                 if (this.chart) {
@@ -235,38 +262,46 @@
                 //})
             },
             shuffleList() {
-                if (this.shuffle) {
-                    this.ptData.status_list.sort(() => {
-                        return Math.random() > 0.5 ? -1 : 1
-                    })
-                } else {
-                    this.ptData.status_list.sort((a, b) => {
-                        if (b.mail == a.mail) {
-                            return b.uploaded - a.uploaded
-                        }
-                        return b.mail - a.mail
-                    })
+                this.shuffle = true
+                this.ptData.status_list.sort(() => {
+                    return Math.random() > 0.5 ? -1 : 1
+                })
+
+                this.showList ? this.setCard() : this.setPie()
+            },
+            sortList() {
+                if (this.shuffle == false) {
+                    return
                 }
+                this.shuffle = false
+                this.ptData.status_list.sort((a, b) => {
+                    if (b.mail == a.mail) {
+                        return b.uploaded - a.uploaded
+                    }
+                    return b.mail - a.mail
+                })
+                this.showList ? this.setCard() : this.setPie()
             },
             setCard() {
                 if (this.chart) {
                     this.chart.clear()
                 }
                 //乱序
-                this.shuffleList()
+                {#this.shuffleList()#}
                 this.showList = true
+
             },
             setPie() {
                 let uploadedList = []
                 let siteList = []
                 let ptData = this.ptData
-                let begInvite = !this.chartShow.begInvite
+                let begInvite = !this.begInvite
                 let status_list = ptData.status_list
                 this.showList = false
 
-                if (this.chartShow.shuffle) {
-                    status_list.sort(shuffle)
-                }
+                //if (this.shuffle) {
+                //    status_list.sort(shuffle)
+                //}
                 status_list.forEach((site, index) => {
                     uploadedList.push({
                         'value': site.uploaded,
@@ -280,7 +315,7 @@
                     //})
                     siteList.push({
                         name: site.name,
-                        icon: begInvite ? `image://${site.icon}` : 'roundRect'
+                        icon: this.showLogo ? `image://${site.icon}` : 'roundRect'
                     })
                 })
                 let option = {
@@ -317,7 +352,7 @@
                         '#d677f6',
                     ],
                     legend: {
-                        show: this.chartShow.showLegend,
+                        show: this.showLegend,
                         {#type: 'scroll',#}
                         {#top: 'bottom',#}
                         right: '2%',
@@ -379,7 +414,7 @@
             },
             setTree() {
                 let ptData = this.ptData
-                let begInvite = !this.chartShow.begInvite
+                let begInvite = !this.begInvite
                 let uploadedList = []
                 let downloadedList = []
                 ptData.status_list.forEach((site, index) => {
