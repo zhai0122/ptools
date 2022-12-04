@@ -1,7 +1,6 @@
 import json
 import logging
 import os
-import random
 import subprocess
 import time
 import traceback
@@ -642,6 +641,7 @@ def get_status(ids: list = None):
         'seeding_size': seeding_size,
         'seeding': seeding,
         'ratio': round(uploaded / downloaded, 3),
+        'now': datetime.now().date()
     }
     # return render(request, 'auto_pt/status.html')
     return {
@@ -683,7 +683,7 @@ def site_data_api(request):
             'seedingSize': site_info.seed_vol,
             'sp': site_info.my_sp,
             'bonus': site_info.my_bonus,
-            'date': site_info.created_at.date()
+            'info_date': site_info.created_at.date()
         }
         site_status_list.append(my_site_status)
     return JsonResponse(data=CommonResponse.success(

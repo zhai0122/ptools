@@ -187,17 +187,13 @@
         </div>
     </el-card>
     <el-dialog
-            title="历史数据"
+            {#            title="历史数据"#}
             :visible.sync="showSiteChart"
             width="90%"
             center>
 
-        <charts ref="site_info_charts" style="height: 700px;margin-top: 5px;" :option="option"></charts>
+        <charts ref="site_info_charts" style="height: 600px;margin-top: 15px;" :option="option"></charts>
 
-        <span slot="footer" class="dialog-footer">
-    <el-button @click="showSiteChart = false">取 消</el-button>
-    <el-button type="primary" @click="showSiteChart = false">确 定</el-button>
-  </span>
     </el-dialog>
 </div>
 
@@ -224,22 +220,22 @@
     }
 
     const vm = new Vue({
-            el: '#status',
-            data() {
-                return {
-                    chart: null,
-                    ptData: {},
-                    option: {},
-                    showList: true,
-                    showSiteChart: false,
-                    begInvite: false,
-                    showLogo: true,
-                    showLegend: true,
-                    shuffle: false,
+        el: '#status',
+        data() {
+            return {
+                chart: null,
+                ptData: {},
+                option: {},
+                showList: false,
+                showSiteChart: false,
+                begInvite: false,
+                showLogo: true,
+                showLegend: true,
+                shuffle: false,
 
-                }
-            },
-            beforeMount() {
+            }
+        },
+        beforeMount() {
 
             },
             mounted() {
@@ -276,13 +272,14 @@
                                 message: '获取数据列表失败！'
                             });
                         }
-                    }).catch(res => {
-                        console.log('获取数据列表失败', res)
-                        this.$message({
-                            type: 'warning',
-                            message: '获取数据列表失败！' + res
-                        });
                     })
+                    //.catch(res => {
+                    //console.log('获取数据列表失败', res)
+                    // this.$message({
+                    //   type: 'warning',
+                    // message: '获取数据列表失败！' + res
+                    //});
+                    //})
                 },
                 begInviteMode() {
                     this.begInvite = !this.begInvite
@@ -378,14 +375,21 @@
                     })
                     let option = {
                         title: {
-                            text: 'PT站点数据',
-                            subtext: `上传量：${renderSize(ptData.total_data.uploaded)}\n做种量：${renderSize(ptData.total_data.seeding_size)}\n下载量：${renderSize(ptData.total_data.downloaded)}\n分享率：${ptData.total_data.ratio}`,
+                            text: 'PT站点数据\nCopy By PTools',
+                            textStyle: {
+                                color: 'orangered',
+                                fontWeight: 'bold',
+                                fontFamily: '黑体',
+                                fontSize: '22',
+                                lineHeight: 32,
+                            },
+                            subtext: `上传量：${renderSize(ptData.total_data.uploaded)}\n做种量：${renderSize(ptData.total_data.seeding_size)}\n下载量：${renderSize(ptData.total_data.downloaded)}\n分享率：${ptData.total_data.ratio}\n时间：${ptData.total_data.now}`,
                             subtextStyle: {
                                 color: 'orange',
                                 fontWeight: 'bold',
                                 fontFamily: '黑体',
                                 fontSize: '16',
-                                lineHeight: 32,
+                                lineHeight: 24,
                             },
                             left: '5%',
                             top: '2%',
@@ -672,14 +676,21 @@
                         downloadedList.push(info.downloaded)
                         spList.push(info.sp)
                         bonusList.push(info.bonus)
-                        dateList.push(info.date)
+                        dateList.push(info.info_date)
                     })
                     let option = {
                         title: {
-                            text: 'Stacked Line'
+                            text: `${site.name} - Copyright By PTools`
                         },
                         tooltip: {
-                            trigger: 'axis'
+                            show: true,
+                            trigger: 'axis',
+                            //formatter: function (params) {
+                            //    return params.name + '\t' + renderSize(params.data.value)
+                            //},
+                            valueFormatter: function (value) {
+                                return renderSize(value)
+                            }
                         },
                         legend: {
                             show: true,
@@ -701,7 +712,12 @@
                             data: dateList
                         },
                         yAxis: {
-                            type: 'value'
+                            type: 'value',
+                            axisLabel: {
+                                formatter: function (value, index) {
+                                    return renderSize(value);
+                                }
+                            },
                         },
                         series: [
                             {
@@ -751,7 +767,7 @@
                             {#this.ptData = res.data.data#}
                             this.ptData = res.data.data
                             {#this.setPie()#}
-                            this.setCard()
+                            this.setPie()
                         } else {
                             this.loading = false
                             this.$message({
