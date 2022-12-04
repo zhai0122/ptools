@@ -599,12 +599,14 @@ def get_status(ids: list = None):
         seeding_size += site_info.seed_vol
         weeks = (now - my_site.time_join).days // 7
         days = (now - my_site.time_join).days % 7
+        # my_site.signin_set.filter(created_at__day=now.date()).first().sign_in_today
         site_info = {
             'id': my_site.id,
             'name': my_site.site.name,
             'icon': my_site.site.logo,
             'url': my_site.site.url,
             'class': my_site.my_level,
+            # 'sign_in': my_site.signin_set.filter(created_at__day=now.date()),
             'invite': my_site.invitation,
             'sp_hour': my_site.sp_hour,
             'sp_hour_full': '{:.2%}'.format(
@@ -695,4 +697,22 @@ def site_data_api(request):
             'site': site,
             'site_status_list': site_status_list
         }
+    ).to_dict(), safe=False)
+
+
+def sign_in_api(request):
+    return JsonResponse(data=CommonResponse.success(
+        msg='ok'
+    ).to_dict(), safe=False)
+
+
+def update_site_api(request):
+    return JsonResponse(data=CommonResponse.success(
+        msg='ok'
+    ).to_dict(), safe=False)
+
+
+def edit_site_api(request):
+    return JsonResponse(data=CommonResponse.success(
+        msg='ok'
     ).to_dict(), safe=False)
