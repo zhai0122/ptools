@@ -664,6 +664,7 @@ def site_data_api(request):
             msg='访问出错咯！'
         ).to_dict(), safe=False)
     site_info_list = my_site.sitestatus_set.order_by('created_at').all()
+    logger.info(site_info_list)
     site_status_list = []
     site = {
         'id': my_site.id,
@@ -676,16 +677,19 @@ def site_data_api(request):
         'last_active': datetime.strftime(my_site.updated_at, '%Y年%m月%d日%H:%M:%S'),
     }
     for site_info in site_info_list:
+        print(site_info.ratio != float('inf'))
         my_site_status = {
             'uploaded': site_info.uploaded,
             'downloaded': site_info.downloaded,
-            'ratio': site_info.ratio,
+            'ratio': 0 if site_info.ratio == float('inf') else site_info.ratio,
             'seedingSize': site_info.seed_vol,
             'sp': site_info.my_sp,
             'bonus': site_info.my_bonus,
             'info_date': site_info.created_at.date()
         }
         site_status_list.append(my_site_status)
+    logger.info(site)
+    logger.info(site_status_list)
     return JsonResponse(data=CommonResponse.success(
         data={
             'site': site,

@@ -190,10 +190,21 @@
             {#            title="历史数据"#}
             :visible.sync="showSiteChart"
             width="90%"
+            top="5vh"
             center>
-
-        <charts ref="site_info_charts" style="height: 600px;margin-top: 15px;" :option="option"></charts>
-
+        <el-row>
+            <el-col :span="24">
+                <charts ref="seeding_charts" style="height: 320px;margin-top: 15px;" :option="option"></charts>
+            </el-col>
+        </el-row>
+        <el-row :gutter="20">
+            <el-col :span="12">
+                <charts ref="bonus_charts" :span="12" style="height: 320px;margin-top: 15px;" :option="option"></charts>
+            </el-col>
+            <el-col :span="12">
+                <charts ref="ratio_charts" :span="12" style="height: 320px;margin-top: 15px;" :option="option"></charts>
+            </el-col>
+        </el-row>
     </el-dialog>
 </div>
 
@@ -237,9 +248,9 @@
         },
         beforeMount() {
 
-            },
-            mounted() {
-                {#this.chart = this.$refs.charts.chart#}
+        },
+        mounted() {
+            {#this.chart = this.$refs.charts.chart#}
                 this.getData()
             },
             watch: {
@@ -252,29 +263,34 @@
                     deep: true,
                 }
             },
-            methods: {
-                showHistoryList(id) {
-                    axios.get(
-                        "{% url 'site_data_api' %}" + '?id=' + id
-                    ).then(res => {
-                        console.log('获取数据列表成功', res.data)
-                        if (res.data.code === 0) {
-                            console.log(res.data.data)
-                            {#this.ptData = res.data.data#}
-                            {#this.ptData = res.data.data#}
-                            {#this.setPie()#}
-                            {#this.setCard()#}
-                            this.setLine(res.data.data)
-                        } else {
-                            this.loading = false
-                            this.$message({
-                                type: 'warning',
-                                message: '获取数据列表失败！'
-                            });
-                        }
-                    })
-                    //.catch(res => {
-                    //console.log('获取数据列表失败', res)
+        methods: {
+            showHistoryList(id) {
+                axios.get(
+                    "{% url 'site_data_api' %}" + '?id=' + id
+                ).then(res => {
+                    console.log('获取数据列表成功', res.data)
+                    let data = res.data
+                    if ((typeof res.data) == "string") {
+                        data = JSON.parse(data)
+                    }
+                    {#console.log(typeof res.data.data)#}
+                    if (res.data.code === 0) {
+                        {#this.ptData = res.data.data#}
+                        {#this.ptData = res.data.data#}
+                        {#this.setPie()#}
+                        {#this.setCard()#}
+
+                        this.setLine(data.data)
+                    } else {
+                        this.loading = false
+                        this.$message({
+                            type: 'warning',
+                            message: '获取数据列表失败！'
+                        });
+                    }
+                })
+                //.catch(res => {
+                //console.log('获取数据列表失败', res)
                     // this.$message({
                     //   type: 'warning',
                     // message: '获取数据列表失败！' + res
@@ -295,28 +311,28 @@
                     this.showLogo = !this.showLogo
                     this.setPie()
                 }
-                ,
-                showLegendMode() {
-                    this.showLegend = !this.showLegend
-                    this.setPie()
+            ,
+            showLegendMode() {
+                this.showLegend = !this.showLegend
+                this.setPie()
+            }
+            ,
+            setChartOption(option) {
+                {#this.option = option#}
+                if (this.chart) {
+                    this.chart.clear()
                 }
-                ,
-                setChartOption(option) {
-                    this.option = option
-                    if (this.chart) {
-                        this.chart.clear()
-                    }
-                    this.chart.setOption(this.option)
-                    window.addEventListener("resize", () => {
-                        this.chart.resize()
-                    })
-                    //this.$nextTick(() => {//自适应宽度
-                    //   this.chart.resize();
-                    //})
-                }
-                ,
-                shuffleList() {
-                    this.shuffle = true
+                this.chart.setOption(option)
+                window.addEventListener("resize", () => {
+                    this.chart.resize()
+                })
+                //this.$nextTick(() => {//自适应宽度
+                //   this.chart.resize();
+                //})
+            }
+            ,
+            shuffleList() {
+                this.shuffle = true
                     this.ptData.status_list.sort(() => {
                         return Math.random() > 0.5 ? -1 : 1
                     })
@@ -472,18 +488,21 @@
                     }
                     option.series[0].data = uploadedList
                     option.legend.data = siteList
-                    this.chart = this.$refs.charts.chart
-                    this.setChartOption(option)
+                    setTimeout(() => {
+                        console.log(666)
+                        this.chart = this.$refs.charts.chart
+                        this.setChartOption(option)
+                    }, 50)
                 },
-                setTree() {
-                    let ptData = this.ptData
-                    let begInvite = !this.begInvite
-                    let uploadedList = []
-                    let downloadedList = []
-                    ptData.status_list.forEach((site, index) => {
-                        uploadedList.push({
-                            'value': site.uploaded,
-                            'path': 'uploaded/' + site.name,
+            setTree() {
+                let ptData = this.ptData
+                let begInvite = !this.begInvite
+                let uploadedList = []
+                let downloadedList = []
+                ptData.status_list.forEach((site, index) => {
+                    uploadedList.push({
+                        'value': site.uploaded,
+                        'path': 'uploaded/' + site.name,
                             'name': `${site.name}\t${renderSize(site.uploaded)}`
                         })
                         downloadedList.push({
@@ -721,16 +740,16 @@
                         },
                         series: [
                             {
-                                name: '上传量',
-                                type: 'line',
-                                {#stack: 'Total',#}
-                                data: uploadedList
-                            },
-                            {
                                 name: '做种量',
                                 type: 'line',
                                 {#stack: 'Total',#}
                                 data: seedingSizeList
+                            },
+                            {
+                                name: '上传量',
+                                type: 'line',
+                                {#stack: 'Total',#}
+                                data: uploadedList
                             },
                             {
                                 name: '下载量',
@@ -753,13 +772,16 @@
                         ]
                     };
                     this.showSiteChart = true
-                    this.chart = this.$refs.site_info_charts
-                    this.setChartOption(option)
+                    setTimeout(() => {
+                        this.chart = this.$refs.seeding_charts.chart
+                        this.setChartOption(option)
+                    }, 5)
+
 
                 },
-                getData() {
-                    axios.get(
-                        "{% url "site_status_api" %}"
+            getData() {
+                axios.get(
+                    "{% url "site_status_api" %}"
                     ).then(res => {
                         console.log('获取数据列表成功', res.data)
                         if (res.data.code === 0) {
@@ -767,7 +789,7 @@
                             {#this.ptData = res.data.data#}
                             this.ptData = res.data.data
                             {#this.setPie()#}
-                            this.setPie()
+                            this.setCard()
                         } else {
                             this.loading = false
                             this.$message({
@@ -775,9 +797,9 @@
                                 message: '获取数据列表失败！'
                             });
                         }
-                    }).catch(res => {
-                        console.log('获取数据列表失败', res)
-                        this.$message({
+                }).catch(res => {
+                    console.log('获取数据列表失败', res)
+                    this.$message({
                             type: 'warning',
                             message: '获取数据列表失败！' + res
                         });
