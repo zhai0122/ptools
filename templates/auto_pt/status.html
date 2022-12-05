@@ -69,6 +69,100 @@
         <div class="body">
             <div v-if="showList">
                 <el-row :gutter="20">
+                    <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="4" style="margin-bottom: 10px;">
+                        <el-card class="box-card info-card">
+                            <div slot="header" class="clearfix">
+                                <div style="text-align: center;line-height: 100%;margin-top: -15px;">
+                                    {#                                    <img :src="site.icon"#}
+                                    {#                                         style="width: 16px;border-radius: 50%;margin-bottom: -5px;">#}
+                                    {#                                    <br>#}
+                                    {#                                    <a :href="site.url" target="blank" style="margin-top: -5px;">#}
+                                    <h3>数据汇总</h3>
+                                    {#                                    </a>#}
+                                    {#                                </div>#}
+
+                                    {#                                <span style="font-size: 12px;float: right;">#}
+                                    {#                                    <i class="el-icon-user-solid" v-text="' ' + site.class" style="color: indianred"#}
+                                    {#                                       title="用户等级"></i>#}
+                                    {#                                    <br v-if="site.hr == 0 || site.mail < 0">#}
+                                    {#                                    <i class="el-icon-postcard" v-text="' ' + site.invite" style="color: #003366"#}
+                                    {#                                       title="邀请"></i>#}
+                                    {#                                    <i class="el-icon-date" v-text="' ' + site.weeks" style="color: darkgreen"#}
+                                    {#                                       :title="'加入时间：' + site.time_join"></i>#}
+                                    {#                                    <br v-if="site.hr != 0 || site.mail > 0">#}
+                                    {##}
+                                    {#                                    <i class="el-icon-warning" style="color: orangered" v-if="site.hr!=0" title="H&R"#}
+                                    {#                                       v-text="' ' + site.hr"></i>#}
+                                    {#                                    <span style="color: darkred;font-size: 13px;" v-if="site.mail > 0">#}
+                                    {#                                    <i class="fas fa-envelope el-fade-in"></i>#}
+                                    {#                                        <span v-text="site.mail"></span>#}
+                                    {#                                    </span>#}
+                                    {#                                    <div class="el-badge item" v-if="site.mail > 0" style="float: right">#}
+                                    {#                                        <i class="fas fa-sms" style="color: darkred" v-text="site.mail"></i>#}
+                                    {#                                        <sup class="el-badge__content is-fixed" v-if="site.mail > 0"#}
+                                    {#                                             v-text="site.mail">{}</sup>#}
+                                </div>
+                                {#                                    </span>#}
+                            </div>
+                            <div class="text item" style="font-size: 13px;text-align: right;">
+                                <div>
+                                    <el-button type="primary" size="mini">
+                                        签到
+                                    </el-button>
+                                    <el-button type="info" size="mini">更新
+                                    </el-button>
+                                    <el-button type="success" size="mini">历史
+                                    </el-button>
+                                </div>
+                                <hr>
+                                <div>
+                                    <span style="float: left;font-weight: bold;color: #3b5769;">保种分享：</span>
+                                    <i class="el-icon-upload" title="做种量"
+                                       v-text="' ' + renderSize(ptData.total_data.seeding_size)"></i>
+                                    <el-divider direction="vertical"></el-divider>
+                                    <i class="el-icon-share" style="color: saddlebrown" title="分享率"
+                                       v-text="' ' + ptData.total_data.ratio"></i>
+                                </div>
+                                <hr>
+                                <div>
+                                    <span style="float: left;font-weight: bold;color: #3b5769;line-height: 36px">实时数据：</span>
+                                    <span style="text-align: center">
+                                        <span title="做种数量" v-text="ptData.total_data.seeding"
+                                              style="color: green"></span>
+                                        <span>
+                                        <i class="el-icon-d-caret"></i>
+                                        </span>
+                                        <span title="正在下载" v-text="ptData.total_data.leeching"
+                                              style="color: indianred"></span>
+                                        <br>
+                                        <span title="上传量" style="color: green"
+                                              v-text="renderSize(ptData.total_data.uploaded)"></span>
+                                        <i class="fas fa-sort"></i>
+                                        <span title="下载量" style="color: indianred"
+                                              v-text="renderSize(ptData.total_data.downloaded)"></span>
+                                    </span>
+
+                                </div>
+                                <hr>
+                                <div>
+                                    <span style="float: left;line-height: 36px;font-weight: bold;color: #3b5769;">魔力/积分：</span>
+                                    <i class="el-icon-magic-stick"
+                                       v-text="' ' + ptData.total_data.sp.toFixed(2) + ' / ' + ptData.total_data.bonus.toFixed(2)"
+                                       style="color: darkorange" title="魔力/积分"></i>
+                                    <br>
+                                    <i class="el-icon-lollipop" v-text="' ' + ptData.total_data.sp_hour"
+                                       style="color: coral" title="时魔"></i>
+                                </div>
+                                <hr>
+                                <div>
+                                    <span style="float: left;font-weight: bold;color: #3b5769;">更新时间：</span>
+                                    <i class="el-icon-date"
+                                       v-text="ptData.total_data.now"
+                                       style="color: #1b1b1b;" title="最新数据更新时间"></i>
+                                </div>
+                            </div>
+                        </el-card>
+                    </el-col>
                     <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="4" style="margin-bottom: 10px;"
                             v-for="site in ptData.status_list">
                         <el-card class="box-card info-card">
@@ -113,9 +207,13 @@
                                                v-if="site.sign_in_support && !site.sign_in_state">
                                         签到
                                     </el-button>
-                                    <el-button type="success" plain size="mini" v-if="site.sign_in_state">
-                                        已签到
-                                    </el-button>
+                                    <el-tooltip class="item" effect="dark" v-if="site.sign_in_state" content="已签到"
+                                                placement="top">
+                                        <el-button type="success" icon="el-icon-success" plain size="mini">
+                                            {#                                            <span style="font-size: 5px;">已签到</span>#}
+                                        </el-button>
+                                    </el-tooltip>
+
 
                                     <el-button type="info" size="mini" @click="updateSite(site.id)">更新
                                     </el-button>
@@ -390,16 +488,16 @@
                 //console.log('获取数据列表失败', res)
                 // this.$message({
                 //   type: 'warning',
-                    // message: '获取数据列表失败！' + res
-                    //});
-                    //})
-                },
-                begInviteMode() {
-                    this.begInvite = !this.begInvite
-                    if (this.begInvite) {
-                        this.showLegend = false
-                        this.showLogo = false
-                    }
+                // message: '获取数据列表失败！' + res
+                //});
+                //})
+            },
+            begInviteMode() {
+                this.begInvite = !this.begInvite
+                if (this.begInvite) {
+                    this.showLegend = false
+                    this.showLogo = false
+                }
 
                     this.setPie()
                 }

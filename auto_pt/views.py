@@ -573,7 +573,11 @@ def site_status_api(request):
         uploaded = 0
         downloaded = 0
         seeding = 0
+        leeching = 0
         seeding_size = 0
+        sp = 0
+        sp_hour = 0
+        bonus = 0
         status_list = []
         now = datetime.now()
         for my_site in my_site_list:
@@ -586,6 +590,11 @@ def site_status_api(request):
             downloaded += site_info.downloaded
             uploaded += site_info.uploaded
             seeding += my_site.seed
+            leeching += my_site.leech
+            sp += site_info.my_sp
+            sp_hour += (float(my_site.sp_hour) if my_site.sp_hour != '' else 0)
+            bonus += site_info.my_bonus
+            leeching += my_site.leech
             seeding_size += site_info.seed_vol
             weeks = (now - my_site.time_join).days // 7
             days = (now - my_site.time_join).days % 7
@@ -638,14 +647,21 @@ def site_status_api(request):
             'downloaded': downloaded,
             'seeding_size': seeding_size,
             'seeding': seeding,
+            'leeching': leeching,
+            'sp': sp,
+            'sp_hour': sp_hour,
+            'bonus': bonus,
             'ratio': round(uploaded / downloaded, 3),
-            'now': datetime.now().date()
+            'now': datetime.strftime(
+                SiteStatus.objects.order_by('updated_at').first().updated_at,
+                '%Y年%m月%d日%H:%M:%S'),
         }
         # return render(request, 'auto_pt/status.html')
         userdata = {
             'total_data': total_data,
             'status_list': status_list
         }
+        logger.info(total_data)
         return JsonResponse(data=CommonResponse.success(
             data=userdata
         ).to_dict(), safe=False)
