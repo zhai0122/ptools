@@ -1762,7 +1762,8 @@ class PtSpider:
                 try:
                     ratio = ''.join(
                         details_html.xpath(site.ratio_rule)
-                    ).replace(',', '').replace('无限', 'inf').replace('∞', 'inf').replace(
+                    ).lower().replace(',', '').replace('无限', 'inf').replace('∞', 'inf'). \
+                        replace('inf.', 'inf').replace(
                         'null', 'inf').replace('---', 'inf').replace('-', 'inf').strip(
                         ']:').strip('：').strip()
                     # 分享率告警通知
