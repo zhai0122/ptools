@@ -563,8 +563,88 @@ def download_tasks():
 
 
 def site_status_api(request):
+    ids = request.GET.get('ids')
     try:
-        userdata = get_status()
+        if ids is None:
+            my_site_list = MySite.objects.all()
+        else:
+            my_site_list = MySite.objects.filter(pk__in=ids).all()
+        uploaded = 0
+        downloaded = 0
+        seeding = 0
+        seeding_size = 0
+        status_list = []
+        now = datetime.now()
+        for my_site in my_site_list:
+            site_info_list = my_site.sitestatus_set.order_by('-pk').all()
+            logger.info(f'{my_site.site.name}: {len(site_info_list)}')
+            if len(site_info_list) <= 0:
+                logger.info(f'{my_site.site.name}: 获取站点信息列表错误！')
+                continue
+            site_info = site_info_list.first()
+            downloaded += site_info.downloaded
+            uploaded += site_info.uploaded
+            seeding += my_site.seed
+            seeding_size += site_info.seed_vol
+            weeks = (now - my_site.time_join).days // 7
+            days = (now - my_site.time_join).days % 7
+            sign_in_support = my_site.site.sign_in_support and my_site.sign_in
+            if sign_in_support:
+                sign_in_list = my_site.signin_set.filter(created_at__date=now.date())
+                sign_in_state = sign_in_list.first().sign_in_today if len(sign_in_list) > 0 else False
+            else:
+                sign_in_state = False
+            site_info = {
+                'id': my_site.id,
+                'name': my_site.site.name,
+                'icon': my_site.site.logo,
+                'url': my_site.site.url,
+                'class': my_site.my_level,
+                'sign_in_support': sign_in_support,
+                'sign_in_state': sign_in_state,
+                'invite': my_site.invitation,
+                'sp_hour': my_site.sp_hour,
+                'sp_hour_full': '{:.2%}'.format(
+                    float(my_site.sp_hour) / my_site.site.sp_full) if my_site.site.sp_full != 0 else '0%',
+                'seeding': my_site.seed,
+                'leeching': my_site.leech,
+                'weeks': f'{weeks}周 {days}天',
+                'time_join': my_site.time_join,
+                'hr': my_site.my_hr,
+                'mail': my_site.mail,
+                'sp': site_info.my_sp,
+                'bonus': site_info.my_bonus,
+                # 'uploaded': FileSizeConvert.parse_2_file_size(site_info.uploaded),
+                # 'downloaded': FileSizeConvert.parse_2_file_size(site_info.downloaded),
+                # 'seeding_size': FileSizeConvert.parse_2_file_size(site_info.seed_vol),
+                'uploaded': site_info.uploaded,
+                'downloaded': site_info.downloaded,
+                'seeding_size': site_info.seed_vol,
+                'last_active': datetime.strftime(site_info.updated_at, '%Y年%m月%d日%H:%M:%S'),
+            }
+            status_list.append(site_info)
+        # 按上传量排序
+        # status_list.sort(key=lambda x: x['mail'], reverse=False)
+        status_list.sort(key=lambda x: (x['mail'], x['uploaded']), reverse=True)
+        # sorted(status_list, key=lambda x: x['uploaded'])
+        # 随机乱序
+        # random.shuffle(status_list)
+        total_data = {
+            # 'uploaded': FileSizeConvert.parse_2_file_size(uploaded),
+            # 'downloaded': FileSizeConvert.parse_2_file_size(downloaded),
+            # 'seeding_size': FileSizeConvert.parse_2_file_size(seeding_size),
+            'uploaded': uploaded,
+            'downloaded': downloaded,
+            'seeding_size': seeding_size,
+            'seeding': seeding,
+            'ratio': round(uploaded / downloaded, 3),
+            'now': datetime.now().date()
+        }
+        # return render(request, 'auto_pt/status.html')
+        userdata = {
+            'total_data': total_data,
+            'status_list': status_list
+        }
         return JsonResponse(data=CommonResponse.success(
             data=userdata
         ).to_dict(), safe=False)
@@ -573,83 +653,6 @@ def site_status_api(request):
         logger.info(message)
         logger.error(traceback.format_exc(limit=3))
         return CommonResponse.error(msg=message)
-
-
-def get_status(ids: list = None):
-    if ids is None:
-        my_site_list = MySite.objects.all()
-    else:
-        my_site_list = MySite.objects.filter(pk__in=ids).all()
-    uploaded = 0
-    downloaded = 0
-    seeding = 0
-    seeding_size = 0
-    status_list = []
-    now = datetime.now()
-    for my_site in my_site_list:
-        site_info_list = my_site.sitestatus_set.order_by('-pk').all()
-        logger.info(f'{my_site.site.name}: {len(site_info_list)}')
-        if len(site_info_list) <= 0:
-            logger.info(f'{my_site.site.name}: 获取站点信息列表错误！')
-            continue
-        site_info = site_info_list.first()
-        downloaded += site_info.downloaded
-        uploaded += site_info.uploaded
-        seeding += my_site.seed
-        seeding_size += site_info.seed_vol
-        weeks = (now - my_site.time_join).days // 7
-        days = (now - my_site.time_join).days % 7
-        # my_site.signin_set.filter(created_at__day=now.date()).first().sign_in_today
-        site_info = {
-            'id': my_site.id,
-            'name': my_site.site.name,
-            'icon': my_site.site.logo,
-            'url': my_site.site.url,
-            'class': my_site.my_level,
-            # 'sign_in': my_site.signin_set.filter(created_at__day=now.date()),
-            'invite': my_site.invitation,
-            'sp_hour': my_site.sp_hour,
-            'sp_hour_full': '{:.2%}'.format(
-                float(my_site.sp_hour) / my_site.site.sp_full) if my_site.site.sp_full != 0 else '0%',
-            'seeding': my_site.seed,
-            'leeching': my_site.leech,
-            'weeks': f'{weeks}周 {days}天',
-            'time_join': my_site.time_join,
-            'hr': my_site.my_hr,
-            'mail': my_site.mail,
-            'sp': site_info.my_sp,
-            'bonus': site_info.my_bonus,
-            # 'uploaded': FileSizeConvert.parse_2_file_size(site_info.uploaded),
-            # 'downloaded': FileSizeConvert.parse_2_file_size(site_info.downloaded),
-            # 'seeding_size': FileSizeConvert.parse_2_file_size(site_info.seed_vol),
-            'uploaded': site_info.uploaded,
-            'downloaded': site_info.downloaded,
-            'seeding_size': site_info.seed_vol,
-            'last_active': datetime.strftime(site_info.updated_at, '%Y年%m月%d日%H:%M:%S'),
-        }
-        status_list.append(site_info)
-    # 按上传量排序
-    # status_list.sort(key=lambda x: x['mail'], reverse=False)
-    status_list.sort(key=lambda x: (x['mail'], x['uploaded']), reverse=True)
-    # sorted(status_list, key=lambda x: x['uploaded'])
-    # 随机乱序
-    # random.shuffle(status_list)
-    total_data = {
-        # 'uploaded': FileSizeConvert.parse_2_file_size(uploaded),
-        # 'downloaded': FileSizeConvert.parse_2_file_size(downloaded),
-        # 'seeding_size': FileSizeConvert.parse_2_file_size(seeding_size),
-        'uploaded': uploaded,
-        'downloaded': downloaded,
-        'seeding_size': seeding_size,
-        'seeding': seeding,
-        'ratio': round(uploaded / downloaded, 3),
-        'now': datetime.now().date()
-    }
-    # return render(request, 'auto_pt/status.html')
-    return {
-        'total_data': total_data,
-        'status_list': status_list
-    }
 
 
 @login_required
@@ -701,9 +704,20 @@ def site_data_api(request):
 
 
 def sign_in_api(request):
-    return JsonResponse(data=CommonResponse.success(
-        msg='ok'
-    ).to_dict(), safe=False)
+    try:
+        my_site = MySite.objects.filter(id=request.GET.get('id')).first()
+        sign_state = pt_spider.sign_in(my_site)
+        if sign_state.code == StatusCodeEnum.OK.code:
+            return JsonResponse(data=CommonResponse.success(
+                msg=sign_state.msg
+            ).to_dict(), safe=False)
+        else:
+            return sign_state
+    except Exception as e:
+        logger.error(f'签到失败：{e}')
+        return JsonResponse(data=CommonResponse.error(
+            msg=f'签到失败：{e}'
+        ).to_dict(), safe=False)
 
 
 def update_site_api(request):

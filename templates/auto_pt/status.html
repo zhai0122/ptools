@@ -109,13 +109,19 @@
                             </div>
                             <div class="text item" style="font-size: 13px;text-align: right;">
                                 <div>
-                                    <el-button type="primary" size="mini" @click="signIn(site.id)">签到
+                                    <el-button type="primary" size="mini" @click="signIn(site.id)"
+                                               v-if="site.sign_in_support && !site.sign_in_state">
+                                        签到
                                     </el-button>
+                                    <el-button type="success" plain size="mini" v-if="site.sign_in_state">
+                                        已签到
+                                    </el-button>
+
                                     <el-button type="info" size="mini" @click="updateSite(site.id)">更新
                                     </el-button>
                                     <el-button type="danger" size="mini" @click="editSite(site.id)">编辑
                                     </el-button>
-                                    <el-button type="success" size="mini" @click="showHistoryList(site.id)">历史 c
+                                    <el-button type="success" size="mini" @click="showHistoryList(site.id)">历史
                                     </el-button>
                                 </div>
                                 <hr>
@@ -259,16 +265,16 @@
                 {#this.chart = this.$refs.charts.chart#}
                 this.getData()
             },
-            watch: {
-                obj: {
-                    option(newValue, oldValue) {
-                        // option发生变化时自动重新渲染
-                        this.chart.setOption(newValue)
-                    },
-                    // immediate: true,
-                    deep: true,
-                }
-            },
+        watch: {
+            obj: {
+                option(newValue, oldValue) {
+                    // option发生变化时自动重新渲染
+                    this.chart.setOption(newValue)
+                },
+                // immediate: true,
+                deep: true,
+            }
+        },
         methods: {
             signIn(id) {
                 axios.get(
@@ -282,6 +288,7 @@
                             type: 'success',
                             message: res.data.msg
                         });
+                        this.getData()
                     } else {
                         this.loading = false
                         this.$message({
@@ -360,16 +367,16 @@
                     if ((typeof res.data) == "string") {
                         data = JSON.parse(data)
                     }
-                        {#console.log(typeof res.data.data)#}
-                        if (res.data.code === 0) {
-                            {#this.ptData = res.data.data#}
-                            {#this.ptData = res.data.data#}
-                            {#this.setPie()#}
-                            {#this.setCard()#}
+                    {#console.log(typeof res.data.data)#}
+                    if (res.data.code === 0) {
+                        {#this.ptData = res.data.data#}
+                        {#this.ptData = res.data.data#}
+                        {#this.setPie()#}
+                        {#this.setCard()#}
 
-                            this.setLine(data.data)
-                        } else {
-                            this.loading = false
+                        this.setLine(data.data)
+                    } else {
+                        this.loading = false
                             this.$message({
                                 type: 'warning',
                                 message: '获取数据列表失败！'
