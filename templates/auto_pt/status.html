@@ -68,6 +68,9 @@
         </div>
         <div class="body">
             <div v-if="showList">
+                <div>
+                    <el-input v-model="searchKey" placeholder="请输入站点名称或者网址搜索"></el-input>
+                </div>
                 <el-row :gutter="20">
                     <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="4" style="margin-bottom: 10px;">
                         <el-card class="box-card info-card">
@@ -113,6 +116,17 @@
                                     </el-button>
                                     <el-button type="success" size="mini" @click="showHistoryList(0)">历史
                                     </el-button>
+                                </div>
+                                <hr>
+                                <div>
+                                    <span style="float: left;font-weight: bold;color: #3b5769;line-height: 32px;">
+                                        排序
+                                    </span>
+                                    <span>
+                                        <el-button size="mini" type="primary" plain @click="changeSortStep">
+                                            排序按钮单次步进值：
+                                            <span v-text="sortStep"></span></el-button>
+                                    </span>
                                 </div>
                                 <hr>
                                 <div>
@@ -167,6 +181,7 @@
                             v-for="site in ptData.status_list">
                         <el-card class="box-card info-card">
                             <div slot="header" class="clearfix">
+
                                 <div style="float: left;text-align: center;margin-top: -5px;font-size: 14px;height: 32px;">
                                     <img :src="site.icon"
                                          style="width: 16px;border-radius: 50%;margin-bottom: -5px;">
@@ -176,12 +191,10 @@
                                     </a>
 
                                 </div>
-
-
                                 <span style="font-size: 12px;float: right;">
                                     <i class="el-icon-user-solid" v-text="' ' + site.class" style="color: indianred"
                                        title="用户等级"></i>
-                                    <br v-if="site.hr == 0 || site.mail < 0">
+                                    <br v-if="site.hr == 0 && site.mail < 0">
                                     <i class="el-icon-postcard" v-text="' ' + site.invite" style="color: #003366"
                                        title="邀请"></i>
                                     <i class="el-icon-date" v-text="' ' + site.weeks" style="color: darkgreen"
@@ -194,12 +207,9 @@
                                     <i class="fas fa-envelope el-fade-in"></i>
                                         <span v-text="site.mail"></span>
                                     </span>
-{#                                    <div class="el-badge item" v-if="site.mail > 0" style="float: right">#}
-{#                                        <i class="fas fa-sms" style="color: darkred" v-text="site.mail"></i>#}
-{#                                        <sup class="el-badge__content is-fixed" v-if="site.mail > 0"#}
-{#                                             v-text="site.mail">{}</sup>#}
-{#                                    </div>#}
+
                                     </span>
+
                             </div>
                             <div class="text item" style="font-size: 13px;text-align: right;">
                                 <div>
@@ -221,7 +231,27 @@
                                     {#                                    </el-button>#}
                                     <el-button type="success" size="mini" @click="showHistoryList(site.id)">历史
                                     </el-button>
+
                                 </div>
+                                <hr>
+                                <div>
+                                    <span style="float: left;font-weight: bold;color: #3b5769;line-height: 32px;">
+                                        排序
+                                    </span>
+                                    <span>
+                                        <el-button-group>
+                                        <el-button type="primary" icon="el-icon-arrow-left"
+                                                   style="color: #2F9688;"
+                                                   plain size="mini" @click="sortCustom(site.id, 0-sortStep)">
+                                        </el-button>
+                                        <el-button type="primary" icon="el-icon-arrow-right"
+                                                   @click="sortCustom(site.id, sortStep)"
+                                                   style="color: #2F9688;" plain size="mini">
+                                        </el-button>
+                                            </el-button-group>
+                                    </span>
+                                </div>
+
                                 <hr>
                                 <div>
                                     <span style="float: left;font-weight: bold;color: #3b5769;">保种分享：</span>
@@ -256,7 +286,8 @@
                                        v-text="' ' + numberFormat(site.sp) + ' / ' + numberFormat(site.bonus)"
                                        style="color: darkorange" title="魔力/积分"></i>
                                     <br>
-                                    <i class="el-icon-lollipop" v-text="' ' + site.sp_hour.toFixed(3) + ' / ' + site.sp_hour_full"
+                                    <i class="el-icon-lollipop"
+                                       v-text="' ' + site.sp_hour.toFixed(3) + ' / ' + site.sp_hour_full"
                                        style="color: coral" title="时魔"></i>
                                 </div>
                                 <hr>
@@ -331,13 +362,16 @@
                 return {
                     chart: null,
                     ptData: {},
+                    siteData: [],
                     option: {},
-                    showList: false,
+                    showList: true,
                     showSiteChart: false,
                     begInvite: false,
                     showLogo: true,
                     showLegend: true,
                     shuffle: false,
+                    searchKey: '',
+                    sortStep: 1,
                 }
             },
             beforeMount() {
@@ -353,14 +387,57 @@
                         // option发生变化时自动重新渲染
                         this.chart.setOption(newValue)
                     },
+                    searchKey(newValue, oldValue) {
+                        console.log(newValue)
+                    },
                     // immediate: true,
                     deep: true,
                 }
             },
             methods: {
+                siteSearch() {
+
+                },
+                changeSortStep() {
+                    console.log(this.sortStep)
+                    if (this.sortStep < 5) {
+                        this.sortStep += 1
+                    } else {
+                        this.sortStep = 1
+                    }
+                },
+                sortCustom(id, sort) {
+                    console.log(sort)
+                    axios.get(
+                        "{% url 'site_sort_api' %}" + `?id=${id}&sort=${sort}`
+                    ).then(res => {
+                        console.log('修改排序成功', res.data)
+                        {#let data = res.data#}
+                        {#console.log(typeof res.data.data)#}
+                        if (res.data.code === 0) {
+                            this.$message({
+                                type: 'success',
+                                message: res.data.msg
+                            });
+                            this.getData()
+                        } else {
+                            this.loading = false
+                            this.$message({
+                                type: 'warning',
+                                message: res.data.msg
+                            });
+                        }
+                    }).catch(res => {
+                        console.log('修改排序失败', res)
+                        this.$message({
+                            type: 'warning',
+                            message: '修改排序失败！' + res
+                        });
+                    })
+                },
                 signIn(id) {
                     axios.get(
-                        "{% url 'sign_in_api' %}" + '?id=' + id
+                        "{% url 'sign_in_api' %}" + `?id=${id}`
                     ).then(res => {
                         console.log('获取数据列表成功', res.data)
                         {#let data = res.data#}
@@ -478,18 +555,15 @@
                     }
 
                     this.setPie()
-                }
-                ,
+                },
                 showLogoMode() {
                     this.showLogo = !this.showLogo
                     this.setPie()
-                }
-                ,
+                },
                 showLegendMode() {
                     this.showLegend = !this.showLegend
                     this.setPie()
-                }
-                ,
+                },
                 setChartOption(option) {
                     {#this.option = option#}
                     if (this.chart) {
@@ -502,8 +576,7 @@
                     //this.$nextTick(() => {//自适应宽度
                     //   this.chart.resize();
                     //})
-                }
-                ,
+                },
                 shuffleList() {
                     this.shuffle = true
                     this.ptData.status_list.sort(() => {
@@ -511,8 +584,7 @@
                     })
 
                     this.showList ? this.setCard() : this.setPie()
-                }
-                ,
+                },
                 sortList() {
                     //if (this.shuffle == false) {
                     //    return
@@ -520,13 +592,15 @@
                     this.shuffle = false
                     this.ptData.status_list.sort((a, b) => {
                         if (b.mail == a.mail) {
-                            return b.uploaded - a.uploaded
+                            if (b.sort_id == a.sort_id) {
+                                return b.id - a.id
+                            }
+                            return a.sort_id - b.sort_id
                         }
                         return b.mail - a.mail
                     })
                     this.showList ? this.setCard() : this.setPie()
-                }
-                ,
+                },
                 setCard() {
                     if (this.chart) {
                         this.chart.clear()
@@ -592,16 +666,16 @@
                                 return renderSize(value)
                             }
                         },
-                        color: [
-                            '#f66c73',
-                            '#f68645',
-                            '#7af6ad',
-                            '#f4d55f',
-                            '#488ff6',
-                            '#0fba8d',
-                            '#8a47dc',
-                            '#d677f6',
-                        ],
+                        {#color: [#}
+                        {#    '#f66c73',#}
+                        {#    '#f68645',#}
+                        {#    '#7af6ad',#}
+                        {#    '#f4d55f',#}
+                        {#    '#488ff6',#}
+                        {#    '#0fba8d',#}
+                        {#    '#8a47dc',#}
+                        {#    '#d677f6',#}
+                        {#],#}
                         legend: {
                             show: this.showLegend,
                             {#type: 'scroll',#}
@@ -962,7 +1036,8 @@
                             {#this.ptData = res.data.data#}
                             this.ptData = res.data.data
                             {#this.setPie()#}
-                            this.setCard()
+                            {#this.setCard()#}
+                            this.sortList()
                         } else {
                             this.loading = false
                             this.$message({

@@ -624,6 +624,7 @@ def site_status_api(request):
                 'time_join': my_site.time_join,
                 'hr': my_site.my_hr,
                 'mail': my_site.mail,
+                'sort_id': my_site.sort_id,
                 'sp': site_info.my_sp,
                 'bonus': site_info.my_bonus,
                 # 'uploaded': FileSizeConvert.parse_2_file_size(site_info.uploaded),
@@ -637,7 +638,7 @@ def site_status_api(request):
             status_list.append(site_info)
         # 按上传量排序
         # status_list.sort(key=lambda x: x['mail'], reverse=False)
-        status_list.sort(key=lambda x: (x['mail'], x['uploaded']), reverse=True)
+        # status_list.sort(key=lambda x: (x['mail'], x['sort_id']), reverse=True)
         # sorted(status_list, key=lambda x: x['uploaded'])
         # 随机乱序
         # random.shuffle(status_list)
@@ -835,3 +836,29 @@ def get_log_content(request):
 
 def show_log_list(request):
     return render(request, 'auto_pt/showlog.html')
+
+
+def site_sort_api(request):
+    try:
+        my_site_id = request.GET.get('id')
+        sort = request.GET.get('sort')
+        logger.info(f'ID值：{type(my_site_id)}')
+        my_site = MySite.objects.filter(id=my_site_id).first()
+        my_site.sort_id += int(sort)
+
+        if int(my_site.sort_id) <= 0:
+            my_site.sort_id = 0
+            my_site.save()
+            return JsonResponse(data=CommonResponse.success(
+                msg='排序已经最靠前啦，不要再点了！'
+            ).to_dict(), safe=False)
+        my_site.save()
+        return JsonResponse(data=CommonResponse.success(
+            msg='排序成功！'
+        ).to_dict(), safe=False)
+    except Exception as e:
+        logger.error(f'数据更新失败：{e}')
+        logger.error(traceback.format_exc(limit=3))
+        return JsonResponse(data=CommonResponse.error(
+            msg=f'数据更新失败：{e}'
+        ).to_dict(), safe=False)

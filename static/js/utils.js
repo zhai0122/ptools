@@ -28,6 +28,5 @@ function numberFormat(value) {
         param.value = ((value / Math.pow(k, i))).toFixed(2);
         param.unit = sizes[i];
     }
-    console.log(param)
     return `${param.value}${param.unit}`;
 }
