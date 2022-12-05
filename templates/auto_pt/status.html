@@ -147,10 +147,10 @@
                                 <div>
                                     <span style="float: left;line-height: 36px;font-weight: bold;color: #3b5769;">魔力/积分：</span>
                                     <i class="el-icon-magic-stick"
-                                       v-text="' ' + ptData.total_data.sp.toFixed(2) + ' / ' + ptData.total_data.bonus.toFixed(2)"
+                                       v-text="' ' + numberFormat(ptData.total_data.sp) + ' / ' + numberFormat(ptData.total_data.bonus)"
                                        style="color: darkorange" title="魔力/积分"></i>
                                     <br>
-                                    <i class="el-icon-lollipop" v-text="' ' + ptData.total_data.sp_hour"
+                                    <i class="el-icon-lollipop" v-text="' ' + ptData.total_data.sp_hour.toFixed(2)"
                                        style="color: coral" title="时魔"></i>
                                 </div>
                                 <hr>
@@ -217,8 +217,8 @@
 
                                     <el-button type="info" size="mini" @click="updateSite(site.id)">更新
                                     </el-button>
-                                    <el-button type="danger" size="mini" @click="editSite(site.id)">编辑
-                                    </el-button>
+                                    {#                                    <el-button type="danger" size="mini" @click="editSite(site.id)">编辑#}
+                                    {#                                    </el-button>#}
                                     <el-button type="success" size="mini" @click="showHistoryList(site.id)">历史
                                     </el-button>
                                 </div>
@@ -253,7 +253,7 @@
                                 <div>
                                     <span style="float: left;line-height: 36px;font-weight: bold;color: #3b5769;">魔力/积分：</span>
                                     <i class="el-icon-magic-stick"
-                                       v-text="' ' + site.sp + ' / ' + site.bonus"
+                                       v-text="' ' + numberFormat(site.sp) + ' / ' + numberFormat(site.bonus)"
                                        style="color: darkorange" title="魔力/积分"></i>
                                     <br>
                                     <i class="el-icon-lollipop" v-text="' ' + site.sp_hour + ' / ' + site.sp_hour_full"
@@ -319,26 +319,11 @@
 </div>
 
 {% include 'admin/includes/js-part.html' %}
+<script src="{% static 'js/utils.js' %}"></script>
 <script src="{% static 'admin/simpleui-x/js/axios.min.js' %}"></script>
 <script src="{% static 'js/echarts.min.js' %}"></script>
 <script src="{% static 'js/echarts-component.js' %}"></script>
 <script>
-    function renderSize(value) {
-        if (null == value || value == '') {
-            return 0;
-        }
-        var unitArr = ["B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-        var index = 0;
-        var srcsize = parseFloat(value);
-        index = Math.floor(Math.log(srcsize) / Math.log(1024));
-        var size = srcsize / Math.pow(1024, index);
-        size = size.toFixed(2);//保留的小数位数
-        return size + ' ' + unitArr[index];
-    }
-
-    function shuffle() {
-        return Math.random() > 0.5 ? -1 : 1;
-    }
 
     const vm = new Vue({
             el: '#status',
@@ -355,148 +340,148 @@
                     shuffle: false,
                 }
             },
-        beforeMount() {
+            beforeMount() {
 
-        },
-        mounted() {
-            {#this.chart = this.$refs.charts.chart#}
-            this.getData()
-        },
-        watch: {
-            obj: {
-                option(newValue, oldValue) {
-                    // option发生变化时自动重新渲染
-                    this.chart.setOption(newValue)
-                },
-                // immediate: true,
-                deep: true,
-            }
-        },
-        methods: {
-            signIn(id) {
-                axios.get(
-                    "{% url 'sign_in_api' %}" + '?id=' + id
-                ).then(res => {
-                    console.log('获取数据列表成功', res.data)
-                    {#let data = res.data#}
-                    {#console.log(typeof res.data.data)#}
-                    if (res.data.code === 0) {
-                        this.$message({
-                            type: 'success',
-                            message: res.data.msg
-                        });
-                        this.getData()
-                    } else {
-                        this.loading = false
-                        this.$message({
-                            type: 'warning',
-                            message: '获取数据列表失败！'
-                        });
-                    }
-                }).catch(res => {
-                    console.log('获取数据列表失败', res)
-                    this.$message({
-                        type: 'warning',
-                        message: '获取数据列表失败！' + res
-                    });
-                })
             },
-            updateSite(id) {
-                axios.get(
-                    "{% url 'update_site_api' %}" + '?id=' + id
-                ).then(res => {
-                    console.log('获取数据列表成功', res.data)
-                    {#let data = res.data#}
-                    {#console.log(typeof res.data.data)#}
-                    if (res.data.code === 0) {
-                        this.$message({
-                            type: 'success',
-                            message: res.data.msg
-                        });
-                        this.getData()
-                    } else {
-                        this.loading = false
-                        this.$message({
-                            type: 'warning',
-                            message: '获取数据列表失败！'
-                        });
-                    }
-                }).catch(res => {
-                    console.log('获取数据列表失败', res)
-                    this.$message({
-                        type: 'warning',
-                        message: '获取数据列表失败！' + res
-                    });
-                })
+            mounted() {
+                {#this.chart = this.$refs.charts.chart#}
+                this.getData()
             },
-            editSite(id) {
-                axios.get(
-                    "{% url 'edit_site_api' %}" + '?id=' + id
-                ).then(res => {
-                    console.log('获取数据列表成功', res.data)
-                    {#let data = res.data#}
-                    {#console.log(typeof res.data.data)#}
-                    if (res.data.code === 0) {
-                        this.$message({
-                            type: 'success',
-                            message: res.data.msg
-                        });
-                        this.getData()
-
-                    } else {
-                        this.loading = false
-                        this.$message({
-                            type: 'warning',
-                            message: '获取数据列表失败！'
-                        });
-                    }
-                }).catch(res => {
-                    console.log('获取数据列表失败', res)
-                    this.$message({
-                        type: 'warning',
-                        message: '获取数据列表失败！' + res
-                    });
-                })
-            },
-            showHistoryList(id) {
-                axios.get(
-                    "{% url 'site_data_api' %}" + '?id=' + id
-                ).then(res => {
-                    console.log('获取数据列表成功', res.data)
-                    let data = res.data
-                    if ((typeof res.data) == "string") {
-                        data = JSON.parse(data)
-                    }
-                    {#console.log(typeof res.data.data)#}
-                    if (res.data.code === 0) {
-                        {#this.ptData = res.data.data#}
-                        {#this.ptData = res.data.data#}
-                        {#this.setPie()#}
-                        {#this.setCard()#}
-
-                        this.setLine(data.data)
-                    } else {
-                        this.loading = false
-                        this.$message({
-                            type: 'warning',
-                            message: '获取数据列表失败！'
-                        });
-                    }
-                })
-                //.catch(res => {
-                //console.log('获取数据列表失败', res)
-                // this.$message({
-                //   type: 'warning',
-                // message: '获取数据列表失败！' + res
-                //});
-                //})
-            },
-            begInviteMode() {
-                this.begInvite = !this.begInvite
-                if (this.begInvite) {
-                    this.showLegend = false
-                    this.showLogo = false
+            watch: {
+                obj: {
+                    option(newValue, oldValue) {
+                        // option发生变化时自动重新渲染
+                        this.chart.setOption(newValue)
+                    },
+                    // immediate: true,
+                    deep: true,
                 }
+            },
+            methods: {
+                signIn(id) {
+                    axios.get(
+                        "{% url 'sign_in_api' %}" + '?id=' + id
+                    ).then(res => {
+                        console.log('获取数据列表成功', res.data)
+                        {#let data = res.data#}
+                        {#console.log(typeof res.data.data)#}
+                        if (res.data.code === 0) {
+                            this.$message({
+                                type: 'success',
+                                message: res.data.msg
+                            });
+                            this.getData()
+                        } else {
+                            this.loading = false
+                            this.$message({
+                                type: 'warning',
+                                message: '获取数据列表失败！'
+                            });
+                        }
+                    }).catch(res => {
+                        console.log('获取数据列表失败', res)
+                        this.$message({
+                            type: 'warning',
+                            message: '获取数据列表失败！' + res
+                        });
+                    })
+                },
+                updateSite(id) {
+                    axios.get(
+                        "{% url 'update_site_api' %}" + '?id=' + id
+                    ).then(res => {
+                        console.log('获取数据列表成功', res.data)
+                        {#let data = res.data#}
+                        {#console.log(typeof res.data.data)#}
+                        if (res.data.code === 0) {
+                            this.$message({
+                                type: 'success',
+                                message: res.data.msg
+                            });
+                            this.getData()
+                        } else {
+                            this.loading = false
+                            this.$message({
+                                type: 'warning',
+                                message: '获取数据列表失败！'
+                            });
+                        }
+                    }).catch(res => {
+                        console.log('获取数据列表失败', res)
+                        this.$message({
+                            type: 'warning',
+                            message: '获取数据列表失败！' + res
+                        });
+                    })
+                },
+                editSite(id) {
+                    axios.get(
+                        "{% url 'edit_site_api' %}" + '?id=' + id
+                    ).then(res => {
+                        console.log('获取数据列表成功', res.data)
+                        {#let data = res.data#}
+                        {#console.log(typeof res.data.data)#}
+                        if (res.data.code === 0) {
+                            this.$message({
+                                type: 'success',
+                                message: res.data.msg
+                            });
+                            this.getData()
+
+                        } else {
+                            this.loading = false
+                            this.$message({
+                                type: 'warning',
+                                message: '获取数据列表失败！'
+                            });
+                        }
+                    }).catch(res => {
+                        console.log('获取数据列表失败', res)
+                        this.$message({
+                            type: 'warning',
+                            message: '获取数据列表失败！' + res
+                        });
+                    })
+                },
+                showHistoryList(id) {
+                    axios.get(
+                        "{% url 'site_data_api' %}" + '?id=' + id
+                    ).then(res => {
+                        console.log('获取数据列表成功', res.data)
+                        let data = res.data
+                        if ((typeof res.data) == "string") {
+                            data = JSON.parse(data)
+                        }
+                        {#console.log(typeof res.data.data)#}
+                        if (res.data.code === 0) {
+                            {#this.ptData = res.data.data#}
+                            {#this.ptData = res.data.data#}
+                            {#this.setPie()#}
+                            {#this.setCard()#}
+
+                            this.setLine(data.data)
+                        } else {
+                            this.loading = false
+                            this.$message({
+                                type: 'warning',
+                                message: '获取数据列表失败！'
+                            });
+                        }
+                    })
+                    //.catch(res => {
+                    //console.log('获取数据列表失败', res)
+                    // this.$message({
+                    //   type: 'warning',
+                    // message: '获取数据列表失败！' + res
+                    //});
+                    //})
+                },
+                begInviteMode() {
+                    this.begInvite = !this.begInvite
+                    if (this.begInvite) {
+                        this.showLegend = false
+                        this.showLogo = false
+                    }
 
                     this.setPie()
                 }
