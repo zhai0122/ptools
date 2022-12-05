@@ -1,7 +1,10 @@
 # Create your views here.
 import datetime
+import json
 import logging
+import os
 import socket
+import subprocess
 import time
 from concurrent.futures.thread import ThreadPoolExecutor
 
@@ -10,7 +13,7 @@ from django_apscheduler.jobstores import DjangoJobStore
 
 from pt_site.UtilityTool import PtSpider, MessageTemplate, FileSizeConvert
 from pt_site.models import MySite, TorrentInfo
-from ptools.base import StatusCodeEnum
+from ptools.base import StatusCodeEnum, CommonResponse
 
 job_defaults = {
     'coalesce': True,
@@ -214,6 +217,83 @@ def auto_get_torrent_hash():
     end = time.time()
     pt_spider.send_text(
         '> {} 任务运行成功！耗时：{}{}  \n'.format('获取种子HASH', end - start, time.strftime("%Y-%m-%d %H:%M:%S")))
+
+
+def exec_command(commands):
+    """执行命令行命令"""
+    result = []
+    for key, command in commands.items():
+        p = subprocess.run(command, shell=True)
+        logger.info('{} 命令执行结果：\n{}'.format(key, p))
+        result.append({
+            'command': key,
+            'res': p.returncode
+        })
+    return result
+
+
+def auto_upgrade():
+    """程序更新"""
+    try:
+        logger.info('开始自动更新')
+        pt_site_site_mtime = os.stat('pt_site_site.json').st_mtime
+        requirements_mtime = os.stat('requirements.txt').st_mtime
+        update_commands = {
+            # 'cp db/db.sqlite3 db/db.sqlite3-$(date "+%Y%m%d%H%M%S")',
+            '强制覆盖本地': 'git reset --hard',
+            '获取更新信息': 'git fetch --all',
+            '拉取代码更新': 'git pull origin {}'.format(os.getenv('DEV')),
+        }
+        requirements_commands = {
+            '安装依赖': 'pip install -r requirements.txt',
+        }
+        migrate_commands = {
+            '同步数据库': 'python manage.py migrate',
+        }
+        logger.info('拉取最新代码')
+        result = exec_command(update_commands)
+        new_requirements_mtime = os.stat('requirements.txt').st_mtime
+        if new_requirements_mtime > requirements_mtime:
+            logger.info('更新环境依赖')
+            result.extend(exec_command(requirements_commands))
+        new_pt_site_site = os.stat('pt_site_site.json').st_mtime
+        logger.info('更新前文件最后修改时间')
+        logger.info(pt_site_site_mtime)
+        logger.info('更新后文件最后修改时间')
+        logger.info(new_pt_site_site)
+        if new_pt_site_site == pt_site_site_mtime:
+            logger.info('本次无规则更新，跳过！')
+            result.append({
+                'command': '本次无更新规则',
+                'res': 0
+            })
+            pass
+        else:
+            logger.info('拉取更新完毕，开始更新Xpath规则')
+            p = subprocess.run('cp db/db.sqlite3 db/db.sqlite3-$(date "+%Y%m%d%H%M%S")', shell=True)
+            logger.info('备份数据库 命令执行结果：\n{}'.format(p))
+            result.append({
+                'command': '备份数据库',
+                'res': p.returncode
+            })
+            result.extend(exec_command(migrate_commands))
+            logger.info('同步数据库 命令执行结果：\n{}'.format(p))
+        logger.info('更新完毕')
+        pt_spider.send_text(json.dumps(result))
+        return CommonResponse.success(
+            msg='更新成功，15S后自动刷新页面！',
+            data={
+                'result': result
+            }
+        )
+    except Exception as e:
+        # raise
+        msg = '更新失败!{}，请初始化Xpath！'.format(str(e))
+        logger.error(msg)
+        pt_spider.send_text(msg)
+        return CommonResponse.error(
+            msg=msg
+        )
 
 
 try:

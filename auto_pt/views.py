@@ -396,6 +396,7 @@ def update_page(request):
                   })
 
 
+"""
 def exec_command(commands):
     result = []
     for key, command in commands.items():
@@ -406,9 +407,14 @@ def exec_command(commands):
             'res': p.returncode
         })
     return result
+"""
 
 
 def do_update(request):
+    return JsonResponse(data=pt_site.auto_upgrade().to_dict(), safe=False)
+
+
+"""
     try:
         logger.info('开始更新')
         pt_site_site_mtime = os.stat('pt_site_site.json').st_mtime
@@ -467,6 +473,7 @@ def do_update(request):
         return JsonResponse(data=CommonResponse.error(
             msg=msg
         ).to_dict(), safe=False)
+"""
 
 
 def do_xpath(request):
