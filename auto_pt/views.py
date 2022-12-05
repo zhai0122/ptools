@@ -19,6 +19,7 @@ from pt_site.models import SiteStatus, MySite, Site, Downloader, TorrentInfo
 from pt_site.views import scheduler, pt_spider
 from ptools.base import CommonResponse, StatusCodeEnum, DownloaderCategory
 from ptools.settings import BASE_DIR
+from pt_site import views as pt_site
 
 logger = logging.getLogger('ptools')
 
@@ -49,23 +50,23 @@ def add_task(request):
 
 
 def get_tasks(request):
-    # print(dir(tasks))
+    # logger.info(dir(tasks))
     data = [key for key in dir(download_tasks) if key.startswith('auto')]
-    print(data)
-    # print(tasks.__getattr__)
-    # print(tasks.auto_get_status.__doc__)
+    logger.info(data)
+    # logger.info(tasks.__getattr__)
+    # logger.info(tasks.auto_get_status.__doc__)
     # inspect.getmembers(tasks, inspect.isfunction)
     # inspect.getmodule(tasks)
-    # print(sys.modules[__name__])
-    # print(sys.modules.values())
-    # print(sys.modules.keys())
-    # print(sys.modules.items())
+    # logger.info(sys.modules[__name__])
+    # logger.info(sys.modules.values())
+    # logger.info(sys.modules.keys())
+    # logger.info(sys.modules.items())
     return JsonResponse('ok', safe=False)
 
 
 def exec_task(request):
     # res = AutoPt.auto_sign_in()
-    # print(res)
+    # logger.info(res)
     # tasks.auto_sign_in
     return JsonResponse('ok!', safe=False)
 
@@ -73,7 +74,7 @@ def exec_task(request):
 def test_field(request):
     my_site = MySite.objects.get(pk=1)
     list1 = SiteStatus.objects.filter(site=my_site, created_at__date__gte=datetime.today())
-    print(list1)
+    logger.info(list1)
     return JsonResponse('ok!', safe=False)
 
 
@@ -81,12 +82,12 @@ def test_notify(request):
     # res = NotifyDispatch().send_text(text='66666')
 
     res = pt_spider.send_text('666')
-    print(res)
+    logger.info(res)
     return JsonResponse(res, safe=False)
 
 
 def do_sql(request):
-    print('exit')
+    logger.info('exit')
     return JsonResponse('ok', safe=False)
 
 
@@ -131,8 +132,8 @@ def downloading_status(request):
             username=downloader.username, password=downloader.password
         )
         session = transmission_rpc.session.Session(client=client)
-        print(type(session))
-        # print(client.get_torrents())
+        logger.info(type(session))
+        # logger.info(client.get_torrents())
         session_list = client.get_session()
         session = {item: value for item, value in session_list.items()}
         tr_info = {
@@ -155,7 +156,7 @@ def downloading_status(request):
 def get_trackers(request):
     """从已支持的站点获取tracker关键字列表"""
     tracker_list = Site.objects.all().values('id', 'name', 'tracker')
-    # print(tracker_filters)
+    # logger.info(tracker_filters)
     return JsonResponse(CommonResponse.success(data={
         'tracker_list': list(tracker_list)
     }).to_dict(), safe=False)
@@ -198,8 +199,8 @@ def get_downloading(request):
         torrent_list = main_data.get('torrents')
         torrents = []
         for index, torrent in torrent_list.items():
-            # print(type(torrent))
-            # print(torrent)
+            # logger.info(type(torrent))
+            # logger.info(torrent)
             # torrent = json.loads(torrent)
             # 时间处理
             # 添加于
@@ -258,7 +259,7 @@ def control_torrent(request):
     enable = request.POST.get('enable')
     downloader_id = request.POST.get('downloader_id')
     logger.info(request.POST)
-    # print(command, type(ids), downloader_id)
+    # logger.info(command, type(ids), downloader_id)
     downloader = Downloader.objects.filter(id=downloader_id).first()
     qb_client = qbittorrentapi.Client(
         host=downloader.host,
@@ -297,13 +298,13 @@ def import_from_ptpp(request):
         res = pt_spider.parse_ptpp_cookies(data_list)
         if res.code == StatusCodeEnum.OK.code:
             cookies = res.data
-            # print(cookies)
+            # logger.info(cookies)
         else:
             return JsonResponse(res.to_dict(), safe=False)
         message_list = []
         for data in cookies:
             try:
-                # print(data)
+                # logger.info(data)
                 res = pt_spider.get_uid_and_passkey(data)
                 msg = res.msg
                 logger.info(msg)
@@ -512,7 +513,7 @@ def do_restart(request):
         logger.info('重启中')
         reboot = subprocess.Popen('docker restart {}'.format(cid), shell=True, stdout=subprocess.PIPE, )
         # out = reboot.stdout.readline().decode('utf8')
-        # print(out)
+        # logger.info(out)
         # client.api.inspect_container(cid)
         # StartedAt = client.api.inspect_container(cid).get('State').get('StartedAt')
         return JsonResponse(data=CommonResponse.error(
@@ -654,7 +655,7 @@ def site_status_api(request):
             'bonus': bonus,
             'ratio': round(uploaded / downloaded, 3),
             'now': datetime.strftime(
-                SiteStatus.objects.order_by('updated_at').first().updated_at,
+                SiteStatus.objects.order_by('-updated_at').first().updated_at,
                 '%Y年%m月%d日%H:%M:%S'),
         }
         # return render(request, 'auto_pt/status.html')
@@ -679,9 +680,15 @@ def site_status(request):
 
 
 def site_data_api(request):
-    site_id = request.GET.get('id')
-    logger.info(f'前端传来的站点ID：{site_id}')
-    my_site = MySite.objects.filter(id=site_id).first()
+    my_site_id = request.GET.get('id')
+    logger.info(f'ID值：{type(my_site_id)}')
+    if int(my_site_id) == 0:
+        # pt_site.auto_sign_in()
+        return JsonResponse(data=CommonResponse.error(
+            msg='全站数据展示功能还未完成，敬请期待！'
+        ).to_dict(), safe=False)
+    logger.info(f'前端传来的站点ID：{my_site_id}')
+    my_site = MySite.objects.filter(id=my_site_id).first()
     if not my_site:
         return JsonResponse(data=CommonResponse.error(
             msg='访问出错咯！'
@@ -700,7 +707,6 @@ def site_data_api(request):
         'last_active': datetime.strftime(my_site.updated_at, '%Y年%m月%d日%H:%M:%S'),
     }
     for site_info in site_info_list:
-        print(site_info.ratio != float('inf'))
         my_site_status = {
             'uploaded': site_info.uploaded,
             'downloaded': site_info.downloaded,
@@ -723,7 +729,14 @@ def site_data_api(request):
 
 def sign_in_api(request):
     try:
-        my_site = MySite.objects.filter(id=request.GET.get('id')).first()
+        my_site_id = request.GET.get('id')
+        logger.info(f'ID值：{type(my_site_id)}')
+        if int(my_site_id) == 0:
+            pt_site.auto_sign_in()
+            return JsonResponse(data=CommonResponse.success(
+                msg='签到指令已发送，请注意查收推送消息！'
+            ).to_dict(), safe=False)
+        my_site = MySite.objects.filter(id=my_site_id).first()
         sign_state = pt_spider.sign_in(my_site)
         if sign_state.code == StatusCodeEnum.OK.code:
             return JsonResponse(data=CommonResponse.success(
@@ -733,6 +746,7 @@ def sign_in_api(request):
             return sign_state
     except Exception as e:
         logger.error(f'签到失败：{e}')
+        logger.error(traceback.format_exc(limit=3))
         return JsonResponse(data=CommonResponse.error(
             msg=f'签到失败：{e}'
         ).to_dict(), safe=False)
@@ -740,7 +754,14 @@ def sign_in_api(request):
 
 def update_site_api(request):
     try:
-        my_site = MySite.objects.filter(id=request.GET.get('id')).first()
+        my_site_id = request.GET.get('id')
+        logger.info(f'ID值：{type(my_site_id)}')
+        if int(my_site_id) == 0:
+            pt_site.auto_get_status()
+            return JsonResponse(data=CommonResponse.success(
+                msg='更新指令已发送，请注意查收推送消息！'
+            ).to_dict(), safe=False)
+        my_site = MySite.objects.filter(id=my_site_id).first()
         res_status = pt_spider.send_status_request(my_site)
         message_template = MessageTemplate.status_message_template
         if res_status.code == StatusCodeEnum.OK.code:
@@ -770,6 +791,7 @@ def update_site_api(request):
             return res_status
     except Exception as e:
         logger.error(f'数据更新失败：{e}')
+        logger.error(traceback.format_exc(limit=3))
         return JsonResponse(data=CommonResponse.error(
             msg=f'数据更新失败：{e}'
         ).to_dict(), safe=False)
@@ -783,12 +805,12 @@ def edit_site_api(request):
 
 def get_log_list(request):
     path = os.path.join(BASE_DIR, 'db')
-    print(path)
-    print(os.listdir(path))
+    logger.info(path)
+    logger.info(os.listdir(path))
 
     names = [name for name in os.listdir(path)
              if os.path.isfile(os.path.join(path, name)) and name.startswith('logs')]
-    print(names)
+    logger.info(names)
     return JsonResponse(data=CommonResponse.success(
         data={
             'path': path,
@@ -802,7 +824,7 @@ def get_log_content(request):
     path = os.path.join(BASE_DIR, 'db/' + name)
     with open(path, 'r') as f:
         logs = f.readlines()
-    print(logs)
+    logger.info(logs)
     return JsonResponse(data=CommonResponse.success(
         data={
             'path': path,
