@@ -27,6 +27,9 @@ urlpatterns = [
     path(r'sign_in_api', views.sign_in_api, name='sign_in_api'),
     path(r'update_site_api', views.update_site_api, name='update_site_api'),
     path(r'edit_site_api', views.edit_site_api, name='edit_site_api'),
+    path(r'get_log_list', views.get_log_list, name='get_log_list'),
+    path(r'show_log_list', views.show_log_list, name='show_log_list'),
+    path(r'get_log_content', views.get_log_content, name='get_log_content'),
     path(r'downloading_status', views.downloading_status, name='downloading_status'),
     path(r'do_sql', views.do_sql, name='do_sql'),
 ]

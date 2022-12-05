@@ -1,0 +1,149 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {% include 'admin/includes/css-part.html' %}
+    <style>
+        .el-aside {
+            background-color: #D3DCE6;
+            color: #333;
+            text-align: center;
+            line-height: 200px;
+        }
+
+        .logs {
+            color: #F2F6FC;
+            background-color: #1f2c39;
+            margin-left: 25px;
+            font-size: 14px;
+            font-family: 'Heiti SC';
+            line-height: 18px;
+        }
+    </style>
+</head>
+<body>
+<div id="logs">
+    <el-container style="height: 820px; border: 1px solid #eee">
+        <el-aside width="200px" style="background-color: rgb(138, 141, 146)">
+            <el-menu :default-openeds="['1']">
+                {#                <el-submenu index="1">#}
+                {#                    <template slot="title"><i class="el-icon-message"></i>导航一</template>#}
+                <el-menu-item-group>
+                    <template slot="title">日志列表</template>
+                    <el-menu-item v-for="(name,index) in names" :index="index" v-text="name" @click="showLog(name)">
+                    </el-menu-item>
+                </el-menu-item-group>
+                {#                </el-submenu>#}
+            </el-menu>
+        </el-aside>
+
+        <el-container>
+            {#            <el-header style="text-align: right; font-size: 12px">#}
+            {#                <el-dropdown>#}
+            {#                    <i class="el-icon-setting" style="margin-right: 15px"></i>#}
+            {#                    <el-dropdown-menu slot="dropdown">#}
+            {#                        <el-dropdown-item>查看</el-dropdown-item>#}
+            {#                        <el-dropdown-item>新增</el-dropdown-item>#}
+            {#                        <el-dropdown-item>删除</el-dropdown-item>#}
+            {#                    </el-dropdown-menu>#}
+            {#                </el-dropdown>#}
+            {#                <span>王小虎</span>#}
+            {#            </el-header>#}
+
+            <el-main class="logs">
+                <div v-for="log in logs">
+                    <code v-text="log"></code>
+                </div>
+            </el-main>
+        </el-container>
+    </el-container>
+</div>
+
+
+{% include 'admin/includes/js-part.html' %}
+<script src="{% static 'admin/simpleui-x/js/axios.min.js' %}"></script>
+<script>
+    const vm = new Vue({
+        el: '#logs',
+        data() {
+            return {
+                names: [],
+                logs: []
+            }
+        },
+        beforeMount() {
+
+        },
+        mounted() {
+            {#this.chart = this.$refs.charts.chart#}
+            this.getLogs()
+        },
+        methods: {
+            getLogs() {
+                axios.get(
+                    "{% url 'get_log_list' %}"
+                ).then(res => {
+                    console.log('获取数据列表成功', res.data)
+                    {#let data = res.data#}
+                    {#console.log(typeof res.data.data)#}
+                    if (res.data.code === 0) {
+                        this.names = res.data.data.names
+                        console.log(this.logs)
+                        //this.$message({
+                        //    type: 'success',
+                        //    message: res.data.msg
+                        //});
+                    } else {
+                        this.loading = false
+                        this.$message({
+                            type: 'warning',
+                            message: '获取数据列表失败！'
+                        });
+                    }
+                }).catch(res => {
+                    console.log('获取数据列表失败', res)
+                    this.$message({
+                        type: 'warning',
+                        message: '获取数据列表失败！' + res
+                    });
+                })
+            },
+            showLog(name) {
+                console.log(name)
+                axios.get(
+                    "{% url 'get_log_content' %}" + '?name=' + name
+                ).then(res => {
+                    console.log('获取数据列表成功', res.data)
+                    {#let data = res.data#}
+                    {#console.log(typeof res.data.data)#}
+                    if (res.data.code === 0) {
+                        this.logs = res.data.data.logs
+                        console.log(this.logs)
+                        //this.$message({
+                        //    type: 'success',
+                        //    message: res.data.msg
+                        //});
+                    } else {
+                        this.loading = false
+                        this.$message({
+                            type: 'warning',
+                            message: '获取数据列表失败！'
+                        });
+                    }
+                }).catch(res => {
+                    console.log('获取数据列表失败', res)
+                    this.$message({
+                        type: 'warning',
+                        message: '获取数据列表失败！' + res
+                    });
+                })
+            },
+        }
+    })
+</script>
+</body>
+</html>

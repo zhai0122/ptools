@@ -1,10 +1,17 @@
+{% load static %}
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
+
     <meta charset="UTF-8">
-    <title>用户数据</title>
+    <title>Title</title>
+    {% include 'admin/includes/css-part.html' %}
 </head>
 <body>
 
+
+{% include 'admin/includes/js-part.html' %}
+<script src="{% static 'admin/simpleui-x/js/axios.min.js' %}"></script>
 </body>
 </html>

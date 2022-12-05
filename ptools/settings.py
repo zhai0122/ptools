@@ -275,6 +275,10 @@ SIMPLEUI_CONFIG = {
             'name': '站点导入',
             'icon': 'el-icon-s-open',
             'url': '/tasks/import_from_ptpp'
+        }, {
+            'name': '日志查看',
+            'icon': 'el-icon-s-open',
+            'url': '/tasks/show_log_list'
         }, ]
     }]
 }

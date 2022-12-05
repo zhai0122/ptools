@@ -18,6 +18,7 @@ from pt_site.UtilityTool import MessageTemplate, FileSizeConvert
 from pt_site.models import SiteStatus, MySite, Site, Downloader, TorrentInfo
 from pt_site.views import scheduler, pt_spider
 from ptools.base import CommonResponse, StatusCodeEnum, DownloaderCategory
+from ptools.settings import BASE_DIR
 
 logger = logging.getLogger('ptools')
 
@@ -778,3 +779,37 @@ def edit_site_api(request):
     return JsonResponse(data=CommonResponse.success(
         msg='ok'
     ).to_dict(), safe=False)
+
+
+def get_log_list(request):
+    path = os.path.join(BASE_DIR, 'db')
+    print(path)
+    print(os.listdir(path))
+
+    names = [name for name in os.listdir(path)
+             if os.path.isfile(os.path.join(path, name)) and name.startswith('logs')]
+    print(names)
+    return JsonResponse(data=CommonResponse.success(
+        data={
+            'path': path,
+            'names': names
+        }
+    ).to_dict(), safe=False)
+
+
+def get_log_content(request):
+    name = request.GET.get('name')
+    path = os.path.join(BASE_DIR, 'db/' + name)
+    with open(path, 'r') as f:
+        logs = f.readlines()
+    print(logs)
+    return JsonResponse(data=CommonResponse.success(
+        data={
+            'path': path,
+            'logs': logs,
+        }
+    ).to_dict(), safe=False)
+
+
+def show_log_list(request):
+    return render(request, 'auto_pt/showlog.html')
