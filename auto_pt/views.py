@@ -16,7 +16,7 @@ from django.shortcuts import render
 
 from pt_site.UtilityTool import MessageTemplate, FileSizeConvert
 from pt_site.models import SiteStatus, MySite, Site, Downloader, TorrentInfo
-from pt_site.views import scheduler, pt_spider
+from pt_site.views import scheduler, pt_spider, exec_command
 from ptools.base import CommonResponse, StatusCodeEnum, DownloaderCategory
 from ptools.settings import BASE_DIR
 from pt_site import views as pt_site
