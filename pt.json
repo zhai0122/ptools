@@ -4,7 +4,7 @@
   "pk": 1,
   "fields": {
     "created_at": "2022-07-17T10:22:03.474",
-    "updated_at": "2022-11-30T02:39:16.890",
+    "updated_at": "2022-12-06T05:47:03.064",
     "url": "https://hdatmos.club/",
     "name": "阿童木",
     "logo": "https://hdatmos.club/favicon.ico",
@@ -72,7 +72,7 @@
     "leech_rule": "//img[@class=\"arrowdown\"][1]/following-sibling::text()[1]",
     "seed_rule": "//img[@class=\"arrowup\"][1]/following-sibling::text()[1]",
     "record_count_rule": "/html/body/b/text()",
-    "seed_vol_rule": "//tr/td[3]",
+    "seed_vol_rule": "//tr/td[4]",
     "mailbox_rule": "//a[@href=\"messages.php\"]/font[contains(text(),\"条\")]/text()[1]",
     "notice_rule": "//a[@href=\"index.php\"]/font/text()[1]",
     "hash_rule": "//tr[10]//td[@class=\"no_border_wide\"][2]/text()"
@@ -3480,7 +3480,7 @@
   "pk": 51,
   "fields": {
     "created_at": "2022-08-27T17:43:57.903",
-    "updated_at": "2022-11-30T02:39:17.035",
+    "updated_at": "2022-12-05T19:49:58.264",
     "url": "https://ourbits.club/",
     "name": "我堡",
     "logo": "https://ourbits.club/favicon.ico",
@@ -3549,8 +3549,8 @@
     "seed_rule": "//img[@class=\"arrowup\"]/following-sibling::text()[1]",
     "record_count_rule": "/html/body/b/text()",
     "seed_vol_rule": "//tr/td[3]",
-    "mailbox_rule": "//a[@href=\"messages.php\"]/font[contains(text(),\"条\")]/text()[1]",
-    "notice_rule": "//a[@href=\"index.php\"]/font[contains(text(),\"条\")]/text()[1]",
+    "mailbox_rule": "//a[@href=\"messages.php\"]/span[contains(text(),\"条\")]/text()[1]",
+    "notice_rule": "//a[@href=\"index.php\"]/span[contains(text(),\"条\")]/text()[1]",
     "hash_rule": "//tr[11]//td[@class=\"no_border_wide\"][2]/text()"
   }
 },
@@ -6082,6 +6082,34 @@
     "misfire_grace_time": 600,
     "jitter": 1200,
     "args": null
+  }
+},
+{
+  "model": "auto_pt.taskjob",
+  "pk": 19,
+  "fields": {
+    "created_at": "2022-11-30T13:04:32.620",
+    "updated_at": "2022-11-30T13:09:08.694",
+    "task": 1,
+    "name": "1111",
+    "job_id": "1111",
+    "trigger": "cron",
+    "task_exec": false,
+    "replace_existing": true,
+    "expression_time": "20 */8 * * *",
+    "start_date": null,
+    "end_date": null,
+    "misfire_grace_time": 600,
+    "jitter": 1200,
+    "args": null
+  }
+},
+{
+  "model": "django_apscheduler.djangojob",
+  "pk": "1111",
+  "fields": {
+    "next_run_time": null,
+    "job_state": "gAWVGwQAAAAAAAB9lCiMB3ZlcnNpb26USwGMAmlklIwEMTExMZSMBGZ1bmOUjB1wdF9zaXRlLnZpZXdzOmF1dG9fZ2V0X3N0YXR1c5SMB3RyaWdnZXKUjBlhcHNjaGVkdWxlci50cmlnZ2Vycy5jcm9ulIwLQ3JvblRyaWdnZXKUk5QpgZR9lChoAUsCjAh0aW1lem9uZZSMG3B5dHpfZGVwcmVjYXRpb25fc2hpbS5faW1wbJSMCXdyYXBfem9uZZSTlIwIYnVpbHRpbnOUjAdnZXRhdHRylJOUjAh6b25laW5mb5SMCFpvbmVJbmZvlJOUjAlfdW5waWNrbGWUhpRSlIwNQXNpYS9TaGFuZ2hhaZRLAYaUUpSMDUFzaWEvU2hhbmdoYWmUhpRSlIwKc3RhcnRfZGF0ZZROjAhlbmRfZGF0ZZROjAZmaWVsZHOUXZQojCBhcHNjaGVkdWxlci50cmlnZ2Vycy5jcm9uLmZpZWxkc5SMCUJhc2VGaWVsZJSTlCmBlH2UKIwEbmFtZZSMBHllYXKUjAppc19kZWZhdWx0lIiMC2V4cHJlc3Npb25zlF2UjCVhcHNjaGVkdWxlci50cmlnZ2Vycy5jcm9uLmV4cHJlc3Npb25zlIwNQWxsRXhwcmVzc2lvbpSTlCmBlH2UjARzdGVwlE5zYmF1YmgjjApNb250aEZpZWxklJOUKYGUfZQoaCiMBW1vbnRolGgqiWgrXZRoLymBlH2UaDJOc2JhdWJoI4wPRGF5T2ZNb250aEZpZWxklJOUKYGUfZQoaCiMA2RheZRoKoloK12UaC8pgZR9lGgyTnNiYXViaCOMCVdlZWtGaWVsZJSTlCmBlH2UKGgojAR3ZWVrlGgqiGgrXZRoLymBlH2UaDJOc2JhdWJoI4wORGF5T2ZXZWVrRmllbGSUk5QpgZR9lChoKIwLZGF5X29mX3dlZWuUaCqJaCtdlGgvKYGUfZRoMk5zYmF1YmglKYGUfZQoaCiMBGhvdXKUaCqJaCtdlGgvKYGUfZRoMksIc2JhdWJoJSmBlH2UKGgojAZtaW51dGWUaCqJaCtdlGgtjA9SYW5nZUV4cHJlc3Npb26Uk5QpgZR9lChoMk6MBWZpcnN0lEsUjARsYXN0lEsUdWJhdWJoJSmBlH2UKGgojAZzZWNvbmSUaCqIaCtdlGheKYGUfZQoaDJOaGFLAGhiSwB1YmF1YmWMBmppdHRlcpROdWKMCGV4ZWN1dG9ylIwHZGVmYXVsdJSMBGFyZ3OUKYwGa3dhcmdzlH2UaCiMD2F1dG9fZ2V0X3N0YXR1c5SMEm1pc2ZpcmVfZ3JhY2VfdGltZZRNWAKMCGNvYWxlc2NllIiMDW1heF9pbnN0YW5jZXOUSwGMDW5leHRfcnVuX3RpbWWUTnUu"
   }
 },
 {

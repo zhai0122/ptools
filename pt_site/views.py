@@ -67,13 +67,15 @@ def auto_get_status():
             if res.code == StatusCodeEnum.OK.code:
                 status = res.data[0]
                 message = message_template.format(
+                    my_site.site.name,
                     my_site.my_level,
                     status.my_sp,
                     my_site.sp_hour,
                     status.my_bonus,
                     status.ratio,
-                    FileSizeConvert.parse_2_file_size(status.downloaded),
+                    FileSizeConvert.parse_2_file_size(status.seed_vol),
                     FileSizeConvert.parse_2_file_size(status.uploaded),
+                    FileSizeConvert.parse_2_file_size(status.downloaded),
                     my_site.seed,
                     my_site.leech,
                     my_site.invitation,
