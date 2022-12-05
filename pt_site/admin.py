@@ -279,7 +279,7 @@ class MySiteAdmin(AjaxAdmin):  # instead of ModelAdmin
         if obj.sp_hour == '':
             obj.sp_hour = 0
         obj.save()
-        
+
     def bonus(self, obj: MySite):
         status_today = obj.sitestatus_set.order_by('-pk').first()
         return format_html(
@@ -564,13 +564,15 @@ class MySiteAdmin(AjaxAdmin):  # instead of ModelAdmin
                         # status = my_site.sitestatus_set.filter(created_at__date__gte=datetime.today()).first()
                         # print(status.ratio)
                         message += message_template.format(
+                            my_site.site.name,
                             my_site.my_level,
                             site_status.my_sp,
                             my_site.sp_hour,
                             site_status.my_bonus,
                             site_status.ratio,
-                            FileSizeConvert.parse_2_file_size(site_status.downloaded),
+                            FileSizeConvert.parse_2_file_size(site_status.seed_vol),
                             FileSizeConvert.parse_2_file_size(site_status.uploaded),
+                            FileSizeConvert.parse_2_file_size(site_status.downloaded),
                             my_site.seed,
                             my_site.leech,
                             my_site.invitation,

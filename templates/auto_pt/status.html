@@ -258,13 +258,13 @@
 
                 }
             },
-            beforeMount() {
+        beforeMount() {
 
-            },
-            mounted() {
-                {#this.chart = this.$refs.charts.chart#}
-                this.getData()
-            },
+        },
+        mounted() {
+            {#this.chart = this.$refs.charts.chart#}
+            this.getData()
+        },
         watch: {
             obj: {
                 option(newValue, oldValue) {
@@ -281,7 +281,7 @@
                     "{% url 'sign_in_api' %}" + '?id=' + id
                 ).then(res => {
                     console.log('获取数据列表成功', res.data)
-                    let data = res.data
+                    {#let data = res.data#}
                     {#console.log(typeof res.data.data)#}
                     if (res.data.code === 0) {
                         this.$message({
@@ -309,13 +309,14 @@
                     "{% url 'update_site_api' %}" + '?id=' + id
                 ).then(res => {
                     console.log('获取数据列表成功', res.data)
-                    let data = res.data
+                    {#let data = res.data#}
                     {#console.log(typeof res.data.data)#}
                     if (res.data.code === 0) {
                         this.$message({
                             type: 'success',
                             message: res.data.msg
                         });
+                        this.getData()
                     } else {
                         this.loading = false
                         this.$message({
@@ -336,13 +337,15 @@
                     "{% url 'edit_site_api' %}" + '?id=' + id
                 ).then(res => {
                     console.log('获取数据列表成功', res.data)
-                    let data = res.data
+                    {#let data = res.data#}
                     {#console.log(typeof res.data.data)#}
                     if (res.data.code === 0) {
                         this.$message({
                             type: 'success',
                             message: res.data.msg
                         });
+                        this.getData()
+
                     } else {
                         this.loading = false
                         this.$message({
@@ -377,16 +380,16 @@
                         this.setLine(data.data)
                     } else {
                         this.loading = false
-                            this.$message({
-                                type: 'warning',
-                                message: '获取数据列表失败！'
-                            });
-                        }
-                    })
-                    //.catch(res => {
-                    //console.log('获取数据列表失败', res)
-                    // this.$message({
-                    //   type: 'warning',
+                        this.$message({
+                            type: 'warning',
+                            message: '获取数据列表失败！'
+                        });
+                    }
+                })
+                //.catch(res => {
+                //console.log('获取数据列表失败', res)
+                // this.$message({
+                //   type: 'warning',
                     // message: '获取数据列表失败！' + res
                     //});
                     //})

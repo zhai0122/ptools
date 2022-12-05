@@ -14,6 +14,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render
 
+from pt_site.UtilityTool import MessageTemplate, FileSizeConvert
 from pt_site.models import SiteStatus, MySite, Site, Downloader, TorrentInfo
 from pt_site.views import scheduler, pt_spider
 from ptools.base import CommonResponse, StatusCodeEnum, DownloaderCategory
@@ -721,9 +722,40 @@ def sign_in_api(request):
 
 
 def update_site_api(request):
-    return JsonResponse(data=CommonResponse.success(
-        msg='ok'
-    ).to_dict(), safe=False)
+    try:
+        my_site = MySite.objects.filter(id=request.GET.get('id')).first()
+        res_status = pt_spider.send_status_request(my_site)
+        message_template = MessageTemplate.status_message_template
+        if res_status.code == StatusCodeEnum.OK.code:
+            res = pt_spider.parse_status_html(my_site, res_status.data)
+            status = res.data[0]
+            if isinstance(status, SiteStatus):
+                message = message_template.format(
+                    my_site.site.name,
+                    my_site.my_level,
+                    status.my_sp,
+                    my_site.sp_hour,
+                    status.my_bonus,
+                    status.ratio,
+                    FileSizeConvert.parse_2_file_size(status.seed_vol),
+                    FileSizeConvert.parse_2_file_size(status.uploaded),
+                    FileSizeConvert.parse_2_file_size(status.downloaded),
+                    my_site.seed,
+                    my_site.leech,
+                    my_site.invitation,
+                    my_site.my_hr
+                )
+                return JsonResponse(data=CommonResponse.success(
+                    msg=message
+                ).to_dict(), safe=False)
+            return res
+        else:
+            return res_status
+    except Exception as e:
+        logger.error(f'数据更新失败：{e}')
+        return JsonResponse(data=CommonResponse.error(
+            msg=f'数据更新失败：{e}'
+        ).to_dict(), safe=False)
 
 
 def edit_site_api(request):

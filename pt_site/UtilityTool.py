@@ -17,6 +17,7 @@ import opencc
 import qbittorrentapi
 import requests
 import transmission_rpc
+import urllib3.util.ssl_
 from django.db.models import QuerySet
 from lxml import etree
 from pypushdeer import PushDeer
@@ -28,8 +29,6 @@ from wxpusher import WxPusher
 from auto_pt.models import Notify, OCR
 from pt_site.models import MySite, SignIn, TorrentInfo, SiteStatus, Site
 from ptools.base import TorrentBaseInfo, PushConfig, CommonResponse, StatusCodeEnum, DownloaderCategory
-
-import urllib3.util.ssl_
 
 urllib3.util.ssl_.DEFAULT_CIPHERS = 'ALL'
 
@@ -87,7 +86,9 @@ class FileSizeConvert:
 class MessageTemplate:
     """消息模板"""
 
-    status_message_template = "等级：{} 魔力：{} 时魔：{} 积分：{} 分享率：{} 下载量：{} 上传量：{} 上传数：{} 下载数：{} 邀请：{} H&R：{}\n"
+    status_message_template = "{} 等级：{} 魔力：{} 时魔：{} 积分：{} 分享率：{} " \
+                              "做重量：{} 上传量：{} 下载量：{} 上传数：{} 下载数：{} " \
+                              "邀请：{} H&R：{}\n"
 
 
 class PtSpider:
