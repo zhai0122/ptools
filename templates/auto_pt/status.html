@@ -40,6 +40,7 @@
             float: right;
             margin-right: 5px;
         }
+
     </style>
 </head>
 <body>
@@ -205,7 +206,7 @@
                                 <span style="font-size: 12px;float: right;">
                                     <i class="el-icon-user-solid" v-text="' ' + site.class" style="color: indianred"
                                        title="用户等级"></i>
-                                    <br v-if="site.hr == 0 && site.mail < 0">
+                                    <br v-if="site.hr == 0 && site.mail <= 0">
                                     <i class="el-icon-postcard" v-text="' ' + site.invite" style="color: #003366"
                                        title="邀请"></i>
                                     <i class="el-icon-date" v-text="' ' + site.weeks" style="color: darkgreen"
@@ -337,13 +338,15 @@
         </div>
     </el-card>
     <el-drawer
-            :title="site.name"
             :visible.sync="showSiteChart"
             direction="btt"
             size="96%"
-            style="background-color: rgba(227, 229, 229, 0.6);"
-            center>
-        <div style="width: 95%;text-align: center;margin: auto;">
+            :title="site.name + '--历史数据'"
+            style="background-color: rgba(227, 229, 229, 0.6);">
+        {#        <div slot="title" style="text-align: center;line-height: 35px;">#}
+        {#            <h3><span v-text="site.name"></span>-历史数据</h3>#}
+        {#        </div>#}
+        <div style="width: 95%;text-align: center;margin: -15px auto auto;">
             <el-row :gutter="20">
                 <el-col :span="24">
                     <charts ref="diff_charts" style="height: 220px;margin-top: 15px;" :option="option"></charts>
