@@ -267,7 +267,6 @@ def auto_upgrade():
                 'command': '本次无更新规则',
                 'res': 0
             })
-            pass
         else:
             logger.info('拉取更新完毕，开始更新Xpath规则')
             p = subprocess.run('cp db/db.sqlite3 db/db.sqlite3-$(date "+%Y%m%d%H%M%S")', shell=True)
@@ -278,8 +277,9 @@ def auto_upgrade():
             })
             result.extend(exec_command(migrate_commands))
             logger.info('同步数据库 命令执行结果：\n{}'.format(p))
+
         logger.info('更新完毕')
-        pt_spider.send_text(json.dumps(result))
+        pt_spider.send_text('更新完成！')
         return CommonResponse.success(
             msg='更新成功，15S后自动刷新页面！',
             data={
