@@ -339,24 +339,25 @@
     <el-drawer
             :title="site.name"
             :visible.sync="showSiteChart"
-            width="90%"
             direction="btt"
-            size="90%"
+            size="96%"
             style="background-color: rgba(227, 229, 229, 0.6);"
             center>
         <div style="width: 95%;text-align: center;margin: auto;">
-            <el-row>
-                <el-col :span="24">
-                    <charts ref="seeding_charts" style="height: 320px;margin-top: 15px;" :option="option"></charts>
-                </el-col>
-            </el-row>
             <el-row :gutter="20">
+                <el-col :span="24">
+                    <charts ref="diff_charts" style="height: 220px;margin-top: 15px;" :option="option"></charts>
+                </el-col>
+                <el-col :span="24">
+                    <charts ref="seeding_charts" style="height: 220px;margin-top: 15px;" :option="option"></charts>
+                </el-col>
+
                 <el-col :span="12">
-                    <charts ref="bonus_charts" :span="12" style="height: 320px;margin-top: 15px;"
+                    <charts ref="bonus_charts" :span="12" style="height: 220px;margin-top: 15px;"
                             :option="option"></charts>
                 </el-col>
                 <el-col :span="12">
-                    <charts ref="ratio_charts" :span="12" style="height: 320px;margin-top: 15px;"
+                    <charts ref="ratio_charts" :span="12" style="height: 220px;margin-top: 15px;"
                             :option="option"></charts>
                 </el-col>
             </el-row>
@@ -941,7 +942,6 @@
                     this.setChartOption(this.chart, option)
                 },
                 setLine(siteData) {
-                    let site = siteData.site
                     this.site = siteData.site
                     let dataList = siteData.site_status_list
                     let uploadedList = []
@@ -951,6 +951,8 @@
                     let ratioList = []
                     let seedingSizeList = []
                     let dateList = []
+                    let increment = []
+
                     dataList.forEach((info, index) => {
                         uploadedList.push(info.uploaded)
                         ratioList.push(info.ratio)
@@ -960,6 +962,13 @@
                         bonusList.push(info.bonus)
                         dateList.push(info.info_date)
                     })
+                    let uploaded1 = uploadedList.filter((item, index) => index > 0)
+                    let uploaded2 = uploadedList.filter((item, index) => index < uploadedList.length)
+                    let diff = [0,]
+                    uploaded1.forEach((item, index) => {
+                        diff.push(item - uploaded2[index])
+                    })
+                    console.log(diff)
                     let option = {
                         //title: {
                         //    text: site.name,
@@ -1028,12 +1037,20 @@
                                 data: downloadedList
                             },
 
+
                         ]
                     };
                     this.showSiteChart = true
                     setTimeout(() => {
                         this.chart = this.$refs.seeding_charts.chart
                         this.setChartOption(this.chart, option)
+                        option.series = [{
+                            name: '上传增量',
+                            type: 'bar',
+                            {#stack: 'Total',#}
+                            data: diff
+                        }]
+                        this.setChartOption(this.$refs.diff_charts.chart, option)
                         {#option.title.text = `${site.name} - 魔力积分`#}
                         option.series = [{
                             name: '魔力值',
@@ -1064,6 +1081,7 @@
                         option.tooltip.valueFormatter = null
                         option.yAxis.axisLabel.formatter = null
                         this.setChartOption(this.$refs.ratio_charts.chart, option)
+
                     }, 50)
 
 
