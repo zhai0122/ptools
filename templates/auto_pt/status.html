@@ -312,30 +312,29 @@
                         </el-card>
                     </el-col>
                 </el-row>
-        </div>
+            </el-row>
+            <div v-else="showList" style="margin-top: -15px;">
+                <div style="text-align: center">
 
-        <div v-else="showList" style="margin-top: -15px;">
-            <div style="text-align: center">
+                    <el-button-group>
+                        <el-button size="mini" :type="begInvite ? 'primary' : ''" @click="begInviteMode">
+                            求药
+                        </el-button>
+                        <el-button size="mini" :type="showLegend ? 'primary' : ''" @click="showLegendMode">
+                            图例
+                        </el-button>
+                        <el-button size="mini" :type="showLogo ? 'primary' : ''" @click="showLogoMode"
+                                   v-if="showLegend">
+                            Logo
+                        </el-button>
+                    </el-button-group>
 
-                <el-button-group>
-                    <el-button size="mini" :type="begInvite ? 'primary' : ''" @click="begInviteMode">
-                        求药
-                    </el-button>
-                    <el-button size="mini" :type="showLegend ? 'primary' : ''" @click="showLegendMode">
-                        图例
-                    </el-button>
-                    <el-button size="mini" :type="showLogo ? 'primary' : ''" @click="showLogoMode"
-                               v-if="showLegend">
-                        Logo
-                    </el-button>
-                </el-button-group>
+                </div>
+
+                <charts ref="charts" style="height: 700px;margin-top: 5px;" :option="option"></charts>
 
             </div>
-
-            <charts ref="charts" style="height: 700px;margin-top: 5px;" :option="option"></charts>
-
         </div>
-
     </el-card>
     <el-dialog
             {#            title="历史数据"#}
@@ -1032,7 +1031,7 @@
                     setTimeout(() => {
                         this.chart = this.$refs.seeding_charts.chart
                         this.setChartOption(option)
-                    }, 15)
+                    }, 50)
 
 
                 },
