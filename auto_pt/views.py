@@ -746,12 +746,11 @@ def sign_in_api(request):
             ).to_dict(), safe=False)
         my_site = MySite.objects.filter(id=my_site_id).first()
         sign_state = pt_spider.sign_in(my_site)
-        if sign_state.code == StatusCodeEnum.OK.code:
-            return JsonResponse(data=CommonResponse.success(
-                msg=sign_state.msg
-            ).to_dict(), safe=False)
-        else:
-            return sign_state
+        # if sign_state.code == StatusCodeEnum.OK.code:
+        #     return JsonResponse(data=CommonResponse.success(
+        #         msg=sign_state.msg
+        #     ).to_dict(), safe=False)
+        return JsonResponse(data=sign_state.to_dict(), safe=False)
     except Exception as e:
         logger.error(f'签到失败：{e}')
         logger.error(traceback.format_exc(limit=3))
@@ -794,9 +793,11 @@ def update_site_api(request):
                 return JsonResponse(data=CommonResponse.success(
                     msg=message
                 ).to_dict(), safe=False)
-            return res
+            return JsonResponse(data=CommonResponse.error(
+                msg=res.msg
+            ).to_dict(), safe=False)
         else:
-            return res_status
+            return JsonResponse(data=res_status.to_dict(), safe=False)
     except Exception as e:
         logger.error(f'数据更新失败：{e}')
         logger.error(traceback.format_exc(limit=3))
