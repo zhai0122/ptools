@@ -279,7 +279,7 @@ def auto_upgrade():
             logger.info('同步数据库 命令执行结果：\n{}'.format(p))
 
         logger.info('更新完毕')
-        pt_spider.send_text('更新完成！')
+        pt_spider.send_text(f'> 更新完成！{datetime.datetime.now()}')
         return CommonResponse.success(
             msg='更新成功，15S后自动刷新页面！',
             data={
@@ -290,7 +290,7 @@ def auto_upgrade():
         # raise
         msg = '更新失败!{}，请初始化Xpath！'.format(str(e))
         logger.error(msg)
-        pt_spider.send_text(msg)
+        pt_spider.send_text(f'> <font color="red">{msg}</font>')
         return CommonResponse.error(
             msg=msg
         )
