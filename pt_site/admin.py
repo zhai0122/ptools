@@ -743,24 +743,14 @@ class DownloaderAdmin(AjaxAdmin):  # instead of ModelAdmin
     def test_connect(request, downloader):
         try:
             conn = False
-            # if downloader.category == 'Tr':
-            #     tr_client = transmission_rpc.Client(host=downloader.host, port=downloader.port,
-            #                                         username=downloader.username, password=downloader.password)
-            #     # print(tr_client.port_test())
-            #     # return True, ''
-            #     conn = True
+            if downloader.category == 'Tr':
+                conn = transmission_rpc.Client(host=downloader.host, port=downloader.port,
+                                               username=downloader.username, password=downloader.password)
             if downloader.category == 'Qb':
                 qb_client = qbittorrentapi.Client(host=downloader.host, port=downloader.port,
                                                   username=downloader.username, password=downloader.password)
                 qb_client.auth_log_in()
-                # return qb_client.is_logged_in, ''
                 conn = qb_client.is_logged_in
-            # if downloader.category == 'De':
-            #     de_client = deluge_client.DelugeRPCClient(host=downloader.host, port=downloader.port,
-            #                                               username=downloader.username, password=downloader.password)
-            #     de_client.connect()
-            #     # return de_client.connected, ''
-            #     conn = de_client.connected
             if conn:
                 messages.success(request, '{} 连接成功！'.format(downloader.name))
         except Exception as e:
