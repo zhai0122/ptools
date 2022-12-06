@@ -120,11 +120,11 @@
                                 <hr>
                                 <div>
                                     <span style="float: left;font-weight: bold;color: #3b5769;line-height: 32px;">
-                                        排序
+                                        关注度
                                     </span>
                                     <span>
                                         <el-button size="mini" type="primary" plain @click="changeSortStep">
-                                            排序按钮单次步进值：
+                                            关注度按钮单次步进值：
                                             <span v-text="sortStep"></span></el-button>
                                     </span>
                                 </div>
@@ -236,7 +236,7 @@
                                 <hr>
                                 <div>
                                     <span style="float: left;font-weight: bold;color: #3b5769;line-height: 32px;">
-                                        排序
+                                        关注度
                                     </span>
                                     <span>
                                         <el-button-group>
@@ -411,7 +411,7 @@
                     axios.get(
                         "{% url 'site_sort_api' %}" + `?id=${id}&sort=${sort}`
                     ).then(res => {
-                        console.log('修改排序成功', res.data)
+                        console.log('修改关注度成功', res.data)
                         {#let data = res.data#}
                         {#console.log(typeof res.data.data)#}
                         if (res.data.code === 0) {
@@ -428,10 +428,10 @@
                             });
                         }
                     }).catch(res => {
-                        console.log('修改排序失败', res)
+                        console.log('修改关注度失败', res)
                         this.$message({
                             type: 'warning',
-                            message: '修改排序失败！' + res
+                            message: '修改关注度失败！' + res
                         });
                     })
                 },
