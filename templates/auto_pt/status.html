@@ -336,26 +336,32 @@
             </div>
         </div>
     </el-card>
-    <el-dialog
-            {#            title="历史数据"#}
+    <el-drawer
+            :title="site.name"
             :visible.sync="showSiteChart"
             width="90%"
-            top="5vh"
+            direction="btt"
+            size="90%"
+            style="background-color: rgba(227, 229, 229, 0.6);"
             center>
-        <el-row>
-            <el-col :span="24">
-                <charts ref="seeding_charts" style="height: 320px;margin-top: 15px;" :option="option"></charts>
-            </el-col>
-        </el-row>
-        <el-row :gutter="20">
-            <el-col :span="12">
-                <charts ref="bonus_charts" :span="12" style="height: 320px;margin-top: 15px;" :option="option"></charts>
-            </el-col>
-            <el-col :span="12">
-                <charts ref="ratio_charts" :span="12" style="height: 320px;margin-top: 15px;" :option="option"></charts>
-            </el-col>
-        </el-row>
-    </el-dialog>
+        <div style="width: 95%;text-align: center;margin: auto;">
+            <el-row>
+                <el-col :span="24">
+                    <charts ref="seeding_charts" style="height: 320px;margin-top: 15px;" :option="option"></charts>
+                </el-col>
+            </el-row>
+            <el-row :gutter="20">
+                <el-col :span="12">
+                    <charts ref="bonus_charts" :span="12" style="height: 320px;margin-top: 15px;"
+                            :option="option"></charts>
+                </el-col>
+                <el-col :span="12">
+                    <charts ref="ratio_charts" :span="12" style="height: 320px;margin-top: 15px;"
+                            :option="option"></charts>
+                </el-col>
+            </el-row>
+        </div>
+    </el-drawer>
 </div>
 
 {% include 'admin/includes/js-part.html' %}
@@ -371,7 +377,7 @@
                 return {
                     chart: null,
                     ptData: {},
-                    siteData: [],
+                    site: {},
                     option: {},
                     showList: true,
                     showSiteChart: false,
@@ -572,14 +578,14 @@
                     this.showLegend = !this.showLegend
                     this.setPie()
                 },
-                setChartOption(option) {
+                setChartOption(charts, option) {
                     {#this.option = option#}
-                    if (this.chart) {
-                        this.chart.clear()
+                    if (charts) {
+                        charts.clear()
                     }
-                    this.chart.setOption(option)
+                    charts.setOption(option)
                     window.addEventListener("resize", () => {
-                        this.chart.resize()
+                        charts.resize()
                     })
                     //this.$nextTick(() => {//自适应宽度
                     //   this.chart.resize();
@@ -747,7 +753,7 @@
                     setTimeout(() => {
                         console.log(666)
                         this.chart = this.$refs.charts.chart
-                        this.setChartOption(option)
+                        this.setChartOption(this.chart, option)
                     }, 50)
                 },
                 setTree() {
@@ -855,7 +861,7 @@
                     {#this.treeOption.series[0].data.push()#}
                     {#this.$refs.charts.chart.setOption(treeOption)#}
                     this.chart = this.$refs.charts.chart
-                    this.setChartOption(option)
+                    this.setChartOption(this.chart, option)
                 },
                 setBar() {
                     let option = {
@@ -932,10 +938,11 @@
                     option.series.push(downloaded, uploaded)
                     option.xAxis.data = siteList
                     this.chart = this.$refs.charts.chart
-                    this.setChartOption(option)
+                    this.setChartOption(this.chart, option)
                 },
                 setLine(siteData) {
                     let site = siteData.site
+                    this.site = siteData.site
                     let dataList = siteData.site_status_list
                     let uploadedList = []
                     let downloadedList = []
@@ -954,9 +961,14 @@
                         dateList.push(info.info_date)
                     })
                     let option = {
-                        title: {
-                            text: `${site.name} - Copyright By PTools`
-                        },
+                        //title: {
+                        //    text: site.name,
+                        //    textStyle: {
+                        //        color: 'orangered',
+                        //    },
+                        //    left: 'center',
+                        //    top: '3%',
+                        //},
                         tooltip: {
                             show: true,
                             trigger: 'axis',
@@ -969,6 +981,8 @@
                         },
                         legend: {
                             show: true,
+                            top: '3%',
+                            left: 'center',
                         },
                         grid: {
                             left: '3%',
@@ -1013,24 +1027,43 @@
                                 {#stack: 'Total',#}
                                 data: downloadedList
                             },
-                            {
-                                name: '魔力值',
-                                type: 'line',
-                                {#stack: 'Total',#}
-                                data: spList
-                            },
-                            {
-                                name: '积分',
-                                type: 'line',
-                                {#stack: 'Total',#}
-                                data: bonusList
-                            }
+
                         ]
                     };
                     this.showSiteChart = true
                     setTimeout(() => {
                         this.chart = this.$refs.seeding_charts.chart
-                        this.setChartOption(option)
+                        this.setChartOption(this.chart, option)
+                        {#option.title.text = `${site.name} - 魔力积分`#}
+                        option.series = [{
+                            name: '魔力值',
+                            type: 'line',
+                            {#stack: 'Total',#}
+                            data: spList
+                        },
+                            {
+                                name: '积分',
+                                type: 'line',
+                                {#stack: 'Total',#}
+                                data: bonusList
+                            }]
+                        option.tooltip.valueFormatter = function (value) {
+                            return numberFormat(value)
+                        }
+                        option.yAxis.axisLabel.formatter = function (value) {
+                            return numberFormat(value)
+                        }
+                        this.setChartOption(this.$refs.bonus_charts.chart, option)
+                        {#option.title.text = `${site.name} - 分享率`#}
+                        option.series = [{
+                            name: '分享率',
+                            type: 'line',
+                            {#stack: 'Total',#}
+                            data: ratioList
+                        }]
+                        option.tooltip.valueFormatter = null
+                        option.yAxis.axisLabel.formatter = null
+                        this.setChartOption(this.$refs.ratio_charts.chart, option)
                     }, 50)
 
 
