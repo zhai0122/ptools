@@ -67,10 +67,21 @@
 
         </div>
         <div class="body">
-            <div v-if="showList">
-                <div>
-                    <el-input v-model="searchKey" placeholder="请输入站点名称或者网址搜索"></el-input>
-                </div>
+            <el-row v-if="showList">
+                <el-row :gutter="20">
+                    <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="4"
+                            style="margin-bottom: 10px;float: right;">
+                        <el-input autofocus
+                                  :span="6"
+                                  prefix-icon="el-icon-search"
+                                  clearable
+                                  v-model="searchKey"
+                                  @input="siteSearch"
+                                  placeholder="请输入站点名称或者网址搜索">
+
+                        </el-input>
+                    </el-col>
+                </el-row>
                 <el-row :gutter="20">
                     <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="4" style="margin-bottom: 10px;">
                         <el-card class="box-card info-card">
@@ -178,7 +189,7 @@
                         </el-card>
                     </el-col>
                     <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="4" style="margin-bottom: 10px;"
-                            v-for="site in ptData.status_list">
+                            v-for="site in showData">
                         <el-card class="box-card info-card">
                             <div slot="header" class="clearfix">
 
@@ -301,52 +312,52 @@
                         </el-card>
                     </el-col>
                 </el-row>
-            </div>
+        </div>
 
-            <div v-else="showList" style="margin-top: -15px;">
-                <div style="text-align: center">
+        <div v-else="showList" style="margin-top: -15px;">
+            <div style="text-align: center">
 
-                    <el-button-group>
-                        <el-button size="mini" :type="begInvite ? 'primary' : ''" @click="begInviteMode">
-                            求药
-                        </el-button>
-                        <el-button size="mini" :type="showLegend ? 'primary' : ''" @click="showLegendMode">
-                            图例
-                        </el-button>
-                        <el-button size="mini" :type="showLogo ? 'primary' : ''" @click="showLogoMode"
-                                   v-if="showLegend">
-                            Logo
-                        </el-button>
-                    </el-button-group>
-
-                </div>
-
-                <charts ref="charts" style="height: 700px;margin-top: 5px;" :option="option"></charts>
+                <el-button-group>
+                    <el-button size="mini" :type="begInvite ? 'primary' : ''" @click="begInviteMode">
+                        求药
+                    </el-button>
+                    <el-button size="mini" :type="showLegend ? 'primary' : ''" @click="showLegendMode">
+                        图例
+                    </el-button>
+                    <el-button size="mini" :type="showLogo ? 'primary' : ''" @click="showLogoMode"
+                               v-if="showLegend">
+                        Logo
+                    </el-button>
+                </el-button-group>
 
             </div>
+
+            <charts ref="charts" style="height: 700px;margin-top: 5px;" :option="option"></charts>
 
         </div>
-    </el-card>
-    <el-dialog
-            {#            title="历史数据"#}
-            :visible.sync="showSiteChart"
-            width="90%"
-            top="5vh"
-            center>
-        <el-row>
-            <el-col :span="24">
-                <charts ref="seeding_charts" style="height: 320px;margin-top: 15px;" :option="option"></charts>
-            </el-col>
-        </el-row>
-        <el-row :gutter="20">
-            <el-col :span="12">
-                <charts ref="bonus_charts" :span="12" style="height: 320px;margin-top: 15px;" :option="option"></charts>
-            </el-col>
-            <el-col :span="12">
-                <charts ref="ratio_charts" :span="12" style="height: 320px;margin-top: 15px;" :option="option"></charts>
-            </el-col>
-        </el-row>
-    </el-dialog>
+
+</div>
+</el-card>
+<el-dialog
+        {#            title="历史数据"#}
+        :visible.sync="showSiteChart"
+        width="90%"
+        top="5vh"
+        center>
+    <el-row>
+        <el-col :span="24">
+            <charts ref="seeding_charts" style="height: 320px;margin-top: 15px;" :option="option"></charts>
+        </el-col>
+    </el-row>
+    <el-row :gutter="20">
+        <el-col :span="12">
+            <charts ref="bonus_charts" :span="12" style="height: 320px;margin-top: 15px;" :option="option"></charts>
+        </el-col>
+        <el-col :span="12">
+            <charts ref="ratio_charts" :span="12" style="height: 320px;margin-top: 15px;" :option="option"></charts>
+        </el-col>
+    </el-row>
+</el-dialog>
 </div>
 
 {% include 'admin/includes/js-part.html' %}
@@ -372,6 +383,7 @@
                     shuffle: false,
                     searchKey: '',
                     sortStep: 1,
+                    showData: [],
                 }
             },
             beforeMount() {
@@ -396,7 +408,12 @@
             },
             methods: {
                 siteSearch() {
-
+                    console.log(this.searchKey)
+                    {#this.showData#}
+                    this.searchKey == '' ? this.showData = this.ptData.status_list : this.showData = this.ptData.status_list.filter(site => {
+                        return site.url.toLowerCase().includes(this.searchKey.toLowerCase()) || site.name.toLowerCase().includes(this.searchKey.toLowerCase())
+                    })
+                    console.log(this.showData)
                 },
                 changeSortStep() {
                     console.log(this.sortStep)
@@ -608,6 +625,7 @@
                     //乱序
                     {#this.shuffleList()#}
                     this.showList = true
+                    this.siteSearch()
                 },
                 setPie() {
                     let uploadedList = []
