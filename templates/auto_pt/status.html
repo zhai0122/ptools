@@ -336,28 +336,27 @@
 
         </div>
 
-</div>
-</el-card>
-<el-dialog
-        {#            title="历史数据"#}
-        :visible.sync="showSiteChart"
-        width="90%"
-        top="5vh"
-        center>
-    <el-row>
-        <el-col :span="24">
-            <charts ref="seeding_charts" style="height: 320px;margin-top: 15px;" :option="option"></charts>
-        </el-col>
-    </el-row>
-    <el-row :gutter="20">
-        <el-col :span="12">
-            <charts ref="bonus_charts" :span="12" style="height: 320px;margin-top: 15px;" :option="option"></charts>
-        </el-col>
-        <el-col :span="12">
-            <charts ref="ratio_charts" :span="12" style="height: 320px;margin-top: 15px;" :option="option"></charts>
-        </el-col>
-    </el-row>
-</el-dialog>
+    </el-card>
+    <el-dialog
+            {#            title="历史数据"#}
+            :visible.sync="showSiteChart"
+            width="90%"
+            top="5vh"
+            center>
+        <el-row>
+            <el-col :span="24">
+                <charts ref="seeding_charts" style="height: 320px;margin-top: 15px;" :option="option"></charts>
+            </el-col>
+        </el-row>
+        <el-row :gutter="20">
+            <el-col :span="12">
+                <charts ref="bonus_charts" :span="12" style="height: 320px;margin-top: 15px;" :option="option"></charts>
+            </el-col>
+            <el-col :span="12">
+                <charts ref="ratio_charts" :span="12" style="height: 320px;margin-top: 15px;" :option="option"></charts>
+            </el-col>
+        </el-row>
+    </el-dialog>
 </div>
 
 {% include 'admin/includes/js-part.html' %}
@@ -432,13 +431,12 @@
                         {#let data = res.data#}
                         {#console.log(typeof res.data.data)#}
                         if (res.data.code === 0) {
+                            this.getData()
                             this.$message({
                                 type: 'success',
                                 message: res.data.msg
                             });
-                            this.getData()
                         } else {
-                            this.loading = false
                             this.$message({
                                 type: 'warning',
                                 message: res.data.msg
@@ -456,27 +454,24 @@
                     axios.get(
                         "{% url 'sign_in_api' %}" + `?id=${id}`
                     ).then(res => {
-                        console.log('获取数据列表成功', res.data)
-                        {#let data = res.data#}
-                        {#console.log(typeof res.data.data)#}
+                        console.log('获取数据成功', res.data.msg)
                         if (res.data.code === 0) {
+                            this.getData()
                             this.$message({
                                 type: 'success',
                                 message: res.data.msg
                             });
-                            this.getData()
                         } else {
-                            this.loading = false
                             this.$message({
                                 type: 'warning',
-                                message: '获取数据列表失败！'
+                                message: res.data.msg
                             });
                         }
                     }).catch(res => {
-                        console.log('获取数据列表失败', res)
+                        console.log('签到失败', res)
                         this.$message({
                             type: 'warning',
-                            message: '获取数据列表失败！' + res
+                            message: '签到失败！' + res
                         });
                     })
                 },
@@ -488,23 +483,22 @@
                         {#let data = res.data#}
                         {#console.log(typeof res.data.data)#}
                         if (res.data.code === 0) {
+                            this.getData()
                             this.$message({
                                 type: 'success',
                                 message: res.data.msg
                             });
-                            this.getData()
                         } else {
-                            this.loading = false
                             this.$message({
                                 type: 'warning',
-                                message: '获取数据列表失败！'
+                                message: res.data.msg
                             });
                         }
                     }).catch(res => {
-                        console.log('获取数据列表失败', res)
+                        console.log('更新数据失败', res)
                         this.$message({
                             type: 'warning',
-                            message: '获取数据列表失败！' + res
+                            message: '更新数据失败！' + res
                         });
                     })
                 },
@@ -512,18 +506,16 @@
                     axios.get(
                         "{% url 'edit_site_api' %}" + '?id=' + id
                     ).then(res => {
-                        console.log('获取数据列表成功', res.data)
+                        console.log('获取数据列表成功', res.data.data)
                         {#let data = res.data#}
                         {#console.log(typeof res.data.data)#}
                         if (res.data.code === 0) {
+                            this.getData()
                             this.$message({
                                 type: 'success',
-                                message: res.data.msg
+                                message: res.data.data.msg
                             });
-                            this.getData()
-
                         } else {
-                            this.loading = false
                             this.$message({
                                 type: 'warning',
                                 message: '获取数据列表失败！'
@@ -550,7 +542,7 @@
                             {#this.setCard()#}
                             this.setLine(res.data.data)
                         } else {
-                            this.loading = false
+
                             this.$message({
                                 type: 'warning',
                                 message: res.data.msg
@@ -1040,7 +1032,7 @@
                     setTimeout(() => {
                         this.chart = this.$refs.seeding_charts.chart
                         this.setChartOption(option)
-                    }, 5)
+                    }, 15)
 
 
                 },
@@ -1057,7 +1049,7 @@
                             {#this.setCard()#}
                             this.sortList()
                         } else {
-                            this.loading = false
+
                             this.$message({
                                 type: 'warning',
                                 message: '获取数据列表失败！'
