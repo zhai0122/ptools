@@ -414,68 +414,6 @@ def do_update(request):
     return JsonResponse(data=pt_site.auto_upgrade().to_dict(), safe=False)
 
 
-"""
-    try:
-        logger.info('开始更新')
-        pt_site_site_mtime = os.stat('pt_site_site.json').st_mtime
-        requirements_mtime = os.stat('requirements.txt').st_mtime
-        update_commands = {
-            # 'cp db/db.sqlite3 db/db.sqlite3-$(date "+%Y%m%d%H%M%S")',
-            '强制覆盖本地': 'git reset --hard',
-            '获取更新信息': 'git fetch --all',
-            '拉取代码更新': 'git pull origin {}'.format(os.getenv('DEV')),
-        }
-        requirements_commands = {
-            '安装依赖': 'pip install -r requirements.txt',
-        }
-        migrate_commands = {
-            '同步数据库': 'python manage.py migrate',
-        }
-        logger.info('拉取最新代码')
-        result = exec_command(update_commands)
-        new_requirements_mtime = os.stat('requirements.txt').st_mtime
-        if new_requirements_mtime > requirements_mtime:
-            logger.info('更新环境依赖')
-            result.extend(exec_command(requirements_commands))
-        new_pt_site_site = os.stat('pt_site_site.json').st_mtime
-        logger.info('更新前文件最后修改时间')
-        logger.info(pt_site_site_mtime)
-        logger.info('更新后文件最后修改时间')
-        logger.info(new_pt_site_site)
-        if new_pt_site_site == pt_site_site_mtime:
-            logger.info('本次无规则更新，跳过！')
-            result.append({
-                'command': '本次无更新规则',
-                'res': 0
-            })
-            pass
-        else:
-            logger.info('拉取更新完毕，开始更新Xpath规则')
-            p = subprocess.run('cp db/db.sqlite3 db/db.sqlite3-$(date "+%Y%m%d%H%M%S")', shell=True)
-            logger.info('备份数据库 命令执行结果：\n{}'.format(p))
-            result.append({
-                'command': '备份数据库',
-                'res': p.returncode
-            })
-            result.extend(exec_command(migrate_commands))
-            logger.info('同步数据库 命令执行结果：\n{}'.format(p))
-        logger.info('更新完毕')
-        return JsonResponse(data=CommonResponse.success(
-            msg='更新成功，15S后自动刷新页面！',
-            data={
-                'result': result
-            }
-        ).to_dict(), safe=False)
-    except Exception as e:
-        # raise
-        msg = '更新失败!{}，请初始化Xpath！'.format(str(e))
-        logger.error(msg)
-        return JsonResponse(data=CommonResponse.error(
-            msg=msg
-        ).to_dict(), safe=False)
-"""
-
-
 def do_xpath(request):
     """初始化Xpath规则"""
     migrate_commands = {
@@ -691,10 +629,120 @@ def site_data_api(request):
     my_site_id = request.GET.get('id')
     logger.info(f'ID值：{type(my_site_id)}')
     if int(my_site_id) == 0:
-        # pt_site.auto_sign_in()
-        return JsonResponse(data=CommonResponse.error(
-            msg='全站数据展示功能还未完成，敬请期待！'
+        my_site_list = MySite.objects.all()
+        diff_list = []
+        # 提取日期
+        date_list = set([
+            status.created_at.date().strftime('%Y-%m-%d') for status in SiteStatus.objects.all()
+        ])
+        date_list = list(date_list)
+        date_list.sort()
+        print(f'日期列表：{date_list}')
+        print(f'日期数量：{len(date_list)}')
+        # for date in date_list:
+        #     status_list = SiteStatus.objects.filter(created_at__date=date)
+        #     diff_list.append({
+        #         'name': date.strftime('%Y-%m-%d'),
+        #         'stack': date.strftime('%Y-%m-%d'),
+        #         'data': [{
+        #             'name': status.site.site.name,
+        #             'value': status.uploaded
+        #         } for status in status_list]
+        #
+        #     })
+        # print(diff_list)
+
+        for my_site in my_site_list:
+            # 每个站点获取自己站点的所有信息
+            site_status_list = my_site.sitestatus_set.order_by('created_at').all()
+            print(f'站点数据条数：{len(site_status_list)}')
+            info_list = [
+                {
+                    'uploaded': site_info.uploaded,
+                    'date': site_info.created_at.date().strftime('%Y-%m-%d')
+                } for site_info in site_status_list
+            ]
+            print(f'提取完后站点数据条数：{len(info_list)}')
+
+            # 生成本站点的增量列表，并标注时间
+            '''
+            site_info_list = [{
+                'name': my_site.site.name,
+                'type': 'bar',
+                'stack': info_list[index + 1]['date'],
+                'value': info_list[index + 1]['uploaded'] - info['uploaded'] if index < len(
+                    info_list) - 1 else 0,
+                'date': info['date']
+            } for (index, info) in enumerate(info_list) if index < len(info_list) - 1]
+            '''
+            diff_info_list = {
+                info['date']: info_list[index + 1]['uploaded'] - info['uploaded'] if index < len(
+                    info_list) - 1 else 0 for (index, info) in enumerate(info_list) if index < len(info_list) - 1
+            }
+            print(f'处理完后站点数据条数：{len(info_list)}')
+            for date in date_list:
+                if not diff_info_list.get(date):
+                    diff_info_list[date] = 0
+            # print(diff_info_list)
+            print(len(diff_info_list))
+            diff_info_list = sorted(diff_info_list.items(), key=lambda x: x[0])
+            diff_list.append({
+                'name': my_site.site.name,
+                'type': 'bar',
+                'large': 'true',
+                'stack': 'increment',
+                'data': [value[1] if value[1] > 0 else 0 for value in diff_info_list]
+            })
+        print(diff_list)
+        # diff_list.append(
+        #     {
+        #         'name': my_site.site.name,
+        #         'diff': {info['date']: info_list[index + 1]['uploaded'] - info['uploaded'] if index < len(
+        #             info_list) - 1 else 0 for (index, info) in enumerate(info_list)}
+        #     }¬
+        # )
+        info_list = []
+        # print(diff_list)
+        # print(len(diff_list))
+
+        # 提取日期
+        # date_list = set([
+        #     diff['date'] for diff in site_status_list
+        # ])
+        # date_list = list(date_list)
+        # date_list.sort()
+        # print(date_list)
+        # print(len(date_list))
+        # 填充数据
+        data_list = []
+        # for date in date_list:
+        #     list1 = []
+        #     for diff in diff_list:
+        #         print(date, diff['date'])
+        # if date == diff['date']:
+        #     list1.append(diff)
+        # print(list1)
+        # data_list.append({
+        #     date: list1
+        # })
+        # list1 = []
+        # print(data_list)
+        #
+        # x = [{
+        #     'name': diff['name'],
+        #     'type': 'bar',
+        #     'stack': 'diff',
+        #
+        # } for diff in diff_list]
+
+        return JsonResponse(data=CommonResponse.success(
+            # msg='全站数据展示功能还未完成，敬请期待！'
+            data={
+                'date_list': date_list,
+                'diff': diff_list
+            }
         ).to_dict(), safe=False)
+
     logger.info(f'前端传来的站点ID：{my_site_id}')
     my_site = MySite.objects.filter(id=my_site_id).first()
     if not my_site:
@@ -762,7 +810,7 @@ def sign_in_api(request):
 def update_site_api(request):
     try:
         my_site_id = request.GET.get('id')
-        logger.info(f'ID值：{type(my_site_id)}')
+        logger.info(f'ID值：{my_site_id}')
         if int(my_site_id) == 0:
             pt_site.auto_get_status()
             return JsonResponse(data=CommonResponse.success(

@@ -41,6 +41,10 @@
             margin-right: 5px;
         }
 
+        .el-drawer__header {
+            height: 35px !important;
+        }
+
     </style>
 </head>
 <body>
@@ -84,7 +88,7 @@
                     </el-col>
                 </el-row>
                 <el-row :gutter="20">
-                    <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="4" style="margin-bottom: 10px;">
+                    <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="4" style="margin-bottom: 10px;" v-if="ptData">
                         <el-card class="box-card info-card">
                             <div slot="header" class="clearfix">
                                 <div style="text-align: center;line-height: 100%;margin-top: -15px;">
@@ -341,13 +345,17 @@
             :visible.sync="showSiteChart"
             direction="btt"
             size="96%"
+            append-to-body
             :title="site.name + '--历史数据'"
             style="background-color: rgba(227, 229, 229, 0.6);">
         {#        <div slot="title" style="text-align: center;line-height: 35px;">#}
         {#            <h3><span v-text="site.name"></span>-历史数据</h3>#}
         {#        </div>#}
         <div style="width: 95%;text-align: center;margin: -15px auto 25px;">
-            <el-row :gutter="20">
+            <charts ref="history_charts" style="height: 600px;margin-top: 15px;"
+                    v-if="showAllHistory" :option="option"></charts>
+
+            <el-row :gutter="20" v-else="showAllHistory">
                 <el-col :span="24">
                     <charts ref="seeding_charts" style="height: 420px;margin-top: 15px;" :option="option"></charts>
                 </el-col>
@@ -379,7 +387,7 @@
             data() {
                 return {
                     chart: null,
-                    ptData: {},
+                    ptData: null,
                     site: {},
                     option: {},
                     showList: true,
@@ -391,10 +399,10 @@
                     searchKey: '',
                     sortStep: 1,
                     showData: [],
+                    showAllHistory: false,
                 }
             },
             beforeMount() {
-
             },
             mounted() {
                 {#this.chart = this.$refs.charts.chart#}
@@ -548,9 +556,8 @@
                             {#this.ptData = res.data.data#}
                             {#this.setPie()#}
                             {#this.setCard()#}
-                            this.setLine(res.data.data)
+                            id == 0 ? this.showAllIncrementHistory(res.data.data) : this.setLine(res.data.data)
                         } else {
-
                             this.$message({
                                 type: 'warning',
                                 message: res.data.msg
@@ -563,6 +570,92 @@
                             message: '获取数据列表失败！' + res
                         });
                     })
+                },
+                showAllIncrementHistory(data) {
+                    let option = {
+                        //title: {
+                        //    text: site.name,
+                        //    textStyle: {
+                        //        color: 'orangered',
+                        //    },
+                        //    left: 'center',
+                        //    top: '3%',
+                        //},
+                        tooltip: {
+                            show: true,
+                            trigger: 'axis',
+                            axisPointer: {
+                                type: 'shadow'
+                            },
+                            formatter: function (params) {
+                                //console.log(params)
+                                // console.log(params[0].value[1])
+                                let text = ''
+                                params.forEach((param, index) => {
+                                    let temp = param.value == 0 ? '' : `
+                                            <div style="display: block;height:20px;width: 50%;float:left;">
+                                              <i style="width: 10px;height: 10px;display: inline-block;background: ${param.color};border-radius: 10px;"></i>
+                                              <span>${param.seriesName}: ${renderSize(param.value)}</span>
+                                            </div>
+                                         `
+                                    text += temp
+                                })
+
+                                return `<div style="width: 300px;">${text}</div>`
+                            },
+                            //position: function (point, params, dom, rect, size) {
+                            //    return [point[1], 0]
+                            //},
+
+                            order: 'valueDesc',
+                            confine: false,
+                            extraCssText: 'box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);z-index: 9999;', // 附加阴影样式
+                        },
+                        legend: {
+                            show: false,
+                            top: '3%',
+                            left: 'center',
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        toolbox: {
+                            feature: {
+                                saveAsImage: {}
+                            }
+                        },
+                        xAxis: {
+                            type: 'category',
+                            boundaryGap: true,
+                            axisTick: {
+                                {#alignWithLabel: true#}
+                            },
+                            axisLine: {
+                                onZero: false
+                            },
+                            data: data.date_list
+                        },
+                        yAxis: {
+                            type: 'value',
+                            axisLabel: {
+                                formatter: function (value, index) {
+                                    return renderSize(value);
+                                }
+                            },
+
+                        },
+                        series: data.diff,
+                    };
+                    this.showSiteChart = true
+                    this.showAllHistory = true
+                    setTimeout(() => {
+                        this.site.name = '全部站点'
+                        this.chart = this.$refs.history_charts.chart
+                        this.setChartOption(this.chart, option)
+                    }, 15)
                 },
                 begInviteMode() {
                     this.begInvite = !this.begInvite
@@ -930,12 +1023,14 @@
                         name: '上传量',
                         type: 'bar',
                         stack: 'Ad',
+                        barMaxWidth: '60%',
                         data: uploadedList
                     }
                     let downloaded = {
                         name: '下载量',
                         type: 'bar',
                         stack: 'Ad',
+                        barMaxWidth: '60%',
                         data: downloadedList
                     }
                     option.series.push(downloaded, uploaded)
@@ -953,7 +1048,6 @@
                     let ratioList = []
                     let seedingSizeList = []
                     let dateList = []
-                    let increment = []
                     dataList.sort((a, b) => {
                         return a.info_date - b.info_date
                     })
@@ -1020,7 +1114,7 @@
                         },
                         xAxis: {
                             type: 'category',
-                            boundaryGap: false,
+                            boundaryGap: true,
                             data: dateList
                         },
                         yAxis: [{
@@ -1089,6 +1183,7 @@
                                 name: '上传增量',
                                 type: 'bar',
                                 yAxisIndex: 0,
+                                barMaxWidth: '60%',
                                 {#stack: 'Total',#}
                                 data: diff
                             },
@@ -1147,6 +1242,7 @@
                         ]
                     };
                     this.showSiteChart = true
+                    this.showAllHistory = false
                     setTimeout(() => {
                         this.chart = this.$refs.seeding_charts.chart
                         this.setChartOption(this.chart, option)
@@ -1154,6 +1250,7 @@
                             name: '上传增量',
                             type: 'bar',
                             {#stack: 'Total',#}
+                            barMaxWidth: '60%',
                             data: diff
                         }]
                         this.setChartOption(this.$refs.diff_charts.chart, option)
