@@ -75,11 +75,14 @@
             <el-row v-if="showList">
                 <el-row :gutter="20">
                     <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="4"
-                            style="margin-bottom: 10px;float: right;">
+                            style="margin-bottom: 10px;float: right;text-align: right;">
+                        <el-button size="mini" type="success" @click="addSite">添加
+                        </el-button>
                         <el-input autofocus
-                                  :span="6"
                                   prefix-icon="el-icon-search"
                                   clearable
+                                  size="mini"
+                                  style="width: 75%;"
                                   v-model="searchKey"
                                   @input="siteSearch"
                                   placeholder="请输入站点名称或者网址搜索">
@@ -593,8 +596,11 @@
                         });
                     })
                 },
-                changeLength() {
-
+                addSite() {
+                    this.$message({
+                        type: 'warning',
+                        message: '开发中，敬请期待！'
+                    });
                 },
                 showAllIncrementHistory($event) {
                     console.log($event)

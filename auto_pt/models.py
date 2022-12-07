@@ -78,8 +78,8 @@ class Notify(BaseEntity):
     touser = models.CharField(verbose_name='接收者', max_length=64,
                               help_text='接收者用户名/UID',
                               null=True, blank=True)
-    custom_server = models.URLField(verbose_name='自定义服务器', null=True, blank=True,
-                                    help_text='无自定义服务器的，请勿填写！')
+    custom_server = models.URLField(verbose_name='服务器', null=True, blank=True,
+                                    help_text='IYuu与BARK请必填，详情参考教程！')
 
     class Meta:
         verbose_name = '通知推送'
