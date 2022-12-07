@@ -591,16 +591,28 @@
                                 //console.log(params)
                                 // console.log(params[0].value[1])
                                 let text = ''
+                                let total = 0
                                 params.forEach((param, index) => {
                                     let temp = param.value == 0 ? '' : `
-                                            <div style="display: block;height:20px;width: 50%;float:left;">
-                                              <span style="float: float:left;"><i style="width: 10px;height: 10px;display: inline-block;background: ${param.color};border-radius: 10px;"></i>${param.seriesName}: </span>
-                                              <span style="float: float:right;">${renderSize(param.value)}</span>
+                                            <div style="display: block;height:20px;width: 46%;float:left;padding: 2%;">
+                                              <span style="float:left;"><i style="width: 10px;height: 10px;display: inline-block;background: ${param.color};border-radius: 10px;"></i>${param.seriesName}: </span>
+                                              <span style="float:right;">${renderSize(param.value)}</span>
                                             </div>
                                          `
                                     text += temp
+                                    total += param.value
                                 })
-                                return `<div style="width: 300px;">${text}</div>`
+                                let total_str = `
+                                            <div style="display: block;height:20px;width: 50%;text-align: left;padding: 2%;">
+                                              <span style="float: left;">
+                                                    <i style="width: 10px;height: 10px;display: inline-block;background: darkorange;border-radius: 10px;">
+                                                    </i>${params[0].axisValue}：
+                                              ${renderSize(total)}</span>
+                                            </div>
+                                            <hr>
+                                         `
+                                total_str += text
+                                return `<div style="width: 300px;">${total_str}</div>`
                             },
                             position: function (point, params, dom, rect, size) {
                                 console.log(point)
@@ -648,10 +660,10 @@
                         },
                         series: data.diff,
                     };
+                    this.site.name = '全部站点'
                     this.showSiteChart = true
                     this.showAllHistory = true
                     setTimeout(() => {
-                        this.site.name = '全部站点'
                         this.chart = this.$refs.history_charts.chart
                         this.setChartOption(this.chart, option)
                     }, 15)
