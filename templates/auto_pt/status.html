@@ -346,15 +346,14 @@
         {#        <div slot="title" style="text-align: center;line-height: 35px;">#}
         {#            <h3><span v-text="site.name"></span>-历史数据</h3>#}
         {#        </div>#}
-        <div style="width: 95%;text-align: center;margin: -15px auto auto;">
+        <div style="width: 95%;text-align: center;margin: -15px auto 25px;">
             <el-row :gutter="20">
+                <el-col :span="24">
+                    <charts ref="seeding_charts" style="height: 420px;margin-top: 15px;" :option="option"></charts>
+                </el-col>
                 <el-col :span="24">
                     <charts ref="diff_charts" style="height: 220px;margin-top: 15px;" :option="option"></charts>
                 </el-col>
-                <el-col :span="24">
-                    <charts ref="seeding_charts" style="height: 220px;margin-top: 15px;" :option="option"></charts>
-                </el-col>
-
                 <el-col :span="12">
                     <charts ref="bonus_charts" :span="12" style="height: 220px;margin-top: 15px;"
                             :option="option"></charts>
@@ -955,7 +954,9 @@
                     let seedingSizeList = []
                     let dateList = []
                     let increment = []
-
+                    dataList.sort((a, b) => {
+                        return a.info_date - b.info_date
+                    })
                     dataList.forEach((info, index) => {
                         uploadedList.push(info.uploaded)
                         ratioList.push(info.ratio)
@@ -964,12 +965,22 @@
                         spList.push(info.sp)
                         bonusList.push(info.bonus)
                         dateList.push(info.info_date)
+                        if (index > 1 && index < dataList.length) {
+                            console.log(info.info_date, info.uploaded, dataList[index - 1].uploaded, info.uploaded - dataList[index - 1].uploaded,)
+                        }
                     })
                     let uploaded1 = uploadedList.filter((item, index) => index > 0)
                     let uploaded2 = uploadedList.filter((item, index) => index < uploadedList.length)
                     let diff = [0,]
                     uploaded1.forEach((item, index) => {
-                        diff.push(item - uploaded2[index])
+                        let d = item - uploaded2[index]
+
+                        console.log(dateList[index], item, uploaded2[index], d)
+                        if (!d || d < 0) {
+                            diff.push(0)
+                        } else {
+                            diff.push(d)
+                        }
                     })
                     console.log(diff)
                     let option = {
@@ -1012,34 +1023,126 @@
                             boundaryGap: false,
                             data: dateList
                         },
-                        yAxis: {
+                        yAxis: [{
                             type: 'value',
                             axisLabel: {
                                 formatter: function (value, index) {
                                     return renderSize(value);
                                 }
                             },
-                        },
+
+                        }, {
+                            type: 'value',
+                            axisLabel: {
+                                formatter: function (v, i) {
+                                    if (i === 0) {
+                                        v = '0';
+                                    }
+                                    if (i === 1) {
+                                        v = '1';
+                                    }
+                                    if (i === 2) {
+                                        v = '3';
+                                    }
+                                    if (i === 3) {
+                                        v = '5';
+                                    }
+                                    if (i === 4) {
+                                        v = '30';
+                                    }
+                                    if (i === 5) {
+                                        v = '1000';
+                                    }
+                                    if (i === 6) {
+                                        v = '5000';
+                                    }
+                                    if (i === 7) {
+                                        v = '12000';
+                                    }
+                                    return v;
+                                }
+                            },
+                        }],
                         series: [
                             {
                                 name: '做种量',
                                 type: 'line',
+                                yAxisIndex: 0,
                                 {#stack: 'Total',#}
                                 data: seedingSizeList
                             },
                             {
                                 name: '上传量',
                                 type: 'line',
+                                yAxisIndex: 0,
                                 {#stack: 'Total',#}
                                 data: uploadedList
                             },
                             {
                                 name: '下载量',
                                 type: 'line',
+                                yAxisIndex: 0,
                                 {#stack: 'Total',#}
                                 data: downloadedList
                             },
-
+                            {
+                                name: '上传增量',
+                                type: 'bar',
+                                yAxisIndex: 0,
+                                {#stack: 'Total',#}
+                                data: diff
+                            },
+                            {
+                                name: '魔力值',
+                                type: 'line',
+                                yAxisIndex: 1,
+                                tooltip: {
+                                    show: true,
+                                    trigger: 'axis',
+                                    //formatter: function (params) {
+                                    //    return params.name + '\t' + renderSize(params.data.value)
+                                    //},
+                                    valueFormatter: function (value) {
+                                        return numberFormat(value)
+                                    }
+                                },
+                                {#stack: 'Total',#}
+                                data: spList
+                            },
+                            {
+                                name: '积分',
+                                type: 'line',
+                                yAxisIndex: 1,
+                                tooltip: {
+                                    show: true,
+                                    trigger: 'axis',
+                                    //formatter: function (params) {
+                                    //    return params.name + '\t' + renderSize(params.data.value)
+                                    //},
+                                    valueFormatter: function (value) {
+                                        return numberFormat(value)
+                                    }
+                                },
+                                {#stack: 'Total',#}
+                                data: bonusList
+                            },
+                            {
+                                name: '分享率',
+                                type: 'line',
+                                yAxisIndex: 1,
+                                {#stack: 'Total',#}
+                                tooltip: {
+                                    show: true,
+                                    trigger: 'axis',
+                                    //formatter: function (params) {
+                                    //    return params.name + '\t' + renderSize(params.data.value)
+                                    //},
+                                    valueFormatter: function (value) {
+                                        return value
+                                    }
+                                },
+                                data: ratioList
+                            }
 
                         ]
                     };
@@ -1055,24 +1158,52 @@
                         }]
                         this.setChartOption(this.$refs.diff_charts.chart, option)
                         {#option.title.text = `${site.name} - 魔力积分`#}
+
                         option.series = [{
                             name: '魔力值',
                             type: 'line',
+                            yAxisIndex: 0,
+                            tooltip: {
+                                show: true,
+                                trigger: 'axis',
+                                //formatter: function (params) {
+                                //    return params.name + '\t' + renderSize(params.data.value)
+                                //},
+                                valueFormatter: function (value) {
+                                    return numberFormat(value)
+                                }
+                            },
                             {#stack: 'Total',#}
                             data: spList
-                        },
-                            {
-                                name: '积分',
-                                type: 'line',
-                                {#stack: 'Total',#}
-                                data: bonusList
-                            }]
-                        option.tooltip.valueFormatter = function (value) {
-                            return numberFormat(value)
-                        }
-                        option.yAxis.axisLabel.formatter = function (value) {
-                            return numberFormat(value)
-                        }
+                        }, {
+                            name: '积分',
+                            type: 'line',
+                            yAxisIndex: 0,
+                            tooltip: {
+                                show: true,
+                                trigger: 'axis',
+                                //formatter: function (params) {
+                                //    return params.name + '\t' + renderSize(params.data.value)
+                                //},
+                                valueFormatter: function (value) {
+                                    return numberFormat(value)
+                                }
+                            },
+                            {#stack: 'Total',#}
+                            data: bonusList
+                        }, {
+                            name: '分享率',
+                            type: 'line',
+                            yAxisIndex: 1,
+                            {#stack: 'Total',#}
+                            data: ratioList
+                        }]
+                        //option.tooltip.valueFormatter = function (value) {
+                        //    return numberFormat(value)
+                        //}
+                        //option.yAxis.axisLabel.formatter = function (value) {
+                        //    return numberFormat(value)
+                        //}
                         this.setChartOption(this.$refs.bonus_charts.chart, option)
                         {#option.title.text = `${site.name} - 分享率`#}
                         option.series = [{
@@ -1082,7 +1213,7 @@
                             data: ratioList
                         }]
                         option.tooltip.valueFormatter = null
-                        option.yAxis.axisLabel.formatter = null
+                        option.yAxis = {}
                         this.setChartOption(this.$refs.ratio_charts.chart, option)
 
                     }, 50)
