@@ -352,7 +352,7 @@
         {#            <h3><span v-text="site.name"></span>-历史数据</h3>#}
         {#        </div>#}
         <div style="width: 95%;text-align: center;margin: -15px auto 25px;">
-            <charts ref="history_charts" style="height: 600px;margin-top: 15px;"
+            <charts ref="history_charts" style="height: 630px;margin-top: 15px;"
                     v-if="showAllHistory" :option="option"></charts>
 
             <el-row :gutter="20" v-else="showAllHistory">
@@ -573,14 +573,14 @@
                 },
                 showAllIncrementHistory(data) {
                     let option = {
-                        //title: {
-                        //    text: site.name,
-                        //    textStyle: {
-                        //        color: 'orangered',
-                        //    },
-                        //    left: 'center',
-                        //    top: '3%',
-                        //},
+                        title: {
+                            text: '每日增量--全部站点',
+                            textStyle: {
+                                color: 'orangered',
+                            },
+                            left: 'center',
+                            top: '3%',
+                        },
                         tooltip: {
                             show: true,
                             trigger: 'axis',
@@ -594,7 +594,7 @@
                                 let total = 0
                                 params.forEach((param, index) => {
                                     let temp = param.value == 0 ? '' : `
-                                            <div style="display: block;height:20px;width: 46%;float:left;padding: 2%;">
+                                            <div style="display: block;height:20px;width: 48%;float:left;padding: 1%;font-size: 12px;">
                                               <span style="float:left;"><i style="width: 10px;height: 10px;display: inline-block;background: ${param.color};border-radius: 10px;"></i>${param.seriesName}: </span>
                                               <span style="float:right;">${renderSize(param.value)}</span>
                                             </div>
@@ -615,7 +615,7 @@
                                 return `<div style="width: 300px;">${total_str}</div>`
                             },
                             position: function (point, params, dom, rect, size) {
-                                console.log(point)
+                                // console.log(point)
                                 return [point[1], 8]
                             },
                             order: 'valueDesc',
@@ -623,14 +623,19 @@
                             extraCssText: 'box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);', // 附加阴影样式
                         },
                         legend: {
-                            show: false,
-                            top: '3%',
+                            show: true,
+                            {#top: '3%',#}
                             left: 'center',
+                            bottom: '12',
+                            tooltip: {
+                                show: true
+                            },
+
                         },
                         grid: {
                             left: '3%',
                             right: '4%',
-                            bottom: '3%',
+                            bottom: '25%',
                             containLabel: true
                         },
                         toolbox: {
