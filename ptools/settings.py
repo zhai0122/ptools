@@ -248,36 +248,40 @@ SIMPLEUI_CONFIG = {
     'dynamic': True,  # 设置是否开启动态菜单, 默认为False. 如果开启, 则会在每次用户登陆时动态展示菜单内容
     'menus': [{
         'app': 'downloader',
-        'name': '下载管理',
-        'icon': 'fas fa-user-shield',
+        'name': '我的数据',
+        'icon': 'fas fa-database',
         'models': [{
+            'name': '我的数据',
+            'icon': 'fas fa-table',
+            'url': '/tasks/site_status'
+        }, {
             'name': '任务管理',
             'icon': 'fa fa-user',
             'url': '/tasks/page_downloading'
         }, {
-            'name': '我的数据',
-            'icon': 'fa fa-user',
-            'url': '/tasks/site_status'
+            'name': '种子管理（预）',
+            'icon': 'fas fa-seedling',
+            'url': '/tasks/downloading_status'
         }, {
-            'name': '下载器展示',
-            'icon': 'fa fa-user',
+            'name': '下载管理',
+            'icon': 'fas fa-tasks',
             'url': '/tasks/downloading_status'
         }]
     }, {
         'app': 'update',
         'name': '更新&导入',
-        'icon': 'el-icon-attract',
+        'icon': 'fas fa-sync-alt',
         'models': [{
             'name': '代码更新',
             'icon': 'el-icon-refresh',
             'url': '/tasks/update'
         }, {
             'name': '站点导入',
-            'icon': 'el-icon-s-open',
+            'icon': 'fas fa-file-import',
             'url': '/tasks/import_from_ptpp'
         }, {
             'name': '日志查看',
-            'icon': 'el-icon-s-open',
+            'icon': 'fab fa-blogger',
             'url': '/tasks/show_log_list'
         }, ]
     }]
