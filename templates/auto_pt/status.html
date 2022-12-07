@@ -14,6 +14,12 @@
             opacity: 0.95;
         }
 
+        .site-logo:hover {
+            cursor: pointer;
+            transform: scale(1.5);
+            transition: all 0.6s;
+        }
+
         .info-card {
             background-color: rgba(227, 229, 229, 0.6);
             border: 2px solid skyblue;
@@ -131,7 +137,7 @@
                                     <el-button type="primary" size="mini" @click="signIn(0)">
                                         签到
                                     </el-button>
-                                    <el-button type="info" size="mini" @click="updateSite(0)">更新
+                                    <el-button type="warning" size="mini" @click="updateSite(0)">更新
                                     </el-button>
                                     <el-button type="success" size="mini" @click="showHistoryList(0)">历史
                                     </el-button>
@@ -202,8 +208,9 @@
                             <div slot="header" class="clearfix">
 
                                 <div style="float: left;text-align: center;margin-top: -5px;font-size: 14px;height: 32px;">
-                                    <img :src="site.icon"
-                                         style="width: 16px;border-radius: 50%;margin-bottom: -5px;">
+                                    <img :src="site.icon" @click="updateSite(site.id)" class="site-logo"
+                                         style="width: 16px;border-radius: 50%;margin-bottom: -5px;"
+                                         title="点击更新站点信息">
                                     <br>
                                     <a :href="site.url" target="blank" style="margin-top: -5px;">
                                         <span v-text="site.name">{}</span>
@@ -374,7 +381,7 @@
                 </el-button>
             </div>
 
-            <charts ref="history_charts" style="height: 630px;margin: auto;"
+            <charts ref="history_charts" style="height: 620px;margin: auto;"
                     v-if="showAllHistory" :option="option"></charts>
 
             <el-row :gutter="20" v-else="showAllHistory">
