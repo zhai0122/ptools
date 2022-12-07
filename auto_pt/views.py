@@ -676,8 +676,10 @@ def site_data_api(request):
             } for (index, info) in enumerate(info_list) if index < len(info_list) - 1]
             '''
             diff_info_list = {
-                info['date']: info_list[index + 1]['uploaded'] - info['uploaded'] if index < len(
-                    info_list) - 1 else 0 for (index, info) in enumerate(info_list) if index < len(info_list) - 1
+                info['date']: info['uploaded'] - info_list[index - 1]['uploaded'] if
+                info['uploaded'] - info_list[index - 1]['uploaded'] > 0 else 0 for
+                (index, info) in enumerate(info_list) if 0 < index < len(info_list)
+
             }
             print(f'处理完后站点数据条数：{len(info_list)}')
             for date in date_list:

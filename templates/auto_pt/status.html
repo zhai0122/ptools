@@ -346,13 +346,32 @@
             direction="btt"
             size="96%"
             append-to-body
-            :title="site.name + '--历史数据'"
             style="background-color: rgba(227, 229, 229, 0.6);">
-        {#        <div slot="title" style="text-align: center;line-height: 35px;">#}
-        {#            <h3><span v-text="site.name"></span>-历史数据</h3>#}
-        {#        </div>#}
-        <div style="width: 95%;text-align: center;margin: -15px auto 25px;">
-            <charts ref="history_charts" style="height: 630px;margin-top: 15px;"
+        <div slot="title" style="text-align: center;line-height: 35px;">
+            <h3><span v-text="site.name + '--历史数据'"></span>-历史数据</h3>
+
+
+        </div>
+        <div style="width: 95%;text-align: center;margin: 10px auto;">
+            <div style="margin-bottom: 5px;">
+                <el-radio-group v-model="dataLength" size="mini"
+                                @change="showAllIncrementHistory">
+                    <el-radio-button label="-7">7天</el-radio-button>
+                    <el-radio-button label="-15">15天</el-radio-button>
+                    <el-radio-button label="-30">30天</el-radio-button>
+                    <el-radio-button label="-61">两个月</el-radio-button>
+                    <el-radio-button label="-91">三个月</el-radio-button>
+                    <el-radio-button label="-184">半年</el-radio-button>
+                    <el-radio-button label="-366">一年</el-radio-button>
+                    <el-radio-button label="0">全部</el-radio-button>
+                </el-radio-group>
+                <el-button size="mini"
+                           :type="showLegend ? 'success' : 'primary'" @click="showAllIncrementHistory(this)">
+                    图例
+                </el-button>
+            </div>
+
+            <charts ref="history_charts" style="height: 630px;margin: auto;"
                     v-if="showAllHistory" :option="option"></charts>
 
             <el-row :gutter="20" v-else="showAllHistory">
@@ -400,6 +419,8 @@
                     sortStep: 1,
                     showData: [],
                     showAllHistory: false,
+                    incrementData: {},
+                    dataLength: -7,
                 }
             },
             beforeMount() {
@@ -556,7 +577,8 @@
                             {#this.ptData = res.data.data#}
                             {#this.setPie()#}
                             {#this.setCard()#}
-                            id == 0 ? this.showAllIncrementHistory(res.data.data) : this.setLine(res.data.data)
+                            this.incrementData = res.data.data
+                            id == 0 ? this.showAllIncrementHistory() : this.setLine()
                         } else {
                             this.$message({
                                 type: 'warning',
@@ -571,7 +593,26 @@
                         });
                     })
                 },
-                showAllIncrementHistory(data) {
+                changeLength() {
+
+                },
+                showAllIncrementHistory($event) {
+                    console.log($event)
+                    if (typeof $event == "object") {
+                        this.showLegend = !this.showLegend
+                    }
+                    {#console.log(this.incrementData)#}
+                    let dateList = this.incrementData.date_list.slice(this.dataLength)
+                    {#console.log(dateList)#}
+                    let diff = []
+                    this.incrementData.diff.forEach((item, index) => {
+                        let diff_item = {}
+                        diff_item = JSON.parse(JSON.stringify(item));
+                        {#console.log(item)#}
+                        diff_item.data = item.data.slice(this.dataLength)
+                        {#console.log(diff_item)#}
+                        diff.push(diff_item)
+                    })
                     let option = {
                         title: {
                             text: '每日增量--全部站点',
@@ -623,7 +664,7 @@
                             extraCssText: 'box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);', // 附加阴影样式
                         },
                         legend: {
-                            show: true,
+                            show: this.showLegend,
                             {#top: '3%',#}
                             left: 'center',
                             bottom: '12',
@@ -640,7 +681,8 @@
                         },
                         toolbox: {
                             feature: {
-                                saveAsImage: {}
+                                saveAsImage: {},
+                                dataZoom: {},
                             }
                         },
                         xAxis: {
@@ -652,7 +694,7 @@
                             axisLine: {
                                 onZero: false
                             },
-                            data: data.date_list
+                            data: dateList
                         },
                         yAxis: {
                             type: 'value',
@@ -663,13 +705,15 @@
                             },
 
                         },
-                        series: data.diff,
+                        series: diff,
                     };
                     this.site.name = '全部站点'
                     this.showSiteChart = true
                     this.showAllHistory = true
+                    this.showLegend ? option.grid.bottom = '25%' : option.grid.bottom = '3%'
                     setTimeout(() => {
                         this.chart = this.$refs.history_charts.chart
+                        this.chart.clear()
                         this.setChartOption(this.chart, option)
                     }, 15)
                 },
@@ -1054,7 +1098,8 @@
                     this.chart = this.$refs.charts.chart
                     this.setChartOption(this.chart, option)
                 },
-                setLine(siteData) {
+                setLine() {
+                    let siteData = this.incrementData
                     this.site = siteData.site
                     let dataList = siteData.site_status_list
                     let uploadedList = []
