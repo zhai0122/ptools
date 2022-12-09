@@ -5455,7 +5455,7 @@
   "pk": 78,
   "fields": {
     "created_at": "2022-10-21T18:14:12.349",
-    "updated_at": "2022-11-30T02:39:17.133",
+    "updated_at": "2022-12-06T22:54:22.891",
     "url": "https://ihdbits.me/",
     "name": "iHD",
     "logo": "https://ihdbits.me/favicon.ico",
@@ -5515,7 +5515,7 @@
     "ratio_rule": "//font[@class=\"color_ratio\"][1]/following-sibling::text()[1]",
     "my_sp_rule": "//a[@href=\"mybonus.php\"]/following-sibling::text()[1]",
     "hour_sp_rule": "//div[contains(text(),\"每小时能获取\")]/text()[1]",
-    "my_bonus_rule": "//font[@class=\"color_bonus\" and contains(text(),\"积分\")]/following-sibling::text()[1]",
+    "my_bonus_rule": "//td[contains(text(),\"做种积分\")]/following-sibling::td/text()[1]",
     "my_level_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@class",
     "my_passkey_rule": "//td[contains(text(),\"密钥\")]/following-sibling::td[1]/text()",
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
@@ -5929,7 +5929,7 @@
   "pk": 1,
   "fields": {
     "created_at": "2022-08-05T23:52:19.660",
-    "updated_at": "2022-12-06T16:58:39.940",
+    "updated_at": "2022-12-06T22:38:02.722",
     "name": "auto_get_status",
     "desc": "更新个人数据"
   }
@@ -5939,7 +5939,7 @@
   "pk": 2,
   "fields": {
     "created_at": "2022-08-05T23:52:19.666",
-    "updated_at": "2022-12-06T16:58:39.945",
+    "updated_at": "2022-12-06T22:38:02.732",
     "name": "auto_push_to_downloader",
     "desc": "推送到下载器"
   }
@@ -5949,7 +5949,7 @@
   "pk": 3,
   "fields": {
     "created_at": "2022-08-05T23:52:19.671",
-    "updated_at": "2022-12-06T16:58:39.946",
+    "updated_at": "2022-12-06T22:38:02.734",
     "name": "auto_remove_expire_torrents",
     "desc": "删除过期种子"
   }
@@ -5959,7 +5959,7 @@
   "pk": 4,
   "fields": {
     "created_at": "2022-08-05T23:52:19.677",
-    "updated_at": "2022-12-06T16:58:39.948",
+    "updated_at": "2022-12-06T22:38:02.735",
     "name": "auto_sign_in",
     "desc": "自动签到"
   }
@@ -5969,7 +5969,7 @@
   "pk": 5,
   "fields": {
     "created_at": "2022-08-05T23:52:19.681",
-    "updated_at": "2022-12-06T16:58:39.950",
+    "updated_at": "2022-12-06T22:38:02.740",
     "name": "auto_update_torrents",
     "desc": "拉取最新种子"
   }
@@ -5979,7 +5979,7 @@
   "pk": 6,
   "fields": {
     "created_at": "2022-08-06T13:51:54.589",
-    "updated_at": "2022-12-06T16:58:39.943",
+    "updated_at": "2022-12-06T22:38:02.729",
     "name": "auto_get_torrent_hash",
     "desc": "自动获取种子HASH"
   }
@@ -5989,7 +5989,7 @@
   "pk": 7,
   "fields": {
     "created_at": "2022-12-06T06:03:50.357",
-    "updated_at": "2022-12-06T16:58:39.952",
+    "updated_at": "2022-12-06T22:38:02.743",
     "name": "auto_upgrade",
     "desc": "程序更新"
   }
