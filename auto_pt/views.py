@@ -560,7 +560,7 @@ def site_status_api(request):
                 'sign_in_support': sign_in_support,
                 'sign_in_state': sign_in_state,
                 'invite': my_site.invitation,
-                'sp_hour': my_site.sp_hour,
+                'sp_hour': float(my_site.sp_hour) if my_site.sp_hour != '' else 0,
                 'sp_hour_full': '{:.2%}'.format(
                     float(my_site.sp_hour) / my_site.site.sp_full) if my_site.site.sp_full != 0 else '0%',
                 'seeding': my_site.seed,
