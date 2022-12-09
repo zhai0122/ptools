@@ -861,7 +861,7 @@ class TorrentInfoAdmin(AjaxAdmin):  # instead of ModelAdmin
 
     def d_progress(self, obj: TorrentInfo):
         print(obj.hash_string)
-        if not obj.downloader or not obj.hash_string:
+        if not obj.downloader or not obj.hash_string or len(obj.hash_string) < 32:
             return 0
         tr_client = transmission_rpc.Client(
             host=obj.downloader.host,
@@ -875,8 +875,8 @@ class TorrentInfoAdmin(AjaxAdmin):  # instead of ModelAdmin
         print(progress)
         speed = round(torrent.rateDownload / 1024 / 1024, 2)
         if progress < 100:
-            return format_html('<a href="#" target="_blank">{} MB/s</a>', speed)
-        return format_html('<a href="#" target="_blank">{}%</a>', torrent.progress)
+            return format_html('<a href="javascript:void(0)">{} MB/s</a>', speed)
+        return format_html('<a href="javascript:void(0)">{}%</a>', torrent.progress)
 
     # name_href.short_description = '种子名称'
     name_href.short_description = format_html(
@@ -962,12 +962,15 @@ class TorrentInfoAdmin(AjaxAdmin):  # instead of ModelAdmin
                         print(torrent_info.magnet_url)
                         print(torrent_info.site.mysite.cookie)
                         # res = qb_client.torrents_add(torrent.magnet_url)
-                        res = tr_client.add_torrent(torrent=torrent_info.magnet_url,
-                                                    download_dir=torrent_info.save_path,
-                                                    cookies=torrent_info.site.mysite.cookie)
+                        res = tr_client.add_torrent(
+                            torrent=torrent_info.magnet_url,
+                            download_dir=torrent_info.save_path,
+                            cookies=torrent_info.site.mysite.cookie
+                        )
                         print(res)
                         if isinstance(res, Torrent):
-                            torrent_info.hash = res.id
+                            print(res.id)
+                            torrent_info.hash_string = res.hashString
                             torrent_info.state = True
                             torrent_info.downloader = downloader
                             torrent_info.save()
