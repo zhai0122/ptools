@@ -1,4 +1,5 @@
 import time
+import traceback
 from datetime import datetime
 
 import qbittorrentapi
@@ -782,8 +783,7 @@ class DownloaderAdmin(AjaxAdmin):  # instead of ModelAdmin
 def get_downloader():
     """获取下载器列表"""
     try:
-        return [{'key': i.id, 'label': i.name} for i in
-                Downloader.objects.filter(category=DownloaderCategory.qBittorrent).all()]
+        return [{'key': i.id, 'label': i.name} for i in Downloader.objects.all()]
     except Exception as e:
         return []
 
@@ -860,7 +860,8 @@ class TorrentInfoAdmin(AjaxAdmin):  # instead of ModelAdmin
         )
 
     def d_progress(self, obj: TorrentInfo):
-        if not obj.downloader:
+        print(obj.hash_string)
+        if not obj.downloader or not obj.hash_string:
             return 0
         tr_client = transmission_rpc.Client(
             host=obj.downloader.host,
@@ -868,6 +869,7 @@ class TorrentInfoAdmin(AjaxAdmin):  # instead of ModelAdmin
             username=obj.downloader.username,
             password=obj.downloader.password
         )
+        print(obj.hash_string)
         torrent = tr_client.get_torrent(obj.hash_string)
         progress = torrent.progress
         print(progress)
@@ -904,8 +906,9 @@ class TorrentInfoAdmin(AjaxAdmin):  # instead of ModelAdmin
     def to_download(self, request, queryset):
         # 这里的queryset 会有数据过滤，只包含选中的数据
         post = request.POST
-        downloader = Downloader.objects.get(id=post.get('downloader'))
-        # print(downloader)
+        print(post)
+        downloader = Downloader.objects.filter(id=post.get('downloader')).first()
+        print(downloader)
 
         # 这里获取到数据后，可以做些业务处理
         # post中的_action 是方法名
@@ -920,6 +923,7 @@ class TorrentInfoAdmin(AjaxAdmin):  # instead of ModelAdmin
             total_size = 0
             for torrent_info in queryset:
                 total_size += torrent_info.size
+            print(FileSizeConvert.parse_2_file_size(total_size))
             if downloader.category == DownloaderCategory.Transmission:
                 try:
                     # c = Client(host='192.168.123.2', port=9091, username='ngfchl', password='.wq891222')
@@ -931,6 +935,7 @@ class TorrentInfoAdmin(AjaxAdmin):  # instead of ModelAdmin
                                                         password=downloader.password)
                     # 判断剩余空间大小，小于预留空间则停止推送种子
                     free_space = tr_client.free_space('/downloads')
+                    print(FileSizeConvert.parse_2_file_size(free_space))
                     if free_space < total_size:
                         return JsonResponse(data={
                             'status': 'error',
@@ -940,6 +945,7 @@ class TorrentInfoAdmin(AjaxAdmin):  # instead of ModelAdmin
                             )
                         })
                     if free_space <= downloader.reserved_space * 1024 * 1024 * 1024:
+                        print('空间不足！')
                         return JsonResponse(data={
                             'status': 'error',
                             'msg': '{}磁盘剩余空间{}已低于保留值{}，请及时清理！'.format(
@@ -950,13 +956,15 @@ class TorrentInfoAdmin(AjaxAdmin):  # instead of ModelAdmin
                         })
                     # torrent_list = [i.magnet_url for i in queryset]
                     for torrent_info in queryset:
-                        if not torrent_info.hash_string:
-                            pt_spider.get_hash(torrent_info=torrent_info)
+                        # if not torrent_info.hash_string:
+                        #     pt_spider.get_hash(torrent_info=torrent_info)
                         # print(qb_client.torrent_categories.categories.get(torrent.category))
                         print(torrent_info.magnet_url)
+                        print(torrent_info.site.mysite.cookie)
                         # res = qb_client.torrents_add(torrent.magnet_url)
                         res = tr_client.add_torrent(torrent=torrent_info.magnet_url,
-                                                    download_dir=torrent_info.save_path)
+                                                    download_dir=torrent_info.save_path,
+                                                    cookies=torrent_info.site.mysite.cookie)
                         print(res)
                         if isinstance(res, Torrent):
                             torrent_info.hash = res.id
@@ -973,6 +981,7 @@ class TorrentInfoAdmin(AjaxAdmin):  # instead of ModelAdmin
                         'msg': '推送结束！'
                     })
                 except Exception as e:
+                    print(traceback.format_exc(limit=3))
                     # raise
                     return JsonResponse(data={
                         'status': 'error',
