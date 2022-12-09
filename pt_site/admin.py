@@ -863,18 +863,23 @@ class TorrentInfoAdmin(AjaxAdmin):  # instead of ModelAdmin
         print(obj.hash_string)
         if not obj.downloader or not obj.hash_string or len(obj.hash_string) < 32:
             return 0
-        tr_client = transmission_rpc.Client(
-            host=obj.downloader.host,
-            port=obj.downloader.port,
-            username=obj.downloader.username,
-            password=obj.downloader.password
-        )
-        print(obj.hash_string)
-        torrent = tr_client.get_torrent(obj.hash_string)
-        progress = torrent.progress
-        print(progress)
-        speed = round(torrent.rateDownload / 1024 / 1024, 2)
-        if progress < 100:
+        progress = 0
+        speed = 0
+        if obj.downloader.category == DownloaderCategory.Transmission:
+            tr_client = transmission_rpc.Client(
+                host=obj.downloader.host,
+                port=obj.downloader.port,
+                username=obj.downloader.username,
+                password=obj.downloader.password
+            )
+            print(obj.hash_string)
+            torrent = tr_client.get_torrent(obj.hash_string)
+            progress = torrent.progress
+            print(progress)
+            speed = round(torrent.rateDownload / 1024 / 1024, 2)
+        if obj.downloader.category == DownloaderCategory.qBittorrent:
+            pass
+        if 0 < progress < 100:
             return format_html('<a href="javascript:void(0)">{} MB/s</a>', speed)
         return format_html('<a href="javascript:void(0)">{}%</a>', torrent.progress)
 
