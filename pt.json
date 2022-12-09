@@ -1663,7 +1663,7 @@
   "pk": 26,
   "fields": {
     "created_at": "2022-07-20T23:48:14.437",
-    "updated_at": "2022-12-09T17:38:48.068",
+    "updated_at": "2022-12-09T23:36:31.663",
     "url": "https://audiences.me/",
     "name": "观众",
     "logo": "https://audiences.me/favicon.ico",
@@ -1721,7 +1721,7 @@
     "uploaded_rule": "//font[@class=\"color_uploaded\"]/following-sibling::text()[1]",
     "downloaded_rule": "//font[@class=\"color_downloaded\"]/following-sibling::text()[1]",
     "ratio_rule": "//font[@class=\"color_ratio\"][1]/following-sibling::text()[1]",
-    "my_sp_rule": "//a[@href=\"mybonus.php\"]/following-sibling::text()[1]",
+    "my_sp_rule": "//a[@href=\"medal_center.php\"]/following-sibling::text()[1]",
     "hour_sp_rule": "//div[contains(text(),\"每小时\")]/text()[1]",
     "my_bonus_rule": "//a[contains(@href,\"blackjack.php\")]/following-sibling::text()[1]",
     "my_level_rule": "//table[@id=\"info_block\"]//span[@class=\"nowrap\"][1]/a[contains(@class,\"_Name\")]/@class",
