@@ -1586,6 +1586,8 @@ class PtSpider:
                                 # 做种体积
                                 'seed_vol': seeding_size,
                             })
+                        if ratio < 1:
+                            self.send_request(f'{site.name} 分享率 {ratio} 过低，请注意')
                         return CommonResponse.success(data=res_gpw)
                     else:
                         return CommonResponse.error(data=result)
@@ -1766,6 +1768,9 @@ class PtSpider:
                         replace('inf.', 'inf').replace(
                         'null', 'inf').replace('---', 'inf').replace('-', 'inf').strip(
                         ']:').strip('：').strip()
+                    if not ratio:
+                        ratio = ''.join(
+                            details_html.xpath('//font[@class="color_ratio"][1]/following-sibling::font[1]/text()[1]'))
                     # 分享率告警通知
                     logger.info('ratio：{}'.format(ratio))
                     if ratio and ratio != 'inf' and float(ratio) <= 1:
