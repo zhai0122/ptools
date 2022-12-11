@@ -358,14 +358,15 @@
             append-to-body
             style="background-color: rgba(227, 229, 229, 0.6);">
         <div slot="title" style="text-align: center;line-height: 35px;">
-            <h3><span v-text="site.name + '--历史数据'"></span>-历史数据</h3>
+            <h3><span v-text="site.name"></span>--历史数据</h3>
 
 
         </div>
         <div style="width: 95%;text-align: center;margin: 10px auto;">
             <div style="margin-bottom: 5px;">
                 <el-radio-group v-model="dataLength" size="mini"
-                                @change="showAllIncrementHistory">
+                        {#                                @change="showAllIncrementHistory">#}
+                                @change="showHistoryList(site.id)">
                     <el-radio-button label="-7">7天</el-radio-button>
                     <el-radio-button label="-15">15天</el-radio-button>
                     <el-radio-button label="-30">30天</el-radio-button>
@@ -577,6 +578,9 @@
                     })
                 },
                 showHistoryList(id) {
+                    if (!id) {
+                        id = 0
+                    }
                     axios.get(
                         "{% url 'site_data_api' %}" + '?id=' + id
                     ).then(res => {
@@ -1125,7 +1129,10 @@
                     dataList.sort((a, b) => {
                         return a.info_date - b.info_date
                     })
-                    dataList.forEach((info, index) => {
+                    let resList = []
+                    resList = JSON.parse(JSON.stringify(dataList)).slice(this.dataLength);
+                    {#dataList.forEach((info, index) => {#}
+                    resList.forEach((info, index) => {
                         uploadedList.push(info.uploaded)
                         ratioList.push(info.ratio)
                         seedingSizeList.push(info.seedingSize)
