@@ -1586,7 +1586,7 @@ class PtSpider:
                                 # 做种体积
                                 'seed_vol': seeding_size,
                             })
-                        if ratio < 1:
+                        if float(ratio) < 1:
                             self.send_request(f'{site.name} 分享率 {ratio} 过低，请注意')
                         return CommonResponse.success(data=res_gpw)
                     else:
