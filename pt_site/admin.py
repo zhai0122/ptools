@@ -914,7 +914,7 @@ class TorrentInfoAdmin(AjaxAdmin):  # instead of ModelAdmin
         print(post)
         downloader = Downloader.objects.filter(id=post.get('downloader')).first()
         print(downloader)
-
+        save_path = post.get('save_path')
         # 这里获取到数据后，可以做些业务处理
         # post中的_action 是方法名
         # post中 _selected 是选中的数据，逗号分割
@@ -969,7 +969,7 @@ class TorrentInfoAdmin(AjaxAdmin):  # instead of ModelAdmin
                         # res = qb_client.torrents_add(torrent.magnet_url)
                         res = tr_client.add_torrent(
                             torrent=torrent_info.magnet_url,
-                            download_dir=torrent_info.save_path,
+                            download_dir=save_path,
                             cookies=torrent_info.site.mysite.cookie
                         )
                         print(res)
@@ -1037,7 +1037,7 @@ class TorrentInfoAdmin(AjaxAdmin):  # instead of ModelAdmin
                             urls=torrent_info.magnet_url,
                             cookie=torrent_info.site.mysite.cookie,
                             # 保存路径
-                            save_path=torrent_info.save_path,
+                            download_path=save_path,
                             # 自动管理种子
                             use_auto_torrent_management=True,
                             # 任务标签，用于和种子信息关联
@@ -1112,7 +1112,19 @@ class TorrentInfoAdmin(AjaxAdmin):  # instead of ModelAdmin
             'size': 'small',
             # value字段可以指定默认值
             'value': '',
+            'require': True,
             # 列表推导式来获取下载器
             'options': get_downloader()
-        }]
+        }, {
+            # 这里的type 对应el-input的原生input属性，默认为input
+            'type': 'input',
+            # key 对应post参数中的key
+            'key': 'save_path',
+            # 显示的文本
+            'label': '保存路径',
+            'value': '/downloads',
+            'width': '200px',
+            # 为空校验，默认为False
+            'require': True
+        }, ]
     }
