@@ -246,7 +246,7 @@ class MySite(BaseEntity):
     site = models.OneToOneField(verbose_name='站点', to=Site, on_delete=models.CASCADE)
     sort_id = models.IntegerField(verbose_name='排序', default=1)
     # 用户信息
-    user_id = models.CharField(verbose_name='用户ID', max_length=16)
+    user_id = models.CharField(verbose_name='用户ID', max_length=16, help_text='请填写数字UID，而非用户名')
     passkey = models.CharField(max_length=128, verbose_name='PassKey', blank=True, null=True)
     cookie = models.TextField(verbose_name='COOKIE', help_text='与UA搭配使用效果更佳，请和UA在同一浏览器提取')
     user_agent = models.TextField(verbose_name='User-Agent', help_text='请填写你获取cookie的浏览器的User-Agent',
