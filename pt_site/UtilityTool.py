@@ -1774,7 +1774,9 @@ class PtSpider:
                     if ratio.count('上传量') > 0:
                         # 适配TTG inf分享率
                         ratio = ''.join(
-                            details_html.xpath('//font[contains(text(),"分享率 ")][1]/following-sibling::text()[1]'))
+                            details_html.xpath(
+                                '//font[contains(text(),"分享率 ")][1]/following-sibling::text()[1]')) \
+                            .replace('\xa0', '').strip()
                     # 分享率告警通知
                     logger.info('ratio：{}'.format(ratio))
                     if ratio and ratio != 'inf' and float(ratio) <= 1:
