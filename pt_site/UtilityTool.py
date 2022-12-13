@@ -1771,6 +1771,10 @@ class PtSpider:
                     if not ratio:
                         ratio = ''.join(
                             details_html.xpath('//font[@class="color_ratio"][1]/following-sibling::font[1]/text()[1]'))
+                    if not ratio:
+                        # 适配TTG inf分享率
+                        ratio = ''.join(
+                            details_html.xpath('//font[contains(text(),"分享率 ")][1]/following-sibling::text()[1]'))
                     # 分享率告警通知
                     logger.info('ratio：{}'.format(ratio))
                     if ratio and ratio != 'inf' and float(ratio) <= 1:
