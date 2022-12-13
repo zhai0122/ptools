@@ -1766,7 +1766,7 @@ class PtSpider:
                         details_html.xpath(site.ratio_rule)
                     ).lower().replace(',', '').replace('无限', 'inf').replace('∞', 'inf'). \
                         replace('inf.', 'inf').replace(
-                        'null', 'inf').replace('---', 'inf').replace('-', 'inf').strip(
+                        'null', 'inf').replace('---', 'inf').replace('-', 'inf').replace('\xa0', '').strip(
                         ']:').strip('：').strip()
                     if not ratio:
                         ratio = ''.join(
