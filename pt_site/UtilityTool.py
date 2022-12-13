@@ -1771,7 +1771,7 @@ class PtSpider:
                     if not ratio:
                         ratio = ''.join(
                             details_html.xpath('//font[@class="color_ratio"][1]/following-sibling::font[1]/text()[1]'))
-                    if not ratio:
+                    if ratio.count('上传量') > 1:
                         # 适配TTG inf分享率
                         ratio = ''.join(
                             details_html.xpath('//font[contains(text(),"分享率 ")][1]/following-sibling::text()[1]'))
