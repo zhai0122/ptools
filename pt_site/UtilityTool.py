@@ -1736,6 +1736,10 @@ class PtSpider:
                     invitation_list = [int(n) for n in invitation.split('/')]
                     # my_site.invitation = int(invitation) if invitation else 0
                     my_site.invitation = sum(invitation_list)
+                elif '(' in invitation:
+                    invitation_list = [int(get_decimals(n)) for n in invitation.split('(')]
+                    # my_site.invitation = int(invitation) if invitation else 0
+                    my_site.invitation = sum(invitation_list)
                 elif not invitation:
                     my_site.invitation = 0
                 else:
