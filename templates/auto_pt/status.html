@@ -376,7 +376,7 @@
                     <el-radio-button label="-366">一年</el-radio-button>
                     <el-radio-button label="0">全部</el-radio-button>
                 </el-radio-group>
-                <el-button size="mini"
+                <el-button size="mini" v-if="showAllHistory"
                            :type="showLegend ? 'success' : 'primary'" @click="showAllIncrementHistory(this)">
                     图例
                 </el-button>
@@ -1374,14 +1374,24 @@
                             type: 'line',
                             yAxisIndex: 1,
                             {#stack: 'Total',#}
-                            data: ratioList
+                            data: ratioList,
+                            tooltip: {
+                                show: true,
+                                trigger: 'axis',
+                                //formatter: function (params) {
+                                //    return params.name + '\t' + renderSize(params.data.value)
+                                //},
+                                valueFormatter: function (value) {
+                                    return numberFormat(value)
+                                }
+                            },
                         }]
                         //option.tooltip.valueFormatter = function (value) {
                         //    return numberFormat(value)
                         //}
-                        //option.yAxis.axisLabel.formatter = function (value) {
-                        //    return numberFormat(value)
-                        //}
+                        option.yAxis[0].axisLabel.formatter = function (value) {
+                            return numberFormat(value)
+                        }
                         this.setChartOption(this.$refs.bonus_charts.chart, option)
                         {#option.title.text = `${site.name} - 分享率`#}
                         option.series = [{
