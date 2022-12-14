@@ -530,8 +530,38 @@ def site_status_api(request):
         for my_site in my_site_list:
             site_info_list = my_site.sitestatus_set.order_by('-pk').all()
             logger.info(f'{my_site.site.name}: {len(site_info_list)}')
+            sign_in_support = my_site.site.sign_in_support and my_site.sign_in
             if len(site_info_list) <= 0:
                 logger.info(f'{my_site.site.name}: 获取站点信息列表错误！')
+                site_info = {
+                    'id': my_site.id,
+                    'name': my_site.site.name,
+                    'icon': my_site.site.logo,
+                    'url': my_site.site.url,
+                    'class': my_site.my_level,
+                    'sign_in_support': sign_in_support,
+                    'sign_in_state': sign_in_state,
+                    'invite': my_site.invitation,
+                    'sp_hour': float(my_site.sp_hour) if my_site.sp_hour != '' else 0,
+                    'sp_hour_full': '{:.2%}'.format(
+                        float(my_site.sp_hour) / my_site.site.sp_full) if my_site.site.sp_full != 0 else '0%',
+                    'seeding': my_site.seed,
+                    'leeching': my_site.leech,
+                    'weeks': f'{0}周 {0}天',
+                    'time_join': my_site.time_join,
+                    'hr': my_site.my_hr,
+                    'mail': my_site.mail,
+                    'sort_id': my_site.sort_id,
+                    'sp': 0,
+                    'bonus': 0,
+                    # 'uploaded': FileSizeConvert.parse_2_file_size(site_info.uploaded),
+                    # 'downloaded': FileSizeConvert.parse_2_file_size(site_info.downloaded),
+                    # 'seeding_size': FileSizeConvert.parse_2_file_size(site_info.seed_vol),
+                    'uploaded': 0,
+                    'downloaded': 0,
+                    'seeding_size': 0,
+                    'last_active': datetime.strftime(my_site.updated_at, '%Y年%m月%d日%H:%M:%S'),
+                }
                 continue
             site_info = site_info_list.first()
             downloaded += site_info.downloaded
@@ -545,7 +575,7 @@ def site_status_api(request):
             seeding_size += site_info.seed_vol
             weeks = (now - my_site.time_join).days // 7
             days = (now - my_site.time_join).days % 7
-            sign_in_support = my_site.site.sign_in_support and my_site.sign_in
+
             if sign_in_support:
                 sign_in_list = my_site.signin_set.filter(created_at__date=now.date())
                 sign_in_state = sign_in_list.first().sign_in_today if len(sign_in_list) > 0 else False
