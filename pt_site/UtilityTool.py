@@ -47,7 +47,7 @@ def cookie2dict(source_str: str):
 
 
 # 获取字符串中的小数
-get_decimals = lambda x: re.search("\d+(\.\d+)?", x).group()
+get_decimals = lambda x: re.search("\d+(\.\d+)?", x).group() if re.search("\d+(\.\d+)?", x) else 0
 
 converter = opencc.OpenCC('t2s.json')
 
