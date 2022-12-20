@@ -1022,10 +1022,18 @@ class PtSpider:
                         status=StatusCodeEnum.WEB_CONNECT_ERR,
                         msg=StatusCodeEnum.WEB_CONNECT_ERR.errmsg + '签到失败！'
                     )
-            res = self.send_request(my_site=my_site, method=site.sign_in_method, url=url,
-                                    data=eval(site.sign_in_params))
+            if 'wintersakura' in site.url:
+                # 单独发送请求，解决冬樱签到问题
+                res = requests.get(url=url, verify=False, cookies=cookie2dict(my_site.cookie), headers={
+                    'user-agent': my_site.user_agent
+                })
+                logger.info(res.text)
+            else:
+                res = self.send_request(my_site=my_site, method=site.sign_in_method, url=url,
+                                        data=eval(site.sign_in_params))
             logger.info(res.status_code)
             if 'pterclub.com' in site.url:
+                logger.info(f'猫站签到返回值：{res.json()}')
                 status = res.json().get('status')
                 logger.info('{}：{}'.format(site.name, status))
                 '''
