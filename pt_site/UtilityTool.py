@@ -1418,7 +1418,14 @@ class PtSpider:
         # leeching_detail_url = site.url + site.page_leeching.lstrip('/').format(my_site.user_id)
         try:
             # 发送请求，做种信息与正在下载信息，个人主页
-            user_detail_res = self.send_request(my_site=my_site, url=user_detail_url)
+            if 'wintersakura' in site.url:
+                # 单独发送请求，解决冬樱签到问题
+                user_detail_res = requests.get(url=user_detail_url, verify=False, cookies=cookie2dict(my_site.cookie),
+                                               headers={
+                                                   'user-agent': my_site.user_agent
+                                               })
+            else:
+                user_detail_res = self.send_request(my_site=my_site, url=user_detail_url)
             # if leeching_detail_res.status_code != 200:
             #     return site.name + '种子下载信息获取错误，错误码：' + str(leeching_detail_res.status_code), False
             if user_detail_res.status_code != 200:
@@ -1469,7 +1476,15 @@ class PtSpider:
                         except Exception as e:
                             logger.info('BT学校获取做种信息有误！')
                             pass
-                seeding_detail_res = self.send_request(my_site=my_site, url=seeding_detail_url, delay=25)
+                if 'wintersakura' in site.url:
+                    # 单独发送请求，解决冬樱签到问题
+                    seeding_detail_res = requests.get(url=seeding_detail_url, verify=False,
+                                                      cookies=cookie2dict(my_site.cookie),
+                                                      headers={
+                                                          'user-agent': my_site.user_agent
+                                                      })
+                else:
+                    seeding_detail_res = self.send_request(my_site=my_site, url=seeding_detail_url, delay=25)
                 logger.info('做种信息：{}'.format(seeding_detail_res.text))
                 # leeching_detail_res = self.send_request(my_site=my_site, url=leeching_detail_url, timeout=25)
                 if seeding_detail_res.status_code != 200:
