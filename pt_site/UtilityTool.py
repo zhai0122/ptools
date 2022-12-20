@@ -7,6 +7,7 @@ import ssl
 import threading
 import time
 import traceback
+from _ssl import CERT_NONE
 from datetime import datetime
 from urllib.request import urlopen
 
@@ -197,7 +198,7 @@ class PtSpider:
         _RESTRICTED_SERVER_CIPHERS = 'ALL'
         ssl_context.set_ciphers(_RESTRICTED_SERVER_CIPHERS)
         ssl_context.check_hostname = False
-        ssl_context.verify_mode = False
+        ssl_context.verify_mode = CERT_NONE
         scraper.ssl_context = ssl_context
         headers = {
             'User-Agent': my_site.user_agent,
