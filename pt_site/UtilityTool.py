@@ -1161,7 +1161,7 @@ class PtSpider:
 
     @staticmethod
     def parse(response, rules):
-        return etree.HTML(response.content.decode('utf8')).xpath(rules)
+        return etree.HTML(response.text.replace('0xff', '')).xpath(rules)
 
     def send_torrent_info_request(self, my_site: MySite):
         site = my_site.site
