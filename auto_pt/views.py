@@ -900,7 +900,7 @@ def show_sign_api(request):
         my_site_id = request.GET.get('id')
         logger.info(f'ID值：{my_site_id}')
         my_site = MySite.objects.filter(id=my_site_id).first()
-        sign_in_list = my_site.signin_set.all().order_by('-pk')
+        sign_in_list = my_site.signin_set.order_by('-pk')[:15]
         sign_in_list = [
             {'created_at': sign_in.created_at.strftime('%Y-%m-%d %H:%M:%S'), 'sign_in_info': sign_in.sign_in_info}
             for sign_in in sign_in_list]

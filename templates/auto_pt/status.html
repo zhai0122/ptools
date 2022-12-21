@@ -243,13 +243,13 @@
                                                v-if="site.sign_in_support && !site.sign_in_state">
                                         签到
                                     </el-button>
-                                    <el-tooltip class="item" effect="dark" v-if="site.sign_in_state" content="已签到"
+                                    <el-tooltip class="item" effect="dark" v-if="site.sign_in_state"
+                                                content="已签到，点击查看最近签到记录"
                                                 placement="top">
                                         <el-button type="success" icon="el-icon-success" plain size="mini"
                                                    @click="showSignIn(site.id)">
                                         </el-button>
                                     </el-tooltip>
-
 
                                     <el-button type="info" size="mini" @click="updateSite(site.id)">更新
                                     </el-button>
@@ -358,24 +358,6 @@
             style="background-color: rgba(227, 229, 229, 0.6);">
         <div slot="title" style="text-align: center;line-height: 35px;">
             <h3><span v-text="site.name"></span></h3>
-        </div>
-        <div v-if="showSignList" style="width: 90%;margin: auto;">
-            <el-timeline>
-                <el-timeline-item
-                        v-for="(signIn, index) in signInList"
-                        :key="index"
-                        {# :icon="activity.icon" #}
-                        {# :type="activity.type" #}
-                        color="#0bbd87"
-                        {# :size="activity.size" #}
-                        placement="top"
-                        :timestamp="signIn.created_at">
-                    <el-card shadow="hover">
-                        <p v-html="signIn.sign_in_info">
-                        </p>
-                    </el-card>
-                </el-timeline-item>
-            </el-timeline>
         </div>
         <div v-if="showSignList" style="width: 90%;margin: auto;">
             <el-timeline>
