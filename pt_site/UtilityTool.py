@@ -580,11 +580,20 @@ class PtSpider:
             data={
                 'csrf': csrf
             }
-        ).json()
-        logger.info('签到返回结果：{}'.format(sign_res))
-        if sign_res.get('state') == 'success':
-            msg = "签到成功，您已连续签到{}天，本次增加魔力:{}。".format(sign_res.get('signindays'),
-                                                                      sign_res.get('integral'))
+        )
+        res_json = sign_res.json()
+        logger.info('签到返回结果：{}'.format(res_json))
+        if res_json.get('state') == 'success':
+            if len(sign_res.cookies) >= 1:
+                logger.info(f'我的COOKIE：{my_site.cookie}')
+                logger.info(f'新的COOKIE字典：{sign_res.cookies.items()}')
+                cookie = ''
+                for k, v in sign_res.cookies.items():
+                    cookie += f'{k}={v};'
+                logger.info(f'新的COOKIE：{sign_res.cookies.items()}')
+                my_site.cookie = cookie
+                my_site.save()
+            msg = f"签到成功，您已连续签到{res_json.get('signindays')}天，本次增加魔力:{res_json.get('integral')}。"
             logger.info(msg)
             return CommonResponse.success(
                 msg=msg
