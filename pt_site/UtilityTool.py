@@ -1136,11 +1136,17 @@ class PtSpider:
                 if len(content_parse) <= 0:
                     title_parse = self.parse(res, '//td[@id="outer"]//td[@class="embedded"]/b[1]/text()')
                     content_parse = self.parse(res, '//td[@id="outer"]//td[@class="embedded"]/text()[1]')
+                if 'hdcity' in site.url:
+                    title_parse = self.parse(
+                        res,
+                        '//p[contains(text(),"本次签到获得魅力")]/preceding-sibling::h1[1]/span/text()'
+                    )
+                    content_parse = self.parse(res, '//p[contains(text(),"本次签到获得魅力")]/text()')
                 title = ''.join(title_parse).strip()
                 # logger.info(content_parse)
                 content = ''.join(content_parse).strip().replace('\n', '')
                 # logger.info(content)
-                message = title + ',' + content
+                message = title + '，' + content
                 if len(message) <= 1:
                     message = datetime.today().strftime('%Y-%m-%d %H:%M:%S') + '打卡成功！'
                 # message = ''.join(title).strip()
@@ -1708,7 +1714,7 @@ class PtSpider:
                 my_level_1 = ''.join(
                     details_html.xpath(site.my_level_rule)
                 ).replace('_Name', '').replace('fontBold', '').strip()
-                if 'city' in site.url:
+                if 'hdcity' in site.url:
                     my_level = my_level_1.strip()
                 # elif 'u2' in site.url:
                 #     my_level = ''.join(re.findall(r'/(.*).{4}', my_level_1)).title()
