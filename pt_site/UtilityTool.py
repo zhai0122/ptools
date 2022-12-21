@@ -527,13 +527,12 @@ class PtSpider:
             url=site.url + site.page_sign_in.lstrip('/'),
             method=site.sign_in_method
         ).text.encode('utf8')
-        if isinstance(sign_res, int):
-            msg = '你还需要继续努力哦！此次签到，你获得了魔力奖励：{}'.format(sign_res)
-        else:
-            msg = sign_res
-        logger.info(msg)
-        return CommonResponse.success(
-            msg=msg
+        if sign_res.isdigit():
+            return CommonResponse.success(
+                msg='你还需要继续努力哦！此次签到，你获得了魔力奖励：{}'.format(sign_res)
+            )
+        return CommonResponse.error(
+            msg=f'签到失败！{sign_res}'
         )
 
     def sign_in_hd4fans(self, my_site: MySite):
@@ -1121,8 +1120,14 @@ class PtSpider:
                 # status = ''.join(self.parse(res, '//a[contains(@href,{})]/text()'.format(site.page_sign_in)))
                 # 检查是否签到成功！
                 # if '签到得魔力' in converter.convert(status):
-                haidan_sign_str = '<input type="submit" id="modalBtn" style="cursor: default;" disabled class="dt_button" value="已经打卡" />'
-                if haidan_sign_str in status or '(获得' in status or '签到已得' in status or '已签到' in status or '已经签到' in status or '签到成功' in status:
+                haidan_sign_str = '<input type="submit" id="modalBtn" ' \
+                                  'style="cursor: default;" disabled class="dt_button" value="已经打卡" />'
+                if haidan_sign_str in status \
+                        or '(获得' in status \
+                        or '签到已得' in status \
+                        or '已签到' in status \
+                        or '已经签到' in status \
+                        or '签到成功' in status:
                     pass
                 else:
                     return CommonResponse.error(msg='签到失败！')
