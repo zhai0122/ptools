@@ -853,6 +853,9 @@ def update_site_api(request):
         message_template = MessageTemplate.status_message_template
         if res_status.code == StatusCodeEnum.OK.code:
             res = pt_spider.parse_status_html(my_site, res_status.data)
+            logger.info(f'{my_site.site.name}数据获取结果：{res.to_dict()}')
+            if res.code != StatusCodeEnum.OK.code:
+                return JsonResponse(data=res.to_dict(), safe=False)
             status = res.data[0]
             if isinstance(status, SiteStatus):
                 message = message_template.format(

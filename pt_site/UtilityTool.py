@@ -1673,7 +1673,7 @@ class PtSpider:
                 if not leech and not seed:
                     return CommonResponse.error(
                         status=StatusCodeEnum.WEB_CONNECT_ERR,
-                        msg=StatusCodeEnum.WEB_CONNECT_ERR.errmsg + '请检查网站访问是否正常？'
+                        msg=StatusCodeEnum.WEB_CONNECT_ERR.errmsg + '请检查Cookie是否过期？'
                     )
                 # seed = len(seed_vol_list)
 
