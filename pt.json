@@ -4112,7 +4112,7 @@
   "pk": 59,
   "fields": {
     "created_at": "2022-09-14T08:33:16.574",
-    "updated_at": "2022-12-21T10:17:00.341",
+    "updated_at": "2022-12-21T11:23:59.956",
     "url": "https://kamept.com/",
     "name": "KamePT",
     "logo": "https://kamept.com/favicon.ico",
@@ -4173,7 +4173,7 @@
     "my_sp_rule": "//a[@href=\"mybonus.php\"]/following-sibling::text()[1]",
     "hour_sp_rule": "//div[contains(text(),\"每小时能获取\")]/text()[1]",
     "my_bonus_rule": "//font[@class=\"color_bonus\" and contains(text(),\"积分\")]/following-sibling::text()[1]",
-    "my_level_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=1\")]/@class",
+    "my_level_rule": "//span/span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=1\")]/@class",
     "my_passkey_rule": "//td[contains(text(),\"密钥\")]/following-sibling::td[1]/text()",
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "my_hr_rule": "//tr[14]/td[2]/a/text()",
