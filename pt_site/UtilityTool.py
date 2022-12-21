@@ -914,12 +914,7 @@ class PtSpider:
                     signin_today.sign_in_today = True
                     signin_today.sign_in_info = result.msg
                     signin_today.save()
-                    return CommonResponse.success(
-                        status=StatusCodeEnum.OK,
-                        msg='签到成功！'
-                    )
-                else:
-                    return result
+                return result
             if 'hdsky.me' in site.url:
                 result = self.sign_in_hdsky(my_site=my_site, captcha=site.sign_in_captcha)
                 if result.code == StatusCodeEnum.OK.code:
