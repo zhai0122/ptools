@@ -475,7 +475,7 @@ class PtSpider:
             url=url,
         )
         # sign_str = self.parse(result, '//font[contains(text(),"签过到")]/text()')
-        sign_str = etree.HTML(result.content).xpath('//font[contains(text(),"签过到")]/text()')
+        sign_str = etree.HTML(result.text).xpath('//font[contains(text(),"签过到")]/text()')
         logger.info(sign_str)
         if len(sign_str) >= 1:
             # msg = self.parse(result, '//font[contains(text(),"签过到")]/text()')
@@ -499,7 +499,7 @@ class PtSpider:
             method=site.sign_in_method,
             data=data
         )
-        logger.info(sign_res.content)
+        logger.info(sign_res.text)
         sign_str = self.parse(sign_res, '//font[contains(text(),"签过到")]/text()')
         if len(sign_str) < 1:
             return CommonResponse.error(
@@ -526,7 +526,7 @@ class PtSpider:
             my_site=my_site,
             url=site.url + site.page_sign_in.lstrip('/'),
             method=site.sign_in_method
-        ).content.decode('utf8')
+        ).text.encode('utf8')
         if isinstance(sign_res, int):
             msg = '你还需要继续努力哦！此次签到，你获得了魔力奖励：{}'.format(sign_res)
         else:
@@ -555,7 +555,7 @@ class PtSpider:
                 'action': 'checkin'
             }
         )
-        msg = '你还需要继续努力哦！此次签到，你获得了魔力奖励：{}'.format(sign_res.content.decode('utf8'))
+        msg = '你还需要继续努力哦！此次签到，你获得了魔力奖励：{}'.format(sign_res.text.encode('utf8'))
         logger.info(msg)
         return CommonResponse.success(
             msg=msg
@@ -635,8 +635,8 @@ class PtSpider:
             method=site.sign_in_method,
             data=data,
         )
-        logger.info(response.content.decode('utf8'))
-        if "window.location.href = 'showup.php';" in response.content.decode('utf8'):
+        logger.info(response.text.encode('utf8'))
+        if "window.location.href = 'showup.php';" in response.text.encode('utf8'):
             result = self.send_request(
                 my_site=my_site,
                 url=url,
@@ -677,7 +677,7 @@ class PtSpider:
             my_site=my_site,
             method='get',
             url=url)
-        logger.info(res.content.decode('utf-8'))
+        logger.info(res.text.encode('utf-8'))
         img_src = ''.join(self.parse(res, '//form[@id="frmSignin"]//img/@src'))
         img_get_url = site.url + img_src
         times = 0
@@ -703,7 +703,7 @@ class PtSpider:
             my_site=my_site,
             method=site.sign_in_method,
             url=site.url + 'plugin_sign-in.php?cmd=signin', data=data)
-        logger.info('皇后签到返回值：{}  \n'.format(result.content.decode('utf-8')))
+        logger.info('皇后签到返回值：{}  \n'.format(result.text.encode('utf-8')))
         return CommonResponse.success(
             status=StatusCodeEnum.OK,
             data=result.json()
@@ -762,7 +762,7 @@ class PtSpider:
                 my_site=my_site,
                 method=site.sign_in_method,
                 url=url, data=data)
-        logger.info('天空返回值：{}\n'.format(result.content))
+        logger.info('天空返回值：{}\n'.format(result.text))
         return CommonResponse.success(
             status=StatusCodeEnum.OK,
             data=result.json()
@@ -781,7 +781,7 @@ class PtSpider:
             res = self.send_request(my_site=my_site, url=url)
             # logger.info(res.text.encode('utf8'))
             # html = self.parse(res, '//script/text()')
-            html = etree.HTML(res.content).xpath('//script/text()')
+            html = etree.HTML(res.text).xpath('//script/text()')
             # logger.info(html)
             text = ''.join(html).replace('\n', '').replace(' ', '')
             logger.info(text)
@@ -800,10 +800,10 @@ class PtSpider:
                 site.url + site.page_sign_in,
                 method=site.sign_in_method,
                 data=params)
-            logger.info(resp.content)
+            logger.info(resp.text)
             return CommonResponse.success(
                 status=StatusCodeEnum.OK,
-                msg=resp.content.decode('utf8')
+                msg=resp.text.encode('utf8')
             )
         except Exception as e:
             # 打印异常详细信息
@@ -1005,7 +1005,7 @@ class PtSpider:
                                         data=eval(site.sign_in_params), )
                 if res.status_code == 200:
                     signin_today.sign_in_today = True
-                    signin_today.sign_in_info = res.content.decode('utf8')
+                    signin_today.sign_in_info = res.text.encode('utf8')
                     signin_today.save()
                     return CommonResponse.success(msg=res.text)
                 elif res.status_code == 503:
@@ -1097,7 +1097,7 @@ class PtSpider:
                     )
             if 'btschool' in site.url:
                 # logger.info(res.status_code)
-                logger.info('学校签到：{}'.format(res.content.decode('utf-8')))
+                logger.info('学校签到：{}'.format(res.text.encode('utf-8')))
                 text = self.parse(res, '//script/text()')
                 logger.info('解析签到返回信息：{}'.format(text))
                 if len(text) > 0:
@@ -1116,7 +1116,7 @@ class PtSpider:
                     return CommonResponse.success(msg=message)
                 return CommonResponse.error(msg='签到失败！请求响应码：{}'.format(res.status_code))
             if res.status_code == 200:
-                status = converter.convert(res.content.decode('utf8'))
+                status = converter.convert(res.text.encode('utf8'))
                 logger.info(status)
                 # status = ''.join(self.parse(res, '//a[contains(@href,{})]/text()'.format(site.page_sign_in)))
                 # 检查是否签到成功！
@@ -1435,7 +1435,7 @@ class PtSpider:
 
             if 'totheglory' in site.url:
                 # ttg的信息都是直接加载的，不需要再访问其他网页，直接解析就好
-                details_html = etree.HTML(user_detail_res.content)
+                details_html = etree.HTML(user_detail_res.text)
                 seeding_html = details_html.xpath('//div[@id="ka2"]/table')[0]
             elif 'greatposterwall' in site.url or 'dicmusic' in site.url:
                 details_html = user_detail_res.json()
@@ -1489,7 +1489,7 @@ class PtSpider:
                     )
                 seeding_html = etree.HTML(converter.convert(seeding_detail_res.text))
             # leeching_html = etree.HTML(leeching_detail_res.text)
-            # logger.info(seeding_detail_res.content.decode('utf8'))
+            # logger.info(seeding_detail_res.text.encode('utf8'))
             return CommonResponse.success(data={
                 'details_html': details_html,
                 'seeding_html': seeding_html,
@@ -1882,10 +1882,10 @@ class PtSpider:
                 my_site=my_site,
                 url=site.url + site.page_mybonus,
             )
-            # print(response.content.decode('utf8'))
+            # print(response.text.encode('utf8'))
             """
             if 'btschool' in site.url:
-                # logger.info(response.content.decode('utf8'))
+                # logger.info(response.text.encode('utf8'))
                 url = self.parse(response, '//form[@id="challenge-form"]/@action[1]')
                 data = {
                     'md': ''.join(self.parse(response, '//form[@id="challenge-form"]/input[@name="md"]/@value')),
@@ -1902,8 +1902,8 @@ class PtSpider:
                     delay=60
                 )
                 """
-            res = converter.convert(response.content)
-            # logger.info('时魔响应：{}'.format(response.content))
+            res = converter.convert(response.text)
+            # logger.info('时魔响应：{}'.format(response.text))
             # logger.info('转为简体的时魔页面：', str(res))
             # res_list = self.parse(res, site.hour_sp_rule)
             res_list = etree.HTML(res).xpath(site.hour_sp_rule)
