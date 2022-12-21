@@ -811,7 +811,7 @@ class PtSpider:
             logger.info(resp.text)
             return CommonResponse.success(
                 status=StatusCodeEnum.OK,
-                msg=resp.text.encode('utf8')
+                msg=resp.content.decode('utf8')
             )
         except Exception as e:
             # 打印异常详细信息

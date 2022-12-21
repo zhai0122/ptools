@@ -768,7 +768,6 @@ def site_data_api(request):
         # } for diff in diff_list]
 
         return JsonResponse(data=CommonResponse.success(
-            # msg='全站数据展示功能还未完成，敬请期待！'
             data={
                 'date_list': date_list,
                 'diff': diff_list
@@ -826,6 +825,7 @@ def sign_in_api(request):
             ).to_dict(), safe=False)
         my_site = MySite.objects.filter(id=my_site_id).first()
         sign_state = pt_spider.sign_in(my_site)
+        logger.info(sign_state)
         # if sign_state.code == StatusCodeEnum.OK.code:
         #     return JsonResponse(data=CommonResponse.success(
         #         msg=sign_state.msg
@@ -893,6 +893,39 @@ def edit_site_api(request):
     return JsonResponse(data=CommonResponse.success(
         msg='ok'
     ).to_dict(), safe=False)
+
+
+def show_sign_api(request):
+    try:
+        my_site_id = request.GET.get('id')
+        logger.info(f'ID值：{my_site_id}')
+        my_site = MySite.objects.filter(id=my_site_id).first()
+        sign_in_list = my_site.signin_set.all().order_by('-pk')
+        sign_in_list = [
+            {'created_at': sign_in.created_at.strftime('%Y-%m-%d %H:%M:%S'), 'sign_in_info': sign_in.sign_in_info}
+            for sign_in in sign_in_list]
+        site = {
+            'id': my_site.id,
+            'name': my_site.site.name,
+            'icon': my_site.site.logo,
+            'url': my_site.site.url,
+            # 'class': my_site.my_level,
+            # 'seeding': my_site.seed,
+            # 'leeching': my_site.leech,
+            'last_active': datetime.strftime(my_site.updated_at, '%Y年%m月%d日%H:%M:%S'),
+        }
+        return JsonResponse(data=CommonResponse.success(
+            data={
+                'site': site,
+                'sign_in_list': sign_in_list
+            }
+        ).to_dict(), safe=False)
+    except Exception as e:
+        logger.error(f'签到历史数据获取失败：{e}')
+        logger.error(traceback.format_exc(limit=3))
+        return JsonResponse(data=CommonResponse.error(
+            msg=f'签到历史数据获取失败：{e}'
+        ).to_dict(), safe=False)
 
 
 def get_log_list(request):

@@ -245,8 +245,8 @@
                                     </el-button>
                                     <el-tooltip class="item" effect="dark" v-if="site.sign_in_state" content="已签到"
                                                 placement="top">
-                                        <el-button type="success" icon="el-icon-success" plain size="mini">
-                                            {#                                            <span style="font-size: 5px;">已签到</span>#}
+                                        <el-button type="success" icon="el-icon-success" plain size="mini"
+                                                   @click="showSignIn(site.id)">
                                         </el-button>
                                     </el-tooltip>
 
@@ -347,7 +347,6 @@
                 </div>
 
                 <charts ref="charts" style="height: 700px;margin-top: 5px;" :option="option"></charts>
-
             </div>
         </div>
     </el-card>
@@ -358,11 +357,45 @@
             append-to-body
             style="background-color: rgba(227, 229, 229, 0.6);">
         <div slot="title" style="text-align: center;line-height: 35px;">
-            <h3><span v-text="site.name"></span>--历史数据</h3>
-
-
+            <h3><span v-text="site.name"></span></h3>
         </div>
-        <div style="width: 95%;text-align: center;margin: 10px auto;">
+        <div v-if="showSignList" style="width: 90%;margin: auto;">
+            <el-timeline>
+                <el-timeline-item
+                        v-for="(signIn, index) in signInList"
+                        :key="index"
+                        {# :icon="activity.icon" #}
+                        {# :type="activity.type" #}
+                        color="#0bbd87"
+                        {# :size="activity.size" #}
+                        placement="top"
+                        :timestamp="signIn.created_at">
+                    <el-card shadow="hover">
+                        <p v-html="signIn.sign_in_info">
+                        </p>
+                    </el-card>
+                </el-timeline-item>
+            </el-timeline>
+        </div>
+        <div v-if="showSignList" style="width: 90%;margin: auto;">
+            <el-timeline>
+                <el-timeline-item
+                        v-for="(signIn, index) in signInList"
+                        :key="index"
+                        {# :icon="activity.icon" #}
+                        {# :type="activity.type" #}
+                        color="#0bbd87"
+                        {# :size="activity.size" #}
+                        placement="top"
+                        :timestamp="signIn.created_at">
+                    <el-card shadow="hover">
+                        <p v-html="signIn.sign_in_info">
+                        </p>
+                    </el-card>
+                </el-timeline-item>
+            </el-timeline>
+        </div>
+        <div v-else="showSignList" style="width: 95%;text-align: center;margin: 10px auto;">
             <div style="margin-bottom: 5px;">
                 <el-radio-group v-model="dataLength" size="mini"
                         {#                                @change="showAllIncrementHistory">#}
@@ -402,6 +435,7 @@
                 </el-col>
             </el-row>
         </div>
+
     </el-drawer>
 </div>
 
@@ -432,6 +466,8 @@
                     showAllHistory: false,
                     incrementData: {},
                     dataLength: -7,
+                    showSignList: false,
+                    signInList: [],
                 }
             },
             beforeMount() {
@@ -523,6 +559,35 @@
                         });
                     })
                 },
+                showSignIn(id) {
+                    axios.get(
+                        "{% url 'show_sign_api' %}" + `?id=${id}`
+                    ).then(res => {
+                        console.log('获取数据成功', res.data.data)
+                        if (res.data.code === 0) {
+                            this.signInList = res.data.data.sign_in_list
+                            this.site = res.data.data.site
+                            this.showSiteChart = true
+                            this.showSignList = true
+
+                            this.$message({
+                                type: 'success',
+                                message: res.data.msg
+                            });
+                        } else {
+                            this.$message({
+                                type: 'warning',
+                                message: res.data.msg
+                            });
+                        }
+                    }).catch(res => {
+                        console.log('签到失败', res)
+                        this.$message({
+                            type: 'warning',
+                            message: '签到失败！' + res
+                        });
+                    })
+                },
                 updateSite(id) {
                     axios.get(
                         "{% url 'update_site_api' %}" + '?id=' + id
@@ -592,6 +657,7 @@
                             {#this.setPie()#}
                             {#this.setCard()#}
                             this.incrementData = res.data.data
+                            this.showSignList = false
                             id == 0 ? this.showAllIncrementHistory() : this.setLine()
                         } else {
                             this.$message({
