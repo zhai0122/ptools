@@ -1429,13 +1429,13 @@ class PtSpider:
                     msg=site.name + '个人主页访问错误，错误码：' + str(user_detail_res.status_code)
                 )
             # logger.info(user_detail_res.status_code)
-            logger.info('个人主页：{}'.format(user_detail_res.text))
+            logger.info('个人主页：{}'.format(user_detail_res.content))
             # 解析HTML
             # logger.info(user_detail_res.is_redirect)
 
             if 'totheglory' in site.url:
                 # ttg的信息都是直接加载的，不需要再访问其他网页，直接解析就好
-                details_html = etree.HTML(user_detail_res.text)
+                details_html = etree.HTML(user_detail_res.content)
                 seeding_html = details_html.xpath('//div[@id="ka2"]/table')[0]
             elif 'greatposterwall' in site.url or 'dicmusic' in site.url:
                 details_html = user_detail_res.json()
@@ -1902,7 +1902,7 @@ class PtSpider:
                     delay=60
                 )
                 """
-            res = converter.convert(response.text)
+            res = converter.convert(response.content)
             # logger.info('时魔响应：{}'.format(response.text))
             # logger.info('转为简体的时魔页面：', str(res))
             # res_list = self.parse(res, site.hour_sp_rule)
