@@ -1433,7 +1433,7 @@ class PtSpider:
         # leeching_detail_url = site.url + site.page_leeching.lstrip('/').format(my_site.user_id)
         try:
             # 发送请求，做种信息与正在下载信息，个人主页
-            if 'wintersakura' in site.url:
+            if 'wintersakura' in site.url or 'hdchina' in site.url:
                 # 单独发送请求，解决冬樱签到问题
                 user_detail_res = requests.get(url=user_detail_url, verify=False, cookies=cookie2dict(my_site.cookie),
                                                headers={
@@ -1449,7 +1449,11 @@ class PtSpider:
                     msg=site.name + '个人主页访问错误，错误码：' + str(user_detail_res.status_code)
                 )
             # logger.info(user_detail_res.status_code)
-            logger.info('个人主页：{}'.format(user_detail_res.content))
+            try:
+                logger.info(f'个人主页：{user_detail_res.content.decode("utf8")}')
+            except Exception as e:
+                logger.info('个人主页：UTF-8解析失败')
+                logger.info(f'个人主页：{user_detail_res.content}')
             # 解析HTML
             # logger.info(user_detail_res.is_redirect)
 
@@ -1467,12 +1471,22 @@ class PtSpider:
             elif 'hdchina.org' in site.url:
                 details_html = etree.HTML(converter.convert(user_detail_res.text))
                 csrf = details_html.xpath('//meta[@name="x-csrf"]/@content')
-                seeding_detail_res = self.send_request(my_site=my_site, url=seeding_detail_url, method='post',
-                                                       data={
-                                                           'userid': my_site.user_id,
-                                                           'type': 'seeding',
-                                                           'csrf': ''.join(csrf)
-                                                       })
+                # seeding_detail_res = self.send_request(my_site=my_site, url=seeding_detail_url, method='post',
+                #                                        data={
+                #                                            'userid': my_site.user_id,
+                #                                            'type': 'seeding',
+                #                                            'csrf': ''.join(csrf)
+                #                                        })
+                seeding_detail_res = requests.post(url=seeding_detail_url, verify=False,
+                                                   cookies=cookie2dict(my_site.cookie),
+                                                   headers={
+                                                       'user-agent': my_site.user_agent
+                                                   },
+                                                   data={
+                                                       'userid': my_site.user_id,
+                                                       'type': 'seeding',
+                                                       'csrf': ''.join(csrf)
+                                                   })
                 seeding_html = etree.HTML(converter.convert(seeding_detail_res.text))
             else:
                 details_html = etree.HTML(converter.convert(user_detail_res.text))
@@ -1516,10 +1530,17 @@ class PtSpider:
                 # 'leeching_html': leeching_html
             })
         except NewConnectionError as nce:
+            logger.error(traceback.format_exc(limit=3))
             return CommonResponse.error(
                 status=StatusCodeEnum.WEB_CONNECT_ERR,
                 msg='打开网站失败，请检查网站是否维护？？')
+        except requests.exceptions.SSLError:
+            logger.error(traceback.format_exc(limit=3))
+            return CommonResponse.error(
+                status=StatusCodeEnum.WEB_CONNECT_ERR,
+                msg='网站证书验证失败！！')
         except ReadTimeout as e:
+            logger.error(traceback.format_exc(limit=3))
             return CommonResponse.error(
                 status=StatusCodeEnum.WEB_CONNECT_ERR,
                 msg='网站访问超时，请检查网站是否维护？？')
@@ -1906,10 +1927,18 @@ class PtSpider:
         """获取时魔"""
         site = my_site.site
         try:
-            response = self.send_request(
-                my_site=my_site,
-                url=site.url + site.page_mybonus,
-            )
+            if 'wintersakura' in site.url or 'hdchina' in site.url:
+                # 单独发送请求，解决冬樱签到问题
+                response = requests.get(url=site.url + site.page_mybonus, verify=False,
+                                        cookies=cookie2dict(my_site.cookie),
+                                        headers={
+                                            'user-agent': my_site.user_agent
+                                        })
+            else:
+                response = self.send_request(
+                    my_site=my_site,
+                    url=site.url + site.page_mybonus,
+                )
             # print(response.text.encode('utf8'))
             """
             if 'btschool' in site.url:
