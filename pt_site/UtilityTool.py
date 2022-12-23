@@ -563,24 +563,38 @@ class PtSpider:
     def sign_in_hdc(self, my_site: MySite):
         site = my_site.site
         url = site.url + site.page_control_panel.lstrip('/')
-        result = self.send_request(
-            my_site=my_site,
-            url=url,
-        )
+        # result = self.send_request(
+        #     my_site=my_site,
+        #     url=url,
+        # )
+        result = requests.get(url=url, verify=False,
+                              cookies=cookie2dict(my_site.cookie),
+                              headers={
+                                  'user-agent': my_site.user_agent
+                              })
         sign_str = self.parse(result, '//a[text()="已签到"]')
         logger.info('{}签到检测'.format(site.name, sign_str))
         if len(sign_str) >= 1:
             return CommonResponse.success(msg=site.name + '已签到，请勿重复操作！！')
         csrf = ''.join(self.parse(result, '//meta[@name="x-csrf"]/@content'))
         logger.info('CSRF字符串：{}'.format(csrf))
-        sign_res = self.send_request(
-            my_site=my_site,
-            url=site.url + site.page_sign_in,
-            method=site.sign_in_method,
-            data={
-                'csrf': csrf
-            }
-        )
+        # sign_res = self.send_request(
+        #     my_site=my_site,
+        #     url=site.url + site.page_sign_in,
+        #     method=site.sign_in_method,
+        #     data={
+        #         'csrf': csrf
+        #     }
+        # )
+        sign_res = requests.request(url=site.url + site.page_sign_in,
+                                    verify=False, method=site.sign_in_method,
+                                    cookies=cookie2dict(my_site.cookie),
+                                    headers={
+                                        'user-agent': my_site.user_agent
+                                    },
+                                    data={
+                                        'csrf': csrf
+                                    })
         res_json = sign_res.json()
         logger.info('签到返回结果：{}'.format(res_json))
         if res_json.get('state') == 'success':
@@ -1487,6 +1501,8 @@ class PtSpider:
                                                        'type': 'seeding',
                                                        'csrf': ''.join(csrf)
                                                    })
+                logger.info(f'cookie: {my_site.cookie}')
+                logger.info(f'请求中的cookie: {seeding_detail_res.cookies}')
                 seeding_html = etree.HTML(converter.convert(seeding_detail_res.text))
             else:
                 details_html = etree.HTML(converter.convert(user_detail_res.text))
