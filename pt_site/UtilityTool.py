@@ -1820,8 +1820,16 @@ class PtSpider:
                             .replace('\xa0', '').replace('.', '').strip()
                     # 分享率告警通知
                     logger.info('ratio：{}'.format(ratio))
+                    try:
+                        # 获取的分享率无法转为数字时，自行计算分享率
+                        ratio = float(ratio)
+                    except Exception:
+                        if int(downloaded) == 0:
+                            ratio = 'inf'
+                        else:
+                            ratio = round(int(uploaded) / int(downloaded), 3)
                     if ratio and ratio != 'inf' and float(ratio) <= 1:
-                        message = '# <font color="red">' + site.name + ' 站点分享率告警：' + str(ratio) + '</font>  \n'
+                        message = f'# <font color="red">{site.name}  站点分享率告警：{ratio}</font>  \n'
                         self.send_text(message)
                     # 检查邮件
                     mail_str = ''.join(details_html.xpath(site.mailbox_rule))
