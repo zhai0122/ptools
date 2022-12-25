@@ -21,7 +21,6 @@ if [ ! -e $CONTAINER_ALREADY_STARTED ]; then
   echo "安装pip依赖"
   pip install -r requirements.txt
   echo "系统初始化中"
-  python manage.py makemigrations
   if [ ! -f db/db.sqlite3 ]; then
     echo '数据库不存在，初始化数据库'
     python manage.py migrate
