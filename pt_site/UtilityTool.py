@@ -195,6 +195,7 @@ class PtSpider:
                      json: dict = None,
                      timeout: int = 45,
                      delay: int = 15,
+                     header: dict = {},
                      proxies: dict = None):
         site = my_site.site
         scraper = self.get_scraper(delay=delay)
@@ -207,6 +208,7 @@ class PtSpider:
         headers = {
             'User-Agent': my_site.user_agent,
         }
+        headers.update(header)
         for k, v in eval(site.sign_in_headers).items():
             headers[k] = v
         # logger.info(self.headers)
@@ -1522,6 +1524,14 @@ class PtSpider:
                 logger.info(f'请求中的cookie: {seeding_detail_res.cookies}')
                 logger.info(f'做种列表：{seeding_detail_res.text}')
                 seeding_html = etree.HTML(converter.convert(seeding_detail_res.text))
+            elif 'club.hares.top' in site.url:
+                details_html = etree.HTML(converter.convert(user_detail_res.text))
+                seeding_detail_res = self.send_request(my_site=my_site, url=seeding_detail_url, header={
+                    'Accept': 'application/json'
+                })
+                logger.info(f'白兔做种信息：{seeding_detail_res.text}')
+                seeding_html = seeding_detail_res.json()
+                logger.info(f'白兔做种信息：{seeding_html}')
             else:
                 details_html = etree.HTML(converter.convert(user_detail_res.text))
 
@@ -1546,6 +1556,7 @@ class PtSpider:
                                                       headers={
                                                           'user-agent': my_site.user_agent
                                                       })
+
                 else:
                     seeding_detail_res = self.send_request(my_site=my_site, url=seeding_detail_url, delay=25)
                 logger.info('做种信息：{}'.format(seeding_detail_res.text))
@@ -1696,11 +1707,20 @@ class PtSpider:
                 # 获取指定元素
                 # title = details_html.xpath('//title/text()')
                 # seed_vol_list = seeding_html.xpath(site.record_bulk_rule)
-                seed_vol_list = seeding_html.xpath(site.seed_vol_rule)
+                try:
+                    seed_vol_list = seeding_html.xpath(site.seed_vol_rule)
+                except:
+                    pass
                 if 'lemonhd.org' in site.url:
                     logger.info('做种体积：{}'.format(seed_vol_list))
                     seed_vol_size = ''.join(seed_vol_list).split(':')[-1].strip()
                     seed_vol_all = FileSizeConvert.parse_2_byte(seed_vol_size)
+                elif 'club.hares.top' in site.url:
+                    logger.info(f'白兔做种信息：{seeding_html}')
+                    seed_vol_size = seeding_html.get('size')
+                    logger.info(f'白兔做种信息：{seed_vol_size}')
+                    seed_vol_all = FileSizeConvert.parse_2_byte(seed_vol_size)
+                    logger.info(f'白兔做种信息：{seed_vol_all}')
                 else:
                     if len(seed_vol_list) > 0 and site.url not in [
                         'https://nextpt.net/'
