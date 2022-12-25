@@ -1746,7 +1746,12 @@ class PtSpider:
                     seed_vol_all = 0
                     for seed_vol in seed_vol_list:
                         # logger.info(etree.tostring(seed_vol))
-                        vol = ''.join(seed_vol.xpath('.//text()'))
+                        if 'iptorrents.com' in site.url:
+                            vol = ''.join(seed_vol.xpath('.//text()'))
+                            vol = ''.join(re.findall(r'\((.*?)\)', vol))
+                        else:
+                            vol = ''.join(seed_vol.xpath('.//text()'))
+
                         # logger.info(vol)
                         if not len(vol) <= 0:
                             size = FileSizeConvert.parse_2_byte(
