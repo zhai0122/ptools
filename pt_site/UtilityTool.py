@@ -669,8 +669,8 @@ class PtSpider:
             method=site.sign_in_method,
             data=data,
         )
-        logger.info(response.text.encode('utf8'))
-        if "window.location.href = 'showup.php';" in response.text.encode('utf8'):
+        logger.info(response.content.decode('utf8'))
+        if "window.location.href = 'showup.php';" in response.content.decode('utf8'):
             result = self.send_request(
                 my_site=my_site,
                 url=url,
@@ -678,7 +678,8 @@ class PtSpider:
             title = self.parse(result, '//h2[contains(text(),"签到区")]/following-sibling::table//h3/text()')
             content = self.parse(
                 result,
-                '//td/span[@class="nowrap"]/a[contains(@href,"userdetails.php?id={}")]/parent::span/following-sibling::b[2]/text()'.format(
+                '//td/span[@class="nowrap"]/a[contains(@href,"userdetails.php?id={}")]'
+                '/parent::span/following-sibling::b[2]/text()'.format(
                     my_site.user_id
                 )
             )
