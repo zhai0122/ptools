@@ -8,8 +8,11 @@ import subprocess
 import time
 from concurrent.futures.thread import ThreadPoolExecutor
 
+import requests
+import yaml
 from apscheduler.schedulers.background import BackgroundScheduler
 from django_apscheduler.jobstores import DjangoJobStore
+from lxml import etree
 
 from pt_site.UtilityTool import PtSpider, MessageTemplate, FileSizeConvert
 from pt_site.models import MySite, TorrentInfo
@@ -294,6 +297,55 @@ def auto_upgrade():
         return CommonResponse.error(
             msg=msg
         )
+
+
+def auto_update_license():
+    """auto_update_license"""
+    with open('db/ptools.yaml', 'r') as f:
+        data = yaml.load(f, Loader=yaml.FullLoader)
+        print(data)
+    pt_helper = data.get('pt_helper')
+    host = pt_helper.get('host')
+    username = pt_helper.get('username')
+    password = pt_helper.get('password')
+    url = 'http://get_pt_helper_license.guyubao.com/getTrial'
+    license_xpath = '//h2/text()'
+    session = requests.Session()
+    res = session.get(url=url)
+    token = ''.join(etree.HTML(res.content).xpath(license_xpath))
+    login_url = host + '/login/submit'
+    login_res = session.post(
+        url=login_url,
+        data={
+            'username': username,
+            'password': password,
+        }
+    )
+    token_url = host + '/sys/config/update'
+    logger.info(login_res.cookies.get_dict())
+    cookies = session.cookies.get_dict()
+    logger.info(cookies)
+    res = session.post(
+        url=token_url,
+        cookies=cookies,
+        data={
+            'Id': 4,
+            'ParamKey': 'license',
+            'ParamValue': token.split('：')[-1],
+            'Status': 1,
+        }
+    )
+    logger.info(f'结果：{res.text}')
+    result = res.json()
+    if result.get('code') == 0:
+        result['data'] = token
+        pt_spider.send_text(text=f'> {token}')
+        return CommonResponse.success(
+            data=result
+        )
+    return CommonResponse.error(
+        msg=f'License更新失败！'
+    )
 
 
 try:

@@ -986,3 +986,12 @@ def site_sort_api(request):
         return JsonResponse(data=CommonResponse.error(
             msg=f'数据更新失败：{e}'
         ).to_dict(), safe=False)
+
+
+def get_helper_license(request):
+    result = pt_site.auto_update_license()
+    if result.code == 0:
+        return JsonResponse(data=result.to_dict(), safe=False)
+    return JsonResponse(data=CommonResponse.error(
+        msg='License更新失败！'
+    ).to_dict(), safe=False)
