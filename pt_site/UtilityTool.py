@@ -1567,6 +1567,21 @@ class PtSpider:
                         msg='{} 做种信息访问错误，错误码：{}'.format(site.name, str(seeding_detail_res.status_code))
                     )
                 seeding_html = etree.HTML(converter.convert(seeding_detail_res.text))
+                if 'kp.m-team.cc' in site.url:
+                    url_list = self.parse(
+                        seeding_detail_res,
+                        f'//p[1]/font[2]/following-sibling::'
+                        f'a[contains(@href,"?type=seeding&userid={my_site.user_id}&page=")]/@href'
+                    )
+                    print(url_list)
+                    seeding_text = seeding_detail_res.text.encode('utf8')
+                    # trs.pop(0)
+                    for url in url_list:
+                        seeding_url = f'https://kp.m-team.cc/getusertorrentlist.php{url}'
+                        seeding_res = self.send_request(my_site=my_site, url=seeding_url)
+                        seeding_text += seeding_res.text.encode('utf8')
+                    # logger.info(seeding_detail_res)
+                    seeding_html = etree.HTML(converter.convert(seeding_text))
             # leeching_html = etree.HTML(leeching_detail_res.text)
             # logger.info(seeding_detail_res.text.encode('utf8'))
             return CommonResponse.success(data={
