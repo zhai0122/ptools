@@ -42,6 +42,8 @@ def cookie2dict(source_str: str):
     list_mid = source_str.split(';')
     for i in list_mid:
         # 以第一个选中的字符分割1次，
+        if len(i) <= 0:
+            continue
         list2 = i.split('=', 1)
         dist_dict[list2[0]] = list2[1]
     return dist_dict
@@ -106,6 +108,8 @@ class PtSpider:
         list_mid = source_str.split(';')
         for i in list_mid:
             # 以第一个选中的字符分割1次，
+            if len(i) <= 0:
+                continue
             list2 = i.split('=', 1)
             # logger.info(list2)
             if list2[0] == '':
@@ -572,8 +576,11 @@ class PtSpider:
                               headers={
                                   'user-agent': my_site.user_agent
                               })
+        logger.info(f'签到检测页面：{result.text}')
         sign_str = self.parse(result, '//a[text()="已签到"]')
         logger.info('{}签到检测'.format(site.name, sign_str))
+        logger.info(f'{result.cookies.get_dict()}')
+
         if len(sign_str) >= 1:
             return CommonResponse.success(msg=site.name + '已签到，请勿重复操作！！')
         csrf = ''.join(self.parse(result, '//meta[@name="x-csrf"]/@content'))
@@ -586,16 +593,21 @@ class PtSpider:
         #         'csrf': csrf
         #     }
         # )
+        cookies = cookie2dict(my_site.cookie)
+        cookies.update(result.cookies.get_dict())
+        logger.info(cookies)
         sign_res = requests.request(url=site.url + site.page_sign_in,
                                     verify=False, method=site.sign_in_method,
-                                    cookies=cookie2dict(my_site.cookie),
+                                    cookies=cookies,
                                     headers={
                                         'user-agent': my_site.user_agent
                                     },
                                     data={
                                         'csrf': csrf
                                     })
+        logger.info(sign_res.text)
         res_json = sign_res.json()
+        logger.info(sign_res.cookies)
         logger.info('签到返回结果：{}'.format(res_json))
         if res_json.get('state') == 'success':
             if len(sign_res.cookies) >= 1:
@@ -613,7 +625,7 @@ class PtSpider:
                 msg=msg
             )
         else:
-            msg = "签到失败"
+            msg = res_json.get('msg')
             logger.info(msg)
             return CommonResponse.error(
                 msg=msg
@@ -1485,14 +1497,18 @@ class PtSpider:
             elif 'hdchina.org' in site.url:
                 details_html = etree.HTML(converter.convert(user_detail_res.text))
                 csrf = details_html.xpath('//meta[@name="x-csrf"]/@content')
+                logger.info(f'CSRF Token：{csrf}')
                 # seeding_detail_res = self.send_request(my_site=my_site, url=seeding_detail_url, method='post',
                 #                                        data={
                 #                                            'userid': my_site.user_id,
                 #                                            'type': 'seeding',
                 #                                            'csrf': ''.join(csrf)
                 #                                        })
+                cookies = cookie2dict(my_site.cookie)
+                cookies.update(user_detail_res.cookies.get_dict())
+                logger.info(cookies)
                 seeding_detail_res = requests.post(url=seeding_detail_url, verify=False,
-                                                   cookies=cookie2dict(my_site.cookie),
+                                                   cookies=cookies,
                                                    headers={
                                                        'user-agent': my_site.user_agent
                                                    },
@@ -1503,6 +1519,7 @@ class PtSpider:
                                                    })
                 logger.info(f'cookie: {my_site.cookie}')
                 logger.info(f'请求中的cookie: {seeding_detail_res.cookies}')
+                logger.info(f'做种列表：{seeding_detail_res.text}')
                 seeding_html = etree.HTML(converter.convert(seeding_detail_res.text))
             else:
                 details_html = etree.HTML(converter.convert(user_detail_res.text))
