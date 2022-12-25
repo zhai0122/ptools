@@ -1736,6 +1736,12 @@ class PtSpider:
                     logger.info(f'白兔做种信息：{seed_vol_size}')
                     seed_vol_all = FileSizeConvert.parse_2_byte(seed_vol_size)
                     logger.info(f'白兔做种信息：{seed_vol_all}')
+                elif 'monikadesign.uk' in site.url:
+                    logger.info(f'莫妮卡做种信息')
+                    seed_vol_size = ''.join(seeding_html.xpath(site.seed_vol_rule)).replace('i', '')
+                    logger.info(f'莫妮卡做种信息: {seed_vol_size}')
+                    seed_vol_all = FileSizeConvert.parse_2_byte(seed_vol_size)
+                    logger.info(f'莫妮卡做种信息: {seed_vol_all}')
                 else:
                     if len(seed_vol_list) > 0 and site.url not in [
                         'https://nextpt.net/'
@@ -1813,7 +1819,14 @@ class PtSpider:
                 time_join = re.findall(r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}', ''.join(
                     details_html.xpath(site.time_join_rule)
                 ).strip())
-                my_site.time_join = ''.join(time_join)
+                if 'monikadesign.uk' in site.url:
+                    time_str = ''.join(details_html.xpath(site.time_join_rule))
+                    time_str = re.sub(u"[\u4e00-\u9fa5]", "", time_str).strip()
+                    time_join = datetime.strptime(time_str, '%b %d %Y')
+                    logger.info(f'注册时间：{time_join}')
+                    my_site.time_join = time_join
+                else:
+                    my_site.time_join = ''.join(time_join)
                 # 去除字符串中的中文
                 my_level_1 = ''.join(
                     details_html.xpath(site.my_level_rule)
@@ -1852,7 +1865,7 @@ class PtSpider:
                 # if '（' in my_bonus:
                 #     my_bonus = my_bonus.split('（')[0]
 
-                hr = ''.join(details_html.xpath(site.my_hr_rule)).replace('H&R:', '').strip()
+                hr = ''.join(details_html.xpath(site.my_hr_rule)).replace('H&R:', '').replace('有效\n:', '').strip()
 
                 my_hr = hr if hr else '0'
                 logger.info(f'h&r: {hr} ,解析后：{my_hr}')
@@ -2000,10 +2013,14 @@ class PtSpider:
     def get_hour_sp(self, my_site: MySite):
         """获取时魔"""
         site = my_site.site
+        url = site.url + site.page_mybonus
+        if 'monikadesign.uk' in site.url:
+            url = url.format(my_site.user_id)
+        logger.info(f'魔力页面链接：{url}')
         try:
             if 'wintersakura' in site.url or 'hdchina' in site.url:
                 # 单独发送请求，解决冬樱签到问题
-                response = requests.get(url=site.url + site.page_mybonus, verify=False,
+                response = requests.get(url=url, verify=False,
                                         cookies=cookie2dict(my_site.cookie),
                                         headers={
                                             'user-agent': my_site.user_agent
@@ -2011,7 +2028,7 @@ class PtSpider:
             else:
                 response = self.send_request(
                     my_site=my_site,
-                    url=site.url + site.page_mybonus,
+                    url=url,
                 )
             # print(response.text.encode('utf8'))
             """
@@ -2034,7 +2051,7 @@ class PtSpider:
                 )
                 """
             res = converter.convert(response.content)
-            # logger.info('时魔响应：{}'.format(response.text))
+            logger.info('时魔响应：{}'.format(response.text))
             # logger.info('转为简体的时魔页面：', str(res))
             # res_list = self.parse(res, site.hour_sp_rule)
             res_list = etree.HTML(res).xpath(site.hour_sp_rule)
