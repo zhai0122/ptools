@@ -504,7 +504,7 @@ class PtSpider:
             data=data
         )
         logger.info(sign_res.text)
-        sign_str = self.parse(sign_res, '//font[contains(text(),"签过到")]/text()')
+        sign_str = self.parse(sign_res, '//font[contains(text(),"点魔力值(连续")]/text()')
         if len(sign_str) < 1:
             return CommonResponse.error(
                 msg='签到失败!'
