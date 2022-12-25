@@ -825,7 +825,7 @@ def sign_in_api(request):
             ).to_dict(), safe=False)
         my_site = MySite.objects.filter(id=my_site_id).first()
         sign_state = pt_spider.sign_in(my_site)
-        logger.info(sign_state)
+        logger.info(sign_state.to_dict())
         # if sign_state.code == StatusCodeEnum.OK.code:
         #     return JsonResponse(data=CommonResponse.success(
         #         msg=sign_state.msg
