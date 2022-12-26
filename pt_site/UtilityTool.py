@@ -1853,8 +1853,11 @@ class PtSpider:
                     'https://pt.hdpost.top/',
                     'https://hd-torrents.org/',
                     'https://filelist.io/',
+                    'https://www.pttime.org/',
                 ]:
-                    seed_vol_size = ''.join(seeding_html.xpath(site.seed_vol_rule)).replace('i', '')
+                    seed_vol_size = ''.join(
+                        seeding_html.xpath(site.seed_vol_rule)
+                    ).replace('i', '').replace('&nbsp;', ' ')
                     seed_vol_all = FileSizeConvert.parse_2_byte(seed_vol_size)
                     logger.info(f'做种信息: {seed_vol_all}')
                 else:
