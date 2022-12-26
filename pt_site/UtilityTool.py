@@ -1851,6 +1851,7 @@ class PtSpider:
                 elif site.url in [
                     'https://monikadesign.uk/',
                     'https://pt.hdpost.top/',
+                    'https://hd-torrents.org/',
                     'https://filelist.io/',
                 ]:
                     seed_vol_size = ''.join(seeding_html.xpath(site.seed_vol_rule)).replace('i', '')
