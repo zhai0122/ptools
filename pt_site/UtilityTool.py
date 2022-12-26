@@ -386,7 +386,9 @@ class PtSpider:
                         'seed_vol': seeding_size,
                         'ratio': float(ratio),
                     })
-                logger.info('数据导入结果，True为新建，false为更新')
+                res_status[0].created_at = create_time
+                res_status[0].save()
+                logger.info(f'数据导入结果: 日期: {create_time}，True为新建，false为更新')
                 logger.info(res_status)
             except Exception as e:
                 msg = '{}{} 数据导入出错，错误原因：{}'.format(site.name, key, traceback.format_exc(limit=3))
