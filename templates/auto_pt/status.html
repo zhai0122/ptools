@@ -717,12 +717,12 @@
                                             <hr>
                                          `
                                 total_str += text
-                                return `<div style="width: 250px;">${total_str}</div>`
+                                return `<div style="width: 280px;">${total_str}</div>`
                             },
                             position: function (point, params, dom, rect, size) {
                                 let customVH = window.innerWidth
-                                if (customVH - point[0] < 250) {
-                                    point[0] = customVH - 300
+                                if (customVH - point[0] < 280) {
+                                    point[0] = customVH - 320
                                 }
                                 console.log(customVH)
                                 console.log(point[0])
