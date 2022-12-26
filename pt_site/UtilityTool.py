@@ -1738,6 +1738,7 @@ class PtSpider:
                     logger.info(f'白兔做种信息：{seed_vol_all}')
                 elif site.url in [
                     'https://monikadesign.uk/',
+                    'https://pt.hdpost.top/',
                     'https://filelist.io/',
                 ]:
                     seed_vol_size = ''.join(seeding_html.xpath(site.seed_vol_rule)).replace('i', '')
@@ -1825,7 +1826,10 @@ class PtSpider:
                 # logger.info('注册时间：', time_join_1)
                 # time_join = time_join_1.replace('(', '').replace(')', '').strip('\xa0').strip()
                 logger.info(f'注册时间：{details_html.xpath(site.time_join_rule)}')
-                if 'monikadesign.uk' in site.url:
+                if site.url in [
+                    'https://monikadesign.uk/',
+                    'https://pt.hdpost.top/',
+                ]:
                     time_str = ''.join(details_html.xpath(site.time_join_rule))
                     time_str = re.sub(u"[\u4e00-\u9fa5]", "", time_str).strip()
                     time_join = datetime.strptime(time_str, '%b %d %Y')
@@ -2037,6 +2041,7 @@ class PtSpider:
         url = site.url + site.page_mybonus
         if site.url in [
             'https://monikadesign.uk/',
+            'https://pt.hdpost.top/',
             'https://exoticaz.to/',
             'https://cinemaz.to/',
             'https://avistaz.to/',
