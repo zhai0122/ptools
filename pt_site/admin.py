@@ -940,7 +940,7 @@ class TorrentInfoAdmin(AjaxAdmin):  # instead of ModelAdmin
                                                         username=downloader.username,
                                                         password=downloader.password)
                     # 判断剩余空间大小，小于预留空间则停止推送种子
-                    free_space = tr_client.free_space('/downloads')
+                    free_space = tr_client.free_space(save_path)
                     print(FileSizeConvert.parse_2_file_size(free_space))
                     if free_space < total_size:
                         return JsonResponse(data={
