@@ -1736,12 +1736,13 @@ class PtSpider:
                     logger.info(f'白兔做种信息：{seed_vol_size}')
                     seed_vol_all = FileSizeConvert.parse_2_byte(seed_vol_size)
                     logger.info(f'白兔做种信息：{seed_vol_all}')
-                elif 'monikadesign.uk' in site.url:
-                    logger.info(f'莫妮卡做种信息')
+                elif site.url in [
+                    'https://monikadesign.uk/',
+                    'https://filelist.io/',
+                ]:
                     seed_vol_size = ''.join(seeding_html.xpath(site.seed_vol_rule)).replace('i', '')
-                    logger.info(f'莫妮卡做种信息: {seed_vol_size}')
                     seed_vol_all = FileSizeConvert.parse_2_byte(seed_vol_size)
-                    logger.info(f'莫妮卡做种信息: {seed_vol_all}')
+                    logger.info(f'做种信息: {seed_vol_all}')
                 else:
                     if len(seed_vol_list) > 0 and site.url not in [
                         'https://nextpt.net/'
