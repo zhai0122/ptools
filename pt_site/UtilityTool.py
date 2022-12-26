@@ -1792,8 +1792,10 @@ class PtSpider:
                         # logger.info(etree.tostring(seed_vol))
                         if 'iptorrents.com' in site.url:
                             vol = ''.join(seed_vol.xpath('.//text()'))
+                            logger.info(vol)
                             vol = ''.join(re.findall(r'\((.*?)\)', vol))
-                        if site.url in [
+                            logger.info(vol)
+                        elif site.url in [
                             'https://exoticaz.to/',
                             'https://cinemaz.to/',
                             'https://avistaz.to/',
