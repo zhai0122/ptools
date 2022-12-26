@@ -7,7 +7,6 @@ import ssl
 import threading
 import time
 import traceback
-from _ssl import CERT_NONE
 from datetime import datetime
 from urllib.request import urlopen
 
@@ -203,7 +202,7 @@ class PtSpider:
         _RESTRICTED_SERVER_CIPHERS = 'ALL'
         ssl_context.set_ciphers(_RESTRICTED_SERVER_CIPHERS)
         ssl_context.check_hostname = False
-        ssl_context.verify_mode = CERT_NONE
+        ssl_context.verify_mode = ssl.CERT_NONE
         scraper.ssl_context = ssl_context
         headers = {
             'User-Agent': my_site.user_agent,
@@ -1724,6 +1723,7 @@ class PtSpider:
                 # seed_vol_list = seeding_html.xpath(site.record_bulk_rule)
                 try:
                     seed_vol_list = seeding_html.xpath(site.seed_vol_rule)
+                    logger.info('做种数量seeding_vol：{}'.format(seed_vol_list))
                 except:
                     pass
                 if 'lemonhd.org' in site.url:
@@ -1755,6 +1755,10 @@ class PtSpider:
                         if 'iptorrents.com' in site.url:
                             vol = ''.join(seed_vol.xpath('.//text()'))
                             vol = ''.join(re.findall(r'\((.*?)\)', vol))
+                        if 'exoticaz.to' in site.url:
+                            if ''.join(seed_vol) == '\n':
+                                continue
+                            vol = ''.join(seed_vol).strip()
                         else:
                             vol = ''.join(seed_vol.xpath('.//text()'))
 
@@ -1824,6 +1828,10 @@ class PtSpider:
                     my_site.time_join = time_join
                 elif 'hd-torrents.org' in site.url:
                     time_join = datetime.strptime(''.join(details_html.xpath(site.time_join_rule)), '%d/%m/%Y %H:%M:%S')
+                    my_site.time_join = time_join
+                elif 'exoticaz.to' in site.url:
+                    time_str = ''.join(details_html.xpath(site.time_join_rule)).split('(')[0].strip()
+                    time_join = datetime.strptime(time_str, '%d %b %Y %I:%M %p')
                     my_site.time_join = time_join
                 else:
                     time_join = re.findall(r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}', ''.join(
@@ -1920,6 +1928,7 @@ class PtSpider:
                         replace('inf.', 'inf').replace(
                         'null', 'inf').replace('---', 'inf').replace('-', 'inf').replace('\xa0', '').strip(
                         ']:').strip('：').strip()
+                    logger.info(f'分享率：{details_html.xpath(site.ratio_rule)}')
                     if not ratio:
                         ratio = ''.join(
                             details_html.xpath('//font[@class="color_ratio"][1]/following-sibling::font[1]/text()[1]'))
@@ -2017,7 +2026,11 @@ class PtSpider:
         """获取时魔"""
         site = my_site.site
         url = site.url + site.page_mybonus
-        if 'monikadesign.uk' in site.url:
+        if site.url in [
+            'https://exoticaz.to/',
+            'https://monikadesign.uk/',
+            'https://cinemaz.to/',
+        ]:
             url = url.format(my_site.user_id)
         logger.info(f'魔力页面链接：{url}')
         try:
