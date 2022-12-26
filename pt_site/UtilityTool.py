@@ -18,6 +18,7 @@ import qbittorrentapi
 import requests
 import transmission_rpc
 import urllib3.util.ssl_
+import yaml
 from django.db.models import QuerySet
 from lxml import etree
 from pypushdeer import PushDeer
@@ -1460,6 +1461,41 @@ class PtSpider:
         # completed_detail_url = site.url + site.page_completed.lstrip('/').format(my_site.user_id)
         # leeching_detail_url = site.url + site.page_leeching.lstrip('/').format(my_site.user_id)
         try:
+            if site.url in [
+                'https://filelist.io/'
+            ]:
+                session = requests.Session()
+                headers = {
+                    'user-agent': my_site.user_agent
+                }
+                res = session.get(url=site.url, headers=headers)
+                validator = ''.join(self.parse(res, '//input[@name="validator"]/@value'))
+                login_url = ''.join(self.parse(res, '//form/@action'))
+                login_method = ''.join(self.parse(res, '//form/@method'))
+                with open('db/ptools.yaml', 'r') as f:
+                    data = yaml.load(f, Loader=yaml.FullLoader)
+                    filelist = data.get('filelist')
+                    username = filelist.get('username')
+                    password = filelist.get('password')
+                login_res = session.request(
+                    url=site.url + login_url,
+                    method=login_method,
+                    headers=headers,
+                    data={
+                        'validator': validator,
+                        'username': username,
+                        'password': password,
+                        'unlock': 0,
+                        'returnto': '',
+                    })
+                cookies = ''
+                logger.info(f'res: {login_res.text}')
+
+                logger.info(f'cookies: {session.cookies.get_dict()}')
+                for key, value in session.cookies.get_dict().items():
+                    cookies += f'{key}={value};'
+                my_site.cookie = cookies
+                my_site.save()
             # 发送请求，做种信息与正在下载信息，个人主页
             if 'wintersakura' in site.url or 'hdchina' in site.url:
                 # 单独发送请求，解决冬樱签到问题
