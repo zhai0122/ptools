@@ -881,21 +881,22 @@
                     })
                     let option = {
                         title: {
-                            text: 'PT站点数据\nCopy By PTools',
+                            text: 'PT站点数据',
                             textStyle: {
                                 color: 'orangered',
                                 fontWeight: 'bold',
                                 fontFamily: '黑体',
-                                fontSize: '22',
-                                lineHeight: 32,
+                                fontSize: '18',
+                                lineHeight: 22,
+                                rich: ''
                             },
-                            subtext: `上传量：${renderSize(ptData.total_data.uploaded)}\n做种量：${renderSize(ptData.total_data.seeding_size)}\n下载量：${renderSize(ptData.total_data.downloaded)}\n分享率：${ptData.total_data.ratio}\n时间：${ptData.total_data.now}`,
+                            subtext: `🔼${renderSize(ptData.total_data.uploaded)}\n🔽${renderSize(ptData.total_data.downloaded)}\n☁️${renderSize(ptData.total_data.seeding_size)}\n分享率${ptData.total_data.ratio}\nP 龄：${ptData.total_data.p_years}年\nCopy By PTools`,
                             subtextStyle: {
                                 color: 'orange',
                                 fontWeight: 'bold',
                                 fontFamily: '黑体',
-                                fontSize: '16',
-                                lineHeight: 24,
+                                fontSize: '14',
+                                lineHeight: 18,
                             },
                             left: '5%',
                             top: '2%',
@@ -1458,10 +1459,7 @@
                         option.tooltip.valueFormatter = null
                         option.yAxis = {}
                         this.setChartOption(this.$refs.ratio_charts.chart, option)
-
                     }, 50)
-
-
                 },
                 getData() {
                     axios.get(

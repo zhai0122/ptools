@@ -514,7 +514,7 @@ def site_status_api(request):
     ids = request.GET.get('ids')
     try:
         if ids is None:
-            my_site_list = MySite.objects.all()
+            my_site_list = MySite.objects.order_by('time_join').all()
         else:
             my_site_list = MySite.objects.filter(pk__in=ids).all()
         uploaded = 0
@@ -527,6 +527,9 @@ def site_status_api(request):
         bonus = 0
         status_list = []
         now = datetime.now()
+        time_join = my_site_list.first().time_join
+        p_years = (now - time_join).days / 365
+        logger.info(f'P龄：{round(p_years, 4)}年')
         for my_site in my_site_list:
             site_info_list = my_site.sitestatus_set.order_by('-pk').all()
             logger.info(f'{my_site.site.name}: {len(site_info_list)}')
@@ -630,9 +633,10 @@ def site_status_api(request):
             'sp_hour': sp_hour,
             'bonus': bonus,
             'ratio': round(uploaded / downloaded, 3),
+            'p_years': round(p_years, 4),
             'now': datetime.strftime(
                 SiteStatus.objects.order_by('-updated_at').first().updated_at,
-                '%Y年%m月%d日%H:%M:%S'),
+                '%Y-%m-%d %H:%M:%S'),
         }
         # return render(request, 'auto_pt/status.html')
         userdata = {
