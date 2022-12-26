@@ -23,7 +23,7 @@ from django.db.models import QuerySet
 from lxml import etree
 from pypushdeer import PushDeer
 from requests import Response, ReadTimeout
-from urllib3.exceptions import NewConnectionError
+from urllib3.exceptions import NewConnectionError, ConnectTimeoutError
 from wechat_push import WechatPush
 from wxpusher import WxPusher
 
@@ -1628,7 +1628,7 @@ class PtSpider:
             logger.error(traceback.format_exc(limit=3))
             return CommonResponse.error(
                 status=StatusCodeEnum.WEB_CONNECT_ERR,
-                msg='打开网站失败，请检查网站是否维护？？')
+                msg='与网站建立连接失败，请检查网络？？')
         except requests.exceptions.SSLError:
             logger.error(traceback.format_exc(limit=3))
             return CommonResponse.error(
@@ -1639,6 +1639,11 @@ class PtSpider:
             return CommonResponse.error(
                 status=StatusCodeEnum.WEB_CONNECT_ERR,
                 msg='网站访问超时，请检查网站是否维护？？')
+        except ConnectTimeoutError as e:
+            logger.error(traceback.format_exc(limit=3))
+            return CommonResponse.error(
+                status=StatusCodeEnum.WEB_CONNECT_ERR,
+                msg='网站连接超时，请稍后重试？？')
         except Exception as e:
             message = '{} 访问个人主页信息：失败！原因：{}'.format(my_site.site.name, e)
             logger.error(message)
