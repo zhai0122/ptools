@@ -1755,7 +1755,11 @@ class PtSpider:
                         if 'iptorrents.com' in site.url:
                             vol = ''.join(seed_vol.xpath('.//text()'))
                             vol = ''.join(re.findall(r'\((.*?)\)', vol))
-                        if 'exoticaz.to' in site.url:
+                        if site.url in [
+                            'https://exoticaz.to/',
+                            'https://cinemaz.to/',
+                            'https://avistaz.to/',
+                        ]:
                             if ''.join(seed_vol) == '\n':
                                 continue
                             vol = ''.join(seed_vol).strip()
@@ -1829,7 +1833,11 @@ class PtSpider:
                 elif 'hd-torrents.org' in site.url:
                     time_join = datetime.strptime(''.join(details_html.xpath(site.time_join_rule)), '%d/%m/%Y %H:%M:%S')
                     my_site.time_join = time_join
-                elif 'exoticaz.to' in site.url:
+                elif site.url in [
+                    'https://exoticaz.to/',
+                    'https://cinemaz.to/',
+                    'https://avistaz.to/',
+                ]:
                     time_str = ''.join(details_html.xpath(site.time_join_rule)).split('(')[0].strip()
                     time_join = datetime.strptime(time_str, '%d %b %Y %I:%M %p')
                     my_site.time_join = time_join
@@ -2027,9 +2035,10 @@ class PtSpider:
         site = my_site.site
         url = site.url + site.page_mybonus
         if site.url in [
-            'https://exoticaz.to/',
             'https://monikadesign.uk/',
+            'https://exoticaz.to/',
             'https://cinemaz.to/',
+            'https://avistaz.to/',
         ]:
             url = url.format(my_site.user_id)
         logger.info(f'魔力页面链接：{url}')
