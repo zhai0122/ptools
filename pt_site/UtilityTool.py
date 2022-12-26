@@ -1463,9 +1463,7 @@ class PtSpider:
         # completed_detail_url = site.url + site.page_completed.lstrip('/').format(my_site.user_id)
         # leeching_detail_url = site.url + site.page_leeching.lstrip('/').format(my_site.user_id)
         try:
-            if site.url in [
-                'https://filelist.io/'
-            ]:
+            if site.url in ['https://filelist.io/']:
                 session = requests.Session()
                 headers = {
                     'user-agent': my_site.user_agent
@@ -1505,6 +1503,38 @@ class PtSpider:
                                                headers={
                                                    'user-agent': my_site.user_agent
                                                })
+            elif 'zhuque.in' in site.url:
+                csrf_res = self.send_request(my_site=my_site, url=site.url)
+                # '<meta name="x-csrf-token" content="4db531b6687b6e7f216b491c06937113">'
+                x_csrf_token = self.parse(csrf_res, '//meta[@name="x-csrf-token"]/@content')
+                logger.info(f'csrf token: {x_csrf_token}')
+                header = {
+                    'x-csrf-token': ''.join(x_csrf_token),
+                    'accept': 'application/json',
+                }
+                user_detail_res = self.send_request(my_site=my_site, url=user_detail_url, header=header)
+                logger.info(f'详情页：{user_detail_res.text}')
+                seeding_res = self.send_request(my_site=my_site, url=site.url + site.page_mybonus, header=header)
+                logger.info(f'做种信息: {seeding_res.text}')
+                mail_res = self.send_request(my_site=my_site, url=site.url + 'api/user/getMainInfo', header=header)
+                logger.info(f'新消息: {mail_res.text}')
+                user_info = user_detail_res.json().get('data')
+                sp_hour = seeding_res.json().get('data').get('H')
+                mail_data = mail_res.json().get('data')
+                mail = mail_data.get('unreadAdmin') + mail_data.get('unreadInbox') + mail_data.get('unreadSystem')
+                user_info.update({
+                    'sp_hour': sp_hour,
+                    'mail': mail
+                })
+                logger.info(f'详情页：{user_info}')
+                # logger.info(f'魔力页面：{seeding_res.json()}')
+                # details_html = user_detail_res.json()
+                # seeding_html = seeding_res.json()
+                return CommonResponse.success(data={
+                    'details_html': user_info,
+                    'seeding_html': '',
+                    # 'leeching_html': leeching_html
+                })
             else:
                 user_detail_res = self.send_request(my_site=my_site, url=user_detail_url)
             # if leeching_detail_res.status_code != 200:
@@ -1522,7 +1552,6 @@ class PtSpider:
                 logger.info(f'个人主页：{user_detail_res.content}')
             # 解析HTML
             # logger.info(user_detail_res.is_redirect)
-
             if 'totheglory' in site.url:
                 # ttg的信息都是直接加载的，不需要再访问其他网页，直接解析就好
                 details_html = etree.HTML(user_detail_res.content)
@@ -1747,7 +1776,7 @@ class PtSpider:
                                 'seed_vol': seeding_size,
                             })
                         if float(ratio) < 1:
-                            self.send_request(f'{site.name} 分享率 {ratio} 过低，请注意')
+                            self.send_text(f'{site.name} 分享率 {ratio} 过低，请注意')
                         return CommonResponse.success(data=res_gpw)
                     else:
                         return CommonResponse.error(data=result)
@@ -1760,6 +1789,46 @@ class PtSpider:
                     # self.send_text('# <font color="red">' + message + '</font>  \n')
                     return CommonResponse.error(msg=message)
                 pass
+            elif 'zhuque.in' in site.url:
+                try:
+                    downloaded = details_html.get(site.downloaded_rule)
+                    uploaded = details_html.get(site.uploaded_rule)
+                    seeding_size = details_html.get(site.seed_vol_rule)
+                    my_sp = details_html.get(site.my_sp_rule)
+                    ratio = uploaded / downloaded if downloaded > 0 else 'inf'
+                    my_site.time_join = datetime.fromtimestamp(details_html.get(site.time_join_rule))
+                    my_site.invitation = details_html.get(site.invitation_rule)
+                    my_site.my_level = details_html.get('class').get('name')
+                    my_site.seed = details_html.get(site.seed_rule)
+                    my_site.leech = details_html.get(site.leech_rule)
+                    my_site.mail = details_html.get(site.mailbox_rule)
+                    my_site.sp_hour = details_html.get(site.hour_sp_rule)
+                    my_site.save()
+                    res_gpw = SiteStatus.objects.update_or_create(
+                        site=my_site,
+                        created_at__date__gte=datetime.today(),
+                        defaults={
+                            'ratio': ratio,
+                            'downloaded': downloaded,
+                            'uploaded': uploaded,
+                            'my_sp': my_sp,
+                            'my_bonus': 0,
+                            # 做种体积
+                            'seed_vol': seeding_size,
+                        })
+                    if my_site.mail > 0:
+                        self.send_text(f'{site.name} 有{my_site.mail}条新消息，请注意查收！')
+                    if float(ratio) < 1:
+                        self.send_text(f'{site.name} 分享率 {ratio} 过低，请注意')
+                    return CommonResponse.success(data=res_gpw)
+                except Exception as e:
+                    # 打印异常详细信息
+                    message = '{} 解析个人主页信息：失败！原因：{}'.format(site.name, e)
+                    logger.error(message)
+                    logger.error(traceback.format_exc(limit=3))
+                    # raise
+                    # self.send_text('# <font color="red">' + message + '</font>  \n')
+                    return CommonResponse.error(msg=message)
             else:
                 # 获取指定元素
                 # title = details_html.xpath('//title/text()')
@@ -2135,10 +2204,11 @@ class PtSpider:
                 res_list = ''.join(res_list).split('，')
                 res_list.reverse()
             logger.info('时魔字符串：{}'.format(res_list))
+            hour_sp = get_decimals(res_list[0].replace(',', ''))
             if len(res_list) <= 0:
                 CommonResponse.error(msg='时魔获取失败！')
             return CommonResponse.success(
-                data=get_decimals(res_list[0].replace(',', ''))
+                data=hour_sp
             )
         except Exception as e:
             # 打印异常详细信息
