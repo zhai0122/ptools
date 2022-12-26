@@ -1920,10 +1920,10 @@ class PtSpider:
 
                 downloaded = ''.join(
                     details_html.xpath(site.downloaded_rule)
-                ).replace(':', '').replace('\xa0\xa0', '').replace('i', '').strip(' ')
+                ).replace(':', '').replace('\xa0\xa0', '').replace('i', '').replace(',', '').strip(' ')
                 uploaded = ''.join(
                     details_html.xpath(site.uploaded_rule)
-                ).replace(':', '').replace('i', '').strip(' ')
+                ).replace(':', '').replace('i', '').replace(',', '').strip(' ')
                 if 'hdchina' in site.url:
                     downloaded = downloaded.split('(')[0].replace(':', '').strip()
                     uploaded = uploaded.split('(')[0].replace(':', '').strip()
