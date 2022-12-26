@@ -119,6 +119,7 @@ class SiteAdmin(admin.ModelAdmin):  # instead of ModelAdmin
                 'page_detail',
                 'page_download',
                 'page_user',
+                'page_control_panel',
                 'page_search',
                 'page_leeching',
                 'page_uploaded',
