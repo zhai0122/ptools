@@ -187,8 +187,8 @@ LOGGING = {
             # 新增内容
             'class': 'logging.handlers.TimedRotatingFileHandler',
             'filename': os.path.join(BASE_DIR, 'db/logs.log'),
-            'when': 'h',
-            'interval': 1,
+            'when': 'm',
+            'interval': 10,
             'backupCount': 30,
             # 'class': 'logging.handlers.RotatingFileHandler',
             # 'filename': "db/{}.log".format(datetime.datetime.today()),  # 日志文件的位置

@@ -23,45 +23,28 @@
             line-height: 20px;
             word-break: break-word;
         }
+
         .logs > code {
         }
     </style>
 </head>
 <body>
 <div id="logs">
-    <el-container style="height: 820px; border: 1px solid #eee">
-        <el-aside width="200px" style="background-color: rgb(138, 141, 146)">
-            <el-menu :default-openeds="['1']">
-                {#                <el-submenu index="1">#}
-                {#                    <template slot="title"><i class="el-icon-message"></i>导航一</template>#}
-                <el-menu-item-group>
-                    <template slot="title">日志列表</template>
-                    <el-menu-item v-for="(name,index) in names" :index="index" v-text="name" @click="showLog(name)">
-                    </el-menu-item>
-                </el-menu-item-group>
-                {#                </el-submenu>#}
-            </el-menu>
-        </el-aside>
-
-        <el-container>
-            {#            <el-header style="text-align: right; font-size: 12px">#}
-            {#                <el-dropdown>#}
-            {#                    <i class="el-icon-setting" style="margin-right: 15px"></i>#}
-            {#                    <el-dropdown-menu slot="dropdown">#}
-            {#                        <el-dropdown-item>查看</el-dropdown-item>#}
-            {#                        <el-dropdown-item>新增</el-dropdown-item>#}
-            {#                        <el-dropdown-item>删除</el-dropdown-item>#}
-            {#                    </el-dropdown-menu>#}
-            {#                </el-dropdown>#}
-            {#                <span>王小虎</span>#}
-            {#            </el-header>#}
-
-            <el-main class="logs">
-                <div v-for="log in logs">
-                    <code v-text="log"></code>
-                </div>
-            </el-main>
-        </el-container>
+    <div>
+        <el-select placeholder="请选择要查看的日志"
+                   size="small"
+                   v-model="log" @change="showLog()">
+            <el-option
+                    v-for="(name,index) in names" :index="index" :label="name" :value="name">
+            </el-option>
+        </el-select>
+    </div>
+    <el-container style="height: 780px; border: 1px solid #eee;margin-top: 5px;">
+        <el-main class="logs">
+            <div v-for="log in logs">
+                <code v-text="log"></code>
+            </div>
+        </el-main>
     </el-container>
 </div>
 
@@ -74,7 +57,8 @@
         data() {
             return {
                 names: [],
-                logs: []
+                log: '',
+                logs: [],
             }
         },
         beforeMount() {
@@ -114,8 +98,10 @@
                     });
                 })
             },
-            showLog(name) {
-                console.log(name)
+            showLog() {
+                {#console.log(name)#}
+                let name = this.log
+                console.log(this.log)
                 axios.get(
                     "{% url 'get_log_content' %}" + '?name=' + name
                 ).then(res => {
