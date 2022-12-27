@@ -7,7 +7,7 @@ function renderSize(value) {
     var srcsize = parseFloat(value);
     index = Math.floor(Math.log(srcsize) / Math.log(1024));
     var size = srcsize / Math.pow(1024, index);
-    size = size.toFixed(3);//保留的小数位数
+    size = size.toFixed(2);//保留的小数位数
     return size + ' ' + unitArr[index];
 }
 
@@ -16,10 +16,17 @@ function shuffle() {
 }
 
 function numberFormat(value) {
+    if (('' + value).toLowerCase() == 'infinity') {
+        return value
+    }
+    // if (!isNaN(parseFloat(value))) {
+    //     return value
+    // }
     let param = {}
     let k = 10000
     let sizes = ['', 'W', 'E']
     let i
+
     if (value < k) {
         param.value = value
         param.unit = ''

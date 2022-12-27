@@ -17,7 +17,11 @@
         .site-logo:hover {
             cursor: pointer;
             transform: scale(1.5);
-            transition: all 0.6s;
+            transition: all 0.2s;
+            text-underline: #000b16;
+            color: orange;
+            margin-top: -25px;
+
         }
 
         .info-card {
@@ -82,7 +86,7 @@
                 <el-row :gutter="20">
                     <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="4"
                             style="margin-bottom: 10px;float: right;text-align: right;">
-                        <el-button size="mini" type="success" @click="addSite">添加
+                        <el-button size="mini" type="success" @click="showAddMySite = true">添加
                         </el-button>
                         <el-input autofocus
                                   prefix-icon="el-icon-search"
@@ -105,7 +109,12 @@
                                     {#                                         style="width: 16px;border-radius: 50%;margin-bottom: -5px;">#}
                                     {#                                    <br>#}
                                     {#                                    <a :href="site.url" target="blank" style="margin-top: -5px;">#}
-                                    <h3>数据汇总</h3>
+                                    <h3 style="text-align: left;">
+                                        数据汇总
+                                        <span v-text="'P龄：'+ptData.total_data.p_years"
+                                              style="font-size: 14px;float: right;color: orange"></span>
+                                    </h3>
+
                                     {#                                    </a>#}
                                     {#                                </div>#}
 
@@ -207,17 +216,26 @@
                         <el-card class="box-card info-card">
                             <div slot="header" class="clearfix">
 
-                                <div style="float: left;text-align: center;margin-top: -5px;font-size: 14px;height: 32px;">
-                                    <img :src="site.icon" @click="updateSite(site.id)" class="site-logo"
-                                         style="width: 16px;border-radius: 50%;margin-bottom: -5px;"
-                                         title="点击更新站点信息">
+                                <div style="float: left;text-align: center;margin-top: -5px;font-size: 12px;height: 28px;">
+                                    <el-tooltip content="点击打开站点" placement="top" effect="light">
+                                        <a :href="site.url" target="blank" style="margin-top: -5px;">
+                                            <img :src="site.icon"
+                                                    {#                                             @click="updateSite(site.id)" #}
+                                                 class="site-logo"
+                                                 style="width: 16px;border-radius: 50%;margin-bottom: -5px;"
+                                                 title="点击打开站点">
+                                        </a>
+                                    </el-tooltip>
                                     <br>
-                                    <a :href="site.url" target="blank" style="margin-top: -5px;">
-                                        <span v-text="site.name">{}</span>
-                                    </a>
+                                    <el-tooltip content="点击修改站点信息" placement="bottom" effect="light">
+                                        <el-link class="site-logo" title="点击修改站点信息" v-text="site.name"
+                                                 type="success"
+                                                 @click="editSite(site.id)" icon="el-icon-edit">
+                                        </el-link>
+                                    </el-tooltip>
 
                                 </div>
-                                <span style="font-size: 12px;float: right;">
+                                <span style="font-size: 10px;float: right;">
                                     <i class="el-icon-user-solid" v-text="' ' + site.class" style="color: indianred"
                                        title="用户等级"></i>
                                     <br v-if="site.hr == 0 && site.mail <= 0">
@@ -282,10 +300,11 @@
                                 <div>
                                     <span style="float: left;font-weight: bold;color: #3b5769;">保种分享：</span>
                                     <i class="el-icon-upload" title="做种量"
-                                       v-text="' ' + renderSize(site.seeding_size)"></i>
-                                    <el-divider direction="vertical"></el-divider>
+                                       v-text="renderSize(site.seeding_size)"></i>
+                                    <span style="color: grey">|</span>
+                                    {#                                    <el-divider direction="vertical"></el-divider>#}
                                     <i class="el-icon-share" style="color: saddlebrown" title="分享率"
-                                       v-text="' ' + (site.uploaded / site.downloaded).toFixed(2)"></i>
+                                       v-text="numberFormat((site.uploaded / site.downloaded).toFixed(2))"></i>
                                 </div>
                                 <hr>
                                 <div>
@@ -313,7 +332,7 @@
                                        style="color: darkorange" title="魔力/积分"></i>
                                     <br>
                                     <i class="el-icon-lollipop"
-                                       v-text="' ' + site.sp_hour.toFixed(3) + ' / ' + site.sp_hour_full"
+                                       v-text="site.sp_hour.toFixed(2) + ' / ' + site.sp_hour_full"
                                        style="color: coral" title="时魔"></i>
                                 </div>
                                 <hr>
@@ -419,6 +438,77 @@
         </div>
 
     </el-drawer>
+    <el-dialog :title="addMySiteForm.id==0 ? '添加站点' : '编辑站点'" :visible.sync="showAddMySite" fullscreen center>
+        <el-form :model="addMySiteForm" size="small" ref="addMySiteForm"
+                 status-icon
+                 inline-message
+                 :rules="addMySiteFormRules">
+            <el-input v-model="addMySiteForm.id" v-show="false"
+                      placeholder="请输入数字UID，AZ,CZ,EZ,Reel，莫妮卡、普斯特等请填写用户名">
+            </el-input>
+            <el-form-item label="选择站点" label-position="left" prop="site">
+                <el-select :disabled="addMySiteForm.id!=0"
+                           v-model="addMySiteForm.site"
+                           filterable="true"
+                           @visible-change="getSiteList(addMySiteForm.site)"
+                           placeholder="请选择要添加的站点">
+                    <el-option
+                            v-for="site in site_list"
+                            :label="site.name"
+                            :value="site.id"
+                            :key="site.id">
+                    </el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="注册时间" label-position="right" prop="time_join">
+                <el-date-picker
+                        text="注册时间"
+                        :disabled="addMySiteForm.id!=0"
+                        v-model="addMySiteForm.time_join"
+                        type="datetime"
+                        placeholder="选择注册日期时间"
+                        default-time="2023-01-01 12:00:00">
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item label="功能开关" label-position="right">
+                <el-form-item label-position="top" inline="true">
+                    <el-checkbox v-model="addMySiteForm.sign_in" label="签到" border></el-checkbox>
+                    <el-checkbox v-model="addMySiteForm.hr" label="HR下载" border></el-checkbox>
+                    <el-checkbox v-model="addMySiteForm.search" label="搜索" border></el-checkbox>
+                </el-form-item>
+            </el-form-item>
+            <el-form-item label="用户UID" label-position="left" prop="user_id">
+                <el-input v-model="addMySiteForm.user_id"
+                          placeholder="请输入数字UID，AZ,CZ,EZ,Reel，莫妮卡、普斯特等请填写用户名">
+                </el-input>
+            </el-form-item>
+            <el-form-item label="Passkey" label-position="left" prop="passkey">
+                <el-input v-model="addMySiteForm.passkey" show-password></el-input>
+            </el-form-item>
+            <el-form-item label="Cookies" label-position="top" prop="cookie">
+                <el-input type="textarea"
+                          placeholder="请输入站点Cookies，与UA搭配使用效果更佳"
+                          v-model="addMySiteForm.cookie"
+                          autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="UserAgent" label-position="top" prop="user_agent">
+                <el-input type="textarea" v-model="addMySiteForm.user_agent" autocomplete="off"></el-input>
+            </el-form-item>
+
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+            <el-popconfirm title="确定删除此站点信息吗？"
+                           v-if="addMySiteForm.id!=0"
+                           @confirm="removeMySite(addMySiteForm.id)">
+                <el-button slot="reference" type="danger">删 除
+                </el-button>
+            </el-popconfirm>
+            <el-button @click="showAddMySite = false">取 消</el-button>
+            <el-button type="primary" @click="editMySite('addMySiteForm')">
+                <span v-text="addMySiteForm.id==0 ? '添加站点' : '编辑站点'"></span>
+            </el-button>
+        </div>
+    </el-dialog>
 </div>
 
 {% include 'admin/includes/js-part.html' %}
@@ -450,6 +540,35 @@
                     dataLength: -7,
                     showSignList: false,
                     signInList: [],
+                    showAddMySite: false,
+                    site_list: [],
+                    addMySiteForm: {
+                        id: 0,
+                        site: 0,
+                        sign_in: true,
+                        hr: false,
+                        search: true,
+                        user_id: '',
+                        passkey: '',
+                        time_join: '2023-01-01 12:00:00',
+                        user_agent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.52',
+                        cookie: ''
+                    },
+                    addMySiteFormRules: {
+                        site: [
+                            {required: true, message: '请选择要添加的站点', trigger: 'change'},
+                        ],
+                        user_id: [
+                            {required: true, message: '请输入数字UID，指定站点请输入用户名', trigger: 'blur'},
+                        ],
+                        passkey: [
+                            {required: true, message: '请输入Passkey', trigger: 'blur'},
+                            {min: 16, max: 32, message: '长度为32位', trigger: 'blur'}
+                        ],
+                        cookie: [
+                            {required: true, message: '请输入站点Cookies，与UA搭配使用效果更佳', trigger: 'change'}
+                        ]
+                    }
                 }
             },
             beforeMount() {
@@ -595,17 +714,15 @@
                 },
                 editSite(id) {
                     axios.get(
-                        "{% url 'edit_site_api' %}" + '?id=' + id
+                        "{% url 'edit_my_site' %}" + '?id=' + id
                     ).then(res => {
                         console.log('获取数据列表成功', res.data.data)
                         {#let data = res.data#}
                         {#console.log(typeof res.data.data)#}
                         if (res.data.code === 0) {
-                            this.getData()
-                            this.$message({
-                                type: 'success',
-                                message: res.data.data.msg
-                            });
+                            this.addMySiteForm = res.data.data.my_site
+                            this.getSiteList(this.addMySiteForm.site)
+                            this.showAddMySite = true
                         } else {
                             this.$message({
                                 type: 'warning',
@@ -617,6 +734,35 @@
                         this.$message({
                             type: 'warning',
                             message: '获取数据列表失败！' + res
+                        });
+                    })
+                },
+                removeMySite(id) {
+                    axios.get(
+                        "{% url 'remove_my_site' %}" + '?id=' + id
+                    ).then(res => {
+                        console.log('获取数据列表成功', res.data.data)
+                        {#let data = res.data#}
+                        {#console.log(typeof res.data.data)#}
+                        if (res.data.code === 0) {
+                            this.addMySiteForm = {}
+                            this.getData()
+                            this.showAddMySite = false
+                            this.$message({
+                                type: 'success',
+                                message: res.data.msg
+                            });
+                        } else {
+                            this.$message({
+                                type: 'warning',
+                                message: res.data.msg
+                            });
+                        }
+                    }).catch(res => {
+                        console.log('删除失败', res)
+                        this.$message({
+                            type: 'warning',
+                            message: '删除失败！' + res
                         });
                     })
                 },
@@ -651,11 +797,75 @@
                         });
                     })
                 },
-                addSite() {
-                    this.$message({
-                        type: 'warning',
-                        message: '开发中，敬请期待！'
+                getSiteList(id) {
+                    axios.get(
+                        "{% url 'get_site_list' %}" + '?id=' + id
+                    ).then(res => {
+                        console.log('获取数据列表成功', res.data)
+                        {#console.log(typeof res.data.data)#}
+                        if (res.data.code === 0) {
+                            {#this.ptData = res.data.data#}
+                            this.site_list = res.data.data.site_list
+                        } else {
+                            this.$message({
+                                type: 'warning',
+                                message: res.data.msg
+                            });
+                        }
+                    }).catch(res => {
+                        console.log('获取数据列表失败', res)
+                        this.$message({
+                            type: 'warning',
+                            message: '获取数据列表失败！' + res
+                        });
+                    })
+                },
+                editMySite(formName) {
+                    this.$refs[formName].validate((valid) => {
+                        if (valid) {
+                            const options = {
+                                method: 'POST',
+                                headers: {'content-type': 'application/json;charset=utf-8'},
+                                data: this.addMySiteForm,
+                                url: "{% url 'edit_my_site' %}"
+                            }
+
+                            axios(options).then(res => {
+                                console.log('获取数据列表成功', res.data)
+                                {#console.log(typeof res.data.data)#}
+                                if (res.data.code === 0) {
+                                    {#this.ptData = res.data.data#}
+                                    {#this.site_list = res.data.data.site_list#}
+                                    this.addMySiteForm = {}
+                                    this.showAddMySite = false
+                                    this.getData()
+                                    this.$message({
+                                        type: 'success',
+                                        message: res.data.msg
+                                    });
+                                } else {
+                                    this.$message({
+                                        type: 'warning',
+                                        message: res.data.msg
+                                    });
+                                }
+                            }).catch(res => {
+                                console.log('获取数据列表失败', res)
+                                this.$message({
+                                    type: 'warning',
+                                    message: '获取数据列表失败！' + res
+                                });
+                            })
+                        } else {
+                            this.$message({
+                                type: 'warning',
+                                message: '数据验证失败！请认真填写'
+                            });
+                            return false;
+                        }
                     });
+
+
                 },
                 showAllIncrementHistory($event) {
                     console.log($event)

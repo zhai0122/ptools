@@ -532,7 +532,7 @@ def site_status_api(request):
         logger.info(f'P龄：{round(p_years, 4)}年')
         for my_site in my_site_list:
             site_info_list = my_site.sitestatus_set.order_by('-pk').all()
-            logger.info(f'{my_site.site.name}: {len(site_info_list)}')
+            # logger.info(f'{my_site.site.name}: {len(site_info_list)}')
             sign_in_support = my_site.site.sign_in_support and my_site.sign_in
             if len(site_info_list) <= 0:
                 logger.info(f'{my_site.site.name}: 获取站点信息列表错误！')
@@ -893,12 +893,6 @@ def update_site_api(request):
         ).to_dict(), safe=False)
 
 
-def edit_site_api(request):
-    return JsonResponse(data=CommonResponse.success(
-        msg='ok'
-    ).to_dict(), safe=False)
-
-
 def show_sign_api(request):
     try:
         my_site_id = request.GET.get('id')
@@ -1013,4 +1007,84 @@ def get_helper_license(request):
         return JsonResponse(data=result.to_dict(), safe=False)
     return JsonResponse(data=CommonResponse.error(
         msg='License更新失败！'
+    ).to_dict(), safe=False)
+
+
+def get_site_list(request):
+    site_id = request.GET.get('id')
+    logger.info(site_id)
+    if int(site_id) == 0:
+        site_list = [site for site in Site.objects.all().order_by('id').values('id', 'name') if
+                     MySite.objects.filter(site=site.get('id')).count() < 1]
+        return JsonResponse(CommonResponse.success(data={
+            'site_list': site_list
+        }).to_dict(), safe=False)
+    else:
+        site_list = Site.objects.filter(id=site_id).order_by('id').values('id', 'name')
+        logger.info(site_list)
+        return JsonResponse(CommonResponse.success(data={
+            'site_list': list(site_list)
+        }).to_dict(), safe=False)
+
+
+def edit_my_site(request):
+    if request.method == 'POST':
+        my_site_params = json.loads(request.body)
+        my_site_id = my_site_params.get('id')
+        site_id = my_site_params.get('site')
+        site = Site.objects.get(id=site_id)
+        my_site_params['site'] = site
+        logger.info(my_site_params)
+        if my_site_id == 0:
+            del my_site_params['id']
+            my_site = MySite.objects.create(**my_site_params)
+            return JsonResponse(CommonResponse.success(msg=f'{my_site.site.name} 信息添加成功！').to_dict(), safe=False)
+        else:
+
+            my_site_list = MySite.objects.filter(site_id=site_id)
+            if len(my_site_list) <= 0:
+                my_site_res = MySite.objects.update_or_create(id=my_site_id, defaults=my_site_params)
+                logger.info(my_site_res)
+                return JsonResponse(CommonResponse.success(
+                    msg=f'{my_site_res[0].site.name} 信息更新成功！'
+                ).to_dict(), safe=False)
+            return JsonResponse(data=CommonResponse.error(
+                msg=f'{my_site_list.first().site.name} 站点信息已存在，请勿重复添加！'
+            ).to_dict(), safe=False)
+    else:
+        my_site_id = request.GET.get('id')
+        my_site_list = MySite.objects.filter(id=my_site_id)
+        if len(my_site_list) == 1:
+            my_site = my_site_list.values(
+                'id', 'site', 'sign_in', 'hr', 'search', 'user_id', 'passkey', 'user_agent', 'cookie', 'time_join'
+            ).first()
+            return JsonResponse(CommonResponse.success(data={
+                'my_site': my_site
+            }).to_dict(), safe=False)
+        return JsonResponse(data=CommonResponse.error(
+            msg='参数有误，请确认后重试！！'
+        ).to_dict(), safe=False)
+
+
+def remove_my_site(request):
+    my_site_id = request.GET.get('id')
+    my_site_list = MySite.objects.filter(id=my_site_id)
+    if len(my_site_list) == 1:
+        try:
+            my_site = my_site_list.first().delete()
+            logger.info(my_site)
+            if my_site[0] == 1:
+                return JsonResponse(data=CommonResponse.success(
+                    msg='站点信息删除成功！'
+                ).to_dict(), safe=False)
+            return JsonResponse(data=CommonResponse.error(
+                msg='参数有误，请确认后重试！！'
+            ).to_dict(), safe=False)
+        except:
+            logger.info(traceback.format_exc(3))
+            return JsonResponse(data=CommonResponse.error(
+                msg='参数有误，请确认后重试！！'
+            ).to_dict(), safe=False)
+    return JsonResponse(data=CommonResponse.error(
+        msg='参数有误，请确认后重试！！'
     ).to_dict(), safe=False)
