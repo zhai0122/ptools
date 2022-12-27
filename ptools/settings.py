@@ -248,7 +248,7 @@ SIMPLEUI_CONFIG = {
     'dynamic': True,  # 设置是否开启动态菜单, 默认为False. 如果开启, 则会在每次用户登陆时动态展示菜单内容
     'menus': [{
         'app': 'downloader',
-        'name': '我的数据',
+        'name': '站点数据',
         'icon': 'fas fa-database',
         'models': [{
             'name': '我的数据',

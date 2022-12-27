@@ -247,7 +247,7 @@ class SignInInlines(TabularInlinePaginated):
         return False
 
 
-@admin.register(MySite)
+# @admin.register(MySite)
 class MySiteAdmin(AjaxAdmin):  # instead of ModelAdmin
     # 显示字段
     list_display = (

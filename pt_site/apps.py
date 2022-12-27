@@ -37,7 +37,7 @@ def app_ready_handler(sender, **kwargs):
 class PtSiteConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'pt_site'
-    verbose_name = '站点信息'
+    verbose_name = '下载管理'
 
     def ready(self):
         # 环境变量不存在，说明数据库还未初始化，先跳过初始化站点数据
