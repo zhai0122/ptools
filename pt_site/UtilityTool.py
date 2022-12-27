@@ -1876,17 +1876,22 @@ class PtSpider:
                 ]:
                     # 获取到的是整段，需要解析
                     logger.info('做种体积：{}'.format(seed_vol_list))
-                    seeding_str = ''.join(
-                        seed_vol_list
-                    ).replace('\xa0', ':').replace('i', '')
-                    logger.info('做种信息字符串：{}'.format(seeding_str))
-                    if ':' in seeding_str:
-                        seed_vol_size = seeding_str.split(':')[-1].strip()
-                    if '：' in seeding_str:
-                        seed_vol_size = seeding_str.split('：')[-1].strip()
-                    if '&nbsp;' in seeding_str:
-                        seed_vol_size = seeding_str.split('&nbsp;')[-1].strip()
-                    seed_vol_all = FileSizeConvert.parse_2_byte(seed_vol_size)
+                    if len(seed_vol_list) < 1:
+                        seed_vol_all = 0
+                    else:
+                        seeding_str = ''.join(
+                            seed_vol_list
+                        ).replace('\xa0', ':').replace('i', '')
+                        logger.info('做种信息字符串：{}'.format(seeding_str))
+                        if ':' in seeding_str:
+                            seed_vol_size = seeding_str.split(':')[-1].strip()
+                        if '：' in seeding_str:
+                            seed_vol_size = seeding_str.split('：')[-1].strip()
+                        if '&nbsp;' in seeding_str:
+                            seed_vol_size = seeding_str.split('&nbsp;')[-1].strip()
+                        if 'No record' in seeding_str:
+                            seed_vol_size = 0
+                        seed_vol_all = FileSizeConvert.parse_2_byte(seed_vol_size)
                 elif site.url in [
                     'https://monikadesign.uk/',
                     'https://pt.hdpost.top/',
