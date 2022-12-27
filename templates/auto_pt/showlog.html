@@ -39,7 +39,9 @@
             </el-option>
         </el-select>
         <el-button type="primary" @click="showLog" size="small">查看日志</el-button>
-        <el-button type="danger" @click="removeLog" size="small">删除日志</el-button>
+        <el-popconfirm title="确定删除此站点信息吗？" @confirm="removeLog">
+            <el-button type="danger" size="small" slot="reference">删除日志</el-button>
+        </el-popconfirm>
     </div>
     <el-container style="height: 780px; border: 1px solid #eee;margin-top: 5px;">
         <el-main class="logs">
@@ -153,6 +155,7 @@
                     {#console.log(typeof res.data.data)#}
                     if (res.data.code === 0) {
                         this.getLogs()
+                        this.log = 'logs.log'
                         this.showLog()
                     } else {
                         this.loading = false
