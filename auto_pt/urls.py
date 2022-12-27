@@ -32,6 +32,7 @@ urlpatterns = [
     path(r'get_log_list', views.get_log_list, name='get_log_list'),
     path(r'show_log_list', views.show_log_list, name='show_log_list'),
     path(r'get_log_content', views.get_log_content, name='get_log_content'),
+    path(r'remove_log_api', views.remove_log_api, name='remove_log_api'),
     path(r'get_helper_license', views.get_helper_license, name='get_helper_license'),
     path(r'downloading_status', views.downloading_status, name='downloading_status'),
     path(r'do_sql', views.do_sql, name='do_sql'),

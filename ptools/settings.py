@@ -189,7 +189,7 @@ LOGGING = {
             'filename': os.path.join(BASE_DIR, 'db/logs.log'),
             'when': 'm',
             'interval': 10,
-            'backupCount': 30,
+            'backupCount': 10,
             # 'class': 'logging.handlers.RotatingFileHandler',
             # 'filename': "db/{}.log".format(datetime.datetime.today()),  # 日志文件的位置
             # 'maxBytes': 30 * 1024 * 1024,  # 日志文件的大小（300*1024*1024为300MB）

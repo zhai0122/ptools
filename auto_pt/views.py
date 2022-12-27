@@ -934,12 +934,12 @@ def show_sign_api(request):
 
 def get_log_list(request):
     path = os.path.join(BASE_DIR, 'db')
-    logger.info(path)
-    logger.info(os.listdir(path))
-
+    # logger.info(path)
+    # logger.info(os.listdir(path))
     names = [name for name in os.listdir(path)
              if os.path.isfile(os.path.join(path, name)) and name.startswith('logs')]
-    logger.info(names)
+    names = sorted(names, key=lambda x: os.stat(os.path.join(BASE_DIR, f'db/{x}')).st_ctime, reverse=True)
+    # logger.info(names)
     return JsonResponse(data=CommonResponse.success(
         data={
             'path': path,
@@ -953,13 +953,28 @@ def get_log_content(request):
     path = os.path.join(BASE_DIR, 'db/' + name)
     with open(path, 'r') as f:
         logs = f.readlines()
-    logger.info(logs)
+    logger.info(f'日志行数：{len(logs)}')
     return JsonResponse(data=CommonResponse.success(
         data={
             'path': path,
             'logs': logs,
         }
     ).to_dict(), safe=False)
+
+
+def remove_log_api(request):
+    name = request.GET.get('name')
+    path = os.path.join(BASE_DIR, f'db/{name}')
+    try:
+        os.remove(path)
+        return JsonResponse(data=CommonResponse.success(
+            msg='删除成功！'
+        ).to_dict(), safe=False)
+    except Exception as e:
+        logger.error(traceback.format_exc(3))
+        return JsonResponse(data=CommonResponse.error(
+            msg='删除文件出错啦！详情请查看日志'
+        ).to_dict(), safe=False)
 
 
 def show_log_list(request):

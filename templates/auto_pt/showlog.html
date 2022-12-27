@@ -33,11 +33,13 @@
     <div>
         <el-select placeholder="请选择要查看的日志"
                    size="small"
-                   v-model="log" @change="showLog()">
+                   v-model="log" @change="showLog">
             <el-option
                     v-for="(name,index) in names" :index="index" :label="name" :value="name">
             </el-option>
         </el-select>
+        <el-button type="primary" @click="showLog" size="small">查看日志</el-button>
+        <el-button type="danger" @click="removeLog" size="small">删除日志</el-button>
     </div>
     <el-container style="height: 780px; border: 1px solid #eee;margin-top: 5px;">
         <el-main class="logs">
@@ -57,7 +59,7 @@
         data() {
             return {
                 names: [],
-                log: '',
+                log: 'logs.log',
                 logs: [],
             }
         },
@@ -66,7 +68,11 @@
         },
         mounted() {
             {#this.chart = this.$refs.charts.chart#}
-            this.getLogs()
+            setTimeout(() => {
+                this.getLogs()
+                this.showLog()
+            }, 50)
+
         },
         methods: {
             getLogs() {
@@ -100,10 +106,10 @@
             },
             showLog() {
                 {#console.log(name)#}
-                let name = this.log
+                this.logs = []
                 console.log(this.log)
                 axios.get(
-                    "{% url 'get_log_content' %}" + '?name=' + name
+                    "{% url 'get_log_content' %}" + '?name=' + this.log
                 ).then(res => {
                     console.log('获取数据列表成功', res.data)
                     {#let data = res.data#}
@@ -127,6 +133,39 @@
                     this.$message({
                         type: 'warning',
                         message: '获取数据列表失败！' + res
+                    });
+                })
+            },
+            removeLog() {
+                if (this.log == 'logs.log') {
+                    this.$message({
+                        type: 'warning',
+                        message: '当前日志正在使用中，请勿操作！'
+                    });
+                    return
+                }
+                console.log(this.log)
+                axios.get(
+                    "{% url 'remove_log_api' %}" + '?name=' + this.log
+                ).then(res => {
+                    console.log('删除日志文件成功', res.data)
+                    {#let data = res.data#}
+                    {#console.log(typeof res.data.data)#}
+                    if (res.data.code === 0) {
+                        this.getLogs()
+                        this.showLog()
+                    } else {
+                        this.loading = false
+                        this.$message({
+                            type: 'warning',
+                            message: '删除日志文件失败！'
+                        });
+                    }
+                }).catch(res => {
+                    console.log('删除日志文件失败', res)
+                    this.$message({
+                        type: 'warning',
+                        message: '删除日志文件失败！' + res
                     });
                 })
             },
