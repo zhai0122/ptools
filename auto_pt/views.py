@@ -1042,14 +1042,14 @@ def edit_my_site(request):
         else:
 
             my_site_list = MySite.objects.filter(site_id=site_id)
-            if len(my_site_list) <= 0:
+            if len(my_site_list) == 1:
                 my_site_res = MySite.objects.update_or_create(id=my_site_id, defaults=my_site_params)
                 logger.info(my_site_res)
                 return JsonResponse(CommonResponse.success(
                     msg=f'{my_site_res[0].site.name} 信息更新成功！'
                 ).to_dict(), safe=False)
             return JsonResponse(data=CommonResponse.error(
-                msg=f'{my_site_list.first().site.name} 站点信息已存在，请勿重复添加！'
+                msg=f'{my_site_list.first().site.name} 参数有误，请确认后重试！'
             ).to_dict(), safe=False)
     else:
         my_site_id = request.GET.get('id')
