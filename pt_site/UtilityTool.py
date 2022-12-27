@@ -1731,7 +1731,8 @@ class PtSpider:
                         stats = details_response.get('stats')
                         downloaded = stats.get('downloaded')
                         uploaded = stats.get('uploaded')
-                        ratio = stats.get('ratio').replace(',', '')
+                        ratio_str = stats.get('ratio').replace(',', '')
+                        ratio = 'inf' if ratio_str == '∞' else ratio_str
                         my_site.time_join = stats.get('joinedDate')
                         my_site.latest_active = stats.get('lastAccess')
                         my_site.my_level = details_response.get('personal').get('class')
@@ -1767,7 +1768,7 @@ class PtSpider:
                             site=my_site,
                             created_at__date__gte=datetime.today(),
                             defaults={
-                                'ratio': 'inf' if ratio == '∞' else ratio,
+                                'ratio': float(ratio),
                                 'downloaded': downloaded,
                                 'uploaded': uploaded,
                                 'my_sp': my_sp,
