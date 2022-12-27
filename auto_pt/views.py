@@ -549,7 +549,8 @@ def site_status_api(request):
                     'invite': my_site.invitation,
                     'sp_hour': float(my_site.sp_hour) if my_site.sp_hour != '' else 0,
                     'sp_hour_full': '{:.2%}'.format(
-                        float(my_site.sp_hour) / my_site.site.sp_full) if my_site.site.sp_full != 0 else '0%',
+                        float(my_site.sp_hour) / my_site.site.sp_full) if
+                    my_site.sp_hour != '' and my_site.site.sp_full != 0 else '0%',
                     'seeding': my_site.seed,
                     'leeching': my_site.leech,
                     'weeks': f'{0}周 {0}天',
