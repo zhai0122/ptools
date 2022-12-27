@@ -563,7 +563,7 @@ def site_status_api(request):
                     'uploaded': 0,
                     'downloaded': 0,
                     'seeding_size': 0,
-                    'last_active': datetime.strftime(my_site.updated_at, '%Y年%m月%d日%H:%M:%S'),
+                    'last_active': datetime.strftime(my_site.updated_at, '%Y/%m/%d %H:%M:%S'),
                 }
             else:  # continue
                 site_info = site_info_list.first()
@@ -611,7 +611,7 @@ def site_status_api(request):
                     'uploaded': site_info.uploaded,
                     'downloaded': site_info.downloaded,
                     'seeding_size': site_info.seed_vol,
-                    'last_active': datetime.strftime(site_info.updated_at, '%Y年%m月%d日%H:%M:%S'),
+                    'last_active': datetime.strftime(site_info.updated_at, '%Y/%m/%d %H:%M:%S'),
                 }
             status_list.append(site_info)
         # 按上传量排序

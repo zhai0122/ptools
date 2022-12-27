@@ -16,8 +16,8 @@
 
         .site-logo:hover {
             cursor: pointer;
-            transform: scale(1.5);
-            transition: all 0.2s;
+            transform: scale(1.3);
+            transition: all 0.3s;
             text-underline: #000b16;
             color: orange;
             margin-top: -25px;
@@ -219,21 +219,28 @@
 
                                 <div style="float: left;text-align: center;margin-top: -5px;font-size: 12px;height: 28px;">
                                     <el-tooltip content="点击打开站点" placement="top" effect="light">
-                                        <a :href="site.url" target="blank" style="margin-top: -5px;">
+                                        <el-link :href="site.url" target="blank"
+                                                 class="site-logo"
+                                                 style="margin-top: -5px;">
                                             <img :src="site.icon"
                                                     {#                                             @click="updateSite(site.id)" #}
-                                                 class="site-logo"
-                                                 style="width: 16px;border-radius: 50%;margin-bottom: -5px;"
-                                                 title="点击打开站点">
-                                        </a>
-                                    </el-tooltip>
-                                    <br>
-                                    <el-tooltip content="点击修改站点信息" placement="bottom" effect="light">
-                                        <el-link class="site-logo" title="点击修改站点信息" v-text="site.name"
-                                                 type="success"
-                                                 @click="editSite(site.id)" icon="el-icon-edit">
+                                                 style="width: 16px;border-radius: 50%;margin-bottom: -5px;">
+                                            <br>
+                                            <el-link v-text="site.name"
+                                                     type="success"
+                                                     icon="el-icon-edit">
+                                            </el-link>
                                         </el-link>
+
                                     </el-tooltip>
+                                    {#                                    <el-tooltip content="点击修改站点信息" placement="bottom" effect="light">#}
+
+                                    {#                                    </el-tooltip>#}
+
+                                    {#                                          <span class="el-dropdown-link">#}
+                                    {#                                            下拉菜单<i class="el-icon-arrow-down el-icon--right"></i>#}
+                                    {#                                          </span>#}
+
 
                                 </div>
                                 <span style="font-size: 10px;float: right;">
@@ -248,35 +255,46 @@
 
                                     <i class="el-icon-warning" style="color: orangered" v-if="site.hr!=0" title="H&R"
                                        v-text="' ' + site.hr"></i>
-                                    <span style="color: darkred;font-size: 13px;" v-if="site.mail > 0">
-                                    <i class="fas fa-envelope el-fade-in"></i>
+                                    <el-link style="color: darkred;font-size: 13px;"
+                                             :href="site.url" target="_blank"
+                                             v-if="site.mail > 0">
+                                        <i class="fas fa-envelope el-fade-in"></i>
                                         <span v-text="site.mail"></span>
-                                    </span>
+                                    </el-link>
 
                                     </span>
 
                             </div>
                             <div class="text item" style="font-size: 13px;text-align: right;">
                                 <div>
-                                    <el-button type="primary" size="mini" @click="signIn(site.id)"
-                                               v-if="site.sign_in_support && !site.sign_in_state">
-                                        签到
-                                    </el-button>
-                                    <el-tooltip class="item" effect="dark" v-if="site.sign_in_state"
-                                                content="已签到，点击查看最近签到记录"
-                                                placement="bottom" effect="light">
-                                        <el-button type="success" icon="el-icon-success" plain size="mini"
-                                                   @click="showSignIn(site.id)">
+                                    <el-button-group>
+                                        <el-button type="primary" size="mini" @click="signIn(site.id)"
+                                                   v-if="site.sign_in_support && !site.sign_in_state">
+                                            签到
                                         </el-button>
-                                    </el-tooltip>
+                                        <el-tooltip class="item" effect="dark" v-if="site.sign_in_state"
+                                                    content="已签到，点击查看最近签到记录"
+                                                    placement="bottom" effect="light">
+                                            <el-button type="success" icon="el-icon-success" plain size="mini"
+                                                       @click="showSignIn(site.id)">
+                                            </el-button>
+                                        </el-tooltip>
+                                        <el-button type="warning" size="mini" @click="updateSite(site.id)">更新
+                                        </el-button>
+                                        <el-dropdown split-button type="success" size="mini"
+                                                     @click="showHistoryList(site.id)">
+                                            历史
+                                            <el-dropdown-menu slot="dropdown">
+                                                <el-dropdown-item>
+                                                    <el-link @click="editSite(site.id)"
+                                                             size="mini" plain
+                                                             icon="el-icon-edit">编辑
+                                                    </el-link>
+                                                </el-dropdown-item>
+                                            </el-dropdown-menu>
 
-                                    <el-button type="info" size="mini" @click="updateSite(site.id)">更新
-                                    </el-button>
-                                    {#                                    <el-button type="danger" size="mini" @click="editSite(site.id)">编辑#}
-                                    {#                                    </el-button>#}
-                                    <el-button type="success" size="mini" @click="showHistoryList(site.id)">历史
-                                    </el-button>
-
+                                        </el-dropdown>
+                                    </el-button-group>
                                 </div>
                                 <hr>
                                 <div>
@@ -545,7 +563,7 @@
                     site_list: [],
                     addMySiteForm: {
                         id: 0,
-                        site: 0,
+                        site: null,
                         sign_in: true,
                         hr: false,
                         search: true,
@@ -799,6 +817,9 @@
                     })
                 },
                 getSiteList(id) {
+                    if (null == id) {
+                        id = 0
+                    }
                     axios.get(
                         "{% url 'get_site_list' %}" + '?id=' + id
                     ).then(res => {
