@@ -144,13 +144,17 @@
                             </div>
                             <div class="text item" style="font-size: 13px;text-align: right;">
                                 <div>
-                                    <el-button type="primary" size="mini" @click="signIn(0)">
-                                        签到
-                                    </el-button>
-                                    <el-button type="warning" size="mini" @click="updateSite(0)">更新
-                                    </el-button>
-                                    <el-button type="success" size="mini" @click="showHistoryList(0)">历史
-                                    </el-button>
+                                    <el-button-group>
+                                        <el-button type="primary" size="mini" @click="signIn(0)">
+                                            签到
+                                        </el-button>
+                                        <el-button type="warning" size="mini" @click="updateSite(0)">更新
+                                        </el-button>
+                                        <el-button type="success" size="mini" @click="showHistoryList(0)">历史
+                                        </el-button>
+                                        <el-button type="danger" size="mini" @click="getTorrent(0)">种子
+                                        </el-button>
+                                    </el-button-group>
                                 </div>
                                 <hr>
                                 <div>
@@ -289,6 +293,12 @@
                                                     <el-link @click="editSite(site.id)"
                                                              size="mini" plain
                                                              icon="el-icon-edit">编辑
+                                                    </el-link>
+                                                </el-dropdown-item>
+                                                <el-dropdown-item>
+                                                    <el-link @click="getTorrent(site.id)"
+                                                             size="mini" plain
+                                                             icon="el-icon-edit">种子
                                                     </el-link>
                                                 </el-dropdown-item>
                                             </el-dropdown-menu>
@@ -610,6 +620,30 @@
                 }
             },
             methods: {
+                getTorrent(id) {
+                    axios.get(
+                        "{% url 'get_site_torrents' %}" + `?id=${id}`
+                    ).then(res => {
+                        console.log('抓取种子成功', res.data.msg)
+                        if (res.data.code === 0) {
+                            this.$message({
+                                type: 'success',
+                                message: res.data.msg
+                            });
+                        } else {
+                            this.$message({
+                                type: 'warning',
+                                message: res.data.msg
+                            });
+                        }
+                    }).catch(res => {
+                        console.log('抓取种子失败', res)
+                        this.$message({
+                            type: 'warning',
+                            message: '抓取种子失败！' + res
+                        });
+                    })
+                },
                 siteSearch() {
                     console.log(this.searchKey)
                     {#this.showData#}

@@ -16,7 +16,7 @@ from django.shortcuts import render
 
 from pt_site.UtilityTool import MessageTemplate, FileSizeConvert
 from pt_site.models import SiteStatus, MySite, Site, Downloader, TorrentInfo
-from pt_site.views import scheduler, pt_spider, exec_command
+from pt_site.views import scheduler, pt_spider, exec_command, pool
 from ptools.base import CommonResponse, StatusCodeEnum, DownloaderCategory
 from ptools.settings import BASE_DIR
 from pt_site import views as pt_site
@@ -528,6 +528,8 @@ def site_status_api(request):
         status_list = []
         now = datetime.now()
         time_join = my_site_list.first().time_join
+        if not time_join:
+            time_join = now
         p_years = (now - time_join).days / 365
         logger.info(f'P龄：{round(p_years, 4)}年')
         for my_site in my_site_list:
@@ -551,7 +553,7 @@ def site_status_api(request):
                     'seeding': my_site.seed,
                     'leeching': my_site.leech,
                     'weeks': f'{0}周 {0}天',
-                    'time_join': my_site.time_join,
+                    'time_join': my_site.time_join if my_site.time_join else now,
                     'hr': my_site.my_hr,
                     'mail': my_site.mail,
                     'sort_id': my_site.sort_id,
@@ -576,8 +578,8 @@ def site_status_api(request):
                 bonus += site_info.my_bonus
                 leeching += my_site.leech
                 seeding_size += site_info.seed_vol
-                weeks = (now - my_site.time_join).days // 7
-                days = (now - my_site.time_join).days % 7
+                weeks = (now - my_site.time_join if my_site.time_join else now).days // 7
+                days = (now - my_site.time_join if my_site.time_join else now).days % 7
 
                 if sign_in_support:
                     sign_in_list = my_site.signin_set.filter(created_at__date=now.date())
@@ -599,7 +601,7 @@ def site_status_api(request):
                     'seeding': my_site.seed,
                     'leeching': my_site.leech,
                     'weeks': f'{weeks}周 {days}天',
-                    'time_join': my_site.time_join,
+                    'time_join': my_site.time_join if my_site.time_join else now,
                     'hr': my_site.my_hr,
                     'mail': my_site.mail,
                     'sort_id': my_site.sort_id,
@@ -673,18 +675,6 @@ def site_data_api(request):
         date_list.sort()
         print(f'日期列表：{date_list}')
         print(f'日期数量：{len(date_list)}')
-        # for date in date_list:
-        #     status_list = SiteStatus.objects.filter(created_at__date=date)
-        #     diff_list.append({
-        #         'name': date.strftime('%Y-%m-%d'),
-        #         'stack': date.strftime('%Y-%m-%d'),
-        #         'data': [{
-        #             'name': status.site.site.name,
-        #             'value': status.uploaded
-        #         } for status in status_list]
-        #
-        #     })
-        # print(diff_list)
 
         for my_site in my_site_list:
             # 每个站点获取自己站点的所有信息
@@ -730,46 +720,6 @@ def site_data_api(request):
                 'data': [value[1] if value[1] > 0 else 0 for value in diff_info_list]
             })
         print(diff_list)
-        # diff_list.append(
-        #     {
-        #         'name': my_site.site.name,
-        #         'diff': {info['date']: info_list[index + 1]['uploaded'] - info['uploaded'] if index < len(
-        #             info_list) - 1 else 0 for (index, info) in enumerate(info_list)}
-        #     }¬
-        # )
-        info_list = []
-        # print(diff_list)
-        # print(len(diff_list))
-
-        # 提取日期
-        # date_list = set([
-        #     diff['date'] for diff in site_status_list
-        # ])
-        # date_list = list(date_list)
-        # date_list.sort()
-        # print(date_list)
-        # print(len(date_list))
-        # 填充数据
-        data_list = []
-        # for date in date_list:
-        #     list1 = []
-        #     for diff in diff_list:
-        #         print(date, diff['date'])
-        # if date == diff['date']:
-        #     list1.append(diff)
-        # print(list1)
-        # data_list.append({
-        #     date: list1
-        # })
-        # list1 = []
-        # print(data_list)
-        #
-        # x = [{
-        #     'name': diff['name'],
-        #     'type': 'bar',
-        #     'stack': 'diff',
-        #
-        # } for diff in diff_list]
 
         return JsonResponse(data=CommonResponse.success(
             data={
@@ -795,7 +745,7 @@ def site_data_api(request):
         'class': my_site.my_level,
         'seeding': my_site.seed,
         'leeching': my_site.leech,
-        'last_active': datetime.strftime(my_site.updated_at, '%Y年%m月%d日%H:%M:%S'),
+        'last_active': datetime.strftime(my_site.updated_at, '%Y/%m/%d %H:%M:%S'),
     }
     for site_info in site_info_list:
         my_site_status = {
@@ -1087,4 +1037,44 @@ def remove_my_site(request):
             ).to_dict(), safe=False)
     return JsonResponse(data=CommonResponse.error(
         msg='参数有误，请确认后重试！！'
+    ).to_dict(), safe=False)
+
+
+def get_site_torrents(request):
+    my_site_id = request.GET.get('id')
+    logger.info(my_site_id)
+    if int(my_site_id) == 0:
+        site_list = [my_site for my_site in MySite.objects.all() if my_site.site.get_torrent_support]
+    else:
+        site_list = [my_site for my_site in MySite.objects.filter(id=my_site_id).all() if
+                     my_site.site.get_torrent_support]
+    logger.info(site_list)
+    results = pool.map(pt_spider.send_torrent_info_request, site_list)
+    for my_site, result in zip(site_list, results):
+        if result.code == StatusCodeEnum.OK.code:
+            res = pt_spider.get_torrent_info_list(my_site, result.data)
+
+            if res.code == StatusCodeEnum.OK.code:
+                msg = '{} 种子抓取成功！新增种子{}条，更新种子{}条：'.format(my_site.site.name, res.data[0], res.data[1])
+                if int(my_site_id) != 0:
+                    return JsonResponse(data=CommonResponse.success(
+                        msg=msg
+                    ).to_dict(), safe=False)
+                logger.info(msg)
+            else:
+                msg = '{} 解析种子信息失败！原因：{}'.format(my_site.site.name, res.msg)
+                if int(my_site_id) != 0:
+                    return JsonResponse(data=CommonResponse.error(
+                        msg=msg
+                    ).to_dict(), safe=False)
+                logger.info(msg)
+        else:
+            msg = '{} 抓取种子信息失败！原因：{}'.format(my_site.site.name, result.msg)
+            if int(my_site_id) != 0:
+                return JsonResponse(data=CommonResponse.error(
+                    msg=msg
+                ).to_dict(), safe=False)
+            logger.info(msg)
+    return JsonResponse(data=CommonResponse.success(
+        msg='种子抓取操作成功！'
     ).to_dict(), safe=False)
