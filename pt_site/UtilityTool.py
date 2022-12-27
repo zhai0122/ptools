@@ -1552,14 +1552,15 @@ class PtSpider:
                 logger.info(f'个人主页：{user_detail_res.content}')
             # 解析HTML
             # logger.info(user_detail_res.is_redirect)
-            if 'totheglory' in site.url:
-                # ttg的信息都是直接加载的，不需要再访问其他网页，直接解析就好
-                details_html = etree.HTML(user_detail_res.content)
-                seeding_html = details_html.xpath('//div[@id="ka2"]/table')[0]
-            elif 'greatposterwall' in site.url or 'dicmusic' in site.url:
+            if 'greatposterwall' in site.url or 'dicmusic' in site.url:
                 details_html = user_detail_res.json()
                 seeding_html = self.send_request(my_site=my_site, url=site.url + site.page_mybonus).json()
-            elif 'lemonhd.org' in site.url:
+            elif site.url in [
+                'https://lemonhd.org/',
+                'https://www.htpt.cc/',
+                'https://pt.btschool.club/',
+                'https://pt.keepfrds.com/',
+            ]:
                 logger.info(site.url)
                 details_html = etree.HTML(converter.convert(user_detail_res.text))
                 seeding_html = details_html
@@ -1599,7 +1600,12 @@ class PtSpider:
                 seeding_html = seeding_detail_res.json()
                 logger.info(f'白兔做种信息：{seeding_html}')
             else:
-                details_html = etree.HTML(converter.convert(user_detail_res.text))
+                if 'totheglory' in site.url:
+                    # ttg的信息都是直接加载的，不需要再访问其他网页，直接解析就好
+                    details_html = etree.HTML(user_detail_res.content)
+                    # seeding_html = details_html.xpath('//div[@id="ka2"]/table')[0]
+                else:
+                    details_html = etree.HTML(converter.convert(user_detail_res.text))
 
                 if 'btschool' in site.url:
                     text = details_html.xpath('//script/text()')
@@ -1839,28 +1845,71 @@ class PtSpider:
                     logger.info('做种数量seeding_vol：{}'.format(seed_vol_list))
                 except:
                     pass
-                if 'lemonhd.org' in site.url:
+                if site.url in [
+                    'https://lemonhd.org/',
+                    'https://oldtoons.world/',
+                    'https://xinglin.one/',
+                    'https://piggo.me/',
+                    'http://hdmayi.com/',
+                    'https://pt.0ff.cc/',
+                    'https://1ptba.com/',
+                    'https://hdtime.org/',
+                    'https://hhanclub.top/',
+                    'https://pt.eastgame.org/',
+                    'https://wintersakura.net/',
+                    'https://gainbound.net/',
+                    'http://pt.tu88.men/',
+                    'https://srvfi.top/',
+                    'https://www.hddolby.com/',
+                    'https://gamegamept.cn/',
+                    'https://hdatmos.club/',
+                    'https://hdfans.org/',
+                    'https://audiences.me/',
+                    'https://www.nicept.net/',
+                    'https://u2.dmhy.org/',
+                    'https://hdpt.xyz/',
+                    'https://www.icc2022.com/',
+                    'http://leaves.red/',
+                    'https://www.htpt.cc/',
+                    'https://pt.btschool.club/',
+                    'https://azusa.wiki/',
+                ]:
+                    # 获取到的是整段，需要解析
                     logger.info('做种体积：{}'.format(seed_vol_list))
-                    seed_vol_size = ''.join(seed_vol_list).split(':')[-1].strip()
+                    seeding_str = ''.join(
+                        seed_vol_list
+                    ).replace('\xa0', ':').replace('i', '')
+                    logger.info('做种信息字符串：{}'.format(seeding_str))
+                    if ':' in seeding_str:
+                        seed_vol_size = seeding_str.split(':')[-1].strip()
+                    if '：' in seeding_str:
+                        seed_vol_size = seeding_str.split('：')[-1].strip()
+                    if '&nbsp;' in seeding_str:
+                        seed_vol_size = seeding_str.split('&nbsp;')[-1].strip()
                     seed_vol_all = FileSizeConvert.parse_2_byte(seed_vol_size)
+                elif site.url in [
+                    'https://monikadesign.uk/',
+                    'https://pt.hdpost.top/',
+                    'https://reelflix.xyz/',
+                    'https://hd-torrents.org/',
+                    'https://filelist.io/',
+                    'https://www.pttime.org/',
+                    'https://totheglory.im/',
+                    'https://pt.keepfrds.com/',
+                ]:
+                    # 无需解析字符串
+                    seed_vol_size = ''.join(
+                        seeding_html.xpath(site.seed_vol_rule)
+                    ).replace('i', '').replace('&nbsp;', ' ')
+                    seed_vol_all = FileSizeConvert.parse_2_byte(seed_vol_size)
+                    logger.info(f'做种信息: {seed_vol_all}')
                 elif 'club.hares.top' in site.url:
                     logger.info(f'白兔做种信息：{seeding_html}')
                     seed_vol_size = seeding_html.get('size')
                     logger.info(f'白兔做种信息：{seed_vol_size}')
                     seed_vol_all = FileSizeConvert.parse_2_byte(seed_vol_size)
                     logger.info(f'白兔做种信息：{seed_vol_all}')
-                elif site.url in [
-                    'https://monikadesign.uk/',
-                    'https://pt.hdpost.top/',
-                    'https://hd-torrents.org/',
-                    'https://filelist.io/',
-                    'https://www.pttime.org/',
-                ]:
-                    seed_vol_size = ''.join(
-                        seeding_html.xpath(site.seed_vol_rule)
-                    ).replace('i', '').replace('&nbsp;', ' ')
-                    seed_vol_all = FileSizeConvert.parse_2_byte(seed_vol_size)
-                    logger.info(f'做种信息: {seed_vol_all}')
+
                 else:
                     if len(seed_vol_list) > 0 and site.url not in [
                         'https://nextpt.net/'
@@ -1910,7 +1959,7 @@ class PtSpider:
                 # leech = self.get_user_torrent(leeching_html, site.leech_rule)
                 # seed = self.get_user_torrent(seeding_html, site.seed_rule)
                 logger.info(f'下载数目字符串：{details_html.xpath(site.leech_rule)}')
-                logger.info(f'下上传数目字符串：{details_html.xpath(site.seed_rule)}')
+                logger.info(f'上传数目字符串：{details_html.xpath(site.seed_rule)}')
                 leech = re.sub(r'\D', '', ''.join(details_html.xpath(site.leech_rule)).strip())
                 logger.info(f'当前下载数：{leech}')
                 seed = ''.join(details_html.xpath(site.seed_rule)).strip()
@@ -1948,6 +1997,7 @@ class PtSpider:
                 if site.url in [
                     'https://monikadesign.uk/',
                     'https://pt.hdpost.top/',
+                    'https://reelflix.xyz/',
                 ]:
                     time_str = ''.join(details_html.xpath(site.time_join_rule))
                     time_str = re.sub(u"[\u4e00-\u9fa5]", "", time_str).strip()
@@ -2161,6 +2211,7 @@ class PtSpider:
         if site.url in [
             'https://monikadesign.uk/',
             'https://pt.hdpost.top/',
+            'https://reelflix.xyz/',
             'https://exoticaz.to/',
             'https://cinemaz.to/',
             'https://avistaz.to/',

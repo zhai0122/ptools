@@ -7,7 +7,7 @@ function renderSize(value) {
     var srcsize = parseFloat(value);
     index = Math.floor(Math.log(srcsize) / Math.log(1024));
     var size = srcsize / Math.pow(1024, index);
-    size = size.toFixed(2);//保留的小数位数
+    size = size.toFixed(3);//保留的小数位数
     return size + ' ' + unitArr[index];
 }
 
