@@ -85,19 +85,20 @@
             <el-row v-if="showList">
                 <el-row :gutter="20">
                     <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="4"
-                            style="margin-bottom: 10px;float: right;text-align: right;">
-                        <el-button size="mini" type="success" @click="showAddMySite = true">添加
-                        </el-button>
+                            style="margin-bottom: 10px;float: right;text-align: center;">
+
                         <el-input autofocus
                                   prefix-icon="el-icon-search"
                                   clearable
                                   size="mini"
-                                  style="width: 75%;"
+                                  style="width: 78%;"
                                   v-model="searchKey"
                                   @input="siteSearch"
                                   placeholder="请输入站点名称或者网址搜索">
 
                         </el-input>
+                        <el-button size="mini" type="success" @click="showAddMySite = true" style="width: 18%;">添加
+                        </el-button>
                     </el-col>
                 </el-row>
                 <el-row :gutter="20">
@@ -263,7 +264,7 @@
                                     </el-button>
                                     <el-tooltip class="item" effect="dark" v-if="site.sign_in_state"
                                                 content="已签到，点击查看最近签到记录"
-                                                placement="top">
+                                                placement="bottom" effect="light">
                                         <el-button type="success" icon="el-icon-success" plain size="mini"
                                                    @click="showSignIn(site.id)">
                                         </el-button>
