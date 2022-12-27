@@ -1167,12 +1167,13 @@ class PtSpider:
                         or '签到已得' in status \
                         or '已签到' in status \
                         or '已经签到' in status \
-                        or '签到成功' in status:
+                        or '签到成功' in status \
+                        or 'Success' in status:
                     pass
                 else:
                     return CommonResponse.error(msg='签到失败！')
                 title_parse = self.parse(res, '//td[@id="outer"]//td[@class="embedded"]/h2/text()')
-                content_parse = self.parse(res, '//td[@id="outer"]//td[@class="embedded"]/table/tr/td//text()')
+                content_parse = self.parse(res, '//td[@id="outer"]//td[@class="embedded"]/table//td//text()')
                 if len(content_parse) <= 0:
                     title_parse = self.parse(res, '//td[@id="outer"]//td[@class="embedded"]/b[1]/text()')
                     content_parse = self.parse(res, '//td[@id="outer"]//td[@class="embedded"]/text()[1]')
@@ -1187,6 +1188,7 @@ class PtSpider:
                 content = ''.join(content_parse).strip().replace('\n', '')
                 # logger.info(content)
                 message = title + '，' + content
+                logger.info(f'{my_site} 签到返回信息：{message}')
                 if len(message) <= 1:
                     message = datetime.today().strftime('%Y-%m-%d %H:%M:%S') + '打卡成功！'
                 # message = ''.join(title).strip()
