@@ -545,7 +545,7 @@ def site_status_api(request):
                     'url': my_site.site.url,
                     'class': my_site.my_level,
                     'sign_in_support': sign_in_support,
-                    'sign_in_state': sign_in_state,
+                    'sign_in_state': False,
                     'invite': my_site.invitation,
                     'sp_hour': float(my_site.sp_hour) if my_site.sp_hour != '' else 0,
                     'sp_hour_full': '{:.2%}'.format(
