@@ -635,7 +635,7 @@ def site_status_api(request):
             'sp': sp,
             'sp_hour': sp_hour,
             'bonus': bonus,
-            'ratio': round(uploaded / downloaded, 3),
+            'ratio': round(uploaded / downloaded, 3) if downloaded > 0 else float('inf'),
             'p_years': round(p_years, 4),
             'now': datetime.strftime(
                 SiteStatus.objects.order_by('-updated_at').first().updated_at,
