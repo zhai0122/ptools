@@ -1565,6 +1565,20 @@ class PtSpider:
             ]:
                 logger.info(site.url)
                 details_html = etree.HTML(converter.convert(user_detail_res.text))
+                if 'btschool' in site.url:
+                    text = details_html.xpath('//script/text()')
+                    logger.info('学校：{}'.format(text))
+                    if len(text) > 0:
+                        try:
+                            location = self.parse_school_location(text)
+                            logger.info('学校重定向链接：{}'.format(location))
+                            if '__SAKURA' in location:
+                                res = self.send_request(my_site=my_site, url=site.url + location.lstrip('/'), delay=25)
+                                details_html = etree.HTML(res.text)
+                                # logger.info(res.content)
+                        except Exception as e:
+                            logger.info('BT学校获取做种信息有误！')
+                            pass
                 seeding_html = details_html
             elif 'hdchina.org' in site.url:
                 details_html = etree.HTML(converter.convert(user_detail_res.text))
@@ -1608,21 +1622,6 @@ class PtSpider:
                     # seeding_html = details_html.xpath('//div[@id="ka2"]/table')[0]
                 else:
                     details_html = etree.HTML(converter.convert(user_detail_res.text))
-
-                if 'btschool' in site.url:
-                    text = details_html.xpath('//script/text()')
-                    logger.info('学校：{}'.format(text))
-                    if len(text) > 0:
-                        try:
-                            location = self.parse_school_location(text)
-                            logger.info('学校重定向链接：{}'.format(location))
-                            if '__SAKURA' in location:
-                                res = self.send_request(my_site=my_site, url=site.url + location.lstrip('/'), delay=25)
-                                details_html = etree.HTML(res.text)
-                                # logger.info(res.content)
-                        except Exception as e:
-                            logger.info('BT学校获取做种信息有误！')
-                            pass
                 if 'wintersakura' in site.url:
                     # 单独发送请求，解决冬樱签到问题
                     seeding_detail_res = requests.get(url=seeding_detail_url, verify=False,
