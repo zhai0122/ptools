@@ -97,7 +97,7 @@
                                   placeholder="请输入站点名称或者网址搜索">
 
                         </el-input>
-                        <el-button size="mini" type="success" @click="showAddMySite = true" style="width: 18%;">添加
+                        <el-button size="mini" type="success" @click="editSite(0)" style="width: 18%;">添加
                         </el-button>
                     </el-col>
                 </el-row>
@@ -489,39 +489,44 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="注册时间" label-position="right" prop="time_join">
+            <el-form-item label="功能开关" label-position="right" required>
+                <el-radio-group>
+                    <el-checkbox-button v-model="addMySiteForm.sign_in" label="签 到" border></el-checkbox-button>
+                    <el-checkbox-button v-model="addMySiteForm.hr" label="HR下载" border></el-checkbox-button>
+                    <el-checkbox-button v-model="addMySiteForm.search" label="搜 索" border></el-checkbox-button>
+                </el-radio-group>
+            </el-form-item>
+
+            <el-form-item v-show="false" label="注册时间" label-position="right" prop="time_join">
                 <el-date-picker
                         text="注册时间"
                         :disabled="addMySiteForm.id!=0"
                         v-model="addMySiteForm.time_join"
                         type="datetime"
-                        placeholder="选择注册日期时间"
-                        default-time="2023-01-01 12:00:00">
+                        placeholder="选择注册日期时间">
                 </el-date-picker>
             </el-form-item>
-            <el-form-item label="功能开关" label-position="right">
-                <el-form-item label-position="top" inline="true">
-                    <el-checkbox v-model="addMySiteForm.sign_in" label="签到" border></el-checkbox>
-                    <el-checkbox v-model="addMySiteForm.hr" label="HR下载" border></el-checkbox>
-                    <el-checkbox v-model="addMySiteForm.search" label="搜索" border></el-checkbox>
-                </el-form-item>
-            </el-form-item>
+
             <el-form-item label="用户UID" label-position="left" prop="user_id">
-                <el-input v-model="addMySiteForm.user_id"
+                <el-input v-model="addMySiteForm.user_id" clearable show-word-limit
                           placeholder="请输入数字UID，AZ,CZ,EZ,Reel，莫妮卡、普斯特等请填写用户名">
                 </el-input>
             </el-form-item>
-            <el-form-item label="Passkey" label-position="left" prop="passkey">
-                <el-input v-model="addMySiteForm.passkey" show-password></el-input>
+            <el-form-item label="Passkey" :label-position="top" prop="passkey">
+                <el-input v-model="addMySiteForm.passkey" clearable
+                          show-password show-word-limit></el-input>
             </el-form-item>
-            <el-form-item label="Cookies" label-position="top" prop="cookie">
+            <el-form-item label="Cookies" :label-position="top" prop="cookie">
                 <el-input type="textarea"
                           placeholder="请输入站点Cookies，与UA搭配使用效果更佳"
                           v-model="addMySiteForm.cookie"
+                          autosize="{minRows: 3, maxRows: 6}"
                           autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="UserAgent" label-position="top" prop="user_agent">
-                <el-input type="textarea" v-model="addMySiteForm.user_agent" autocomplete="off"></el-input>
+                <el-input type="textarea" v-model="addMySiteForm.user_agent"
+                          autosize="{minRows: 3, maxRows: 6}"
+                          autocomplete="off"></el-input>
             </el-form-item>
 
         </el-form>
@@ -765,7 +770,119 @@
                         });
                     })
                 },
+                getSiteList() {
+                    /**
+                     * 获取要添加的站点列表
+                     * @type {null}
+                     */
+                    let id = this.addMySiteForm.site
+                    if (this.addMySiteForm.id == 0) {
+                        id = 0
+                    }
+
+                    axios.get(
+                        "{% url 'get_site_list' %}" + '?id=' + id
+                    ).then(res => {
+                        console.log('获取数据列表成功', res.data)
+                        {#console.log(typeof res.data.data)#}
+                        if (res.data.code === 0) {
+                            {#this.ptData = res.data.data#}
+                            this.site_list = res.data.data.site_list
+                        } else {
+                            this.$message({
+                                type: 'warning',
+                                message: res.data.msg
+                            });
+                        }
+                    }).catch(res => {
+                        console.log('获取数据列表失败', res)
+                        this.$message({
+                            type: 'warning',
+                            message: '获取数据列表失败！' + res
+                        });
+                    })
+                },
+                editMySite(formName) {
+                    /**
+                     * 修改站点信息
+                     * @type {null}
+                     */
+                    this.$refs[formName].validate((valid) => {
+                        if (valid) {
+                            const options = {
+                                method: 'POST',
+                                headers: {'content-type': 'application/json;charset=utf-8'},
+                                data: this.addMySiteForm,
+                                url: "{% url 'edit_my_site' %}"
+                            }
+
+                            axios(options).then(res => {
+                                console.log('获取数据列表成功', res.data)
+                                {#console.log(typeof res.data.data)#}
+                                if (res.data.code === 0) {
+                                    {#this.ptData = res.data.data#}
+                                    {#this.site_list = res.data.data.site_list#}
+                                    this.addMySiteForm = {
+                                        id: 0,
+                                        site: null,
+                                        sign_in: true,
+                                        hr: false,
+                                        search: true,
+                                        user_id: '',
+                                        passkey: '',
+                                        time_join: '2023-01-01 12:00:00',
+                                        user_agent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.52',
+                                        cookie: ''
+                                    }
+                                    this.showAddMySite = false
+                                    this.getData()
+                                    this.$message({
+                                        type: 'success',
+                                        message: res.data.msg
+                                    });
+                                } else {
+                                    this.$message({
+                                        type: 'warning',
+                                        message: res.data.msg
+                                    });
+                                }
+                            }).catch(res => {
+                                console.log('获取数据列表失败', res)
+                                this.$message({
+                                    type: 'warning',
+                                    message: '获取数据列表失败！' + res
+                                });
+                            })
+                        } else {
+                            this.$message({
+                                type: 'warning',
+                                message: '数据验证失败！请认真填写'
+                            });
+                            return false;
+                        }
+                    });
+                },
                 editSite(id) {
+                    /**
+                     * 打开编辑页面
+                     * @type {null}
+                     */
+                    if (id == 0) {
+                        this.addMySiteForm = {
+                            id: 0,
+                            site: null,
+                            sign_in: true,
+                            hr: false,
+                            search: true,
+                            user_id: '',
+                            passkey: '',
+                            time_join: new Date(),
+                            user_agent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.52',
+                            cookie: ''
+                        }
+                        this.showAddMySite = true
+                        return
+                    }
                     axios.get(
                         "{% url 'edit_my_site' %}" + '?id=' + id
                     ).then(res => {
@@ -849,79 +966,6 @@
                             message: '获取数据列表失败！' + res
                         });
                     })
-                },
-                getSiteList(id) {
-                    if (null == id) {
-                        id = 0
-                    }
-                    axios.get(
-                        "{% url 'get_site_list' %}" + '?id=' + id
-                    ).then(res => {
-                        console.log('获取数据列表成功', res.data)
-                        {#console.log(typeof res.data.data)#}
-                        if (res.data.code === 0) {
-                            {#this.ptData = res.data.data#}
-                            this.site_list = res.data.data.site_list
-                        } else {
-                            this.$message({
-                                type: 'warning',
-                                message: res.data.msg
-                            });
-                        }
-                    }).catch(res => {
-                        console.log('获取数据列表失败', res)
-                        this.$message({
-                            type: 'warning',
-                            message: '获取数据列表失败！' + res
-                        });
-                    })
-                },
-                editMySite(formName) {
-                    this.$refs[formName].validate((valid) => {
-                        if (valid) {
-                            const options = {
-                                method: 'POST',
-                                headers: {'content-type': 'application/json;charset=utf-8'},
-                                data: this.addMySiteForm,
-                                url: "{% url 'edit_my_site' %}"
-                            }
-
-                            axios(options).then(res => {
-                                console.log('获取数据列表成功', res.data)
-                                {#console.log(typeof res.data.data)#}
-                                if (res.data.code === 0) {
-                                    {#this.ptData = res.data.data#}
-                                    {#this.site_list = res.data.data.site_list#}
-                                    this.addMySiteForm = {}
-                                    this.showAddMySite = false
-                                    this.getData()
-                                    this.$message({
-                                        type: 'success',
-                                        message: res.data.msg
-                                    });
-                                } else {
-                                    this.$message({
-                                        type: 'warning',
-                                        message: res.data.msg
-                                    });
-                                }
-                            }).catch(res => {
-                                console.log('获取数据列表失败', res)
-                                this.$message({
-                                    type: 'warning',
-                                    message: '获取数据列表失败！' + res
-                                });
-                            })
-                        } else {
-                            this.$message({
-                                type: 'warning',
-                                message: '数据验证失败！请认真填写'
-                            });
-                            return false;
-                        }
-                    });
-
-
                 },
                 showAllIncrementHistory($event) {
                     console.log($event)
