@@ -333,7 +333,7 @@
                                     <span style="color: grey">|</span>
                                     {#                                    <el-divider direction="vertical"></el-divider>#}
                                     <i class="el-icon-share" style="color: saddlebrown" title="分享率"
-                                       v-text="numberFormat((site.uploaded / site.downloaded).toFixed(2))"></i>
+                                       v-text="site.downloaded > 0 ? numberFormat((site.uploaded / site.downloaded).toFixed(2)) : '∞'"></i>
                                 </div>
                                 <hr>
                                 <div>
@@ -876,7 +876,7 @@
                             search: true,
                             user_id: '',
                             passkey: '',
-                            time_join: new Date(),
+                            time_join: '2023-01-01 12:00:00',
                             user_agent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.52',
                             cookie: ''
                         }
