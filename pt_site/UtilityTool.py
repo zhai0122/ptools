@@ -1524,7 +1524,7 @@ class PtSpider:
                 mail_res = self.send_request(my_site=my_site, url=site.url + 'api/user/getMainInfo', header=header)
                 logger.info(f'新消息: {mail_res.text}')
                 user_info = user_detail_res.json().get('data')
-                sp_hour = seeding_res.json().get('data').get('H')
+                sp_hour = seeding_res.json().get('data').get('E')
                 mail_data = mail_res.json().get('data')
                 mail = mail_data.get('unreadAdmin') + mail_data.get('unreadInbox') + mail_data.get('unreadSystem')
                 user_info.update({
@@ -1542,6 +1542,7 @@ class PtSpider:
                 })
             else:
                 user_detail_res = self.send_request(my_site=my_site, url=user_detail_url)
+                time.sleep(0.6)
             # if leeching_detail_res.status_code != 200:
             #     return site.name + '种子下载信息获取错误，错误码：' + str(leeching_detail_res.status_code), False
             if user_detail_res.status_code != 200:
