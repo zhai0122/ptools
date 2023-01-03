@@ -2,7 +2,7 @@
   {
     "id": 1,
     "created_at": "2022-07-17 10:22:03.474000",
-    "updated_at": "2023-01-03 20:22:04.471683",
+    "updated_at": "2023-01-03 22:19:56.754711",
     "name": "阿童木",
     "url": "https://hdatmos.club/",
     "logo": "https://hdatmos.club/favicon.ico",
@@ -15,6 +15,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -76,12 +77,14 @@
     "nickname": "hdatmos",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 2,
     "created_at": "2022-07-17 10:24:21.376000",
-    "updated_at": "2023-01-03 20:22:04.475842",
+    "updated_at": "2023-01-03 22:19:56.758658",
     "name": "猪猪网",
     "url": "https://piggo.me/",
     "logo": "https://piggo.me/favicon.ico",
@@ -94,6 +97,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -155,12 +159,14 @@
     "nickname": "piggo",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 5,
     "created_at": "2022-07-17 10:27:30.380000",
-    "updated_at": "2023-01-03 20:22:04.479034",
+    "updated_at": "2023-01-03 22:19:56.763056",
     "name": "1PT",
     "url": "https://1ptba.com/",
     "logo": "https://1ptba.com/favicon.ico",
@@ -173,6 +179,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -234,12 +241,14 @@
     "nickname": "1ptba",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 8,
     "created_at": "2022-07-20 10:05:03.493000",
-    "updated_at": "2023-01-03 20:22:04.481771",
+    "updated_at": "2023-01-03 22:19:56.765967",
     "name": "CarPT",
     "url": "https://carpt.net/",
     "logo": "https://carpt.net/favicon.ico",
@@ -252,6 +261,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -313,12 +323,14 @@
     "nickname": "carpt",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 9,
     "created_at": "2022-07-20 10:06:16.029000",
-    "updated_at": "2023-01-03 20:22:04.484965",
+    "updated_at": "2023-01-03 22:19:56.768998",
     "name": "HDArea",
     "url": "https://www.hdarea.co/",
     "logo": "https://www.hdarea.co/favicon.ico",
@@ -331,6 +343,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -392,12 +405,14 @@
     "nickname": "hdarea",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 10,
     "created_at": "2022-07-20 10:07:13.505000",
-    "updated_at": "2023-01-03 20:22:04.490029",
+    "updated_at": "2023-01-03 22:19:56.772653",
     "name": "红豆饭",
     "url": "https://hdfans.org/",
     "logo": "https://hdfans.org/favicon.ico",
@@ -410,6 +425,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -471,12 +487,14 @@
     "nickname": "hdfans",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 11,
     "created_at": "2022-07-20 10:08:12.726000",
-    "updated_at": "2023-01-03 20:22:04.496289",
+    "updated_at": "2023-01-03 22:19:56.776565",
     "name": "天空",
     "url": "https://hdsky.me/",
     "logo": "https://hdsky.me/favicon.ico",
@@ -489,6 +507,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "usercp.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -550,12 +569,14 @@
     "nickname": "hdsky",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 12,
     "created_at": "2022-07-20 10:09:18.723000",
-    "updated_at": "2023-01-03 20:22:04.501031",
+    "updated_at": "2023-01-03 22:19:56.780565",
     "name": "时光",
     "url": "https://hdtime.org/",
     "logo": "https://hdtime.org/favicon.ico",
@@ -568,6 +589,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -629,12 +651,14 @@
     "nickname": "hdtime",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 13,
     "created_at": "2022-07-20 10:09:59.938000",
-    "updated_at": "2023-01-03 20:22:04.504270",
+    "updated_at": "2023-01-03 22:19:56.783221",
     "name": "Zone",
     "url": "https://hdzone.me/",
     "logo": "https://hdzone.me/favicon.ico",
@@ -647,6 +671,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -708,12 +733,14 @@
     "nickname": "zone",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 14,
     "created_at": "2022-07-20 10:11:12.180000",
-    "updated_at": "2023-01-03 20:22:04.508614",
+    "updated_at": "2023-01-03 22:19:56.785840",
     "name": "冬樱",
     "url": "https://wintersakura.net/",
     "logo": "https://wintersakura.net/favicon.ico",
@@ -726,6 +753,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -787,12 +815,14 @@
     "nickname": "wintersakura",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 15,
     "created_at": "2022-07-20 10:12:13.107000",
-    "updated_at": "2023-01-03 20:22:04.513543",
+    "updated_at": "2023-01-03 22:19:56.788520",
     "name": "蚂蚁",
     "url": "http://hdmayi.com/",
     "logo": "http://hdmayi.com/favicon.ico",
@@ -805,6 +835,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -866,12 +897,14 @@
     "nickname": "hdmayi",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 16,
     "created_at": "2022-07-20 10:13:15.407000",
-    "updated_at": "2023-01-03 20:22:04.516095",
+    "updated_at": "2023-01-03 22:19:56.792059",
     "name": "农场",
     "url": "https://pt.0ff.cc/",
     "logo": "https://pt.0ff.cc/favicon.ico",
@@ -884,6 +917,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -945,12 +979,14 @@
     "nickname": "0ff",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 17,
     "created_at": "2022-07-20 10:15:59.584000",
-    "updated_at": "2023-01-03 20:22:04.519137",
+    "updated_at": "2023-01-03 22:19:56.796268",
     "name": "铂金学院",
     "url": "https://ptchina.org/",
     "logo": "https://ptchina.org/favicon.ico",
@@ -963,6 +999,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -1024,12 +1061,14 @@
     "nickname": "ptchina",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 18,
     "created_at": "2022-07-20 10:58:58.928000",
-    "updated_at": "2023-01-03 20:22:04.522657",
+    "updated_at": "2023-01-03 22:19:56.799254",
     "name": "马杀鸡",
     "url": "https://pt.msg.vg/",
     "logo": "https://pt.msg.vg/favicon.ico",
@@ -1042,6 +1081,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -1103,12 +1143,14 @@
     "nickname": "msg",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 19,
     "created_at": "2022-07-20 11:03:57.583000",
-    "updated_at": "2023-01-03 20:22:04.526356",
+    "updated_at": "2023-01-03 22:19:56.802117",
     "name": "时间",
     "url": "https://www.pttime.org/",
     "logo": "https://www.pttime.org/favicon.ico",
@@ -1121,6 +1163,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlist.php?type=seeding&userid={}",
@@ -1182,12 +1225,14 @@
     "nickname": "pttime",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 20,
     "created_at": "2022-07-20 11:06:11.901000",
-    "updated_at": "2023-01-03 20:22:04.528727",
+    "updated_at": "2023-01-03 22:19:56.804917",
     "name": "欧申",
     "url": "http://www.oshen.win/",
     "logo": "http://www.oshen.win/favicon.ico",
@@ -1200,6 +1245,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -1261,12 +1307,14 @@
     "nickname": "oshen",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 21,
     "created_at": "2022-07-20 11:12:51.331000",
-    "updated_at": "2023-01-03 20:22:04.531440",
+    "updated_at": "2023-01-03 22:19:56.808432",
     "name": "海棠",
     "url": "https://www.htpt.cc/",
     "logo": "https://www.htpt.cc/favicon.ico",
@@ -1279,6 +1327,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -1340,12 +1389,14 @@
     "nickname": "htpt",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 22,
     "created_at": "2022-07-20 11:17:25.992000",
-    "updated_at": "2023-01-03 20:22:04.534349",
+    "updated_at": "2023-01-03 22:19:56.812586",
     "name": "烧包",
     "url": "https://ptsbao.club/",
     "logo": "https://ptsbao.club/favicon.ico",
@@ -1358,6 +1409,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -1419,12 +1471,14 @@
     "nickname": "ptsbao",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 23,
     "created_at": "2022-07-20 11:25:55.869000",
-    "updated_at": "2023-01-03 20:22:04.537941",
+    "updated_at": "2023-01-03 22:19:56.815429",
     "name": "百川",
     "url": "https://www.hitpt.com/",
     "logo": "https://www.hitpt.com/favicon.ico",
@@ -1437,6 +1491,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -1498,12 +1553,14 @@
     "nickname": "hitpt",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 24,
     "created_at": "2022-07-20 11:27:42.866000",
-    "updated_at": "2023-01-03 20:22:04.542198",
+    "updated_at": "2023-01-03 22:19:56.818123",
     "name": "聆音",
     "url": "https://pt.soulvoice.club/",
     "logo": "https://pt.soulvoice.club/favicon.ico",
@@ -1516,6 +1573,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -1577,12 +1635,14 @@
     "nickname": "soulvoice",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 25,
     "created_at": "2022-07-20 11:28:54.234000",
-    "updated_at": "2023-01-03 20:22:04.545208",
+    "updated_at": "2023-01-03 22:19:56.820795",
     "name": "备胎",
     "url": "https://www.beitai.pt/",
     "logo": "https://www.beitai.pt/favicon.ico",
@@ -1595,6 +1655,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -1656,12 +1717,14 @@
     "nickname": "beitai",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 26,
     "created_at": "2022-07-20 23:48:14.437000",
-    "updated_at": "2023-01-03 20:22:04.547740",
+    "updated_at": "2023-01-03 22:19:56.824095",
     "name": "观众",
     "url": "https://audiences.me/",
     "logo": "https://audiences.me/favicon.ico",
@@ -1674,6 +1737,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -1735,12 +1799,14 @@
     "nickname": "audiences",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 28,
     "created_at": "2022-07-20 23:51:03.848000",
-    "updated_at": "2023-01-03 20:22:04.550449",
+    "updated_at": "2023-01-03 22:19:56.827254",
     "name": "丐帮",
     "url": "https://gainbound.net/",
     "logo": "https://gainbound.net/favicon.ico",
@@ -1753,6 +1819,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -1814,12 +1881,14 @@
     "nickname": "gainbound",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 29,
     "created_at": "2022-07-20 23:51:54.709000",
-    "updated_at": "2023-01-03 20:22:04.554031",
+    "updated_at": "2023-01-03 22:19:56.831134",
     "name": "海胆",
     "url": "https://www.haidan.video/",
     "logo": "https://www.haidan.video/public/pic/favicon.ico",
@@ -1832,6 +1901,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -1893,12 +1963,14 @@
     "nickname": "haidan",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 30,
     "created_at": "2022-07-20 23:52:34.568000",
-    "updated_at": "2023-01-03 20:22:04.558174",
+    "updated_at": "2023-01-03 22:19:56.833674",
     "name": "HD杜比",
     "url": "https://www.hddolby.com/",
     "logo": "https://gitee.com/ngfchl/icons/raw/master/pt_site/hddolby.ico",
@@ -1911,6 +1983,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -1972,12 +2045,14 @@
     "nickname": "hddolby",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 31,
     "created_at": "2022-07-20 23:53:30.271000",
-    "updated_at": "2023-01-03 20:22:04.560947",
+    "updated_at": "2023-01-03 22:19:56.836286",
     "name": "海带",
     "url": "https://www.hd.ai/",
     "logo": "https://www.hd.ai/favicon.png",
@@ -1990,6 +2065,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -2051,12 +2127,14 @@
     "nickname": "hdai",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 32,
     "created_at": "2022-07-20 23:55:26.251000",
-    "updated_at": "2023-01-03 20:22:04.563779",
+    "updated_at": "2023-01-03 22:19:56.839336",
     "name": "MTeam",
     "url": "https://kp.m-team.cc/",
     "logo": "https://kp.m-team.cc/favicon.ico",
@@ -2069,6 +2147,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlist.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlist.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlist.php?userid={}&type=seeding",
@@ -2130,12 +2209,14 @@
     "nickname": "mteam",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 33,
     "created_at": "2022-07-20 23:56:40.615000",
-    "updated_at": "2023-01-03 20:22:04.566521",
+    "updated_at": "2023-01-03 22:19:56.842880",
     "name": "芒果",
     "url": "https://www.3wmg.com/",
     "logo": "https://www.3wmg.com/favicon.ico",
@@ -2148,6 +2229,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -2209,12 +2291,14 @@
     "nickname": "3wmg",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 34,
     "created_at": "2022-07-23 19:05:57.166000",
-    "updated_at": "2023-01-03 20:22:04.569933",
+    "updated_at": "2023-01-03 22:19:56.846989",
     "name": "海豹GPW",
     "url": "https://greatposterwall.com/",
     "logo": "https://greatposterwall.com/favicon.ico",
@@ -2227,6 +2311,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "ajax.php?action=user&id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "bonus.php?action=bprates",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "bonus.php?action=bprates",
@@ -2288,12 +2373,14 @@
     "nickname": "gpw",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 35,
     "created_at": "2022-07-23 19:10:24.853000",
-    "updated_at": "2023-01-03 20:22:04.573751",
+    "updated_at": "2023-01-03 22:19:56.849609",
     "name": "白兔hares",
     "url": "https://club.hares.top/",
     "logo": "https://club.hares.top/favicon.ico",
@@ -2306,6 +2393,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?uid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?uid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?uid={}&type=seeding",
@@ -2367,12 +2455,14 @@
     "nickname": "hares",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 36,
     "created_at": "2022-07-27 12:59:12.234000",
-    "updated_at": "2023-01-03 20:22:04.576860",
+    "updated_at": "2023-01-03 22:19:56.852381",
     "name": "老师",
     "url": "https://www.nicept.net/",
     "logo": "https://www.nicept.net/favicon.ico",
@@ -2385,6 +2475,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -2446,12 +2537,14 @@
     "nickname": "nicept",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 38,
     "created_at": "2022-08-02 10:14:26.854000",
-    "updated_at": "2023-01-03 20:22:04.579421",
+    "updated_at": "2023-01-03 22:19:56.855320",
     "name": "明教",
     "url": "https://hdpt.xyz/",
     "logo": "https://hdpt.xyz/favicon.ico",
@@ -2464,6 +2557,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -2525,12 +2619,14 @@
     "nickname": "hdpt",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 39,
     "created_at": "2022-08-12 23:29:07.033000",
-    "updated_at": "2023-01-03 20:22:04.581912",
+    "updated_at": "2023-01-03 22:19:56.859400",
     "name": "铂金家",
     "url": "https://pthome.net/",
     "logo": "https://pthome.net/favicon.ico",
@@ -2543,6 +2639,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -2604,12 +2701,14 @@
     "nickname": "pthome",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 40,
     "created_at": "2022-08-14 09:14:51.194000",
-    "updated_at": "2023-01-03 20:22:04.584802",
+    "updated_at": "2023-01-03 22:19:56.863811",
     "name": "ipt",
     "url": "https://iptorrents.com/",
     "logo": "https://iptorrents.com/favicon.ico",
@@ -2622,6 +2721,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "user.php?u={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "peers?u={}",
@@ -2683,12 +2783,14 @@
     "nickname": "iptorrents",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 41,
     "created_at": "2022-08-18 00:39:11.082000",
-    "updated_at": "2023-01-03 20:22:04.588478",
+    "updated_at": "2023-01-03 22:19:56.866608",
     "name": "梓喵",
     "url": "https://azusa.wiki/",
     "logo": "https://azusa.wiki/favicon.ico",
@@ -2701,6 +2803,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -2762,12 +2865,14 @@
     "nickname": "azusa",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 42,
     "created_at": "2022-08-18 00:46:55.688000",
-    "updated_at": "2023-01-03 20:22:04.592913",
+    "updated_at": "2023-01-03 22:19:56.869453",
     "name": "HD城市",
     "url": "https://hdcity.city/",
     "logo": "https://hdcity.city/favicon.ico",
@@ -2780,6 +2885,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -2841,12 +2947,14 @@
     "nickname": "hdcity",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 43,
     "created_at": "2022-08-19 23:20:30.164000",
-    "updated_at": "2023-01-03 20:22:04.595491",
+    "updated_at": "2023-01-03 22:19:56.872890",
     "name": "HDVIDEO",
     "url": "https://hdvideo.one/",
     "logo": "https://hdvideo.one/favicon.ico",
@@ -2859,6 +2967,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -2920,12 +3029,14 @@
     "nickname": "hdvideo",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 44,
     "created_at": "2022-08-23 16:41:38.669000",
-    "updated_at": "2023-01-03 20:22:04.598178",
+    "updated_at": "2023-01-03 22:19:56.876863",
     "name": "月月Frds",
     "url": "https://pt.keepfrds.com/",
     "logo": "https://pt.keepfrds.com/favicon.ico",
@@ -2938,6 +3049,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -2999,12 +3111,14 @@
     "nickname": "frds",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 45,
     "created_at": "2022-08-26 20:52:18.452000",
-    "updated_at": "2023-01-03 20:22:04.600919",
+    "updated_at": "2023-01-03 22:19:56.881563",
     "name": "U2",
     "url": "https://u2.dmhy.org/",
     "logo": "https://u2.dmhy.org/favicon.ico",
@@ -3017,6 +3131,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -3078,12 +3193,14 @@
     "nickname": "u2",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 46,
     "created_at": "2022-08-26 20:53:50.259000",
-    "updated_at": "2023-01-03 20:22:04.604394",
+    "updated_at": "2023-01-03 22:19:56.884624",
     "name": "TTG",
     "url": "https://totheglory.im/",
     "logo": "https://totheglory.im/favicon.ico",
@@ -3096,6 +3213,7 @@
     "page_detail": "t/",
     "page_download": "dl/{id}/{}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "browse.php?search_field={}&c=M",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "mybonus.php?id={}",
@@ -3157,12 +3275,14 @@
     "nickname": "ttg",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "browse.php?search_field={}&c=M"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 47,
     "created_at": "2022-08-26 20:54:35.357000",
-    "updated_at": "2023-01-03 20:22:04.608502",
+    "updated_at": "2023-01-03 22:19:56.887533",
     "name": "蝶粉",
     "url": "https://discfan.net/",
     "logo": "https://discfan.net/favicon.ico",
@@ -3175,6 +3295,7 @@
     "page_detail": "details.php?id={}&hit=1",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?incldead={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -3236,12 +3357,14 @@
     "nickname": "discfan",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?incldead={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 48,
     "created_at": "2022-08-26 20:55:42.110000",
-    "updated_at": "2023-01-03 20:22:04.611251",
+    "updated_at": "2023-01-03 22:19:56.891068",
     "name": "joyhd",
     "url": "https://www.joyhd.net/",
     "logo": "https://www.joyhd.net/favicon.ico",
@@ -3254,6 +3377,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -3315,12 +3439,14 @@
     "nickname": "joyhd",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 49,
     "created_at": "2022-08-27 17:32:01.405000",
-    "updated_at": "2023-01-03 20:22:04.613888",
+    "updated_at": "2023-01-03 22:19:56.895653",
     "name": "彩虹岛",
     "url": "https://chdbits.co/",
     "logo": "https://chdbits.co/favicon.ico",
@@ -3333,6 +3459,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -3394,12 +3521,14 @@
     "nickname": "chdbits",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 50,
     "created_at": "2022-08-27 17:36:00.453000",
-    "updated_at": "2023-01-03 20:22:04.617040",
+    "updated_at": "2023-01-03 22:19:56.900357",
     "name": "好多油",
     "url": "https://pt.hdupt.com/",
     "logo": "https://pt.hdupt.com/favicon.ico",
@@ -3412,6 +3541,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -3473,12 +3603,14 @@
     "nickname": "hdupt",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 51,
     "created_at": "2022-08-27 17:43:57.903000",
-    "updated_at": "2023-01-03 20:22:04.620486",
+    "updated_at": "2023-01-03 22:19:56.905283",
     "name": "我堡",
     "url": "https://ourbits.club/",
     "logo": "https://ourbits.club/favicon.ico",
@@ -3491,6 +3623,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -3552,12 +3685,14 @@
     "nickname": "ourbits",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 52,
     "created_at": "2022-08-27 18:16:09.224000",
-    "updated_at": "2023-01-03 20:22:04.624551",
+    "updated_at": "2023-01-03 22:19:56.913090",
     "name": "家园",
     "url": "https://hdhome.org/",
     "logo": "https://hdhome.org/favicon.ico",
@@ -3570,6 +3705,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -3631,12 +3767,14 @@
     "nickname": "hdhome",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 53,
     "created_at": "2022-08-27 18:18:44.023000",
-    "updated_at": "2023-01-03 20:22:04.627642",
+    "updated_at": "2023-01-03 22:19:56.919316",
     "name": "不可说",
     "url": "https://springsunday.net/",
     "logo": "https://springsunday.net/favicon.ico",
@@ -3649,6 +3787,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -3710,12 +3849,14 @@
     "nickname": "springsunday",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 54,
     "created_at": "2022-08-27 18:24:32.917000",
-    "updated_at": "2023-01-03 20:22:04.630128",
+    "updated_at": "2023-01-03 22:19:56.924598",
     "name": "OpenCD",
     "url": "https://www.open.cd/",
     "logo": "https://www.open.cd/favicon.ico",
@@ -3728,6 +3869,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -3789,12 +3931,14 @@
     "nickname": "opencd",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 55,
     "created_at": "2022-08-27 21:57:23.449000",
-    "updated_at": "2023-01-03 20:22:04.632964",
+    "updated_at": "2023-01-03 22:19:56.930414",
     "name": "这是猫站",
     "url": "https://pterclub.com/",
     "logo": "https://pterclub.com/favicon.ico",
@@ -3807,6 +3951,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?tag_exclusive=&tag_internal=&t",
     "page_leeching": "getusertorrentlist.php?do_ajax=1&userid={}&type=leeching",
     "page_uploaded": "getusertorrentlist.php?do_ajax=1&userid={}&type=uploaded",
     "page_seeding": "getusertorrentlist.php?do_ajax=1&userid={}&type=seeding",
@@ -3868,12 +4013,14 @@
     "nickname": "pterclub",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?tag_exclusive=&tag_internal=&t"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 56,
     "created_at": "2022-08-27 21:57:47.858000",
-    "updated_at": "2023-01-03 20:22:04.636615",
+    "updated_at": "2023-01-03 22:19:56.935037",
     "name": "柠檬",
     "url": "https://lemonhd.org/",
     "logo": "https://lemonhd.org/favicon.ico",
@@ -3886,6 +4033,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -3947,12 +4095,14 @@
     "nickname": "lemonhd",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 57,
     "created_at": "2022-08-27 21:58:11.379000",
-    "updated_at": "2023-01-03 20:22:04.642086",
+    "updated_at": "2023-01-03 22:19:56.938669",
     "name": "南洋",
     "url": "https://nanyangpt.com/",
     "logo": "https://nanyangpt.com/favicon.ico",
@@ -3965,6 +4115,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -4026,12 +4177,14 @@
     "nickname": "nanyang",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 58,
     "created_at": "2022-09-03 00:08:20.078000",
-    "updated_at": "2023-01-03 20:22:04.646028",
+    "updated_at": "2023-01-03 22:19:56.943522",
     "name": "吐鲁番",
     "url": "https://pt.eastgame.org/",
     "logo": "https://pt.eastgame.org/favicon.ico",
@@ -4044,6 +4197,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -4105,12 +4259,14 @@
     "nickname": "tlf",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 59,
     "created_at": "2022-09-14 08:33:16.574000",
-    "updated_at": "2023-01-03 20:22:04.650310",
+    "updated_at": "2023-01-03 22:19:56.948871",
     "name": "KamePT",
     "url": "https://kamept.com/",
     "logo": "https://kamept.com/favicon.ico",
@@ -4123,6 +4279,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -4184,12 +4341,14 @@
     "nickname": "kame",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 62,
     "created_at": "2022-07-27 13:01:11.697000",
-    "updated_at": "2023-01-03 20:22:04.655435",
+    "updated_at": "2023-01-03 22:19:56.952646",
     "name": "艾薇",
     "url": "http://avgv.cc/",
     "logo": "http://avgv.cc/favicon.ico",
@@ -4202,6 +4361,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -4263,12 +4423,14 @@
     "nickname": "avgv",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 63,
     "created_at": "2022-09-19 22:02:22.069000",
-    "updated_at": "2023-01-03 20:22:04.661131",
+    "updated_at": "2023-01-03 22:19:56.956618",
     "name": "憨憨",
     "url": "https://hhanclub.top/",
     "logo": "https://hhanclub.top/favicon.ico",
@@ -4281,6 +4443,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -4342,12 +4505,14 @@
     "nickname": "hhanclub",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 64,
     "created_at": "2022-10-04 10:55:26.478000",
-    "updated_at": "2023-01-03 20:22:04.664909",
+    "updated_at": "2023-01-03 22:19:56.960949",
     "name": "瓷器",
     "url": "https://hdchina.org/",
     "logo": "https://hdchina.org/favicon.ico",
@@ -4360,6 +4525,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "ajax_getusertorrentlist.php?userid={}&type=seeding",
@@ -4421,12 +4587,14 @@
     "nickname": "hdchina",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 65,
     "created_at": "2022-10-04 11:03:31.325000",
-    "updated_at": "2023-01-03 20:22:04.669564",
+    "updated_at": "2023-01-03 22:19:56.965713",
     "name": "北洋园",
     "url": "https://www.tjupt.org/",
     "logo": "https://www.tjupt.org/favicon.ico",
@@ -4439,6 +4607,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -4500,12 +4669,14 @@
     "nickname": "beiyang",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 66,
     "created_at": "2022-10-04 11:08:01.927000",
-    "updated_at": "2023-01-03 20:22:04.676400",
+    "updated_at": "2023-01-03 22:19:56.968867",
     "name": "UltraHD",
     "url": "https://ultrahd.net/",
     "logo": "https://ultrahd.net/favicon.ico",
@@ -4518,6 +4689,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -4579,12 +4751,14 @@
     "nickname": "ultrahd",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 67,
     "created_at": "2022-10-04 11:18:37.790000",
-    "updated_at": "2023-01-03 20:22:04.681092",
+    "updated_at": "2023-01-03 22:19:56.972819",
     "name": "TU88",
     "url": "http://pt.tu88.men/",
     "logo": "http://pt.tu88.men/favicon.ico",
@@ -4597,6 +4771,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -4658,12 +4833,14 @@
     "nickname": "tu88",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 68,
     "created_at": "2022-10-04 11:19:33.274000",
-    "updated_at": "2023-01-03 20:22:04.686353",
+    "updated_at": "2023-01-03 22:19:56.977041",
     "name": "PT 分享站",
     "url": "https://pt.itzmx.com/",
     "logo": "https://pt.itzmx.com/favicon.ico",
@@ -4676,6 +4853,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -4737,12 +4915,14 @@
     "nickname": "itzmx",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 69,
     "created_at": "2022-10-11 20:56:14.504000",
-    "updated_at": "2023-01-03 20:22:04.692949",
+    "updated_at": "2023-01-03 22:19:56.981436",
     "name": "兽",
     "url": "https://pt.hd4fans.org/",
     "logo": "https://pt.hd4fans.org/favicon.ico",
@@ -4755,6 +4935,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -4816,12 +4997,14 @@
     "nickname": "hd4fans",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 70,
     "created_at": "2022-07-17 10:24:59.754000",
-    "updated_at": "2023-01-03 20:22:04.697418",
+    "updated_at": "2023-01-03 22:19:56.984500",
     "name": "BT学校",
     "url": "https://pt.btschool.club/",
     "logo": "https://gitee.com/ngfchl/ptools/raw/master/static/logo/btschool.ico",
@@ -4834,6 +5017,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -4895,12 +5079,14 @@
     "nickname": "btschool",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 71,
     "created_at": "2022-10-13 20:46:41.135391",
-    "updated_at": "2023-01-03 20:22:04.702496",
+    "updated_at": "2023-01-03 22:19:56.988186",
     "name": "GGPT",
     "url": "https://gamegamept.cn/",
     "logo": "https://gamegamept.cn/favicon.ico",
@@ -4913,6 +5099,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -4974,12 +5161,14 @@
     "nickname": "ggpt",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 72,
     "created_at": "2022-10-13 21:12:00.102150",
-    "updated_at": "2023-01-03 20:22:04.709085",
+    "updated_at": "2023-01-03 22:19:56.992284",
     "name": "飞天拉面",
     "url": "https://nextpt.net/",
     "logo": "https://nextpt.net/favicon.ico",
@@ -4992,6 +5181,7 @@
     "page_detail": "Torrents/details?tid={}",
     "page_download": "Torrents/download?passkey={}&tid={}",
     "page_user": "Users/profile?uid={}",
+    "page_search": "Torrents?type=0&systematics=2&keyword={}",
     "page_leeching": "Torrents/myDownload",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "Torrents/mySeed",
@@ -5053,12 +5243,14 @@
     "nickname": "nextpt",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "Torrents?type=0&systematics=2&keyword={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 73,
     "created_at": "2022-10-13 22:31:26.178291",
-    "updated_at": "2023-01-03 20:22:04.713763",
+    "updated_at": "2023-01-03 22:19:56.996880",
     "name": "织梦",
     "url": "https://zmpt.cc/",
     "logo": "https://zmpt.cc/favicon.ico",
@@ -5071,6 +5263,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -5132,12 +5325,14 @@
     "nickname": "zmpt",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 74,
     "created_at": "2022-10-14 14:23:01.057107",
-    "updated_at": "2023-01-03 20:22:04.717564",
+    "updated_at": "2023-01-03 22:19:57.000165",
     "name": "52PT",
     "url": "https://52pt.site/",
     "logo": "https://52pt.site/favicon.ico",
@@ -5150,6 +5345,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -5211,12 +5407,14 @@
     "nickname": "52pt",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 75,
     "created_at": "2022-10-14 14:25:28.692053",
-    "updated_at": "2023-01-03 20:22:04.722768",
+    "updated_at": "2023-01-03 22:19:57.003756",
     "name": "TCCF",
     "url": "https://et8.org/",
     "logo": "https://et8.org/favicon.ico",
@@ -5229,6 +5427,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -5290,12 +5489,14 @@
     "nickname": "tccf",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 76,
     "created_at": "2022-10-15 20:49:44.721748",
-    "updated_at": "2023-01-03 20:22:04.728580",
+    "updated_at": "2023-01-03 22:19:57.007684",
     "name": "SRVFI",
     "url": "https://srvfi.top/",
     "logo": "https://srvfi.top/favicon.ico",
@@ -5308,6 +5509,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -5369,12 +5571,14 @@
     "nickname": "srvfi",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 77,
     "created_at": "2022-10-17 07:42:57.547264",
-    "updated_at": "2023-01-03 20:22:04.732015",
+    "updated_at": "2023-01-03 22:19:57.013101",
     "name": "ICC2022",
     "url": "https://www.icc2022.com/",
     "logo": "https://www.icc2022.com/favicon.ico",
@@ -5387,6 +5591,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -5448,12 +5653,14 @@
     "nickname": "icc",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 78,
     "created_at": "2022-10-21 18:14:12.349610",
-    "updated_at": "2023-01-03 20:22:04.736481",
+    "updated_at": "2023-01-03 22:19:57.016333",
     "name": "iHD",
     "url": "https://ihdbits.me/",
     "logo": "https://ihdbits.me/favicon.ico",
@@ -5466,6 +5673,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -5527,12 +5735,14 @@
     "nickname": "ihdbits",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 79,
     "created_at": "2022-11-01 00:06:06.053113",
-    "updated_at": "2023-01-03 20:22:04.742010",
+    "updated_at": "2023-01-03 22:19:57.019206",
     "name": "红叶",
     "url": "http://leaves.red/",
     "logo": "http://leaves.red/favicon.ico",
@@ -5545,6 +5755,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -5606,12 +5817,14 @@
     "nickname": "leaves",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 81,
     "created_at": "2022-11-04 23:06:38.778550",
-    "updated_at": "2023-01-03 20:22:04.745478",
+    "updated_at": "2023-01-03 22:19:57.022235",
     "name": "龙之家",
     "url": "https://www.dragonhd.xyz/",
     "logo": "https://www.dragonhd.xyz/favicon.ico",
@@ -5624,6 +5837,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -5685,12 +5899,14 @@
     "nickname": "dragonhd",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 82,
     "created_at": "2022-11-08 09:18:21.489786",
-    "updated_at": "2023-01-03 20:22:04.749346",
+    "updated_at": "2023-01-03 22:19:57.025764",
     "name": "杏林",
     "url": "https://xinglin.one/",
     "logo": "https://xinglin.one/favicon.ico",
@@ -5703,6 +5919,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -5764,12 +5981,14 @@
     "nickname": "xinglin",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 83,
     "created_at": "2022-11-12 22:41:41.000351",
-    "updated_at": "2023-01-03 20:22:04.753243",
+    "updated_at": "2023-01-03 22:19:57.030075",
     "name": "Filept",
     "url": "https://www.filept.com/",
     "logo": "https://www.filept.com/favicon.ico",
@@ -5782,6 +6001,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -5843,12 +6063,14 @@
     "nickname": "filept",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 85,
     "created_at": "2022-11-23 17:58:52.708203",
-    "updated_at": "2023-01-03 20:22:04.757970",
+    "updated_at": "2023-01-03 22:19:57.033004",
     "name": "海豚",
     "url": "https://dicmusic.club/",
     "logo": "https://dicmusic.club/favicon.ico",
@@ -5861,6 +6083,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "ajax.php?action=user&id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "bonus.php?action=bprates",
@@ -5922,12 +6145,14 @@
     "nickname": "dicmusic",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 86,
     "created_at": "2022-12-09 17:40:04.727545",
-    "updated_at": "2023-01-03 20:22:04.761009",
+    "updated_at": "2023-01-03 22:19:57.036351",
     "name": "Uploads",
     "url": "http://uploads.ltd/",
     "logo": "http://uploads.ltd/favicon.ico",
@@ -5940,6 +6165,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -6001,12 +6227,14 @@
     "nickname": "uploads",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 87,
     "created_at": "2022-12-20 08:24:33.287437",
-    "updated_at": "2023-01-03 20:22:04.763869",
+    "updated_at": "2023-01-03 22:19:57.039901",
     "name": "大青虫",
     "url": "https://cyanbug.net/",
     "logo": "https://cyanbug.net/favicon.ico",
@@ -6019,6 +6247,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -6080,12 +6309,14 @@
     "nickname": "cyanbug",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 89,
     "created_at": "2022-12-20 08:27:01.381014",
-    "updated_at": "2023-01-03 20:22:04.767096",
+    "updated_at": "2023-01-03 22:19:57.043482",
     "name": "鲨鱼",
     "url": "https://sharkpt.net/",
     "logo": "https://sharkpt.net/favicon.ico",
@@ -6098,6 +6329,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -6159,12 +6391,14 @@
     "nickname": "sharkpt",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 92,
     "created_at": "2022-12-25 17:54:44.854475",
-    "updated_at": "2023-01-03 20:22:04.770896",
+    "updated_at": "2023-01-03 22:19:57.047403",
     "name": "莫妮卡",
     "url": "https://monikadesign.uk/",
     "logo": "https://monikadesign.uk/favicon.ico",
@@ -6177,6 +6411,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "users/{}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "users/{}",
@@ -6238,12 +6473,14 @@
     "nickname": "monika",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 93,
     "created_at": "2022-12-26 10:00:41.449226",
-    "updated_at": "2023-01-03 20:22:04.775712",
+    "updated_at": "2023-01-03 22:19:57.050272",
     "name": "核弹头",
     "url": "https://hd-torrents.org/",
     "logo": "https://hd-torrents.org/favicon.ico",
@@ -6256,6 +6493,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "usercp.php?uid={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "usercp.php?uid={}",
@@ -6317,12 +6555,14 @@
     "nickname": "hd-t",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 94,
     "created_at": "2022-12-26 10:51:49.583666",
-    "updated_at": "2023-01-03 20:22:04.778660",
+    "updated_at": "2023-01-03 22:19:57.053040",
     "name": "Exoticaz",
     "url": "https://exoticaz.to/",
     "logo": "https://exoticaz.to/favicon.ico",
@@ -6335,6 +6575,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "profile/{}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "profile/{}/active",
@@ -6396,12 +6637,14 @@
     "nickname": "exoticaz",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 95,
     "created_at": "2022-12-26 11:44:05.766041",
-    "updated_at": "2023-01-03 20:22:04.781456",
+    "updated_at": "2023-01-03 22:19:57.056255",
     "name": "Cinemaz",
     "url": "https://cinemaz.to/",
     "logo": "https://cinemaz.to/images/cinemaz-favicon.png",
@@ -6414,6 +6657,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "profile/{}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "profile/{}/active",
@@ -6475,12 +6719,14 @@
     "nickname": "cinemaz",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 96,
     "created_at": "2022-12-26 12:12:22.433872",
-    "updated_at": "2023-01-03 20:22:04.784544",
+    "updated_at": "2023-01-03 22:19:57.059868",
     "name": "Avistaz",
     "url": "https://avistaz.to/",
     "logo": "https://avistaz.to/images/avistaz-favicon.png",
@@ -6493,6 +6739,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "profile/{}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "profile/{}/active",
@@ -6554,12 +6801,14 @@
     "nickname": "avistaz",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 97,
     "created_at": "2022-12-26 13:31:54.151043",
-    "updated_at": "2023-01-03 20:22:04.788047",
+    "updated_at": "2023-01-03 22:19:57.063589",
     "name": "Filelist",
     "url": "https://filelist.io/",
     "logo": "https://filelist.io/favicon.ico",
@@ -6572,6 +6821,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "userdetails.php?id={}",
@@ -6633,12 +6883,14 @@
     "nickname": "filelist",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 98,
     "created_at": "2022-12-26 14:03:05.511105",
-    "updated_at": "2023-01-03 20:22:04.792847",
+    "updated_at": "2023-01-03 22:19:57.066384",
     "name": "普斯特",
     "url": "https://pt.hdpost.top/",
     "logo": "https://pt.hdpost.top/favicon.ico",
@@ -6651,6 +6903,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "users/{}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "users/{}",
@@ -6712,12 +6965,14 @@
     "nickname": "hdpost",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 99,
     "created_at": "2022-12-26 19:45:08.010450",
-    "updated_at": "2023-01-03 20:22:04.796067",
+    "updated_at": "2023-01-03 22:19:57.069134",
     "name": "朱雀",
     "url": "https://zhuque.in/",
     "logo": "https://gitee.com/ngfchl/ptools/raw/master/static/logo/zhuque.png",
@@ -6730,6 +6985,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "api/user/getInfo?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -6791,12 +7047,14 @@
     "nickname": "zhuque",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 100,
     "created_at": "2022-12-27 12:40:22.412286",
-    "updated_at": "2023-01-03 20:22:04.799203",
+    "updated_at": "2023-01-03 22:19:57.072435",
     "name": "Oldtoons",
     "url": "https://oldtoons.world/",
     "logo": "https://oldtoons.world/favicon.ico",
@@ -6809,6 +7067,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -6870,12 +7129,14 @@
     "nickname": "oldtoons",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 101,
     "created_at": "2022-12-27 12:56:12.440343",
-    "updated_at": "2023-01-03 20:22:04.802893",
+    "updated_at": "2023-01-03 22:19:57.076782",
     "name": "Reelflix",
     "url": "https://reelflix.xyz/",
     "logo": "https://reelflix.xyz/favicon.ico",
@@ -6888,6 +7149,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "users/{}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "users/{}",
@@ -6949,12 +7211,14 @@
     "nickname": "reelflix",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   },
   {
     "id": 102,
     "created_at": "2023-01-03 09:53:52.495825",
-    "updated_at": "2023-01-03 20:22:04.807604",
+    "updated_at": "2023-01-03 22:19:57.080719",
     "name": "2xfree",
     "url": "https://pt.2xfree.org/",
     "logo": "https://pt.2xfree.org/favicon.ico",
@@ -6967,6 +7231,7 @@
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
     "page_user": "userdetails.php?id={}",
+    "page_search": "torrents.php?search={}",
     "page_leeching": "getusertorrentlistajax.php?userid={}&type=leeching",
     "page_uploaded": "getusertorrentlistajax.php?userid={}&type=uploaded",
     "page_seeding": "getusertorrentlistajax.php?userid={}&type=seeding",
@@ -7028,6 +7293,8 @@
     "nickname": "2xfree",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
-    "page_search": "torrents.php?search={}"
+    "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "page_message": "messages.php"
   }
 ]

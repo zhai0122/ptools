@@ -31,6 +31,7 @@ class Site(BaseEntity):
     page_download = models.CharField(verbose_name='默认下载链接', default='download.php?id={}', max_length=64)
     page_user = models.CharField(verbose_name='用户信息链接', default='userdetails.php?id={}', max_length=64)
     page_search = models.CharField(verbose_name='搜索链接', default='torrents.php?incldead=1&search={}', max_length=64)
+    page_message = models.CharField(verbose_name='消息页面', default='messages.php', max_length=64)
     page_hr = models.CharField(verbose_name='HR考核页面', default='myhr.php?hrtype=1&userid={}', max_length=64)
     page_leeching = models.CharField(verbose_name='当前下载信息',
                                      default='getusertorrentlistajax.php?userid={}&type=leeching',
@@ -231,10 +232,18 @@ class Site(BaseEntity):
                                     default='//a[@href="messages.php"]/font[contains(text(),"条")]/text()[1]',
                                     help_text='获取新邮件',
                                     max_length=128)
+    message_title = models.CharField(verbose_name='邮件信息',
+                                     default='//img[@alt="Unread"]/parent::div/following-sibling::a[1]/div/text()',
+                                     help_text='获取邮件标题',
+                                     max_length=128)
     notice_rule = models.CharField(verbose_name='公告规则',
                                    default='//a[@href="index.php"]/font[contains(text(),"条")]/text()[1]',
                                    help_text='获取新公告',
                                    max_length=128)
+    full_site_free = models.CharField(verbose_name='站免规则',
+                                      default='//td/b/a/font[contains(text(),"全站") and contains(text(),"Free")]/text()',
+                                      help_text='获取新公告',
+                                      max_length=128)
     # HASH RULE
     hash_rule = models.CharField(verbose_name='种子HASH',
                                  default='//td/b[contains(text(),"Hash")]/following::text()[1]',
