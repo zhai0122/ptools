@@ -156,6 +156,8 @@ class SiteAdmin(admin.ModelAdmin):  # instead of ModelAdmin
                 'my_hr_rule',
                 'mailbox_rule',
                 'notice_rule',
+                'message_title',
+                'full_site_free',
                 'time_join_rule',
                 'latest_active_rule',
             ),
