@@ -1,0 +1,41 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {% include 'admin/includes/css-part.html' %}
+    <style>
+        #codeEditor {
+            width: 500px;
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+<div id="settings">
+    <code v-html="config" id="codeEditor" class="ace_editor" type="textarea"></code>
+</div>
+{% include 'admin/includes/js-part.html' %}
+<script src="{% static 'admin/simpleui-x/js/axios.min.js' %}"></script>
+<script>
+    const vm = new Vue({
+        el: '#settings',
+        data() {
+            return {
+                config: "{{ config }}",
+            }
+        },
+        beforeMount() {
+
+        },
+        mounted() {
+
+        },
+        methods: {}
+    })
+</script>
+</body>
+</html>

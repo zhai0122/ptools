@@ -284,5 +284,14 @@ SIMPLEUI_CONFIG = {
             'icon': 'fab fa-blogger',
             'url': '/tasks/show_log_list'
         }, ]
+    }, {
+        'app': 'update',
+        'name': '系统配置',
+        'icon': 'fas fa-cog',
+        'models': [{
+            'name': '修改配置',
+            'icon': 'fas fa-edit',
+            'url': '/tasks/get_config_setting'
+        }, ]
     }]
 }

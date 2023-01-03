@@ -33,6 +33,7 @@ urlpatterns = [
     path(r'show_log_list', views.show_log_list, name='show_log_list'),
     path(r'get_log_content', views.get_log_content, name='get_log_content'),
     path(r'download_log_file', views.download_log_file, name='download_log_file'),
+    path(r'get_config_setting', views.get_config_setting, name='get_config_setting'),
     path(r'remove_log_api', views.remove_log_api, name='remove_log_api'),
     path(r'get_site_list', views.get_site_list, name='get_site_list'),
     path(r'edit_my_site', views.edit_my_site, name='edit_my_site'),

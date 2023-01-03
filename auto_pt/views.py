@@ -10,6 +10,7 @@ import docker
 import git
 import qbittorrentapi
 import transmission_rpc
+import yaml
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, FileResponse
 from django.shortcuts import render
@@ -1093,3 +1094,25 @@ def get_site_torrents(request):
     return JsonResponse(data=CommonResponse.success(
         msg='种子抓取操作成功！'
     ).to_dict(), safe=False)
+
+
+def get_config_setting(request):
+    file_path = os.path.join(BASE_DIR, 'db/ptools.yaml')
+    if not os.path.exists(file_path):
+        with open(file_path, 'r') as f:
+            f.write()
+    try:
+        with open(file_path, 'r') as f:
+            data = yaml.load(f, Loader=yaml.FullLoader)
+            print(data)
+
+        with open(file_path, 'r') as f:
+            logs = f.readlines()
+        logger.info(f'日志行数：{len(logs)}')
+        return render(request, 'auto_pt/settings.html', context={
+            'config': logs
+        })
+    except Exception as e:
+        return render(request, 'auto_pt/settings.html', context={
+            'config': f'{e}'
+        })
