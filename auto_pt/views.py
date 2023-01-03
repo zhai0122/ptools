@@ -11,7 +11,7 @@ import git
 import qbittorrentapi
 import transmission_rpc
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
+from django.http import JsonResponse, FileResponse
 from django.shortcuts import render
 
 from pt_site.UtilityTool import MessageTemplate, FileSizeConvert
@@ -919,6 +919,20 @@ def remove_log_api(request):
         logger.error(traceback.format_exc(3))
         return JsonResponse(data=CommonResponse.error(
             msg='删除文件出错啦！详情请查看日志'
+        ).to_dict(), safe=False)
+
+
+def download_log_file(request):
+    try:
+        name = request.GET.get('name')
+        file_path = os.path.join(BASE_DIR, f'db/{name}')
+        response = FileResponse(open(file_path, 'rb'))
+        response['content-type'] = "application/octet-stream;charset=utf-8"
+        response['Content-Disposition'] = 'attachment; filename=' + os.path.basename(file_path)
+        return response
+    except Exception as e:
+        return JsonResponse(data=CommonResponse.error(
+            msg=f'文件不存在？！{e}'
         ).to_dict(), safe=False)
 
 
