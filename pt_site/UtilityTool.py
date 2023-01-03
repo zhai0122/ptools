@@ -534,7 +534,7 @@ class PtSpider:
             my_site=my_site,
             url=site.url + site.page_sign_in.lstrip('/'),
             method=site.sign_in_method
-        ).text.encode('utf8')
+        ).content.decode('utf8')
         if sign_res.isdigit():
             return CommonResponse.success(
                 msg='你还需要继续努力哦！此次签到，你获得了魔力奖励：{}'.format(sign_res)
