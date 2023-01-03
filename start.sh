@@ -57,5 +57,6 @@ echo 172.67.98.15 share.dmhy.org >>/etc/hosts
 echo "写入冬樱HOSTS"
 echo 217.79.189.238 wintersakura.net >>/etc/hosts
 echo "启动服务"
+pip install -r requirements.txt -U
 python manage.py migrate
 python manage.py runserver 0.0.0.0:$DJANGO_WEB_PORT
