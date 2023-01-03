@@ -151,7 +151,6 @@
                     method: "get",
                     headers: {
                         "content-type": "application/json", // 默认值
-                        Authorization: "Bearer " + sessionStorage.getItem("access_token"),
                     },
                     url: "{% url 'download_log_file' %}" + '?name=' + this.log,
                     responseType: "blob",

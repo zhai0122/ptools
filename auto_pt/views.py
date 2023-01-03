@@ -9,10 +9,11 @@ from datetime import datetime, timedelta
 import docker
 import git
 import qbittorrentapi
+import toml
 import transmission_rpc
 import yaml
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse, FileResponse
+from django.http import JsonResponse, FileResponse, HttpResponse, Http404
 from django.shortcuts import render
 
 from pt_site.UtilityTool import MessageTemplate, FileSizeConvert
@@ -1096,23 +1097,49 @@ def get_site_torrents(request):
     ).to_dict(), safe=False)
 
 
-def get_config_setting(request):
-    file_path = os.path.join(BASE_DIR, 'db/ptools.yaml')
+def get_config_api(request):
+    file_path = os.path.join(BASE_DIR, 'db/ptools.toml')
+    yaml_file_path = os.path.join(BASE_DIR, 'db/ptools.yaml')
     if not os.path.exists(file_path):
-        with open(file_path, 'r') as f:
-            f.write()
+        data = ''
+        if os.path.exists(yaml_file_path):
+            with open('db/ptools.yaml', 'r') as yaml_file:
+                data = yaml.load(yaml_file, Loader=yaml.FullLoader)
+                logger.info(f'原始文档{data}')
+        with open(file_path, 'w') as toml_f:
+            toml_f.write('')
+            toml.dump(data, toml_f)
+            logger.info(f'配置文件生成成功！')
     try:
-        with open(file_path, 'r') as f:
-            data = yaml.load(f, Loader=yaml.FullLoader)
-            print(data)
-
-        with open(file_path, 'r') as f:
-            logs = f.readlines()
-        logger.info(f'日志行数：{len(logs)}')
-        return render(request, 'auto_pt/settings.html', context={
-            'config': logs
-        })
+        with open(file_path, 'rb') as f:
+            response = HttpResponse(f)
+            logger.info(response)
+            return JsonResponse(data=CommonResponse.success(
+                data=response.content.decode('utf8')
+            ).to_dict(), safe=False)
     except Exception as e:
-        return render(request, 'auto_pt/settings.html', context={
-            'config': f'{e}'
-        })
+        raise
+        return JsonResponse(data=CommonResponse.error(
+            msg='获取配置文件信息失败！'
+        ).to_dict(), safe=False)
+
+
+def get_config_html(request):
+    return render(request, 'auto_pt/settings.html')
+
+
+def save_config_api(request):
+    file_path = os.path.join(BASE_DIR, 'db/ptools.toml')
+    content = json.loads(request.body.decode())
+    logger.info(content.get('settings'))
+    try:
+        with open(file_path, 'w') as f:
+            f.write(content.get('settings'))
+            return JsonResponse(data=CommonResponse.success(
+                msg='配置文件保存成功！'
+            ).to_dict(), safe=False)
+    except Exception as e:
+        raise
+        return JsonResponse(data=CommonResponse.error(
+            msg='获取配置文件信息失败！'
+        ).to_dict(), safe=False)
