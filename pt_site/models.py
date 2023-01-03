@@ -258,6 +258,24 @@ class Site(BaseEntity):
         return self.name
 
 
+class UserLevelRule(BaseEntity):
+    site = models.OneToOneField(verbose_name='站 点', to=Site, on_delete=models.CASCADE)
+    level_id = models.IntegerField(verbose_name='等级id', default=1)
+    level = models.CharField(verbose_name='等 级', default='User', max_length=24)
+    days = models.IntegerField(verbose_name='时 间', default=0)
+    uploaded = models.IntegerField(verbose_name='上 传', default=0)
+    downloaded = models.IntegerField(verbose_name='下 载', default=0)
+    bonus = models.IntegerField(verbose_name='魔 力', default=0)
+    score = models.IntegerField(verbose_name='积 分', default=0)
+    ratio = models.FloatField(verbose_name='分享率', default=0)
+    torrents = models.IntegerField(verbose_name='发 种', default=0)
+    rights = models.CharField(verbose_name='权 利', max_length=128,
+                              help_text='当前等级所享有的权利与义务')
+
+    def __str__(self):
+        return f'{self.site.nickname}/{self.level}'
+
+
 class MySite(BaseEntity):
     site = models.OneToOneField(verbose_name='站点', to=Site, on_delete=models.CASCADE)
     sort_id = models.IntegerField(verbose_name='排序', default=1)
