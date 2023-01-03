@@ -409,7 +409,7 @@ class MySiteAdmin(AjaxAdmin):  # instead of ModelAdmin
     list_filter = (SignInFilter, UpdatedAtFilter, 'my_level')
 
     def site_name(self, obj: MySite):
-        template = '<div style="margin: auto 0;text-align: center"><img src="{}" style="height: 16px;weight: 16px;border-radius: 50%;"><br><a href="{}" target="blank">{}</a></div>'
+        template = '<div style="margin: auto 0;text-align: center"><img src="{}" style="height: 16px;weight: 16px;border-radius: 50%;"><br><a href="{}" target="_blank">{}</a></div>'
         template_badge = """<div class="el-badge item"><span style="width: 25px">{}</span><sup class="el-badge__content is-fixed">{}</sup></div>"""
         site = obj.site
         if obj.mail == 0:
