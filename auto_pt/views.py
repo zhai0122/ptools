@@ -1099,17 +1099,11 @@ def get_site_torrents(request):
 
 def get_config_api(request):
     file_path = os.path.join(BASE_DIR, 'db/ptools.toml')
-    yaml_file_path = os.path.join(BASE_DIR, 'db/ptools.yaml')
-    if not os.path.exists(file_path):
-        data = ''
-        if os.path.exists(yaml_file_path):
-            with open('db/ptools.yaml', 'r') as yaml_file:
-                data = yaml.load(yaml_file, Loader=yaml.FullLoader)
-                logger.info(f'原始文档{data}')
-        with open(file_path, 'w') as toml_f:
-            toml_f.write('')
-            toml.dump(data, toml_f)
-            logger.info(f'配置文件生成成功！')
+    res = pt_spider.generate_config_file()
+    if res.code != 0:
+        return JsonResponse(data=CommonResponse.error(
+            msg=res.msg
+        ).to_dict(), safe=False)
     try:
         with open(file_path, 'rb') as f:
             response = HttpResponse(f)
@@ -1118,7 +1112,6 @@ def get_config_api(request):
                 data=response.content.decode('utf8')
             ).to_dict(), safe=False)
     except Exception as e:
-        raise
         return JsonResponse(data=CommonResponse.error(
             msg='获取配置文件信息失败！'
         ).to_dict(), safe=False)

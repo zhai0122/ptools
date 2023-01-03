@@ -9,6 +9,7 @@ import time
 from concurrent.futures.thread import ThreadPoolExecutor
 
 import requests
+import toml
 import yaml
 from apscheduler.schedulers.background import BackgroundScheduler
 from django_apscheduler.jobstores import DjangoJobStore
@@ -301,10 +302,19 @@ def auto_upgrade():
 
 def auto_update_license():
     """auto_update_license"""
-    with open('db/ptools.yaml', 'r') as f:
-        data = yaml.load(f, Loader=yaml.FullLoader)
+    res = pt_spider.generate_config_file()
+    if res.code != 0:
+        return CommonResponse.error(
+            msg=res.msg
+        )
+    with open('db/ptools.toml', 'r') as f:
+        data = toml.load(f)
         print(data)
     pt_helper = data.get('pt_helper')
+    if len(pt_helper) <= 0:
+        return CommonResponse.error(
+            msg='请先配置小助手相关信息再进行操作！'
+        )
     host = pt_helper.get('host')
     username = pt_helper.get('username')
     password = pt_helper.get('password')

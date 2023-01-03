@@ -1,6 +1,7 @@
 import contextlib
 import json
 import logging
+import os
 import random
 import re
 import ssl
@@ -16,6 +17,7 @@ import dateutil.parser
 import opencc
 import qbittorrentapi
 import requests
+import toml
 import transmission_rpc
 import urllib3.util.ssl_
 import yaml
@@ -30,6 +32,7 @@ from wxpusher import WxPusher
 from auto_pt.models import Notify, OCR
 from pt_site.models import MySite, SignIn, TorrentInfo, SiteStatus, Site
 from ptools.base import TorrentBaseInfo, PushConfig, CommonResponse, StatusCodeEnum, DownloaderCategory
+from ptools.settings import BASE_DIR
 
 urllib3.util.ssl_.DEFAULT_CIPHERS = 'ALL'
 
@@ -2281,4 +2284,30 @@ class PtSpider:
             return CommonResponse.success(
                 msg=message,
                 data=0
+            )
+
+    @staticmethod
+    def generate_config_file():
+        file_path = os.path.join(BASE_DIR, 'db/ptools.toml')
+        yaml_file_path = os.path.join(BASE_DIR, 'db/ptools.yaml')
+        try:
+            if not os.path.exists(file_path):
+                data = ''
+                if os.path.exists(yaml_file_path):
+                    with open('db/ptools.yaml', 'r') as yaml_file:
+                        data = yaml.load(yaml_file, Loader=yaml.FullLoader)
+                        logger.info(f'原始文档{data}')
+                with open(file_path, 'w') as toml_f:
+                    toml_f.write('')
+                    toml.dump(data, toml_f)
+                    logger.info(f'配置文件生成成功！')
+                    return CommonResponse.success(
+                        msg='配置文件生成成功！',
+                    )
+            return CommonResponse.success(
+                msg='配置文件文件已存在！',
+            )
+        except Exception as e:
+            return CommonResponse.success(
+                msg=f'初始化失败！{e}',
             )
