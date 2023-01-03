@@ -14,12 +14,6 @@ if [ ! -e $CONTAINER_ALREADY_STARTED ]; then
   # 设置拉取最新文件并覆盖
   git config pull.ff only
   git checkout $DEV
-  git pull
-  git pull origin $DEV
-  echo "列出代码文件信息"
-  ls -l
-  echo "安装pip依赖"
-  pip install -r requirements.txt
   echo "系统初始化中"
   if [ ! -f db/db.sqlite3 ]; then
     echo '数据库不存在，初始化数据库'
@@ -39,6 +33,13 @@ if [ ! -e $CONTAINER_ALREADY_STARTED ]; then
 else
   echo "-- Not first container startup --"
 fi
+echo "拉取PTools最新代码"
+git pull
+git pull origin $DEV
+echo "列出代码文件信息"
+ls -l
+echo "安装并升级pip依赖"
+pip install -r requirements.txt -U
 echo "写入U2 hosts"
 echo 172.64.153.252 u2.dmhy.org >>/etc/hosts
 echo 104.25.26.31 u2.dmhy.org >>/etc/hosts
@@ -57,6 +58,5 @@ echo 172.67.98.15 share.dmhy.org >>/etc/hosts
 echo "写入冬樱HOSTS"
 echo 217.79.189.238 wintersakura.net >>/etc/hosts
 echo "启动服务"
-pip install -r requirements.txt -U
 python manage.py migrate
 python manage.py runserver 0.0.0.0:$DJANGO_WEB_PORT
