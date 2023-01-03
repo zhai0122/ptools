@@ -93,7 +93,7 @@ class SiteAdmin(admin.ModelAdmin):  # instead of ModelAdmin
         ['站点设置', {
             # 'classes': ('collapse',),  # CSS
             'fields': (
-                ('name', 'url', 'logo'),
+                ('name', 'nickname', 'url', 'logo'),
                 ('limit_speed', 'sp_full', 'tracker',),
             ),
         }],

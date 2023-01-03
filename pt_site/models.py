@@ -10,21 +10,28 @@ class Site(BaseEntity):
     # 站点设置
     url = models.URLField(verbose_name='站点网址', default='', help_text='请保留网址结尾的"/"', unique=True)
     name = models.CharField(max_length=32, verbose_name='站点名称')
+    nickname = models.CharField(max_length=8, verbose_name='简称', default='', help_text='英文，用于刷流')
     logo = models.URLField(verbose_name='站点logo', default='', help_text='站点logo图标')
     tracker = models.CharField(verbose_name='tracker', default='', help_text='tracker网址关键字', max_length=32)
     # 功能支持
     sign_in_support = models.BooleanField(verbose_name="签到支持", default=True)
-    get_torrent_support = models.BooleanField(verbose_name="拉取首页种子", default=True)
-    get_userinfo_support = models.BooleanField(verbose_name="获取个人数据", default=True)
+    get_torrent_support = models.BooleanField(verbose_name="拉取种子", default=True)
+    get_userinfo_support = models.BooleanField(verbose_name="站点数据", default=True)
     search_support = models.BooleanField(verbose_name="搜索支持", default=False)
+    search_params = models.CharField(verbose_name='搜索参数',
+                                     default='{"免费":"spstate=2","2X":"spstate=3",'
+                                             '"2X免费":"spstate=4","50%":"spstate=5","2X 50%":"spstate=6",}',
+                                     help_text='字典格式：{"accept":"application/json","c":"d"}',
+                                     max_length=128)
     # 主要页面
-    page_default = models.CharField(verbose_name='默认搜索页面', default='torrents.php', max_length=64)
+    page_default = models.CharField(verbose_name='默认搜索页面', default='torrents.php?incldead=1', max_length=64)
     page_sign_in = models.CharField(verbose_name='默认签到链接', default='attendance.php', max_length=64)
     page_control_panel = models.CharField(verbose_name='控制面板', default='usercp.php', max_length=64)
     page_detail = models.CharField(verbose_name='详情页面链接', default='details.php?id={}', max_length=64)
     page_download = models.CharField(verbose_name='默认下载链接', default='download.php?id={}', max_length=64)
     page_user = models.CharField(verbose_name='用户信息链接', default='userdetails.php?id={}', max_length=64)
-    page_search = models.CharField(verbose_name='搜索链接', default='torrents.php?search={}', max_length=64)
+    page_search = models.CharField(verbose_name='搜索链接', default='torrents.php?incldead=1&search={}', max_length=64)
+    page_hr = models.CharField(verbose_name='HR考核页面', default='myhr.php?hrtype=1&userid={}', max_length=64)
     page_leeching = models.CharField(verbose_name='当前下载信息',
                                      default='getusertorrentlistajax.php?userid={}&type=leeching',
                                      max_length=64)
