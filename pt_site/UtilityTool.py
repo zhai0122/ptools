@@ -1484,8 +1484,8 @@ class PtSpider:
                 validator = ''.join(self.parse(res, '//input[@name="validator"]/@value'))
                 login_url = ''.join(self.parse(res, '//form/@action'))
                 login_method = ''.join(self.parse(res, '//form/@method'))
-                with open('db/ptools.yaml', 'r') as f:
-                    data = yaml.load(f, Loader=yaml.FullLoader)
+                with open('db/ptools.toml', 'r') as f:
+                    data = toml.load(f)
                     filelist = data.get('filelist')
                     username = filelist.get('username')
                     password = filelist.get('password')
@@ -2178,7 +2178,7 @@ class PtSpider:
                             logger.info(mail)
                             title = f'{site.name} 有{mail_count + notice_count}条新短消息，请注意及时查收！'
                             # 测试发送网站消息原内容
-                            message = f'{notice_str}\n> {mail}'
+                            message = f'{notice_str}  \n> {mail}'
                             self.send_text(title=title, message=message)
                     else:
                         my_site.mail = 0

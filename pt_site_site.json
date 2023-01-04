@@ -6808,7 +6808,7 @@
   {
     "id": 97,
     "created_at": "2022-12-26 13:31:54.151043",
-    "updated_at": "2023-01-04 21:44:06.606106",
+    "updated_at": "2023-01-05 01:54:32.618963",
     "name": "Filelist",
     "url": "https://filelist.io/",
     "logo": "https://filelist.io/favicon.ico",
@@ -6884,7 +6884,7 @@
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
-    "message_title": "//img[@alt=\"Unread\"]/parent::td/following-sibling::td/a[1]//text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/b/text()",
     "page_message": "messages.php"
   },
   {

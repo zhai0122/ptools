@@ -7059,7 +7059,7 @@
   "pk": 97,
   "fields": {
     "created_at": "2022-12-26T13:31:54.151",
-    "updated_at": "2023-01-04T21:44:06.606",
+    "updated_at": "2023-01-05T01:54:32.618",
     "url": "https://filelist.io/",
     "name": "Filelist",
     "nickname": "filelist",
@@ -7133,7 +7133,7 @@
     "record_count_rule": ".//td[3]/text()",
     "seed_vol_rule": "//div[contains(text(),\"Seeding\")]/b[2]/text()",
     "mailbox_rule": "//a[@href=\"/messages.php\"]/span[1]/text()[1]",
-    "message_title": "//img[@alt=\"Unread\"]/parent::td/following-sibling::td/a[1]//text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/b/text()",
     "notice_rule": "//a[@href=\"index.php\"]/font[contains(text(),\"条\")]/text()[1]",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
     "hash_rule": "//td/b[contains(text(),\"Hash\")]/following::text()[1]"
