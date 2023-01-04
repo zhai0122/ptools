@@ -538,13 +538,16 @@ class PtSpider:
             url=site.url + site.page_sign_in.lstrip('/'),
             method=site.sign_in_method
         ).content.decode('utf8')
-        if sign_res.isdigit():
-            return CommonResponse.success(
-                msg='你还需要继续努力哦！此次签到，你获得了魔力奖励：{}'.format(sign_res)
+        logger.info(f'好多油签到反馈：{sign_res}')
+        try:
+            if int(sign_res) > 0:
+                return CommonResponse.success(
+                    msg='你还需要继续努力哦！此次签到，你获得了魔力奖励：{}'.format(sign_res)
+                )
+        except:
+            return CommonResponse.error(
+                msg=f'签到失败！{sign_res}'
             )
-        return CommonResponse.error(
-            msg=f'签到失败！{sign_res}'
-        )
 
     def sign_in_hd4fans(self, my_site: MySite):
         site = my_site.site
