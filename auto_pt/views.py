@@ -1096,12 +1096,15 @@ def get_site_torrents(request):
 
 
 def get_config_api(request):
-    file_path = os.path.join(BASE_DIR, 'db/ptools.toml')
-    res = pt_spider.generate_config_file()
-    if res.code != 0:
-        return JsonResponse(data=CommonResponse.error(
-            msg=res.msg
-        ).to_dict(), safe=False)
+    if request.GET.get('name') == 'ptools.toml':
+        file_path = os.path.join(BASE_DIR, 'db/ptools.toml')
+        res = pt_spider.generate_config_file()
+        if res.code != 0:
+            return JsonResponse(data=CommonResponse.error(
+                msg=res.msg
+            ).to_dict(), safe=False)
+    if request.GET.get('name') == 'hosts':
+        file_path = '/etc/hosts'
     try:
         with open(file_path, 'rb') as f:
             response = HttpResponse(f)

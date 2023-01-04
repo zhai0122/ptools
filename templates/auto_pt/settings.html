@@ -33,6 +33,10 @@
     </div>
 
     <div style="width: 100%;margin-top: 5px;">
+        <el-radio-group v-model="name" @input="get_config_settings">
+            <el-radio-button label="ptools.toml"></el-radio-button>
+            <el-radio-button label="hosts"></el-radio-button>
+        </el-radio-group>
         <el-input v-model="settings" type="textarea" autosize="{minRows: 30}" autocorrect="off"
                   class="settings"></el-input>
     </div>
@@ -46,6 +50,7 @@
         data() {
             return {
                 settings: '',
+                name: 'ptools.toml',
             }
         },
         beforeMount() {
@@ -57,7 +62,7 @@
         methods: {
             get_config_settings() {
                 axios.get(
-                    "{% url 'get_config_api' %}"
+                    "{% url 'get_config_api' %}" + '?name=' + this.name
                 ).then(res => {
                     console.log('获取数据列表成功', res)
                     {#let data = res.data#}
