@@ -15,7 +15,9 @@
             font-family: 'Heiti SC';
             line-height: 24px;
             border: 1px solid #eee;
-            height: 600px;
+            height: 800px;
+            min-height: 780px;
+            max-height: 800px;
             width: 100%;
             word-spacing: 3px;
             letter-spacing: 2px;
@@ -23,21 +25,6 @@
             overflow-y: scroll;
             word-break: break-all;
         }
-
-        settings {
-            background-color: #1f2c39 !important;;
-            color: whitesmoke;
-            border: 2px solid dimgrey;
-            border-radius: 3px;
-            line-height: 20px;
-            font-size: 16px;
-            width: 100%;
-            height: 700px;
-            padding: 5px;
-            overflow-y: scroll;
-            word-break: break-all;
-        }
-
     </style>
 </head>
 <body>
@@ -53,9 +40,7 @@
     </div>
 
     <div style="width: 100%;margin-top: 5px;">
-
-        <el-input v-model="settings" type="textarea" autosize="{minRows: 30}" autocorrect="off"
-                  class="settings"></el-input>
+        <el-input v-model="settings" type="textarea" autosize="{minRows: 30}" autocorrect="off"></el-input>
     </div>
 
 </div>
@@ -72,9 +57,6 @@
         },
         beforeMount() {
             this.get_config_settings()
-        },
-        mounted() {
-
         },
         methods: {
             get_config_settings() {
@@ -118,7 +100,7 @@
                         settings: this.settings
                     }
                 }).then(res => {
-                    console.log('获取数据列表成功', res)
+                    console.log(res)
                     {#let data = res.data#}
                     {#console.log(typeof res.data.data)#}
                     if (res.data.code === 0) {
@@ -132,14 +114,14 @@
                         this.loading = false
                         this.$message({
                             type: 'warning',
-                            message: '获取数据列表失败！'
+                            message: res.data.msg
                         });
                     }
                 }).catch(res => {
-                    console.log('获取数据列表失败', res)
+                    console.log('保存失败', res)
                     this.$message({
                         type: 'warning',
-                        message: '获取数据列表失败！' + res
+                        message: '数据保存失败！' + res
                     });
                 })
             }
