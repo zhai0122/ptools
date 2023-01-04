@@ -127,7 +127,7 @@ class PtSpider:
             'mobile': False
         }, delay=delay)
 
-    def send_text(self, text: str, url: str = None):
+    def send_text(self, message: str, title: str = '', url: str = None):
         """通知分流"""
         notifies = Notify.objects.filter(enable=True).all()
         res = '你还没有配置通知参数哦！'
@@ -142,7 +142,7 @@ class PtSpider:
                         secret=notify.corpsecret,
                         agent_id=notify.agentid, )
                     res = notify_push.send_text(
-                        text=text,
+                        text=message,
                         to_uid=notify.touser if notify.touser else '@all'
                     )
                     msg = '企业微信通知：{}'.format(res)
@@ -151,7 +151,7 @@ class PtSpider:
                 if notify.name == PushConfig.wxpusher_push:
                     """WxPusher通知"""
                     res = WxPusher.send_message(
-                        content=text,
+                        content=message,
                         url=url,
                         uids=notify.touser.split(','),
                         token=notify.corpsecret,
@@ -165,13 +165,13 @@ class PtSpider:
                         server=notify.custom_server,
                         pushkey=notify.corpsecret)
                     # res = pushdeer.send_text(text, desp="optional description")
-                    res = pushdeer.send_markdown(text=text,
-                                                 desp="#### 欢迎使用PTools，使用中遇到问题请在微信群进行反馈！")
+                    res = pushdeer.send_markdown(text=message,
+                                                 desp=title)
                     msg = 'pushdeer通知{}'.format(res)
                     logger.info(msg)
 
                 if notify.name == PushConfig.bark_push:
-                    url = notify.custom_server + notify.corpsecret + '/' + text
+                    url = f'{notify.custom_server}{notify.corpsecret}/{title}/{message}'
                     res = self.get_scraper().get(url=url)
                     msg = 'bark通知{}'.format(res)
                     logger.info(msg)
@@ -182,8 +182,8 @@ class PtSpider:
                     res = self.get_scraper().post(
                         url=url,
                         data={
-                            'text': '欢迎使用PTools',
-                            'desp': text
+                            'text': title,
+                            'desp': message
                         })
                     logger.info('爱语飞飞通知：{}'.format(res))
         except Exception as e:
@@ -269,7 +269,7 @@ class PtSpider:
             msg = '百度OCR识别失败：{}'.format(e)
             logger.info(traceback.format_exc(limit=3))
             # raise
-            self.send_text(msg)
+            self.send_text(title='OCR识别出错咯', message=msg)
             return CommonResponse.error(
                 status=StatusCodeEnum.OCR_ACCESS_ERR,
                 msg='{} {}'.format(StatusCodeEnum.OCR_ACCESS_ERR.errmsg, msg)
@@ -1234,11 +1234,12 @@ class PtSpider:
                 return CommonResponse.error(msg="网站访问失败")
         except Exception as e:
             # raise
+            title = f'{site.name} 网站访问失败'
             msg = '{} 网站访问失败！原因：{}'.format(site.name, e)
             # 打印异常详细信息
             logger.error(msg)
             logger.error(traceback.format_exc(limit=3))
-            self.send_text(msg)
+            self.send_text(title=title, message=msg)
             return CommonResponse.error(msg=msg)
 
     # @transaction.atomic
@@ -1437,8 +1438,9 @@ class PtSpider:
                 return CommonResponse.success(data=(new_count, count))
         except Exception as e:
             # raise
-            # self.send_text(site.name + '解析种子信息：失败！原因：' + str(e))
+            title = f'{site.name} 解析种子信息：失败！'
             msg = '解析种子页面失败！{}'.format(e)
+            self.send_text(title=title, message=msg)
             logger.error(msg)
             logger.error(traceback.format_exc(limit=3))
             return CommonResponse.error(msg=msg)
@@ -1700,7 +1702,7 @@ class PtSpider:
             message = '{} 访问个人主页信息：失败！原因：{}'.format(my_site.site.name, e)
             logger.error(message)
             logger.error(traceback.format_exc(limit=3))
-            # self.send_text(message)
+            # self.send_text(title=message, message=message)
             # raise
             return CommonResponse.error(msg=message)
 
@@ -1746,7 +1748,8 @@ class PtSpider:
                         if my_site.mail > 0:
                             template = '### <font color="red">{} 有{}条新短消息，请注意及时查收！</font>  \n'
                             # 测试发送网站消息原内容
-                            self.send_text(f'{template.format(site.name, my_site.mail)}\n{mail_str}\n{notice_str}')
+                            msg = f'{template.format(site.name, my_site.mail)}\n{mail_str}\n{notice_str}'
+                            self.send_text(title=msg, message=msg)
                         # ajax.php?action=user&id=
                         details_response = details_html.get('response')
                         stats = details_response.get('stats')
@@ -1798,7 +1801,8 @@ class PtSpider:
                                 'seed_vol': seeding_size,
                             })
                         if float(ratio) < 1:
-                            self.send_text(f'{site.name} 分享率 {ratio} 过低，请注意')
+                            msg = f'{site.name} 分享率 {ratio} 过低，请注意'
+                            self.send_text(title=msg, message=msg)
                         return CommonResponse.success(data=res_gpw)
                     else:
                         return CommonResponse.error(data=result)
@@ -1839,9 +1843,11 @@ class PtSpider:
                             'seed_vol': seeding_size,
                         })
                     if my_site.mail > 0:
-                        self.send_text(f'{site.name} 有{my_site.mail}条新消息，请注意查收！')
+                        msg = f'{site.name} 有{my_site.mail}条新消息，请注意查收！'
+                        self.send_text(title=msg, message=msg)
                     if float(ratio) < 1:
-                        self.send_text(f'{site.name} 分享率 {ratio} 过低，请注意')
+                        msg = f'{site.name} 分享率 {ratio} 过低，请注意'
+                        self.send_text(title=msg, message=msg)
                     return CommonResponse.success(data=res_gpw)
                 except Exception as e:
                     # 打印异常详细信息
@@ -1968,7 +1974,7 @@ class PtSpider:
                                 msg = '## <font color="red">{} 获取做种大小失败，请检查规则信息是否匹配？</font>'.format(
                                     site.name)
                                 logger.warning(msg)
-                                self.send_text(msg)
+                                self.send_text(title=msg, message=msg)
                                 break
                         else:
                             # seed_vol_all = 0
@@ -2153,7 +2159,7 @@ class PtSpider:
                             ratio = round(int(uploaded) / int(downloaded), 3)
                     if ratio and ratio != 'inf' and float(ratio) <= 1:
                         message = f'# <font color="red">{site.name}  站点分享率告警：{ratio}</font>  \n'
-                        self.send_text(message)
+                        self.send_text(title=message, message=message)
                     # 检查邮件
                     mail_str = ''.join(details_html.xpath(site.mailbox_rule))
                     notice_str = ''.join(details_html.xpath(site.notice_rule))
@@ -2166,9 +2172,8 @@ class PtSpider:
                         if mail_count + notice_count > 0:
                             template = '### <font color="red">{} 有{}条新短消息，请注意及时查收！</font>  \n'
                             # 测试发送网站消息原内容
-                            self.send_text(
-                                f'{template.format(site.name, mail_count + notice_count)}\n{mail_str}\n{notice_str}'
-                            )
+                            message = f'{template.format(site.name, mail_count + notice_count)}\n{mail_str}\n{notice_str}'
+                            self.send_text(title=message, message=message)
                     else:
                         my_site.mail = 0
                     if site.url in [
@@ -2325,3 +2330,10 @@ class PtSpider:
             return CommonResponse.success(
                 msg=f'初始化失败！{e}',
             )
+
+    def parse_uuid(self):
+        with open('db/ptools.toml', 'r') as f:
+            data = toml.load(f)
+        vip = data.get('vip')
+        os.environ['VIP'] = vip.get('key')
+        uuid = os.getenv()

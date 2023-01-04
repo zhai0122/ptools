@@ -269,6 +269,10 @@
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
+                    this.$message({
+                        type: 'success',
+                        message: '更新指令发送成功！稍后请在接到通知后同步数据库！'
+                    });
                     axios.get(
                         "{% url "do_update" %}"
                     ).then(res => {
@@ -295,7 +299,7 @@
                         console.log(res, 3)
                         this.$message({
                             type: 'error',
-                            message: "更新失败！请重新更新后初始化Xpath！"
+                            message: "更新失败！"
                         });
                     })
 

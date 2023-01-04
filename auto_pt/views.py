@@ -81,9 +81,7 @@ def test_field(request):
 
 
 def test_notify(request):
-    # res = NotifyDispatch().send_text(text='66666')
-
-    res = pt_spider.send_text('666')
+    res = pt_spider.send_text(title='通知测试', message='通知测试内容：欢迎使用PTools')
     logger.info(res)
     return JsonResponse(res, safe=False)
 

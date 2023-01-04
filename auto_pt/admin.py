@@ -129,17 +129,18 @@ class TaskJobAdmin(admin.ModelAdmin):  # instead of ModelAdmin
             obj.task_exec = False
             obj.save()
             # raise
-            msg = obj.job_id + '任务添加失败！原因：' + str(e)
+            msg = f'计划任务：{obj.job_id} 任务添加失败！原因：{e}'
             logger.error(msg)
-            pt_spider.send_text('计划任务：' + msg)
+            pt_spider.send_text(title=msg, message=msg)
             messages.error(request, msg)
 
     def delete_model(self, request, obj):
         print(obj)
         # DjangoJob.objects.filter(obj.job_id).delete()
         tasks.scheduler.get_job(obj.job_id).remove()
-        logging.info('计划任务：' + obj.job_id + ' 取消成功！')
-        pt_spider.send_text('计划任务：' + obj.job_id + ' 取消成功！')
+        message = f'计划任务：{obj.job_id} 取消成功！'
+        logging.info(message)
+        pt_spider.send_text(title=message, message=message)
         obj.delete()
 
     def delete_queryset(self, request, queryset):
@@ -147,8 +148,9 @@ class TaskJobAdmin(admin.ModelAdmin):  # instead of ModelAdmin
             job = tasks.scheduler.get_job(obj.job_id)
             if job:
                 job.remove()
-            logging.info('计划任务：' + obj.job_id + ' 取消成功！')
-            pt_spider.send_text('计划任务：' + obj.job_id + ' 取消成功！')
+            message = f'计划任务：{obj.job_id} 取消成功！'
+            logging.info(message)
+            pt_spider.send_text(title=message, message=message)
         queryset.delete()
 
     # def delete_view(self, request, object_id, extra_context=None):
@@ -170,10 +172,11 @@ class NotifyAdmin(AjaxAdmin):
 
     def test_notify(self, request, queryset):
         post = request.POST
-        text = post.get('text')
-        print(text)
+        title = post.get('title')
+        message = post.get('message')
+        print(title, message)
         try:
-            res = pt_spider.send_text(text)
+            res = pt_spider.send_text(title=title, message=message)
             return JsonResponse(data={
                 'status': 'success',
                 'msg': res
@@ -214,7 +217,16 @@ class NotifyAdmin(AjaxAdmin):
                 # 这里的type 对应el-input的原生input属性，默认为input
                 'type': 'input',
                 # key 对应post参数中的key
-                'key': 'text',
+                'key': 'title',
+                # 显示的文本
+                'label': '消息标题',
+                # 为空校验，默认为False
+                'require': True
+            }, {
+                # 这里的type 对应el-input的原生input属性，默认为input
+                'type': 'input',
+                # key 对应post参数中的key
+                'key': 'message',
                 # 显示的文本
                 'label': '测试消息',
                 # 为空校验，默认为False

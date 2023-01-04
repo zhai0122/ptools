@@ -33,9 +33,9 @@
         <el-dropdown split-button size="small" type="primary" @command="exec_shell">
             <i class="fas fa-terminal"></i>发送
             <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item command="git pull">更新代码</el-dropdown-item>
                 <el-dropdown-item command="pip install -r requirements.txt -U">更新依赖</el-dropdown-item>
-                <el-dropdown-item command="git clean -df">初始化代码</el-dropdown-item>
+                <el-dropdown-item command="git pull">更新代码</el-dropdown-item>
+                <el-dropdown-item command="git clean -df && git reset --hard">初始化代码</el-dropdown-item>
                 <el-dropdown-item command="python manage.py migrate">初始化xpath</el-dropdown-item>
             </el-dropdown-menu>
         </el-dropdown>
