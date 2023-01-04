@@ -1123,9 +1123,12 @@ def get_config_html(request):
 
 
 def save_config_api(request):
-    file_path = os.path.join(BASE_DIR, 'db/ptools.toml')
     content = json.loads(request.body.decode())
     logger.info(content.get('settings'))
+    if content.get('name') == 'ptools.toml':
+        file_path = os.path.join(BASE_DIR, 'db/ptools.toml')
+    if content.get('name') == 'hosts':
+        file_path = '/etc/hosts'
     try:
         with open(file_path, 'w') as f:
             f.write(content.get('settings'))
@@ -1133,8 +1136,9 @@ def save_config_api(request):
                 msg='配置文件保存成功！'
             ).to_dict(), safe=False)
     except Exception as e:
+        raise
         return JsonResponse(data=CommonResponse.error(
-            msg='获取配置文件信息失败！'
+            msg=f'获取配置文件信息失败！{e}'
         ).to_dict(), safe=False)
 
 

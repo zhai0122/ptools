@@ -8,18 +8,34 @@
     <title>Title</title>
     {% include 'admin/includes/css-part.html' %}
     <style>
-        .el-textarea__inner {
-            color: #F2F6FC;
+        textarea {
+            color: whitesmoke !important;;
             background-color: #1f2c39 !important;
             font-size: 16px;
             font-family: 'Heiti SC';
             line-height: 24px;
-            word-break: break-word;
             border: 1px solid #eee;
-            height: 100%;
+            height: 600px;
             width: 100%;
             word-spacing: 3px;
             letter-spacing: 2px;
+            padding: 5px;
+            overflow-y: scroll;
+            word-break: break-all;
+        }
+
+        settings {
+            background-color: #1f2c39 !important;;
+            color: whitesmoke;
+            border: 2px solid dimgrey;
+            border-radius: 3px;
+            line-height: 20px;
+            font-size: 16px;
+            width: 100%;
+            height: 700px;
+            padding: 5px;
+            overflow-y: scroll;
+            word-break: break-all;
         }
 
     </style>
@@ -27,16 +43,17 @@
 <body>
 <div id="app">
     <div style="width: 100%">
+        <el-radio-group v-model="name" @input="get_config_settings" size="small">
+            <el-radio-button label="ptools.toml"></el-radio-button>
+            <el-radio-button label="hosts"></el-radio-button>
+        </el-radio-group>
         <el-popconfirm title="确定修改配置文件吗？" @confirm="saveSettings">
             <el-button type="primary" slot="reference" size="small">保存</el-button>
         </el-popconfirm>
     </div>
 
     <div style="width: 100%;margin-top: 5px;">
-        <el-radio-group v-model="name" @input="get_config_settings">
-            <el-radio-button label="ptools.toml"></el-radio-button>
-            <el-radio-button label="hosts"></el-radio-button>
-        </el-radio-group>
+
         <el-input v-model="settings" type="textarea" autosize="{minRows: 30}" autocorrect="off"
                   class="settings"></el-input>
     </div>
@@ -97,6 +114,7 @@
                     },
                     url: "{% url 'save_config_api' %}",
                     data: {
+                        name: this.name,
                         settings: this.settings
                     }
                 }).then(res => {
