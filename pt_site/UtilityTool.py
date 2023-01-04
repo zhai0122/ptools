@@ -1561,12 +1561,12 @@ class PtSpider:
                     msg=site.name + '个人主页访问错误，错误码：' + str(user_detail_res.status_code)
                 )
             # logger.info(user_detail_res.status_code)
-            try:
-                logger.info(f'个人主页：{user_detail_res.content.decode("utf8")}')
-            except Exception as e:
-                logger.info('个人主页：UTF-8解析失败')
-                logger.info(f'个人主页：{user_detail_res.content}')
-            # 解析HTML
+            # try:
+            #     logger.info(f'个人主页：{user_detail_res.content.decode("utf8")}')
+            # except Exception as e:
+            #     logger.info('个人主页：UTF-8解析失败')
+            #     logger.info(f'个人主页：{user_detail_res.content}')
+            # # 解析HTML
             # logger.info(user_detail_res.is_redirect)
             if 'greatposterwall' in site.url or 'dicmusic' in site.url:
                 details_html = user_detail_res.json()
@@ -1576,6 +1576,7 @@ class PtSpider:
                 'https://www.htpt.cc/',
                 'https://pt.btschool.club/',
                 'https://pt.keepfrds.com/',
+                'https://pterclub.com/',
             ]:
                 logger.info(site.url)
                 details_html = etree.HTML(converter.convert(user_detail_res.text))
@@ -1917,6 +1918,7 @@ class PtSpider:
                 elif site.url in [
                     'https://monikadesign.uk/',
                     'https://pt.hdpost.top/',
+                    'https://pterclub.com/',
                     'https://reelflix.xyz/',
                     'https://hd-torrents.org/',
                     'https://filelist.io/',
@@ -2169,11 +2171,15 @@ class PtSpider:
                         mail_count = int(mail_count) if mail_count else 0
                         notice_count = int(notice_count) if notice_count else 0
                         my_site.mail = mail_count + notice_count
-                        if mail_count + notice_count > 0:
-                            template = '### <font color="red">{} 有{}条新短消息，请注意及时查收！</font>  \n'
+                        if mail_count > 0:
+                            message_res = self.send_request(my_site, url=site.url + site.page_message)
+                            mail_list = self.parse(message_res, site.message_title)
+                            mail = "  \n\n> ".join(mail_list)
+                            logger.info(mail)
+                            title = f'{site.name} 有{mail_count + notice_count}条新短消息，请注意及时查收！'
                             # 测试发送网站消息原内容
-                            message = f'{template.format(site.name, mail_count + notice_count)}\n{mail_str}\n{notice_str}'
-                            self.send_text(title=message, message=message)
+                            message = f'{notice_str}\n> {mail}'
+                            self.send_text(title=title, message=message)
                     else:
                         my_site.mail = 0
                     if site.url in [
@@ -2281,7 +2287,7 @@ class PtSpider:
                 )
                 """
             res = converter.convert(response.content)
-            logger.info('时魔响应：{}'.format(response.text))
+            # logger.info('时魔响应：{}'.format(response.text))
             # logger.info('转为简体的时魔页面：', str(res))
             # res_list = self.parse(res, site.hour_sp_rule)
             res_list = etree.HTML(res).xpath(site.hour_sp_rule)
