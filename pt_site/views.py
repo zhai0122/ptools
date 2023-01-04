@@ -54,7 +54,7 @@ def auto_sign_in():
     else:
         logger.info(message_list + consuming)
         message = message_list + consuming
-        pt_spider.send_text(title=message, message=message)
+        pt_spider.send_text(title='通知：自动签到', message=message)
     logger.info('{} 任务运行成功！完成时间：{}'.format('自动签到', time.strftime("%Y-%m-%d %H:%M:%S")))
 
 
@@ -112,7 +112,7 @@ def auto_get_status():
     )
     logger.info(message_list + consuming)
     message = message_list + consuming
-    pt_spider.send_text(title=message, message=message)
+    pt_spider.send_text(title='通知：更新个人数据', message=message)
 
 
 def auto_update_torrents():
@@ -155,7 +155,7 @@ def auto_update_torrents():
         time.strftime("%Y-%m-%d %H:%M:%S"))
     logger.info(message_list + consuming)
     message = message_list + consuming
-    pt_spider.send_text(title=message, message=message)
+    pt_spider.send_text(title='通知：拉取最新种子', message=message)
 
 
 def auto_remove_expire_torrents():
@@ -198,7 +198,7 @@ def auto_remove_expire_torrents():
             torrent_info.delete()
     end = time.time()
     message = f'> 清除种子 任务运行成功！共清除过期种子{count}个，耗时：{end - start}  \n{time.strftime("%Y-%m-%d %H:%M:%S")}'
-    pt_spider.send_text(title=message, message=message)
+    pt_spider.send_text(title='通知：清除种子任务', message=message)
 
 
 def auto_push_to_downloader():
@@ -207,7 +207,7 @@ def auto_push_to_downloader():
     print('推送到下载器')
     end = time.time()
     message = f'> 签到 任务运行成功！耗时：{end - start}  \n{time.strftime("%Y-%m-%d %H:%M:%S")}'
-    pt_spider.send_text(title=message, message=message)
+    pt_spider.send_text(title='通知：推送种子任务', message=message)
 
 
 def auto_get_torrent_hash():
@@ -217,7 +217,7 @@ def auto_get_torrent_hash():
     time.sleep(5)
     end = time.time()
     message = f'> 获取种子HASH 任务运行成功！耗时：{end - start}  \n{time.strftime("%Y-%m-%d %H:%M:%S")}'
-    pt_spider.send_text(title=message, message=message)
+    pt_spider.send_text(title='通知：自动获取种子HASH', message=message)
 
 
 def exec_command(commands):
@@ -248,7 +248,7 @@ def auto_upgrade():
         result = exec_command(update_commands)
         logger.info('更新完毕')
         message = f'> 更新完成！！请在接到通知后同步数据库！{datetime.datetime.now()}'
-        pt_spider.send_text(title=message, message=message)
+        pt_spider.send_text(title='通知：程序更新', message=message)
         return CommonResponse.success(
             msg='更新成功！稍后请在接到通知后同步数据库！！',
             data={
