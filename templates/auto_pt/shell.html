@@ -39,6 +39,8 @@
                 <el-dropdown-item command="python manage.py migrate">初始化xpath</el-dropdown-item>
             </el-dropdown-menu>
         </el-dropdown>
+        <el-tag type="danger" size="small">危险动作，操作前一定要请弄清楚你输入的命令到底是做什么的。</el-tag>
+
     </div>
     <div class="code">
         <pre v-for="result in results" v-html="result"></pre>
