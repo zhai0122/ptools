@@ -12,7 +12,7 @@ from simpleui.admin import AjaxAdmin
 from transmission_rpc import Torrent
 
 from pt_site.UtilityTool import MessageTemplate, FileSizeConvert
-from pt_site.models import Site, Downloader, SignIn
+from pt_site.models import Site, Downloader, SignIn, UserLevelRule
 from pt_site.models import TorrentInfo, SiteStatus, MySite
 # Register your models here.
 from pt_site.views import pool, pt_spider
@@ -188,6 +188,24 @@ class SiteAdmin(admin.ModelAdmin):  # instead of ModelAdmin
                 'viewfilelist_rule',
             ),
         }]
+    )
+
+
+@admin.register(UserLevelRule)
+class UserLevelRuleAdmin(AjaxAdmin):
+    # 显示字段
+    list_display = (
+        'site',
+        'level_id',
+        'level',
+        'days',
+        # 'uploaded',
+        'downloaded',
+        'bonus',
+        'score',
+        'ratio',
+        'torrents',
+        'rights',
     )
 
 
