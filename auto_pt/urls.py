@@ -43,4 +43,6 @@ urlpatterns = [
     path(r'get_helper_license', views.get_helper_license, name='get_helper_license'),
     path(r'downloading_status', views.downloading_status, name='downloading_status'),
     path(r'do_sql', views.do_sql, name='do_sql'),
+    path(r'exec_shell_command', views.exec_shell_command, name='exec_shell_command'),
+    path(r'exec_shell_command', views.exec_shell_command, name='exec_shell_command'),
 ]

@@ -1,0 +1,120 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {% include 'admin/includes/css-part.html' %}
+    <style>
+        .code {
+            color: #F2F6FC;
+            background-color: #1f2c39 !important;
+            font-size: 12px;
+            font-family: 'Heiti SC';
+            line-height: 16px;
+            word-break: break-word;
+            border: 1px solid #eee;
+            height: 100%;
+            width: 98%;
+        {#word-spacing: 3px;#}{#letter-spacing: 2px;#} padding: 15px;
+            margin: auto;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div style="margin-bottom: 5px;">
+        <el-input v-model="shell" @change="exec_shell" size="small"
+                  style="margin-left: 2px;width: 480px;">
+        </el-input>
+        <el-dropdown split-button size="small" type="primary" @command="exec_shell">
+            <i class="fas fa-terminal"></i>发送
+            <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item command="git pull">更新代码</el-dropdown-item>
+                <el-dropdown-item command="pip install -r requirements.txt -U">更新依赖</el-dropdown-item>
+                <el-dropdown-item command="git clean -df">初始化代码</el-dropdown-item>
+                <el-dropdown-item command="python manage.py migrate">初始化xpath</el-dropdown-item>
+            </el-dropdown-menu>
+        </el-dropdown>
+    </div>
+    <div class="code">
+        <pre v-for="result in results" v-html="result"></pre>
+    </div>
+</div>
+{% include 'admin/includes/js-part.html' %}
+<script src="{% static 'admin/simpleui-x/js/axios.min.js' %}"></script>
+<script>
+    const vm = new Vue({
+        el: '#app',
+        data() {
+            return {
+                shell: '',
+                results: []
+            }
+        },
+        beforeMount() {
+
+        },
+        mounted() {
+            {#this.chart = this.$refs.charts.chart#}
+            setTimeout(() => {
+
+            }, 50)
+
+        },
+        methods: {
+            exec_shell(command) {
+                if (command.length > 0) {
+                    this.shell = command
+                }
+                let shell = this.shell.trim()
+                if (shell.length <= 0) {
+                    this.$message({
+                        type: 'warning',
+                        message: '命令不能为空！'
+                    });
+                    this.shell = ''
+                    return
+                }
+                this.results.unshift(shell)
+                this.shell = ''
+                if (shell == 'clear') {
+                    this.results = []
+                    return
+                }
+                axios({
+                    method: "post",
+                    headers: {
+                        "content-type": "application/json", // 默认值
+                    },
+                    url: "{% url 'exec_shell_command' %}",
+                    data: {
+                        shell
+                    }
+                }).then(res => {
+                    console.log('命令执行结果：', res.data)
+                    if (res.data.code == 0) {
+                        this.results.splice(1, 0, res.data.data)
+                    } else {
+                        this.loading = false
+                        this.$message({
+                            type: 'warning',
+                            message: `${shell}: 命令执行！`
+                        });
+                    }
+                }).catch(res => {
+                    console.log('命令执行失败', res)
+                    this.$message({
+                        type: 'warning',
+                        message: '命令执行失败！' + res
+                    });
+                })
+            },
+        }
+    })
+</script>
+</body>
+</html>

@@ -292,6 +292,10 @@ SIMPLEUI_CONFIG = {
             'name': '日志查看',
             'icon': 'fab fa-blogger',
             'url': '/tasks/show_log_list'
+        }, {
+            'name': '简易终端',
+            'icon': 'fa fa-terminal',
+            'url': '/tasks/exec_shell_command'
         }, ]
     }]
 }

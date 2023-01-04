@@ -1132,7 +1132,19 @@ def save_config_api(request):
                 msg='配置文件保存成功！'
             ).to_dict(), safe=False)
     except Exception as e:
-        raise
         return JsonResponse(data=CommonResponse.error(
             msg='获取配置文件信息失败！'
+        ).to_dict(), safe=False)
+
+
+def exec_shell_command(request):
+    if request.method == 'GET':
+        return render(request, 'auto_pt/shell.html')
+    else:
+        content = json.loads(request.body)
+        logger.info(content)
+        p = subprocess.getoutput(content.get('shell'))
+        logger.info(p)
+        return JsonResponse(data=CommonResponse.success(
+            data=p
         ).to_dict(), safe=False)
