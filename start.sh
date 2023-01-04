@@ -55,8 +55,6 @@ echo 104.25.61.106 share.dmhy.org >>/etc/hosts
 echo 104.25.62.106 share.dmhy.org >>/etc/hosts
 echo 172.67.98.15 share.dmhy.org >>/etc/hosts
 echo 172.67.98.15 share.dmhy.org >>/etc/hosts
-echo "写入冬樱HOSTS"
-echo 217.79.189.238 wintersakura.net >>/etc/hosts
 echo "启动服务"
 python manage.py migrate
 python manage.py runserver 0.0.0.0:$DJANGO_WEB_PORT

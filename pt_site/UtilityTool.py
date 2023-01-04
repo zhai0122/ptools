@@ -1062,7 +1062,9 @@ class PtSpider:
                         status=StatusCodeEnum.WEB_CONNECT_ERR,
                         msg=StatusCodeEnum.WEB_CONNECT_ERR.errmsg + '签到失败！'
                     )
-            if 'wintersakura' in site.url:
+            if site.url in [
+                # 'https://wintersakura.net/'
+            ]:
                 # 单独发送请求，解决冬樱签到问题
                 res = requests.get(url=url, verify=False, cookies=cookie2dict(my_site.cookie), headers={
                     'user-agent': my_site.user_agent
@@ -1505,7 +1507,10 @@ class PtSpider:
                 my_site.cookie = cookies
                 my_site.save()
             # 发送请求，做种信息与正在下载信息，个人主页
-            if 'wintersakura' in site.url or 'hdchina' in site.url:
+            if site.url in [
+                'https://hdchina.org/',
+                # 'https://wintersakura.net/',
+            ]:
                 # 单独发送请求，解决冬樱签到问题
                 user_detail_res = requests.get(url=user_detail_url, verify=False, cookies=cookie2dict(my_site.cookie),
                                                headers={
@@ -1629,7 +1634,9 @@ class PtSpider:
                     # seeding_html = details_html.xpath('//div[@id="ka2"]/table')[0]
                 else:
                     details_html = etree.HTML(converter.convert(user_detail_res.text))
-                if 'wintersakura' in site.url:
+                if site.url in [
+                    # 'https://wintersakura.net/'
+                ]:
                     # 单独发送请求，解决冬樱签到问题
                     seeding_detail_res = requests.get(url=seeding_detail_url, verify=False,
                                                       cookies=cookie2dict(my_site.cookie),
@@ -2233,7 +2240,10 @@ class PtSpider:
             url = url.format(my_site.user_id)
         logger.info(f'魔力页面链接：{url}')
         try:
-            if 'wintersakura' in site.url or 'hdchina' in site.url:
+            if site.url in [
+                'https://hdchina.org/',
+                # 'https://wintersakura.net/',
+            ]:
                 # 单独发送请求，解决冬樱签到问题
                 response = requests.get(url=url, verify=False,
                                         cookies=cookie2dict(my_site.cookie),
