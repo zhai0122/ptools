@@ -14,7 +14,6 @@ from urllib.request import urlopen
 import aip
 import cloudscraper
 import dateutil.parser
-import opencc
 import qbittorrentapi
 import requests
 import toml
@@ -55,8 +54,6 @@ def cookie2dict(source_str: str):
 
 # 获取字符串中的小数
 get_decimals = lambda x: re.search("\d+(\.\d+)?", x).group() if re.search("\d+(\.\d+)?", x) else 0
-
-converter = opencc.OpenCC('t2s.json')
 
 lock = threading.Lock()
 
@@ -652,7 +649,8 @@ class PtSpider:
         )
         sign_str = ''.join(self.parse(result, '//a[@href="showup.php"]/text()'))
         logger.info(site.name + sign_str)
-        if '已签到' in converter.convert(sign_str):
+        if '已签到' in sign_str or '已簽到' in sign_str:
+            # if '已签到' in converter.convert(sign_str):
             return CommonResponse.success(msg=site.name + '已签到，请勿重复操作！！')
         req = self.parse(result, '//form//td/input[@name="req"]/@value')
         hash_str = self.parse(result, '//form//td/input[@name="hash"]/@value')
@@ -895,8 +893,7 @@ class PtSpider:
                 logger.info('自动签到：{}, {}'.format(my_site, result))
                 if result.code == StatusCodeEnum.OK.code:
                     message_list += (
-                            '> <font color="orange">' + my_site.site.name + '</font> 签到成功！' + converter.convert(
-                        result.msg) + '  \n\n')
+                            '> <font color="orange">' + my_site.site.name + '</font> 签到成功！' + result.msg + '  \n\n')
                     logger.info(my_site.site.name + '签到成功！' + result.msg)
                 else:
                     message = '> <font color="red">' + my_site.site.name + ' 签到失败！' + result.msg + '</font>  \n\n'
@@ -1076,7 +1073,7 @@ class PtSpider:
             else:
                 res = self.send_request(my_site=my_site, method=site.sign_in_method, url=url,
                                         data=eval(site.sign_in_params))
-            logger.info(res.status_code)
+            logger.info(res)
             if 'pterclub.com' in site.url:
                 logger.info(f'猫站签到返回值：{res.json()}')
                 status = res.json().get('status')
@@ -1166,7 +1163,7 @@ class PtSpider:
                     return CommonResponse.success(msg=message)
                 return CommonResponse.error(msg='签到失败！请求响应码：{}'.format(res.status_code))
             if res.status_code == 200:
-                status = converter.convert(res.text.encode('utf8'))
+                status = res.text
                 # logger.info(status)
                 # status = ''.join(self.parse(res, '//a[contains(@href,{})]/text()'.format(site.page_sign_in)))
                 # 检查是否签到成功！
@@ -1176,9 +1173,14 @@ class PtSpider:
                 if haidan_sign_str in status \
                         or '(获得' in status \
                         or '签到已得' in status \
+                        or '簽到已得' in status \
                         or '已签到' in status \
+                        or '已簽到' in status \
                         or '已经签到' in status \
+                        or '已經簽到' in status \
                         or '签到成功' in status \
+                        or '簽到成功' in status \
+                        or 'Attend got bonus' in status \
                         or 'Success' in status:
                     pass
                 else:
@@ -1585,7 +1587,7 @@ class PtSpider:
                 'https://reelflix.xyz/',
             ]:
                 logger.info(site.url)
-                details_html = etree.HTML(converter.convert(user_detail_res.text))
+                details_html = etree.HTML(user_detail_res.text)
                 if 'btschool' in site.url:
                     text = details_html.xpath('//script/text()')
                     logger.info('学校：{}'.format(text))
@@ -1602,7 +1604,7 @@ class PtSpider:
                             pass
                 seeding_html = details_html
             elif 'hdchina.org' in site.url:
-                details_html = etree.HTML(converter.convert(user_detail_res.text))
+                details_html = etree.HTML(user_detail_res.text)
                 csrf = details_html.xpath('//meta[@name="x-csrf"]/@content')
                 logger.info(f'CSRF Token：{csrf}')
                 # seeding_detail_res = self.send_request(my_site=my_site, url=seeding_detail_url, method='post',
@@ -1627,9 +1629,9 @@ class PtSpider:
                 logger.info(f'cookie: {my_site.cookie}')
                 logger.info(f'请求中的cookie: {seeding_detail_res.cookies}')
                 logger.info(f'做种列表：{seeding_detail_res.text}')
-                seeding_html = etree.HTML(converter.convert(seeding_detail_res.text))
+                seeding_html = etree.HTML(seeding_detail_res.text)
             elif 'club.hares.top' in site.url:
-                details_html = etree.HTML(converter.convert(user_detail_res.text))
+                details_html = etree.HTML(user_detail_res.text)
                 seeding_detail_res = self.send_request(my_site=my_site, url=seeding_detail_url, header={
                     'Accept': 'application/json'
                 })
@@ -1642,7 +1644,7 @@ class PtSpider:
                     details_html = etree.HTML(user_detail_res.content)
                     # seeding_html = details_html.xpath('//div[@id="ka2"]/table')[0]
                 else:
-                    details_html = etree.HTML(converter.convert(user_detail_res.text))
+                    details_html = etree.HTML(user_detail_res.text)
                 if site.url in [
                     # 'https://wintersakura.net/'
                 ]:
@@ -1662,7 +1664,7 @@ class PtSpider:
                         status=StatusCodeEnum.WEB_CONNECT_ERR,
                         msg='{} 做种信息访问错误，错误码：{}'.format(site.name, str(seeding_detail_res.status_code))
                     )
-                seeding_html = etree.HTML(converter.convert(seeding_detail_res.text))
+                seeding_html = etree.HTML(seeding_detail_res.text)
                 if 'kp.m-team.cc' in site.url:
                     url_list = self.parse(
                         seeding_detail_res,
@@ -1677,7 +1679,7 @@ class PtSpider:
                         seeding_res = self.send_request(my_site=my_site, url=seeding_url)
                         seeding_text += seeding_res.text.encode('utf8')
                     # logger.info(seeding_detail_res)
-                    seeding_html = etree.HTML(converter.convert(seeding_text))
+                    seeding_html = etree.HTML(seeding_text)
             # leeching_html = etree.HTML(leeching_detail_res.text)
             # logger.info(seeding_detail_res.text.encode('utf8'))
             return CommonResponse.success(data={
@@ -2099,11 +2101,11 @@ class PtSpider:
                 logger.info(f'h&r: {hr} ,解析后：{my_hr}')
                 # logger.info(my_bonus)
                 # 更新我的站点数据
-                invitation = converter.convert(invitation)
+                # invitation = converter.convert(invitation)
                 # x = invitation.split('/')
                 # invitation = re.sub('[\u4e00-\u9fa5]', '', invitation)
                 logger.info(f'当前获取邀请数：{invitation}')
-                if invitation == '没有邀请资格':
+                if invitation == '没有邀请资格' or invitation == '沒有邀請資格':
                     my_site.invitation = 0
                 elif '/' in invitation:
                     invitation_list = [int(n) for n in invitation.split('/')]
@@ -2172,7 +2174,7 @@ class PtSpider:
                     # 检查邮件
                     mail_check = len(details_html.xpath(site.mailbox_rule))
                     notice_check = len(details_html.xpath(site.notice_rule))
-                    if mail_check > 0 or notice_check == 0:
+                    if mail_check > 0 or notice_check > 0:
                         if site.url in [
                             'https://monikadesign.uk/',
                             'https://pt.hdpost.top/',
@@ -2322,11 +2324,11 @@ class PtSpider:
                     delay=60
                 )
                 """
-            res = converter.convert(response.content)
-            # logger.info('时魔响应：{}'.format(response.text))
+            # response = converter.convert(response.content)
+            logger.info('时魔响应：{}'.format(response.content))
             # logger.info('转为简体的时魔页面：', str(res))
             # res_list = self.parse(res, site.hour_sp_rule)
-            res_list = etree.HTML(res).xpath(site.hour_sp_rule)
+            res_list = etree.HTML(response.content).xpath(site.hour_sp_rule)
             if 'u2.dmhy.org' in site.url:
                 res_list = ''.join(res_list).split('，')
                 res_list.reverse()
