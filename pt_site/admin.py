@@ -121,6 +121,7 @@ class SiteAdmin(admin.ModelAdmin):  # instead of ModelAdmin
                 'page_user',
                 'page_control_panel',
                 'page_search',
+                'page_message',
                 'page_leeching',
                 'page_uploaded',
                 'page_seeding',

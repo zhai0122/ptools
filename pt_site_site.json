@@ -6398,7 +6398,7 @@
   {
     "id": 92,
     "created_at": "2022-12-25 17:54:44.854475",
-    "updated_at": "2023-01-04 21:44:06.583588",
+    "updated_at": "2023-01-05 09:21:51.841578",
     "name": "莫妮卡",
     "url": "https://monikadesign.uk/",
     "logo": "https://monikadesign.uk/favicon.ico",
@@ -6475,7 +6475,7 @@
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//span[contains(text(),\"全站免费\")]/following-sibling::div/span/text()",
     "message_title": "//td/span[@class=\"label label-danger\"]/parent::td/preceding-sibling::td[@class=\"col-sm-5\"]/a/text()",
-    "page_message": "messages.php"
+    "page_message": "mail/inbox"
   },
   {
     "id": 93,
@@ -6890,7 +6890,7 @@
   {
     "id": 98,
     "created_at": "2022-12-26 14:03:05.511105",
-    "updated_at": "2023-01-04 21:44:06.609557",
+    "updated_at": "2023-01-05 09:22:10.186390",
     "name": "普斯特",
     "url": "https://pt.hdpost.top/",
     "logo": "https://pt.hdpost.top/favicon.ico",
@@ -6967,7 +6967,7 @@
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//span[contains(text(),\"全站免费\")]/following-sibling::div/span/text()",
     "message_title": "//td/span[@class=\"label label-danger\"]/parent::td/preceding-sibling::td[@class=\"col-sm-5\"]/a/text()",
-    "page_message": "messages.php"
+    "page_message": "mail/inbox"
   },
   {
     "id": 99,
@@ -7136,7 +7136,7 @@
   {
     "id": 101,
     "created_at": "2022-12-27 12:56:12.440343",
-    "updated_at": "2023-01-04 21:44:06.623597",
+    "updated_at": "2023-01-05 09:21:29.567305",
     "name": "Reelflix",
     "url": "https://reelflix.xyz/",
     "logo": "https://reelflix.xyz/favicon.ico",
@@ -7213,7 +7213,7 @@
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//span[contains(text(),\"全站免费\")]/following-sibling::div/span/text()",
     "message_title": "//td/i[@class=\"fal fa-cross text-red\"]/parent::td/preceding-sibling::td/a/text()",
-    "page_message": "messages.php"
+    "page_message": "mail/inbox"
   },
   {
     "id": 102,

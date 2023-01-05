@@ -544,9 +544,10 @@ class PtSpider:
                 return CommonResponse.success(
                     msg='你还需要继续努力哦！此次签到，你获得了魔力奖励：{}'.format(sign_res)
                 )
-        except:
+        except Exception as e:
+            logger.info(traceback.format_exc(3))
             return CommonResponse.error(
-                msg=f'签到失败！{sign_res}'
+                msg=f'签到失败！{sign_res}: {e}'
             )
 
     def sign_in_hd4fans(self, my_site: MySite):
@@ -870,10 +871,11 @@ class PtSpider:
         if datetime.now().hour < 9:
             # U2/52PT 每天九点前不签到
             queryset = [my_site for my_site in queryset if my_site.site.url not in [
-                'https://u2.dmhy.org/', 'https://52pt.site/'
+                'https://u2.dmhy.org/',
+                # 'https://52pt.site/'
             ] and my_site.signin_set.filter(created_at__date__gte=datetime.today()).count() <= 0
                         and my_site.cookie]
-            message = '> <font color="red">站点：`U2`以及`52PT` 早上九点之前不执行签到任务哦！</font>  \n\n'
+            message = '> <font color="red">站点：`U2` 早上九点之前不执行签到任务哦！</font>  \n\n'
             logger.info(message)
             message_list = message + message_list
         else:
@@ -1144,7 +1146,7 @@ class PtSpider:
                     )
             if 'btschool' in site.url:
                 # logger.info(res.status_code)
-                logger.info('学校签到：{}'.format(res.text.encode('utf-8')))
+                logger.info('学校签到：{}'.format(res.text))
                 text = self.parse(res, '//script/text()')
                 logger.info('解析签到返回信息：{}'.format(text))
                 if len(text) > 0:
@@ -1164,7 +1166,7 @@ class PtSpider:
                 return CommonResponse.error(msg='签到失败！请求响应码：{}'.format(res.status_code))
             if res.status_code == 200:
                 status = converter.convert(res.text.encode('utf8'))
-                logger.info(status)
+                # logger.info(status)
                 # status = ''.join(self.parse(res, '//a[contains(@href,{})]/text()'.format(site.page_sign_in)))
                 # 检查是否签到成功！
                 # if '签到得魔力' in converter.convert(status):
@@ -1191,10 +1193,10 @@ class PtSpider:
                         '//p[contains(text(),"本次签到获得魅力")]/preceding-sibling::h1[1]/span/text()'
                     )
                     content_parse = self.parse(res, '//p[contains(text(),"本次签到获得魅力")]/text()')
+                logger.info(f'签到信息标题：{content_parse}')
+                logger.info(f'签到信息：{content_parse}')
                 title = ''.join(title_parse).strip()
-                # logger.info(content_parse)
                 content = ''.join(content_parse).strip().replace('\n', '')
-                # logger.info(content)
                 message = title + '，' + content
                 logger.info(f'{my_site} 签到返回信息：{message}')
                 if len(message) <= 1:
@@ -1577,6 +1579,9 @@ class PtSpider:
                 'https://pt.btschool.club/',
                 'https://pt.keepfrds.com/',
                 'https://pterclub.com/',
+                'https://monikadesign.uk/',
+                'https://pt.hdpost.top/',
+                'https://reelflix.xyz/',
             ]:
                 logger.info(site.url)
                 details_html = etree.HTML(converter.convert(user_detail_res.text))
@@ -1649,7 +1654,7 @@ class PtSpider:
 
                 else:
                     seeding_detail_res = self.send_request(my_site=my_site, url=seeding_detail_url, delay=25)
-                logger.info('做种信息：{}'.format(seeding_detail_res.text))
+                logger.info('做种信息：{}'.format(seeding_detail_res))
                 # leeching_detail_res = self.send_request(my_site=my_site, url=leeching_detail_url, timeout=25)
                 if seeding_detail_res.status_code != 200:
                     return CommonResponse.error(
@@ -1918,8 +1923,8 @@ class PtSpider:
                 elif site.url in [
                     'https://monikadesign.uk/',
                     'https://pt.hdpost.top/',
-                    'https://pterclub.com/',
                     'https://reelflix.xyz/',
+                    'https://pterclub.com/',
                     'https://hd-torrents.org/',
                     'https://filelist.io/',
                     'https://www.pttime.org/',
@@ -2160,23 +2165,38 @@ class PtSpider:
                         else:
                             ratio = round(int(uploaded) / int(downloaded), 3)
                     if ratio and ratio != 'inf' and float(ratio) <= 1:
-                        message = f'# <font color="red">{site.name}  站点分享率告警：{ratio}</font>  \n'
-                        self.send_text(title=message, message=message)
+                        title = f'{site.name}  站点分享率告警：{ratio}'
+                        message = f'# <font color="red">{title}</font>  \n'
+                        self.send_text(title=title, message=message)
                     # 检查邮件
-                    mail_str = ''.join(details_html.xpath(site.mailbox_rule))
-                    notice_str = ''.join(details_html.xpath(site.notice_rule))
-                    if mail_str or notice_str:
-                        mail_count = re.sub(u"([^\u0030-\u0039])", "", mail_str)
-                        notice_count = re.sub(u"([^\u0030-\u0039])", "", notice_str)
-                        mail_count = int(mail_count) if mail_count else 0
-                        notice_count = int(notice_count) if notice_count else 0
+                    mail_check = len(details_html.xpath(site.mailbox_rule))
+                    notice_check = len(details_html.xpath(site.notice_rule))
+                    if mail_check > 0 or notice_check > 0:
+                        if site.url in [
+                            'https://monikadesign.uk/',
+                            'https://pt.hdpost.top/',
+                            'https://reelflix.xyz/',
+                        ]:
+                            mail_count = mail_check
+                            notice_str = ''.join(details_html.xpath(site.notice_rule))
+                            notice_count = 0
+                        else:
+                            mail_str = ''.join(details_html.xpath(site.mailbox_rule))
+                            notice_str = ''.join(details_html.xpath(site.notice_rule))
+                            mail_count = re.sub(u"([^\u0030-\u0039])", "", mail_str)
+                            notice_count = re.sub(u"([^\u0030-\u0039])", "", notice_str)
+                            mail_count = int(mail_count) if mail_count else 0
+                            notice_count = int(notice_count) if notice_count else 0
                         my_site.mail = mail_count + notice_count
                         if mail_count > 0:
                             message_res = self.send_request(my_site, url=site.url + site.page_message)
+                            logger.info(message_res.text)
                             mail_list = self.parse(message_res, site.message_title)
+                            mail_list = [mail.strip() for mail in mail_list]
+                            logger.info(mail_list)
                             mail = "  \n\n> ".join(mail_list)
                             logger.info(mail)
-                            title = f'{site.name} 有{mail_count + notice_count}条新短消息，请注意及时查收！'
+                            title = f'{site.name} 有{len(mail_list) + notice_count}条新短消息，请注意及时查收！'
                             # 测试发送网站消息原内容
                             message = f'{notice_str}  \n> {mail}'
                             self.send_text(title=title, message=message)
