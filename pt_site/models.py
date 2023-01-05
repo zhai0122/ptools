@@ -232,14 +232,18 @@ class Site(BaseEntity):
                                     default='//a[@href="messages.php"]/font[contains(text(),"条")]/text()[1]',
                                     help_text='获取新邮件',
                                     max_length=128)
-    message_title = models.CharField(verbose_name='邮件信息',
-                                     default='//img[@alt="Unread"]/parent::div/following-sibling::a[1]/div/text()',
+    message_title = models.CharField(verbose_name='邮件标题',
+                                     default='//img[@alt="Unread"]/parent::td/following-sibling::td/a[1]//text()',
                                      help_text='获取邮件标题',
                                      max_length=128)
     notice_rule = models.CharField(verbose_name='公告规则',
                                    default='//a[@href="index.php"]/font[contains(text(),"条")]/text()[1]',
                                    help_text='获取新公告',
                                    max_length=128)
+    notice_title = models.CharField(verbose_name='公告标题',
+                                    default='//td[@class="text"]/div/a//text()',
+                                    help_text='获取公告标题',
+                                    max_length=128)
     full_site_free = models.CharField(verbose_name='站免规则',
                                       default='//td/b/a/font[contains(text(),"全站") and contains(text(),"Free")]/text()',
                                       help_text='获取新公告',

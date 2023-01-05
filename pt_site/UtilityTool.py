@@ -21,6 +21,7 @@ import toml
 import transmission_rpc
 import urllib3.util.ssl_
 import yaml
+import numpy as np
 from django.db.models import QuerySet
 from lxml import etree
 from pypushdeer import PushDeer
@@ -2171,7 +2172,7 @@ class PtSpider:
                     # 检查邮件
                     mail_check = len(details_html.xpath(site.mailbox_rule))
                     notice_check = len(details_html.xpath(site.notice_rule))
-                    if mail_check > 0 or notice_check > 0:
+                    if mail_check > 0 or notice_check == 0:
                         if site.url in [
                             'https://monikadesign.uk/',
                             'https://pt.hdpost.top/',
@@ -2188,18 +2189,33 @@ class PtSpider:
                             mail_count = int(mail_count) if mail_count else 0
                             notice_count = int(notice_count) if notice_count else 0
                         my_site.mail = mail_count + notice_count
+                        notice_list = []
+                        mail_list = []
+                        message_list = ''
+                        if notice_count > 0:
+                            notice_res = self.send_request(my_site, url=site.url)
+                            logger.info(f'公告信息：{notice_res}')
+                            notice_list = self.parse(notice_res, site.notice_title)
+                            notice_list = ["".join(notice) for notice in
+                                           np.array(notice_list).reshape(len(notice_list) // 2, 2)]
+                            logger.info(f'公告信息列表：{notice_list}')
+                            notice = '  \n\n### '.join(notice_list[:notice_count])
+                            message_list += f'## 公告  \n### {notice}'
+                            time.sleep(1)
                         if mail_count > 0:
                             message_res = self.send_request(my_site, url=site.url + site.page_message)
-                            logger.info(message_res.text)
+                            logger.info(f'PM消息页面：{message_res}')
                             mail_list = self.parse(message_res, site.message_title)
                             mail_list = [mail.strip() for mail in mail_list]
                             logger.info(mail_list)
                             mail = "  \n\n> ".join(mail_list)
                             logger.info(mail)
-                            title = f'{site.name} 有{len(mail_list) + notice_count}条新短消息，请注意及时查收！'
+                            logger.info(f'PM信息列表：{mail}')
                             # 测试发送网站消息原内容
-                            message = f'{notice_str}  \n> {mail}'
-                            self.send_text(title=title, message=message)
+                            message = f'## 短消息  \n > {mail}'
+                            message_list += message
+                        title = f'{site.name} 有{len(mail_list) + len(notice_list)}条新短消息，请注意及时查收！'
+                        self.send_text(title=title, message=message_list)
                     else:
                         my_site.mail = 0
                     if site.url in [
