@@ -1904,6 +1904,7 @@ class PtSpider:
                     'https://pt.btschool.club/',
                     'https://azusa.wiki/',
                     'https://pt.2xfree.org/',
+                    'http://www.oshen.win/',
                 ]:
                     # 获取到的是整段，需要解析
                     logger.info('做种体积：{}'.format(seed_vol_list))
