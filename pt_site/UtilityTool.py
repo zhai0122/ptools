@@ -1755,10 +1755,10 @@ class PtSpider:
                         notice_str = seeding_response.get("notifications").get("notifications")
                         my_site.mail = int(mail_str) + int(notice_str)
                         if my_site.mail > 0:
-                            template = '### <font color="red">{} 有{}条新短消息，请注意及时查收！</font>  \n'
+                            title = f'{site.name} 有{my_site.mail}条新短消息，请注意及时查收！'
+                            msg = f'### <font color="red">{title}</font>  \n'
                             # 测试发送网站消息原内容
-                            msg = f'{template.format(site.name, my_site.mail)}\n{mail_str}\n{notice_str}'
-                            self.send_text(title=msg, message=msg)
+                            self.send_text(title=title, message=msg)
                         # ajax.php?action=user&id=
                         details_response = details_html.get('response')
                         stats = details_response.get('stats')
