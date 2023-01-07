@@ -2182,8 +2182,9 @@ class PtSpider:
                             'https://reelflix.xyz/',
                         ]:
                             mail_count = mail_check
-                            notice_str = ''.join(details_html.xpath(site.notice_rule))
+                            # notice_str = ''.join(details_html.xpath(site.notice_rule))
                             notice_count = 0
+
                         else:
                             mail_str = ''.join(details_html.xpath(site.mailbox_rule))
                             notice_str = ''.join(details_html.xpath(site.notice_rule))
@@ -2191,7 +2192,6 @@ class PtSpider:
                             notice_count = re.sub(u"([^\u0030-\u0039])", "", notice_str)
                             mail_count = int(mail_count) if mail_count else 0
                             notice_count = int(notice_count) if notice_count else 0
-                        my_site.mail = mail_count + notice_count
                         notice_list = []
                         mail_list = []
                         message_list = ''
@@ -2215,9 +2215,18 @@ class PtSpider:
                             logger.info(mail)
                             logger.info(f'PM信息列表：{mail}')
                             # 测试发送网站消息原内容
-                            message = f'## 短消息  \n > {mail}'
+                            message = f'## 短消息  只显示第一页哦\n > {mail}'
                             message_list += message
-                        title = f'{site.name} 有{len(mail_list) + len(notice_list)}条新短消息，请注意及时查收！'
+                        if site.url in [
+                            'https://monikadesign.uk/',
+                            'https://pt.hdpost.top/',
+                            'https://reelflix.xyz/',
+                        ]:
+                            mail = len(mail_list)
+                        else:
+                            mail = mail_count + notice_count
+                        my_site.mail = mail
+                        title = f'{site.name} 有{mail}条新短消息，请注意及时查收！'
                         self.send_text(title=title, message=message_list)
                     else:
                         my_site.mail = 0
