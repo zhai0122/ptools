@@ -206,7 +206,7 @@ class UserLevelRuleAdmin(AjaxAdmin):
         'score',
         'ratio',
         'torrents',
-        'rights',
+        # 'rights',
     )
 
 

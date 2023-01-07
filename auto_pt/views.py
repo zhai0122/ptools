@@ -13,11 +13,12 @@ import toml
 import transmission_rpc
 import yaml
 from django.contrib.auth.decorators import login_required
+from django.forms import model_to_dict
 from django.http import JsonResponse, FileResponse, HttpResponse, Http404
 from django.shortcuts import render
 
 from pt_site.UtilityTool import MessageTemplate, FileSizeConvert
-from pt_site.models import SiteStatus, MySite, Site, Downloader, TorrentInfo
+from pt_site.models import SiteStatus, MySite, Site, Downloader, TorrentInfo, UserLevelRule
 from pt_site.views import scheduler, pt_spider, exec_command, pool
 from ptools.base import CommonResponse, StatusCodeEnum, DownloaderCategory
 from ptools.settings import BASE_DIR
@@ -616,6 +617,56 @@ def site_status_api(request):
                     'seeding_size': site_info.seed_vol,
                     'last_active': datetime.strftime(site_info.updated_at, '%Y/%m/%d %H:%M:%S'),
                 }
+            try:
+                level_info = my_site.site.userlevelrule_set.filter(level=my_site.my_level).first()
+
+                if not level_info:
+                    pass
+                else:
+                    if level_info.level_id == 0:
+                        site_info.update({
+                            'level_info': model_to_dict(level_info),
+                        })
+                    else:
+                        next_level = UserLevelRule.objects.filter(
+                            site=my_site.site,
+                            level_id=level_info.level_id + 1
+                        ).first()
+                        levels = UserLevelRule.objects.filter(
+                            site=my_site.site,
+                            level_id__lte=level_info.level_id
+                        ).order_by('-level_id').values_list('level', 'rights')
+                        level_info_dict = model_to_dict(level_info)
+                        level_info_dict.update(
+                            {
+                                'uploaded': FileSizeConvert.parse_2_byte(level_info.uploaded),
+                                'downloaded': FileSizeConvert.parse_2_byte(level_info.downloaded),
+                                # 'rights': [level.rights for level in levels],
+                                'rights': dict(levels),
+                            }
+                        )
+                        next_level_dict = model_to_dict(next_level)
+                        next_level_dict.update(
+                            {
+                                'uploaded': FileSizeConvert.parse_2_byte(next_level.uploaded),
+                                'downloaded': FileSizeConvert.parse_2_byte(next_level.downloaded),
+                            }
+                        )
+                        logger.info(f'我的站点id：{my_site.id}')
+                        logger.info(f'当前等级：{level_info_dict}')
+                        logger.info(f'下一等级：{next_level_dict}')
+                        upgrade_day = my_site.time_join + timedelta(days=next_level.days * 7)
+
+                        logger.info(f'下一等级升级日期：{upgrade_day}')
+                        site_info.update({
+                            'level_info': level_info_dict,
+                            'next_level': next_level_dict,
+                            'upgrade_day': upgrade_day if upgrade_day > datetime.today() else False,
+                        })
+            except:
+                # raise
+                logger.warning(f'{my_site.site.name} 用户升级信息获取错误！')
+                pass
             status_list.append(site_info)
         # 按上传量排序
         # status_list.sort(key=lambda x: x['mail'], reverse=False)
@@ -654,7 +705,7 @@ def site_status_api(request):
         message = f'获取数列列表失败：{e}'
         logger.info(message)
         logger.error(traceback.format_exc(limit=3))
-        return CommonResponse.error(msg=message)
+        return JsonResponse(data=CommonResponse.error(msg=message).to_dict(), safe=False)
 
 
 @login_required

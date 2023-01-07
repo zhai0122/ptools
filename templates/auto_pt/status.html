@@ -55,6 +55,18 @@
             height: 35px !important;
         }
 
+        .incomplete {
+            color: red;
+        }
+
+        .complete {
+            color: darkgreen;
+        }
+
+        th {
+            width: 70px;
+            text-align: right;
+        }
     </style>
 </head>
 <body>
@@ -248,7 +260,94 @@
 
                                 </div>
                                 <span style="font-size: 10px;float: right;">
+                                    <el-popover
+                                            v-if="site.level_info"
+                                            placement="top"
+                                            width="440"
+                                            trigger="hover">
+                                      <table style="font-size: 10px;font-family: 'Heiti SC';margin-right: 5px;">
+                                          <tr v-if="site.level_info">
+                                              <th>当前等级：</th>
+                                              <td class="complete"><span v-text="site.level_info.level"></span></td>
+                                          </tr>
+                                          <tr v-if="site.next_level">
+                                              <th>下一等级：</th>
+                                              <td class="incomplete"><span v-text="site.next_level.level"></span></td>
+                                          </tr>
+                                          <tr v-if="site.upgrade_day">
+                                              <th>升级时间：</th>
+                                              <td><span v-text="site.upgrade_day.replace('T',' ')"
+                                                        class="incomplete"></span></td>
+                                          </tr>
+                                          <tr v-if="site.next_level && site.next_level.uploaded > site.uploaded">
+                                              <th>上传量：</th>
+                                              <td><span v-text="renderSize(site.uploaded)"
+                                                        class="incomplete"></span> / <span
+                                                      v-text="renderSize(site.next_level.downloaded * site.next_level.ratio)">
+                                              </span></td>
+                                          </tr>
+                                          <tr v-if="site.next_level && site.next_level.downloaded > site.downloaded">
+                                              <th>下载量：</th>
+                                              <td><span v-text="renderSize(site.downloaded)" class="incomplete"></span> /
+                                                  <span v-text="renderSize(site.next_level.downloaded)"></span></td>
+                                          </tr>
+                                          <tr v-if="site.next_level && site.next_level.bonus != 0 && site.next_level.bonus > site.sp">
+                                              <th>魔力：</th>
+                                              <td><span v-text="site.sp" class="incomplete"></span> / <span
+                                                      v-text="site.next_level.bonus"></span></td>
+                                          </tr>
+                                          <tr v-if="site.next_level && site.next_level.score != 0 && site.next_level.score > site.bonus">
+                                              <th>
+                                                  积分：
+                                              </th>
+                                              <td>
+                                                  <span v-text="site.bonus" class="incomplete"></span> / <span
+                                                      v-text="site.next_level.score"></span
+                                              </td>
+                                          </tr>
+                                          <tr v-if="site.next_level && site.next_level.torrents != 0">
+                                              <th>分享率：</th>
+                                              <td><span v-text="site.level_info.ratio"
+                                                        class="incomplete"></span> / <span
+                                                      v-text="site.next_level.ratio"></span></td>
+                                          </tr>
+                                          <tr v-if="site.next_level && site.next_level.torrents != 0">
+                                              <th>发种数：<th>
+                                              <td><span v-text="site.level_info.torrents"
+                                                        class="incomplete"></span> / <span
+                                                      v-text="site.next_level.torrents"></span></td>
+                                          </tr>
+                                          <tr>
+                                              <th colspan="2" style="text-align: center"><h3>权益：</h3></th>
+                                          </tr>
+                                          <tr v-if="site.next_level">
+                                              <th>即将拥有：
+                                              </th>
+                                              <td>
+                                                 <span class="incomplete"
+                                                       v-text="site.next_level.rights"></span>
+                                              </td>
+                                          </tr>
+                                          <tr>
+                                              <th>已拥有：</th>
+                                              <td style="color: darkgreen;">
+                                                  <div v-if="site.next_level">
+                                                      <div v-for="value,index in site.level_info.rights">
+                                                        <i class="el-icon-star-on" v-text="`${index}：${value}`"></i>
+                                                      </div>
+                                                  </div>
+                                                  <div v-else="site.next_level">
+                                                          <i class="el-icon-star-on"
+                                                             v-text="site.level_info.rights"></i>
+                                                      </div>
+                                              </td>
+                                          </tr>
+                                      </table>
+                                        <i class="el-icon-user-solid" v-text="' ' + site.class" style="color: indianred"
+                                           slot="reference"></i>
+                                    </el-popover>
                                     <i class="el-icon-user-solid" v-text="' ' + site.class" style="color: indianred"
+                                       v-else="site.level_info"
                                        title="用户等级"></i>
                                     <br v-if="site.hr == 0 && site.mail <= 0">
                                     <i class="el-icon-postcard" v-text="' ' + site.invite" style="color: #003366"
@@ -625,6 +724,8 @@
                 }
             },
             methods: {
+                showUserLever() {
+                },
                 getTorrent(id) {
                     axios.get(
                         "{% url 'get_site_torrents' %}" + `?id=${id}`
