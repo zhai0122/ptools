@@ -569,105 +569,110 @@ def site_status_api(request):
                     'seeding_size': 0,
                     'last_active': datetime.strftime(my_site.updated_at, '%Y/%m/%d %H:%M:%S'),
                 }
-            else:  # continue
-                site_info = site_info_list.first()
-                downloaded += site_info.downloaded
-                uploaded += site_info.uploaded
-                seeding += my_site.seed
-                leeching += my_site.leech
-                sp += site_info.my_sp
-                sp_hour += (float(my_site.sp_hour) if my_site.sp_hour != '' else 0)
-                bonus += site_info.my_bonus
-                leeching += my_site.leech
-                seeding_size += site_info.seed_vol
-                weeks = (now - my_site.time_join if my_site.time_join else now).days // 7
-                days = (now - my_site.time_join if my_site.time_join else now).days % 7
+            else:
+                try:
+                    site_info = site_info_list.first()
+                    downloaded += site_info.downloaded
+                    uploaded += site_info.uploaded
+                    seeding += my_site.seed
+                    leeching += my_site.leech
+                    sp += site_info.my_sp
+                    sp_hour += (float(my_site.sp_hour) if my_site.sp_hour != '' else 0)
+                    bonus += site_info.my_bonus
+                    leeching += my_site.leech
+                    seeding_size += site_info.seed_vol
+                    weeks = ((now - my_site.time_join).days // 7) if my_site.time_join else 0
+                    days = ((now - my_site.time_join).days % 7) if my_site.time_join else 0
 
-                if sign_in_support:
-                    sign_in_list = my_site.signin_set.filter(created_at__date=now.date())
-                    sign_in_state = sign_in_list.first().sign_in_today if len(sign_in_list) > 0 else False
-                else:
-                    sign_in_state = False
-                site_info = {
-                    'id': my_site.id,
-                    'name': my_site.site.name,
-                    'icon': my_site.site.logo,
-                    'url': my_site.site.url,
-                    'class': my_site.my_level,
-                    'sign_in_support': sign_in_support,
-                    'sign_in_state': sign_in_state,
-                    'invite': my_site.invitation,
-                    'sp_hour': float(my_site.sp_hour) if my_site.sp_hour != '' else 0,
-                    'sp_hour_full': '{:.2%}'.format(
-                        float(my_site.sp_hour) / my_site.site.sp_full) if my_site.site.sp_full != 0 else '0%',
-                    'seeding': my_site.seed,
-                    'leeching': my_site.leech,
-                    'weeks': f'{weeks}周 {days}天',
-                    'time_join': my_site.time_join if my_site.time_join else now,
-                    'hr': my_site.my_hr,
-                    'mail': my_site.mail,
-                    'sort_id': my_site.sort_id,
-                    'sp': site_info.my_sp,
-                    'bonus': site_info.my_bonus,
-                    # 'uploaded': FileSizeConvert.parse_2_file_size(site_info.uploaded),
-                    # 'downloaded': FileSizeConvert.parse_2_file_size(site_info.downloaded),
-                    # 'seeding_size': FileSizeConvert.parse_2_file_size(site_info.seed_vol),
-                    'uploaded': site_info.uploaded,
-                    'downloaded': site_info.downloaded,
-                    'seeding_size': site_info.seed_vol,
-                    'last_active': datetime.strftime(site_info.updated_at, '%Y/%m/%d %H:%M:%S'),
-                }
-            try:
-                level_info = my_site.site.userlevelrule_set.filter(level=my_site.my_level).first()
-
-                if not level_info:
-                    pass
-                else:
-                    if level_info.level_id == 0:
-                        site_info.update({
-                            'level_info': model_to_dict(level_info),
-                        })
+                    if sign_in_support:
+                        sign_in_list = my_site.signin_set.filter(created_at__date=now.date())
+                        sign_in_state = sign_in_list.first().sign_in_today if len(sign_in_list) > 0 else False
                     else:
-                        next_level = UserLevelRule.objects.filter(
-                            site=my_site.site,
-                            level_id=level_info.level_id + 1
-                        ).first()
-                        levels = UserLevelRule.objects.filter(
-                            site=my_site.site,
-                            level_id__lte=level_info.level_id
-                        ).order_by('-level_id').values_list('level', 'rights')
-                        level_info_dict = model_to_dict(level_info)
-                        level_info_dict.update(
-                            {
-                                'uploaded': FileSizeConvert.parse_2_byte(level_info.uploaded),
-                                'downloaded': FileSizeConvert.parse_2_byte(level_info.downloaded),
-                                # 'rights': [level.rights for level in levels],
-                                'rights': dict(levels),
-                            }
-                        )
-                        next_level_dict = model_to_dict(next_level)
-                        next_level_dict.update(
-                            {
-                                'uploaded': FileSizeConvert.parse_2_byte(next_level.uploaded),
-                                'downloaded': FileSizeConvert.parse_2_byte(next_level.downloaded),
-                            }
-                        )
-                        logger.info(f'我的站点id：{my_site.id}')
-                        logger.info(f'当前等级：{level_info_dict}')
-                        logger.info(f'下一等级：{next_level_dict}')
-                        upgrade_day = my_site.time_join + timedelta(days=next_level.days * 7)
+                        sign_in_state = False
+                    site_info = {
+                        'id': my_site.id,
+                        'name': my_site.site.name,
+                        'icon': my_site.site.logo,
+                        'url': my_site.site.url,
+                        'class': my_site.my_level,
+                        'sign_in_support': sign_in_support,
+                        'sign_in_state': sign_in_state,
+                        'invite': my_site.invitation,
+                        'sp_hour': float(my_site.sp_hour) if my_site.sp_hour != '' else 0,
+                        'sp_hour_full': '{:.2%}'.format(
+                            float(my_site.sp_hour) / my_site.site.sp_full) if my_site.site.sp_full != 0 else '0%',
+                        'seeding': my_site.seed,
+                        'leeching': my_site.leech,
+                        'weeks': f'{weeks}周 {days}天',
+                        'time_join': my_site.time_join if my_site.time_join else now,
+                        'hr': my_site.my_hr,
+                        'mail': my_site.mail,
+                        'sort_id': my_site.sort_id,
+                        'sp': site_info.my_sp,
+                        'bonus': site_info.my_bonus,
+                        # 'uploaded': FileSizeConvert.parse_2_file_size(site_info.uploaded),
+                        # 'downloaded': FileSizeConvert.parse_2_file_size(site_info.downloaded),
+                        # 'seeding_size': FileSizeConvert.parse_2_file_size(site_info.seed_vol),
+                        'uploaded': site_info.uploaded,
+                        'downloaded': site_info.downloaded,
+                        'seeding_size': site_info.seed_vol,
+                        'last_active': datetime.strftime(site_info.updated_at, '%Y/%m/%d %H:%M:%S'),
+                    }
+                    try:
+                        level_info = my_site.site.userlevelrule_set.filter(level=my_site.my_level).first()
 
-                        logger.info(f'下一等级升级日期：{upgrade_day}')
-                        site_info.update({
-                            'level_info': level_info_dict,
-                            'next_level': next_level_dict,
-                            'upgrade_day': upgrade_day if upgrade_day > datetime.today() else False,
-                        })
-            except:
-                # raise
-                logger.warning(f'{my_site.site.name} 用户升级信息获取错误！')
-                pass
-            status_list.append(site_info)
+                        if not level_info:
+                            pass
+                        else:
+                            if level_info.level_id == 0:
+                                site_info.update({
+                                    'level_info': model_to_dict(level_info),
+                                })
+                            else:
+                                next_level = UserLevelRule.objects.filter(
+                                    site=my_site.site,
+                                    level_id=level_info.level_id + 1
+                                ).first()
+                                levels = UserLevelRule.objects.filter(
+                                    site=my_site.site,
+                                    level_id__lte=level_info.level_id
+                                ).order_by('-level_id').values_list('level', 'rights')
+                                level_info_dict = model_to_dict(level_info)
+                                level_info_dict.update(
+                                    {
+                                        'uploaded': FileSizeConvert.parse_2_byte(level_info.uploaded),
+                                        'downloaded': FileSizeConvert.parse_2_byte(level_info.downloaded),
+                                        # 'rights': [level.rights for level in levels],
+                                        'rights': dict(levels),
+                                    }
+                                )
+                                next_level_dict = model_to_dict(next_level)
+                                next_level_dict.update(
+                                    {
+                                        'uploaded': FileSizeConvert.parse_2_byte(next_level.uploaded),
+                                        'downloaded': FileSizeConvert.parse_2_byte(next_level.downloaded),
+                                    }
+                                )
+                                logger.info(f'我的站点id：{my_site.id}')
+                                logger.info(f'当前等级：{level_info_dict}')
+                                logger.info(f'下一等级：{next_level_dict}')
+                                upgrade_day = my_site.time_join + timedelta(days=next_level.days * 7)
+
+                                logger.info(f'下一等级升级日期：{upgrade_day}')
+                                site_info.update({
+                                    'level_info': level_info_dict,
+                                    'next_level': next_level_dict,
+                                    'upgrade_day': upgrade_day if upgrade_day > datetime.today() else False,
+                                })
+                    except Exception as e:
+                        # raise
+                        logger.warning(f'{my_site.site.name} 用户升级信息获取错误！{e}')
+                    status_list.append(site_info)
+                except Exception as e:
+                    message = f'{my_site.site.name} 获取数据列表失败：{e}'
+                    logger.info(message)
+                    logger.error(traceback.format_exc(limit=3))
+
         # 按上传量排序
         # status_list.sort(key=lambda x: x['mail'], reverse=False)
         # status_list.sort(key=lambda x: (x['mail'], x['sort_id']), reverse=True)
