@@ -9,20 +9,18 @@ from datetime import datetime, timedelta
 import docker
 import git
 import qbittorrentapi
-import toml
 import transmission_rpc
-import yaml
 from django.contrib.auth.decorators import login_required
 from django.forms import model_to_dict
-from django.http import JsonResponse, FileResponse, HttpResponse, Http404
+from django.http import JsonResponse, FileResponse, HttpResponse
 from django.shortcuts import render
 
+from pt_site import views as pt_site
 from pt_site.UtilityTool import MessageTemplate, FileSizeConvert
 from pt_site.models import SiteStatus, MySite, Site, Downloader, TorrentInfo, UserLevelRule
 from pt_site.views import scheduler, pt_spider, exec_command, pool
 from ptools.base import CommonResponse, StatusCodeEnum, DownloaderCategory
 from ptools.settings import BASE_DIR
-from pt_site import views as pt_site
 
 logger = logging.getLogger('ptools')
 
@@ -528,7 +526,7 @@ def site_status_api(request):
         bonus = 0
         status_list = []
         now = datetime.now()
-        time_join = my_site_list.first().time_join
+        time_join = my_site_list.order_by('time_join').first().time_join
         if not time_join:
             time_join = now
         p_years = (now - time_join).days / 365
@@ -538,7 +536,7 @@ def site_status_api(request):
             # logger.info(f'{my_site.site.name}: {len(site_info_list)}')
             sign_in_support = my_site.site.sign_in_support and my_site.sign_in
             if len(site_info_list) <= 0:
-                logger.info(f'{my_site.site.name}: 获取站点信息列表错误！')
+                logger.info(f'{my_site.site.name}: 获取站点信息列表错误，站点尚未获取过数据！')
                 site_info = {
                     'id': my_site.id,
                     'name': my_site.site.name,
@@ -548,16 +546,14 @@ def site_status_api(request):
                     'sign_in_support': sign_in_support,
                     'sign_in_state': False,
                     'invite': my_site.invitation,
-                    'sp_hour': float(my_site.sp_hour) if my_site.sp_hour != '' else 0,
-                    'sp_hour_full': '{:.2%}'.format(
-                        float(my_site.sp_hour) / my_site.site.sp_full) if
-                    my_site.sp_hour != '' and my_site.site.sp_full != 0 else '0%',
-                    'seeding': my_site.seed,
-                    'leeching': my_site.leech,
-                    'weeks': f'{0}周 {0}天',
+                    'sp_hour': 0,
+                    'sp_hour_full': '0',
+                    'seeding': 0,
+                    'leeching': 0,
+                    'weeks': f'0 天',
                     'time_join': my_site.time_join if my_site.time_join else now,
-                    'hr': my_site.my_hr,
-                    'mail': my_site.mail,
+                    'hr': 0,
+                    'mail': 0,
                     'sort_id': my_site.sort_id,
                     'sp': 0,
                     'bonus': 0,
@@ -567,7 +563,7 @@ def site_status_api(request):
                     'uploaded': 0,
                     'downloaded': 0,
                     'seeding_size': 0,
-                    'last_active': datetime.strftime(my_site.updated_at, '%Y/%m/%d %H:%M:%S'),
+                    'last_active': datetime.strftime(datetime.now(), '%Y/%m/%d %H:%M:%S'),
                 }
             else:
                 try:
@@ -667,11 +663,12 @@ def site_status_api(request):
                     except Exception as e:
                         # raise
                         logger.warning(f'{my_site.site.name} 用户升级信息获取错误！{e}')
-                    status_list.append(site_info)
                 except Exception as e:
                     message = f'{my_site.site.name} 获取数据列表失败：{e}'
                     logger.info(message)
                     logger.error(traceback.format_exc(limit=3))
+                    continue
+            status_list.append(site_info)
 
         # 按上传量排序
         # status_list.sort(key=lambda x: x['mail'], reverse=False)
@@ -1192,7 +1189,7 @@ def save_config_api(request):
                 msg='配置文件保存成功！'
             ).to_dict(), safe=False)
     except Exception as e:
-        raise
+        # raise
         return JsonResponse(data=CommonResponse.error(
             msg=f'获取配置文件信息失败！{e}'
         ).to_dict(), safe=False)
