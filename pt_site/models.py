@@ -1,3 +1,6 @@
+import datetime
+
+import django
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
@@ -294,6 +297,8 @@ class MySite(BaseEntity):
                                          '<font color="orange">* az,cz,ez,莫妮卡、普斯特请填写用户名</font>')
     passkey = models.CharField(max_length=128, verbose_name='PassKey', blank=True, null=True)
     cookie = models.TextField(verbose_name='COOKIE', help_text='与UA搭配使用效果更佳，请和UA在同一浏览器提取')
+    expires = models.DateTimeField(verbose_name='COOKIE有效期', help_text='COOKIE有效期',
+                                   default=django.utils.timezone.now() + datetime.timedelta(minutes=15))
     user_agent = models.TextField(verbose_name='User-Agent', help_text='请填写你获取cookie的浏览器的User-Agent',
                                   default='Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 '
                                           '(KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36 Edg/106.0.1370.42')
