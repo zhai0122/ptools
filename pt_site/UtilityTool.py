@@ -8,7 +8,7 @@ import ssl
 import threading
 import time
 import traceback
-from datetime import datetime
+from datetime import datetime, timedelta
 from urllib.request import urlopen
 
 import aip
@@ -1481,38 +1481,44 @@ class PtSpider:
         # leeching_detail_url = site.url + site.page_leeching.lstrip('/').format(my_site.user_id)
         try:
             if site.url in ['https://filelist.io/']:
-                session = requests.Session()
-                headers = {
-                    'user-agent': my_site.user_agent
-                }
-                res = session.get(url=site.url, headers=headers)
-                validator = ''.join(self.parse(res, '//input[@name="validator"]/@value'))
-                login_url = ''.join(self.parse(res, '//form/@action'))
-                login_method = ''.join(self.parse(res, '//form/@method'))
-                with open('db/ptools.toml', 'r') as f:
-                    data = toml.load(f)
-                    filelist = data.get('filelist')
-                    username = filelist.get('username')
-                    password = filelist.get('password')
-                login_res = session.request(
-                    url=site.url + login_url,
-                    method=login_method,
-                    headers=headers,
-                    data={
-                        'validator': validator,
-                        'username': username,
-                        'password': password,
-                        'unlock': 0,
-                        'returnto': '',
-                    })
-                cookies = ''
-                logger.info(f'res: {login_res.text}')
+                if my_site.expires > datetime.now():
+                    pass
+                else:
+                    logger.info(f'{site.name} cookie 已过期，重新获取！')
+                    session = requests.Session()
+                    headers = {
+                        'user-agent': my_site.user_agent
+                    }
+                    res = session.get(url=site.url, headers=headers)
+                    validator = ''.join(self.parse(res, '//input[@name="validator"]/@value'))
+                    login_url = ''.join(self.parse(res, '//form/@action'))
+                    login_method = ''.join(self.parse(res, '//form/@method'))
+                    with open('db/ptools.toml', 'r') as f:
+                        data = toml.load(f)
+                        filelist = data.get('filelist')
+                        username = filelist.get('username')
+                        password = filelist.get('password')
+                    login_res = session.request(
+                        url=site.url + login_url,
+                        method=login_method,
+                        headers=headers,
+                        data={
+                            'validator': validator,
+                            'username': username,
+                            'password': password,
+                            'unlock': 0,
+                            'returnto': '',
+                        })
+                    cookies = ''
+                    logger.info(f'res: {login_res.text}')
+                    logger.info(f'cookies: {session.cookies.get_dict()}')
+                    # expires = [cookie for cookie in session.cookies if not cookie.expires]
 
-                logger.info(f'cookies: {session.cookies.get_dict()}')
-                for key, value in session.cookies.get_dict().items():
-                    cookies += f'{key}={value};'
-                my_site.cookie = cookies
-                my_site.save()
+                    for key, value in session.cookies.get_dict().items():
+                        cookies += f'{key}={value};'
+                    my_site.expires = datetime.now() + timedelta(minutes=30)
+                    my_site.cookie = cookies
+                    my_site.save()
             # 发送请求，做种信息与正在下载信息，个人主页
             if site.url in [
                 'https://hdchina.org/',
@@ -2175,6 +2181,7 @@ class PtSpider:
                     # 检查邮件
                     mail_check = len(details_html.xpath(site.mailbox_rule))
                     notice_check = len(details_html.xpath(site.notice_rule))
+                    logger.info(f'公告：{notice_check} 短消息：{mail_check}')
                     if mail_check > 0 or notice_check > 0:
                         if site.url in [
                             'https://monikadesign.uk/',
@@ -2196,6 +2203,7 @@ class PtSpider:
                         mail_list = []
                         message_list = ''
                         if notice_count > 0:
+                            print(f'FileList 公告')
                             notice_res = self.send_request(my_site, url=site.url)
                             logger.info(f'公告信息：{notice_res}')
                             notice_list = self.parse(notice_res, site.notice_title)
@@ -2206,10 +2214,11 @@ class PtSpider:
                             message_list += f'## 公告  \n### {notice}'
                             time.sleep(1)
                         if mail_count > 0:
+                            print(f'FileList 消息')
                             message_res = self.send_request(my_site, url=site.url + site.page_message)
                             logger.info(f'PM消息页面：{message_res}')
                             mail_list = self.parse(message_res, site.message_title)
-                            mail_list = [mail.strip() for mail in mail_list]
+                            mail_list = [f'{mail.strip()} ...' for mail in mail_list]
                             logger.info(mail_list)
                             mail = "  \n\n> ".join(mail_list)
                             logger.info(mail)
@@ -2335,7 +2344,7 @@ class PtSpider:
                 )
                 """
             # response = converter.convert(response.content)
-            logger.info('时魔响应：{}'.format(response.content))
+            # logger.info('时魔响应：{}'.format(response.content))
             # logger.info('转为简体的时魔页面：', str(res))
             # res_list = self.parse(res, site.hour_sp_rule)
             res_list = etree.HTML(response.content).xpath(site.hour_sp_rule)
