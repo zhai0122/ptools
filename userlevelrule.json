@@ -1,0 +1,268 @@
+[
+  {
+    "model": "pt_site.userlevelrule",
+    "pk": 1,
+    "fields": {
+      "created_at": "2023-01-07T19:46:35.657",
+      "updated_at": "2023-01-07T21:30:09.683",
+      "site": 5,
+      "level_id": 1,
+      "level": "User",
+      "days": 0,
+      "uploaded": "0",
+      "downloaded": "0",
+      "bonus": 0,
+      "score": 0,
+      "ratio": 0.0,
+      "torrents": 0,
+      "rights": "新用户的默认级别。只能在每周六中午 12 点至每周日晚上 11 点 59 分发布种子。"
+    }
+  },
+  {
+    "model": "pt_site.userlevelrule",
+    "pk": 2,
+    "fields": {
+      "created_at": "2023-01-07T19:47:40.043",
+      "updated_at": "2023-01-07T21:35:43.367",
+      "site": 5,
+      "level_id": 2,
+      "level": "PowerUser",
+      "days": 5,
+      "uploaded": "0",
+      "downloaded": "200GB",
+      "bonus": 0,
+      "score": 20000,
+      "ratio": 1.6,
+      "torrents": 0,
+      "rights": "得到一个邀请名额；可以直接发布种子；可以查看 NFO 文档；可以查看用户列表；可以请求续种； 可以发送邀请； 可以查看排行榜；可以查看其它用户的种子历史 (如果用户隐私等级未设置为 \"强\")； 可以删除自己上传的字幕。"
+    }
+  },
+  {
+    "model": "pt_site.userlevelrule",
+    "pk": 3,
+    "fields": {
+      "created_at": "2023-01-07T19:48:50.439",
+      "updated_at": "2023-01-07T21:36:17.236",
+      "site": 5,
+      "level_id": 3,
+      "level": "EliteUser",
+      "days": 10,
+      "uploaded": "0",
+      "downloaded": "350GB",
+      "bonus": 0,
+      "score": 100000,
+      "ratio": 1.9,
+      "torrents": 0,
+      "rights": "Elite User 及以上用户封存账号后不会被删除。"
+    }
+  },
+  {
+    "model": "pt_site.userlevelrule",
+    "pk": 4,
+    "fields": {
+      "created_at": "2023-01-07T19:49:48.466",
+      "updated_at": "2023-01-07T21:37:09.845",
+      "site": 5,
+      "level_id": 4,
+      "level": "CrazyUser",
+      "days": 15,
+      "uploaded": "0",
+      "downloaded": "512GB",
+      "bonus": 0,
+      "score": 200000,
+      "ratio": 2.3,
+      "torrents": 0,
+      "rights": "得到两个邀请名额；可以在做种 / 下载 / 发布的时候选择匿名模式。"
+    }
+  },
+  {
+    "model": "pt_site.userlevelrule",
+    "pk": 5,
+    "fields": {
+      "created_at": "2023-01-07T19:50:44.702",
+      "updated_at": "2023-01-07T21:37:49.009",
+      "site": 5,
+      "level_id": 5,
+      "level": "InsaneUser",
+      "days": 30,
+      "uploaded": "0",
+      "downloaded": "1TB",
+      "bonus": 0,
+      "score": 400000,
+      "ratio": 2.7,
+      "torrents": 0,
+      "rights": "可以查看普通日志。"
+    }
+  },
+  {
+    "model": "pt_site.userlevelrule",
+    "pk": 6,
+    "fields": {
+      "created_at": "2023-01-07T19:51:31.197",
+      "updated_at": "2023-01-07T21:38:19.905",
+      "site": 5,
+      "level_id": 6,
+      "level": "VeteranUser",
+      "days": 60,
+      "uploaded": "0",
+      "downloaded": "2TB",
+      "bonus": 0,
+      "score": 600000,
+      "ratio": 3.2,
+      "torrents": 0,
+      "rights": "得到三个邀请名额；可以查看其它用户的评论、帖子历史。Veteran User 及以上用户会永远保留账号。"
+    }
+  },
+  {
+    "model": "pt_site.userlevelrule",
+    "pk": 7,
+    "fields": {
+      "created_at": "2023-01-07T19:52:24.213",
+      "updated_at": "2023-01-07T21:39:03.453",
+      "site": 5,
+      "level_id": 7,
+      "level": "ExtremeUser",
+      "days": 90,
+      "uploaded": "0",
+      "downloaded": "4TB",
+      "bonus": 0,
+      "score": 1000000,
+      "ratio": 1.6,
+      "torrents": 0,
+      "rights": "可以更新过期的外部信息；可以查看 Extreme User 论坛。"
+    }
+  },
+  {
+    "model": "pt_site.userlevelrule",
+    "pk": 8,
+    "fields": {
+      "created_at": "2023-01-07T19:53:36.035",
+      "updated_at": "2023-01-07T21:39:44.883",
+      "site": 5,
+      "level_id": 8,
+      "level": "UltimateUser",
+      "days": 120,
+      "uploaded": "0",
+      "downloaded": "6TB",
+      "bonus": 0,
+      "score": 2500000,
+      "ratio": 4.2,
+      "torrents": 0,
+      "rights": "得到五个邀请名额。"
+    }
+  },
+  {
+    "model": "pt_site.userlevelrule",
+    "pk": 9,
+    "fields": {
+      "created_at": "2023-01-07T19:54:26.936",
+      "updated_at": "2023-01-07T21:40:17.744",
+      "site": 5,
+      "level_id": 9,
+      "level": "NexusMaster",
+      "days": 150,
+      "uploaded": "0",
+      "downloaded": "8TB",
+      "bonus": 0,
+      "score": 3000000,
+      "ratio": 5.2,
+      "torrents": 0,
+      "rights": "得到十个邀请名额。"
+    }
+  },
+  {
+    "model": "pt_site.userlevelrule",
+    "pk": 10,
+    "fields": {
+      "created_at": "2023-01-07T22:54:35.067",
+      "updated_at": "2023-01-07T22:54:35.067",
+      "site": 5,
+      "level_id": 0,
+      "level": "VIP",
+      "days": 0,
+      "uploaded": "0",
+      "downloaded": "0",
+      "bonus": 0,
+      "score": 0,
+      "ratio": 0.0,
+      "torrents": 0,
+      "rights": "1. VIP 贵宾会员期限内不受系统分享率限制，可以在贵宾期限内无限制下载。可以在贵宾期限内无视 H&R 规则，畅快下载； 2. VIP 贵宾会员期限内不会因分享率过低而被系统封禁，免除自动降级，贵宾期限内不计算下行流量； 3. VIP 贵宾会员期限内开启排行榜查看权限； 4. VIP 贵宾会员期限内无视每年的年终考核和年中考核； 5. 拥有捐赠者黄星标识的会员，每小时做种获取魔力值双倍的奖励。"
+    }
+  },
+  {
+    "model": "pt_site.userlevelrule",
+    "pk": 11,
+    "fields": {
+      "created_at": "2023-01-07T23:02:51.691",
+      "updated_at": "2023-01-07T23:02:51.691",
+      "site": 87,
+      "level_id": 0,
+      "level": "VIP",
+      "days": 0,
+      "uploaded": "0",
+      "downloaded": "0",
+      "bonus": 0,
+      "score": 0,
+      "ratio": 0.0,
+      "torrents": 0,
+      "rights": "和 Nexus Master 拥有相同权限并被认为是精英成员。免除自动降级。"
+    }
+  },
+  {
+    "model": "pt_site.userlevelrule",
+    "pk": 12,
+    "fields": {
+      "created_at": "2023-01-07T23:03:17.179",
+      "updated_at": "2023-01-07T23:03:17.179",
+      "site": 87,
+      "level_id": 1,
+      "level": "User",
+      "days": 0,
+      "uploaded": "0",
+      "downloaded": "0",
+      "bonus": 0,
+      "score": 0,
+      "ratio": 0.0,
+      "torrents": 0,
+      "rights": "新用户的默认级别。只能在每周六中午 12 点至每周日晚上 11 点 59 分发布种子。"
+    }
+  },
+  {
+    "model": "pt_site.userlevelrule",
+    "pk": 13,
+    "fields": {
+      "created_at": "2023-01-07T23:04:11.199",
+      "updated_at": "2023-01-07T23:04:11.199",
+      "site": 87,
+      "level_id": 1,
+      "level": "PowerUser",
+      "days": 4,
+      "uploaded": "0",
+      "downloaded": "50GB",
+      "bonus": 0,
+      "score": 0,
+      "ratio": 1.05,
+      "torrents": 0,
+      "rights": "得到一个邀请名额；可以直接发布种子；可以查看 NFO 文档；可以查看用户列表；可以请求续种； 可以发送邀请； 可以查看排行榜；可以查看其它用户的种子历史 (如果用户隐私等级未设置为 \"强\")； 可以删除自己上传的字幕。"
+    }
+  },
+  {
+    "model": "pt_site.userlevelrule",
+    "pk": 14,
+    "fields": {
+      "created_at": "2023-01-07T23:05:16.548",
+      "updated_at": "2023-01-07T23:05:16.548",
+      "site": 87,
+      "level_id": 3,
+      "level": "CrazyUse",
+      "days": 8,
+      "uploaded": "0",
+      "downloaded": "120GB",
+      "bonus": 0,
+      "score": 0,
+      "ratio": 1.55,
+      "torrents": 0,
+      "rights": "得到两个邀请名额；可以在做种 / 下载 / 发布的时候选择匿名模式。"
+    }
+  }
+]
