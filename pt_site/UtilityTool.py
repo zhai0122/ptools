@@ -14,13 +14,13 @@ from urllib.request import urlopen
 import aip
 import cloudscraper
 import dateutil.parser
+import numpy as np
 import qbittorrentapi
 import requests
 import toml
 import transmission_rpc
 import urllib3.util.ssl_
 import yaml
-import numpy as np
 from django.db.models import QuerySet
 from lxml import etree
 from pypushdeer import PushDeer
@@ -313,16 +313,16 @@ class PtSpider:
         # logger.info('查询站点信息：', site, site.url, url)
         if not site:
             return CommonResponse.error(msg='尚未支持此站点：{}'.format(url))
-        icon = cookie.get('icon')
-        if icon:
-            site.logo = icon
-        site.save()
+        # icon = cookie.get('icon')
+        # if icon:
+        #     site.logo = icon
+        # site.save()
         # my_site = MySite.objects.filter(site=site).first()
         # logger.info('查询我的站点：',my_site)
         # 如果有更新cookie，如果没有继续创建
         my_level_str = cookie.get('info').get('levelName')
         if my_level_str:
-            my_level = re.sub(u'([^a-zA-Z_ ])', "", my_level_str)
+            my_level = re.sub(u'([^a-zA-Z_ ])', "", my_level_str).strip(" ")
         else:
             my_level = ' '
         userdatas = cookie.get('userdatas')
@@ -332,11 +332,29 @@ class PtSpider:
 
         passkey = cookie.get('passkey')
         logger.info('passkey: {}'.format(passkey))
-
+        uid = cookie.get('info').get('id')
+        if not uid:
+            try:
+                logger.info('备份文件未获取到User_id，尝试获取中')
+                scraper = self.get_scraper()
+                response = scraper.get(
+                    url=site.url + site.page_control_panel,
+                    cookies=cookie.get('cookies'),
+                )
+                passkey = self.parse(response, site.my_passkey_rule)[0]
+                logger.info(f'Passkey:{passkey}')
+                uid = get_decimals(self.parse(response, site.my_uid_rule)[0])
+                logger.info(f'uid:{uid}')
+            except Exception as e:
+                passkey_msg = f'{site.name} Uid获取失败，请手动添加！'
+                logger.info(passkey_msg)
+                return CommonResponse.error(
+                    msg=f'{site.name} 信息导入失败！ {passkey_msg}：{e}'
+                )
         result = MySite.objects.update_or_create(site=site, defaults={
             'cookie': cookie.get('cookies'),
             'passkey': passkey,
-            'user_id': cookie.get('info').get('id'),
+            'user_id': uid,
             'my_level': my_level if my_level else ' ',
             'time_join': time_join,
             'seed': cookie.get('info').get('seeding') if cookie.get('info').get('seeding') else 0,
@@ -344,16 +362,7 @@ class PtSpider:
         })
         my_site = result[0]
         passkey_msg = ''
-        if not passkey:
-            try:
-                logger.info('PTPP未配置PASSKEY，尝试获取中')
-                response = self.send_request(my_site, site.url + site.page_control_panel)
-                passkey = self.parse(response, site.my_passkey_rule)[0]
-                my_site.passkey = passkey
-                my_site.save()
-            except Exception as e:
-                passkey_msg = '{} PassKey获取失败，请手动添加！'.format(site.name)
-                logger.info(passkey_msg)
+
         logger.info('开始导入PTPP历史数据')
         for key, value in userdatas.items():
             logger.info(key)
