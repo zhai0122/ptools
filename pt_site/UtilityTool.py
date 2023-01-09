@@ -509,6 +509,7 @@ class PtSpider:
             data=data
         )
         logger.info(sign_res.text)
+        # sign_str = etree.HTML(sign_res.text.encode('utf-8-sig')).xpath
         sign_str = self.parse(sign_res, '//font[contains(text(),"点魔力值(连续")]/text()')
         if len(sign_str) < 1:
             return CommonResponse.error(
@@ -722,7 +723,7 @@ class PtSpider:
             my_site=my_site,
             method='get',
             url=url)
-        logger.info(res.text.encode('utf-8'))
+        logger.info(res.text.encode('utf-8-sig'))
         img_src = ''.join(self.parse(res, '//form[@id="frmSignin"]//img/@src'))
         img_get_url = site.url + img_src
         times = 0
@@ -748,7 +749,7 @@ class PtSpider:
             my_site=my_site,
             method=site.sign_in_method,
             url=site.url + 'plugin_sign-in.php?cmd=signin', data=data)
-        logger.info('皇后签到返回值：{}  \n'.format(result.text.encode('utf-8')))
+        logger.info('皇后签到返回值：{}  \n'.format(result.text.encode('utf-8-sig')))
         return CommonResponse.success(
             status=StatusCodeEnum.OK,
             data=result.json()
@@ -1222,7 +1223,8 @@ class PtSpider:
 
     @staticmethod
     def parse(response, rules):
-        return etree.HTML(response.text.replace('0xff', '')).xpath(rules)
+        # return etree.HTML(response.text.replace('0xff', '')).xpath(rules)
+        return etree.HTML(response.text.encode('utf-8-sig')).xpath(rules)
 
     def send_torrent_info_request(self, my_site: MySite):
         site = my_site.site
@@ -1573,7 +1575,7 @@ class PtSpider:
                 )
             # logger.info(user_detail_res.status_code)
             # try:
-            #     logger.info(f'个人主页：{user_detail_res.content.decode("utf8")}')
+            #     logger.info(f'个人主页：{user_detail_res.content.decode("utf-8-sig")}')
             # except Exception as e:
             #     logger.info('个人主页：UTF-8解析失败')
             #     logger.info(f'个人主页：{user_detail_res.content}')
