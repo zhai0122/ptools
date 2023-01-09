@@ -1051,7 +1051,7 @@ class PtSpider:
                                         data=eval(site.sign_in_params), )
                 if res.status_code == 200:
                     signin_today.sign_in_today = True
-                    signin_today.sign_in_info = res.text.encode('utf8')
+                    signin_today.sign_in_info = res.text
                     signin_today.save()
                     return CommonResponse.success(msg=res.text)
                 elif res.status_code == 503:
