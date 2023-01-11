@@ -545,9 +545,10 @@ class PtSpider:
             my_site=my_site,
             url=site.url + site.page_sign_in.lstrip('/'),
             method=site.sign_in_method
-        ).content.decode('utf8')
+        ).text
         logger.info(f'好多油签到反馈：{sign_res}')
         try:
+            sign_res = get_decimals(sign_res)
             if int(sign_res) > 0:
                 return CommonResponse.success(
                     msg='你还需要继续努力哦！此次签到，你获得了魔力奖励：{}'.format(sign_res)
