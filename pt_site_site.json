@@ -3278,7 +3278,7 @@
   {
     "id": 46,
     "created_at": "2022-08-26 20:53:50.259000",
-    "updated_at": "2023-01-16 17:28:52.860072",
+    "updated_at": "2023-01-16 22:01:42.404627",
     "name": "TTG",
     "url": "https://totheglory.im/",
     "logo": "https://totheglory.im/favicon.ico",
@@ -3343,7 +3343,7 @@
     "seed_rule": "//img[contains(@title,\"做种中\")]/following-sibling::font[1]/span/text()[1]",
     "record_count_rule": "/html/body/b/text()",
     "seed_vol_rule": "//p/u[1]/text()",
-    "mailbox_rule": "//a[@href=\"messages.php\"]/font[contains(text(),\"条\")]/text()[1]",
+    "mailbox_rule": "//a[contains(@href,\"messages.php\")]/font[contains(text(),\"个\")]/text()[1]",
     "hash_rule": "//tr[11]//td[@class=\"no_border_wide\"][2]/text()",
     "notice_rule": "//a[@href=\"index.php\"]/font[contains(text(),\"条\")]/text()[1]",
     "my_passkey_rule": "//td[contains(text(),\"Passkey\")]/following-sibling::td[1]/text()",
