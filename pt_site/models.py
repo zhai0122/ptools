@@ -247,9 +247,13 @@ class Site(BaseEntity):
                                     default='//td[@class="text"]/div/a//text()',
                                     help_text='获取公告标题',
                                     max_length=128)
+    notice_content = models.CharField(verbose_name='公告内容',
+                                      default='//td[@class="text"]/div/a/following-sibling::div/font/font',
+                                      help_text='获取公告内容',
+                                      max_length=128)
     full_site_free = models.CharField(verbose_name='站免规则',
                                       default='//td/b/a/font[contains(text(),"全站") and contains(text(),"Free")]/text()',
-                                      help_text='获取新公告',
+                                      help_text='站免信息',
                                       max_length=128)
     # HASH RULE
     hash_rule = models.CharField(verbose_name='种子HASH',

@@ -2233,11 +2233,16 @@ class PtSpider:
                                                           })
                             else:
                                 notice_res = self.send_request(my_site, url=site.url)
-                            notice_res = self.send_request(my_site, url=site.url)
+                            # notice_res = self.send_request(my_site, url=site.url)
                             logger.info(f'公告信息：{notice_res}')
                             notice_list = self.parse(notice_res, site.notice_title)
                             notice_list = ["".join(notice) for notice in
                                            np.array(notice_list).reshape(len(notice_list) // 2, 2)]
+                            content_list = self.parse(
+                                notice_res, site.notice_content
+                            )
+                            notice_list = [f'{title} \n {etree.tostring(content)}' for title, content in
+                                           zip(notice_list, content_list)]
                             logger.info(f'公告信息列表：{notice_list}')
                             notice = '  \n\n### '.join(notice_list[:notice_count])
                             message_list += f'## 公告  \n### {notice}'

@@ -158,6 +158,8 @@ class SiteAdmin(admin.ModelAdmin):  # instead of ModelAdmin
                 'mailbox_rule',
                 'notice_rule',
                 'message_title',
+                'notice_title',
+                'notice_content',
                 'full_site_free',
                 'time_join_rule',
                 'latest_active_rule',
