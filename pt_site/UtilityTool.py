@@ -8,7 +8,7 @@ import ssl
 import threading
 import time
 import traceback
-from datetime import datetime, timedelta
+from datetime import datetime
 from urllib.request import urlopen
 
 import aip
@@ -1075,6 +1075,7 @@ class PtSpider:
                     )
             if site.url in [
                 # 'https://wintersakura.net/'
+                'https://hudbt.hust.edu.cn/',
             ]:
                 # 单独发送请求，解决冬樱签到问题
                 res = requests.get(url=url, verify=False, cookies=cookie2dict(my_site.cookie), headers={
@@ -1534,6 +1535,7 @@ class PtSpider:
             # 发送请求，做种信息与正在下载信息，个人主页
             if site.url in [
                 'https://hdchina.org/',
+                'https://hudbt.hust.edu.cn/',
                 # 'https://wintersakura.net/',
             ]:
                 # 单独发送请求，解决冬樱签到问题
@@ -1665,6 +1667,7 @@ class PtSpider:
                     details_html = etree.HTML(user_detail_res.text)
                 if site.url in [
                     # 'https://wintersakura.net/'
+                    'https://hudbt.hust.edu.cn/',
                 ]:
                     # 单独发送请求，解决冬樱签到问题
                     seeding_detail_res = requests.get(url=seeding_detail_url, verify=False,
@@ -2217,6 +2220,19 @@ class PtSpider:
                         message_list = ''
                         if notice_count > 0:
                             print(f'FileList 公告')
+                            if site.url in [
+                                # 'https://hdchina.org/',
+                                'https://hudbt.hust.edu.cn/',
+                                # 'https://wintersakura.net/',
+                            ]:
+                                # 单独发送请求，解决冬樱签到问题
+                                notice_res = requests.get(url=site.url, verify=False,
+                                                          cookies=cookie2dict(my_site.cookie),
+                                                          headers={
+                                                              'user-agent': my_site.user_agent
+                                                          })
+                            else:
+                                notice_res = self.send_request(my_site, url=site.url)
                             notice_res = self.send_request(my_site, url=site.url)
                             logger.info(f'公告信息：{notice_res}')
                             notice_list = self.parse(notice_res, site.notice_title)
@@ -2228,7 +2244,19 @@ class PtSpider:
                             time.sleep(1)
                         if mail_count > 0:
                             print(f'FileList 消息')
-                            message_res = self.send_request(my_site, url=site.url + site.page_message)
+                            if site.url in [
+                                # 'https://hdchina.org/',
+                                'https://hudbt.hust.edu.cn/',
+                                # 'https://wintersakura.net/',
+                            ]:
+                                # 单独发送请求，解决冬樱签到问题
+                                message_res = requests.get(url=site.url + site.page_message, verify=False,
+                                                           cookies=cookie2dict(my_site.cookie),
+                                                           headers={
+                                                               'user-agent': my_site.user_agent
+                                                           })
+                            else:
+                                message_res = self.send_request(my_site, url=site.url + site.page_message)
                             logger.info(f'PM消息页面：{message_res}')
                             mail_list = self.parse(message_res, site.message_title)
                             mail_list = [f'{mail.strip()} ...' for mail in mail_list]
@@ -2323,6 +2351,7 @@ class PtSpider:
         try:
             if site.url in [
                 'https://hdchina.org/',
+                'https://hudbt.hust.edu.cn/',
                 # 'https://wintersakura.net/',
             ]:
                 # 单独发送请求，解决冬樱签到问题
