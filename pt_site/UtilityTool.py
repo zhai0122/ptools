@@ -14,7 +14,6 @@ from urllib.request import urlopen
 import aip
 import cloudscraper
 import dateutil.parser
-import numpy as np
 import qbittorrentapi
 import requests
 import toml
@@ -341,9 +340,9 @@ class PtSpider:
                     url=site.url + site.page_control_panel,
                     cookies=cookie.get('cookies'),
                 )
-                passkey = self.parse(response, site.my_passkey_rule)[0]
+                passkey = self.parse(site, response, site.my_passkey_rule)[0]
                 logger.info(f'Passkey:{passkey}')
-                uid = get_decimals(self.parse(response, site.my_uid_rule)[0])
+                uid = get_decimals(self.parse(site, response, site.my_uid_rule)[0])
                 logger.info(f'uid:{uid}')
             except Exception as e:
                 passkey_msg = f'{site.name} Uid获取失败，请手动添加！'
@@ -500,8 +499,8 @@ class PtSpider:
             return CommonResponse.success(msg='您已成功签到，请勿重复操作！{}'.format(sign_str))
         # if len(sign_str) >= 1:
         #     return CommonResponse.success(msg='52PT 签到太复杂不支持，访问网站保持活跃成功！')
-        questionid = self.parse(result, '//input[contains(@name, "questionid")]/@value')
-        choices = self.parse(result, '//input[contains(@name, "choice[]")]/@value')
+        questionid = self.parse(site, result, '//input[contains(@name, "questionid")]/@value')
+        choices = self.parse(site, result, '//input[contains(@name, "choice[]")]/@value')
         # for choice in choices:
         #     logger.info(choice)
         data = {
@@ -519,7 +518,7 @@ class PtSpider:
         )
         logger.info(sign_res.text)
         # sign_str = etree.HTML(sign_res.text.encode('utf-8-sig')).xpath
-        sign_str = self.parse(sign_res, '//font[contains(text(),"点魔力值(连续")]/text()')
+        sign_str = self.parse(site, sign_res, '//font[contains(text(),"点魔力值(连续")]/text()')
         if len(sign_str) < 1:
             return CommonResponse.error(
                 msg='签到失败!'
@@ -537,7 +536,7 @@ class PtSpider:
             my_site=my_site,
             url=url,
         )
-        sign_str = self.parse(result, '//span[@id="qiandao"]')
+        sign_str = self.parse(site, result, '//span[@id="qiandao"]')
         logger.info(sign_str)
         if len(sign_str) < 1:
             return CommonResponse.success(msg=site.name + '已签到，请勿重复操作！！')
@@ -566,7 +565,7 @@ class PtSpider:
             my_site=my_site,
             url=url,
         )
-        sign_str = self.parse(result, '//span[@id="checkin"]/a')
+        sign_str = self.parse(site, result, '//span[@id="checkin"]/a')
         logger.info(sign_str)
         if len(sign_str) < 1:
             return CommonResponse.success(msg=site.name + '已签到，请勿重复操作！！')
@@ -597,13 +596,13 @@ class PtSpider:
                                   'user-agent': my_site.user_agent
                               })
         logger.info(f'签到检测页面：{result.text}')
-        sign_str = self.parse(result, '//a[text()="已签到"]')
+        sign_str = self.parse(site, result, '//a[text()="已签到"]')
         logger.info('{}签到检测'.format(site.name, sign_str))
         logger.info(f'{result.cookies.get_dict()}')
 
         if len(sign_str) >= 1:
             return CommonResponse.success(msg=site.name + '已签到，请勿重复操作！！')
-        csrf = ''.join(self.parse(result, '//meta[@name="x-csrf"]/@content'))
+        csrf = ''.join(self.parse(site, result, '//meta[@name="x-csrf"]/@content'))
         logger.info('CSRF字符串：{}'.format(csrf))
         # sign_res = self.send_request(
         #     my_site=my_site,
@@ -658,16 +657,16 @@ class PtSpider:
             my_site=my_site,
             url=url,
         )
-        sign_str = ''.join(self.parse(result, '//a[@href="showup.php"]/text()'))
+        sign_str = ''.join(self.parse(site, result, '//a[@href="showup.php"]/text()'))
         logger.info(site.name + sign_str)
         if '已签到' in sign_str or '已簽到' in sign_str:
             # if '已签到' in converter.convert(sign_str):
             return CommonResponse.success(msg=site.name + '已签到，请勿重复操作！！')
-        req = self.parse(result, '//form//td/input[@name="req"]/@value')
-        hash_str = self.parse(result, '//form//td/input[@name="hash"]/@value')
-        form = self.parse(result, '//form//td/input[@name="form"]/@value')
-        submit_name = self.parse(result, '//form//td/input[@type="submit"]/@name')
-        submit_value = self.parse(result, '//form//td/input[@type="submit"]/@value')
+        req = self.parse(site, result, '//form//td/input[@name="req"]/@value')
+        hash_str = self.parse(site, result, '//form//td/input[@name="hash"]/@value')
+        form = self.parse(site, result, '//form//td/input[@name="form"]/@value')
+        submit_name = self.parse(site, result, '//form//td/input[@type="submit"]/@name')
+        submit_value = self.parse(site, result, '//form//td/input[@type="submit"]/@value')
         message = site.sign_in_params if len(site.sign_in_params) >= 5 else '天空飘来五个字儿,幼儿园里没有事儿'
         logger.info(submit_name)
         logger.info(submit_value)
@@ -696,8 +695,9 @@ class PtSpider:
                 my_site=my_site,
                 url=url,
             )
-            title = self.parse(result, '//h2[contains(text(),"签到区")]/following-sibling::table//h3/text()')
+            title = self.parse(site, result, '//h2[contains(text(),"签到区")]/following-sibling::table//h3/text()')
             content = self.parse(
+                site,
                 result,
                 '//td/span[@class="nowrap"]/a[contains(@href,"userdetails.php?id={}")]'
                 '/parent::span/following-sibling::b[2]/text()'.format(
@@ -719,7 +719,7 @@ class PtSpider:
             my_site=my_site,
             method='get',
             url=check_url)
-        href_sign_in = self.parse(res_check, '//a[@href="/plugin_sign-in.php?cmd=show-log"]')
+        href_sign_in = self.parse(site, res_check, '//a[@href="/plugin_sign-in.php?cmd=show-log"]')
         if len(href_sign_in) >= 1:
             return CommonResponse.success(
                 status=StatusCodeEnum.OK,
@@ -734,7 +734,7 @@ class PtSpider:
             method='get',
             url=url)
         logger.info(res.text.encode('utf-8-sig'))
-        img_src = ''.join(self.parse(res, '//form[@id="frmSignin"]//img/@src'))
+        img_src = ''.join(self.parse(site, res, '//form[@id="frmSignin"]//img/@src'))
         img_get_url = site.url + img_src
         times = 0
         # imagestring = ''
@@ -751,7 +751,7 @@ class PtSpider:
         if ocr_result.code != StatusCodeEnum.OK.code:
             return ocr_result
         data = {
-            'imagehash': ''.join(self.parse(res, '//form[@id="frmSignin"]//input[@name="imagehash"]/@value')),
+            'imagehash': ''.join(self.parse(site, res, '//form[@id="frmSignin"]//input[@name="imagehash"]/@value')),
             'imagestring': imagestring
         }
         logger.info('请求参数：{}'.format(data))
@@ -836,7 +836,7 @@ class PtSpider:
         try:
             res = self.send_request(my_site=my_site, url=url)
             # logger.info(res.text.encode('utf8'))
-            # html = self.parse(res, '//script/text()')
+            # html = self.parse(site,res, '//script/text()')
             html = etree.HTML(res.text).xpath('//script/text()')
             # logger.info(html)
             text = ''.join(html).replace('\n', '').replace(' ', '')
@@ -1157,15 +1157,15 @@ class PtSpider:
             if 'btschool' in site.url:
                 # logger.info(res.status_code)
                 logger.info('学校签到：{}'.format(res.text))
-                text = self.parse(res, '//script/text()')
+                text = self.parse(site, res, '//script/text()')
                 logger.info('解析签到返回信息：{}'.format(text))
                 if len(text) > 0:
                     location = self.parse_school_location(text)
                     logger.info('学校签到链接：' + location)
                     if 'addbouns.php' in location:
                         res = self.send_request(my_site=my_site, url=site.url + location.lstrip('/'))
-                sign_in_text = self.parse(res, '//a[@href="index.php"]/font//text()')
-                sign_in_stat = self.parse(res, '//a[contains(@href,"addbouns")]')
+                sign_in_text = self.parse(site, res, '//a[@href="index.php"]/font//text()')
+                sign_in_stat = self.parse(site, res, '//a[contains(@href,"addbouns")]')
                 logger.info('{} 签到反馈：{}'.format(site.name, sign_in_text))
                 if res.status_code == 200 and len(sign_in_stat) <= 0:
                     message = ''.join(sign_in_text) if len(sign_in_text) >= 1 else '您已在其他地方签到，请勿重复操作！'
@@ -1197,17 +1197,18 @@ class PtSpider:
                     pass
                 else:
                     return CommonResponse.error(msg='签到失败！')
-                title_parse = self.parse(res, '//td[@id="outer"]//td[@class="embedded"]/h2/text()')
-                content_parse = self.parse(res, '//td[@id="outer"]//td[@class="embedded"]/table//td//text()')
+                title_parse = self.parse(site, res, '//td[@id="outer"]//td[@class="embedded"]/h2/text()')
+                content_parse = self.parse(site, res, '//td[@id="outer"]//td[@class="embedded"]/table//td//text()')
                 if len(content_parse) <= 0:
-                    title_parse = self.parse(res, '//td[@id="outer"]//td[@class="embedded"]/b[1]/text()')
-                    content_parse = self.parse(res, '//td[@id="outer"]//td[@class="embedded"]/text()[1]')
+                    title_parse = self.parse(site, res, '//td[@id="outer"]//td[@class="embedded"]/b[1]/text()')
+                    content_parse = self.parse(site, res, '//td[@id="outer"]//td[@class="embedded"]/text()[1]')
                 if 'hdcity' in site.url:
                     title_parse = self.parse(
+                        site,
                         res,
                         '//p[contains(text(),"本次签到获得魅力")]/preceding-sibling::h1[1]/span/text()'
                     )
-                    content_parse = self.parse(res, '//p[contains(text(),"本次签到获得魅力")]/text()')
+                    content_parse = self.parse(site, res, '//p[contains(text(),"本次签到获得魅力")]/text()')
                 logger.info(f'签到信息标题：{content_parse}')
                 logger.info(f'签到信息：{content_parse}')
                 title = ''.join(title_parse).strip()
@@ -1233,10 +1234,11 @@ class PtSpider:
             return CommonResponse.error(msg=msg)
 
     @staticmethod
-    def parse(response, rules):
-        # return etree.HTML(response.text.replace('0xff', '')).xpath(rules)
-
-        return etree.HTML(response.content).xpath(rules)
+    def parse(site, response, rules):
+        if site.url in ['https://ourbits.club/']:
+            return etree.HTML(response.text).xpath(rules)
+        else:
+            return etree.HTML(response.content).xpath(rules)
 
     def send_torrent_info_request(self, my_site: MySite):
         site = my_site.site
@@ -1312,7 +1314,7 @@ class PtSpider:
                             # logger.info(torrent_info)
                 else:
                     # response = self.send_request()
-                    trs = self.parse(response, site.torrents_rule)
+                    trs = self.parse(site, response, site.torrents_rule)
                     # logger.info(f'种子页面：{response.text}')
                     # logger.info(trs)
                     logger.info(len(trs))
@@ -1471,11 +1473,11 @@ class PtSpider:
 
         response = self.send_request(site.mysite, url)
         # logger.info(site, url, response.text)
-        # html = self.parse(response, site.hash_rule)
-        # has_string = self.parse(response, site.hash_rule)
-        # magnet_url = self.parse(response, site.magnet_url_rule)
-        hash_string = self.parse(response, '//tr[10]//td[@class="no_border_wide"][2]/text()')
-        magnet_url = self.parse(response, '//a[contains(@href,"downhash")]/@href')
+        # html = self.parse(site,response, site.hash_rule)
+        # has_string = self.parse(site,response, site.hash_rule)
+        # magnet_url = self.parse(site,response, site.magnet_url_rule)
+        hash_string = self.parse(site, response, '//tr[10]//td[@class="no_border_wide"][2]/text()')
+        magnet_url = self.parse(site, response, '//a[contains(@href,"downhash")]/@href')
         torrent_info.hash_string = hash_string[0].replace('\xa0', '')
         torrent_info.magnet_url = magnet_url[0]
         logger.info('种子HASH及下载链接：{}'.format(hash_string, magnet_url))
@@ -1504,9 +1506,9 @@ class PtSpider:
                     'user-agent': my_site.user_agent
                 }
                 res = session.get(url=site.url, headers=headers)
-                validator = ''.join(self.parse(res, '//input[@name="validator"]/@value'))
-                login_url = ''.join(self.parse(res, '//form/@action'))
-                login_method = ''.join(self.parse(res, '//form/@method'))
+                validator = ''.join(self.parse(site, res, '//input[@name="validator"]/@value'))
+                login_url = ''.join(self.parse(site, res, '//form/@action'))
+                login_method = ''.join(self.parse(site, res, '//form/@method'))
                 with open('db/ptools.toml', 'r') as f:
                     data = toml.load(f)
                     filelist = data.get('filelist')
@@ -1547,7 +1549,7 @@ class PtSpider:
             elif 'zhuque.in' in site.url:
                 csrf_res = self.send_request(my_site=my_site, url=site.url)
                 # '<meta name="x-csrf-token" content="4db531b6687b6e7f216b491c06937113">'
-                x_csrf_token = self.parse(csrf_res, '//meta[@name="x-csrf-token"]/@content')
+                x_csrf_token = self.parse(site, csrf_res, '//meta[@name="x-csrf-token"]/@content')
                 logger.info(f'csrf token: {x_csrf_token}')
                 header = {
                     'x-csrf-token': ''.join(x_csrf_token),
@@ -1689,6 +1691,7 @@ class PtSpider:
                 seeding_html = etree.HTML(seeding_detail_res.text)
                 if 'kp.m-team.cc' in site.url:
                     url_list = self.parse(
+                        site,
                         seeding_detail_res,
                         f'//p[1]/font[2]/following-sibling::'
                         f'a[contains(@href,"?type=seeding&userid={my_site.user_id}&page=")]/@href'
@@ -2220,36 +2223,48 @@ class PtSpider:
                         mail_list = []
                         message_list = ''
                         if notice_count > 0:
-                            print(f'FileList 公告')
+                            print(f'{site.name} 站点公告')
                             if site.url in [
                                 # 'https://hdchina.org/',
                                 'https://hudbt.hust.edu.cn/',
                                 # 'https://wintersakura.net/',
                             ]:
                                 # 单独发送请求，解决冬樱签到问题
-                                notice_res = requests.get(url=site.url, verify=False,
+                                notice_res = requests.get(url=site.url + site.page_index, verify=False,
                                                           cookies=cookie2dict(my_site.cookie),
                                                           headers={
                                                               'user-agent': my_site.user_agent
                                                           })
                             else:
-                                notice_res = self.send_request(my_site, url=site.url)
+                                notice_res = self.send_request(my_site, url=site.url + site.page_index)
                             # notice_res = self.send_request(my_site, url=site.url)
                             logger.info(f'公告信息：{notice_res}')
-                            notice_list = self.parse(notice_res, site.notice_title)
-                            notice_list = ["".join(notice) for notice in
-                                           np.array(notice_list).reshape(len(notice_list) // 2, 2)]
+                            notice_list = self.parse(site, notice_res, site.notice_title)
                             content_list = self.parse(
-                                notice_res, site.notice_content
+                                site,
+                                notice_res,
+                                site.notice_content,
                             )
-                            notice_list = [f'{title} \n {etree.tostring(content)}' for title, content in
-                                           zip(notice_list, content_list)]
+                            logger.info(f'公告信息：{notice_list}')
+                            notice_list = [notice.xpath("string(.)", encoding="utf-8").strip("\n").strip("\r").strip()
+                                           for notice in notice_list]
+                            logger.info(f'公告信息：{notice_list}')
+                            print(content_list)
+                            if len(content_list) > 0:
+                                content_list = [
+                                    content.xpath("string(.)").replace("\r\n\r\n", "  \n> ").strip()
+                                    for content in content_list]
+                                notice_list = [
+                                    f'## {title} \n> {content}\n\n' for
+                                    title, content in zip(notice_list, content_list)
+                                ]
                             logger.info(f'公告信息列表：{notice_list}')
-                            notice = '  \n\n### '.join(notice_list[:notice_count])
-                            message_list += f'## 公告  \n### {notice}'
+                            # notice = '  \n\n### '.join(notice_list[:notice_count])
+                            notice = ''.join(notice_list[:1])
+                            message_list += f'# 公告  \n## {notice}'
                             time.sleep(1)
                         if mail_count > 0:
-                            print(f'FileList 消息')
+                            print(f'{site.name} 站点消息')
                             if site.url in [
                                 # 'https://hdchina.org/',
                                 'https://hudbt.hust.edu.cn/',
@@ -2264,14 +2279,14 @@ class PtSpider:
                             else:
                                 message_res = self.send_request(my_site, url=site.url + site.page_message)
                             logger.info(f'PM消息页面：{message_res}')
-                            mail_list = self.parse(message_res, site.message_title)
+                            mail_list = self.parse(site, message_res, site.message_title)
                             mail_list = [f'{mail.strip()} ...' for mail in mail_list]
                             logger.info(mail_list)
                             mail = "  \n\n> ".join(mail_list)
                             logger.info(mail)
                             logger.info(f'PM信息列表：{mail}')
                             # 测试发送网站消息原内容
-                            message = f'## 短消息  只显示第一页哦\n > {mail}'
+                            message = f'\n# 短消息  \n> 只显示第一页哦\n ### {mail}'
                             message_list += message
                         if site.url in [
                             'https://monikadesign.uk/',
@@ -2282,7 +2297,7 @@ class PtSpider:
                         else:
                             mail = mail_count + notice_count
                         my_site.mail = mail
-                        title = f'{site.name} 有{mail}条新短消息，请注意及时查收！'
+                        title = f'{site.name} 有{mail}条新消息，请注意及时查收！'
                         self.send_text(title=title, message=message_list)
                     else:
                         my_site.mail = 0
@@ -2300,6 +2315,7 @@ class PtSpider:
                         res_next_pt_invite = self.send_request(my_site, f'{site.url}Invites')
                         logger.info(res_next_pt_invite.text)
                         str_next_pt_invite = ''.join(self.parse(
+                            site,
                             res_next_pt_invite,
                             site.invitation_rule))
                         print(f'邀请字符串：{str_next_pt_invite}')
@@ -2394,8 +2410,7 @@ class PtSpider:
             # response = converter.convert(response.content)
             # logger.info('时魔响应：{}'.format(response.content))
             # logger.info('转为简体的时魔页面：', str(res))
-            # res_list = self.parse(res, site.hour_sp_rule)
-            res_list = etree.HTML(response.content).xpath(site.hour_sp_rule)
+            res_list = self.parse(site, response, site.hour_sp_rule)
             if 'u2.dmhy.org' in site.url:
                 res_list = ''.join(res_list).split('，')
                 res_list.reverse()

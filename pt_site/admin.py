@@ -114,6 +114,7 @@ class SiteAdmin(admin.ModelAdmin):  # instead of ModelAdmin
         ['站点主要页面', {
             'classes': ('collapse',),  # CSS
             'fields': (
+                'page_index',
                 'page_default',
                 'page_sign_in',
                 'page_detail',
