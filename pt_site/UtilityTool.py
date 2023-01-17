@@ -2280,13 +2280,13 @@ class PtSpider:
                                 message_res = self.send_request(my_site, url=site.url + site.page_message)
                             logger.info(f'PM消息页面：{message_res}')
                             mail_list = self.parse(site, message_res, site.message_title)
-                            mail_list = [f'{mail.strip()} ...' for mail in mail_list]
+                            mail_list = [f'#### {mail.strip()} ...' for mail in mail_list]
                             logger.info(mail_list)
-                            mail = "  \n\n> ".join(mail_list)
+                            mail = "".join(mail_list)
                             logger.info(mail)
                             logger.info(f'PM信息列表：{mail}')
                             # 测试发送网站消息原内容
-                            message = f'\n# 短消息  \n> 只显示第一页哦\n ### {mail}'
+                            message = f'\n# 短消息  \n> 只显示第一页哦\n{mail}'
                             message_list += message
                         if site.url in [
                             'https://monikadesign.uk/',

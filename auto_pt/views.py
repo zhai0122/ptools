@@ -534,14 +534,15 @@ def site_status_api(request):
         for my_site in my_site_list:
             site_info_list = my_site.sitestatus_set.order_by('-pk').all()
             # logger.info(f'{my_site.site.name}: {len(site_info_list)}')
-            sign_in_support = my_site.site.sign_in_support and my_site.sign_in
+            site = my_site.site
+            sign_in_support = site.sign_in_support and my_site.sign_in
             if len(site_info_list) <= 0:
-                logger.info(f'{my_site.site.name}: 获取站点信息列表错误，站点尚未获取过数据！')
+                logger.info(f'{site.name}: 获取站点信息列表错误，站点尚未获取过数据！')
                 site_info = {
                     'id': my_site.id,
-                    'name': my_site.site.name,
-                    'icon': my_site.site.logo,
-                    'url': my_site.site.url,
+                    'name': site.name,
+                    'icon': site.logo,
+                    'url': site.url,
                     'class': my_site.my_level,
                     'sign_in_support': sign_in_support,
                     'sign_in_state': False,
@@ -587,16 +588,17 @@ def site_status_api(request):
                         sign_in_state = False
                     site_info = {
                         'id': my_site.id,
-                        'name': my_site.site.name,
-                        'icon': my_site.site.logo,
-                        'url': my_site.site.url,
+                        'name': site.name,
+                        'icon': site.logo,
+                        'url': site.url,
+                        'message_url': site.page_message,
                         'class': my_site.my_level,
                         'sign_in_support': sign_in_support,
                         'sign_in_state': sign_in_state,
                         'invite': my_site.invitation,
                         'sp_hour': float(my_site.sp_hour) if my_site.sp_hour != '' else 0,
                         'sp_hour_full': '{:.2%}'.format(
-                            float(my_site.sp_hour) / my_site.site.sp_full) if my_site.site.sp_full != 0 else '0%',
+                            float(my_site.sp_hour) / site.sp_full) if site.sp_full != 0 else '0%',
                         'seeding': my_site.seed,
                         'leeching': my_site.leech,
                         'weeks': f'{weeks}周 {days}天',
@@ -615,7 +617,7 @@ def site_status_api(request):
                         'last_active': datetime.strftime(site_info.updated_at, '%Y/%m/%d %H:%M:%S'),
                     }
                     try:
-                        level_info = my_site.site.userlevelrule_set.filter(level=my_site.my_level).first()
+                        level_info = site.userlevelrule_set.filter(level=my_site.my_level).first()
 
                         if not level_info:
                             pass
@@ -626,12 +628,13 @@ def site_status_api(request):
                                 })
                             else:
                                 next_level = UserLevelRule.objects.filter(
-                                    site=my_site.site,
+                                    site=site,
                                     level_id=level_info.level_id + 1
                                 ).first()
                                 levels = UserLevelRule.objects.filter(
-                                    site=my_site.site,
-                                    level_id__lte=level_info.level_id
+                                    site=site,
+                                    level_id__lte=level_info.level_id,
+                                    level_id__gt=0
                                 ).order_by('-level_id').values_list('level', 'rights')
                                 level_info_dict = model_to_dict(level_info)
                                 level_info_dict.update(
@@ -662,9 +665,9 @@ def site_status_api(request):
                                 })
                     except Exception as e:
                         # raise
-                        logger.warning(f'{my_site.site.name} 用户升级信息获取错误！{e}')
+                        logger.warning(f'{site.name} 用户升级信息获取错误！{e}')
                 except Exception as e:
-                    message = f'{my_site.site.name} 获取数据列表失败：{e}'
+                    message = f'{site.name} 获取数据列表失败：{e}'
                     logger.info(message)
                     logger.error(traceback.format_exc(limit=3))
                     continue

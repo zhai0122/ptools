@@ -211,6 +211,7 @@ class UserLevelRuleAdmin(AjaxAdmin):
         'torrents',
         # 'rights',
     )
+    search_fields = ('site__name', 'level',)
 
 
 class StatusInlines(TabularInlinePaginated):
