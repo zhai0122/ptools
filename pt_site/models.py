@@ -270,7 +270,7 @@ class Site(BaseEntity):
 
 
 class UserLevelRule(BaseEntity):
-    site = models.ForeignKey(verbose_name='站 点', to=Site, on_delete=models.CASCADE)
+    site = models.ForeignKey(verbose_name='站 点', to=Site,  to_field='url',on_delete=models.CASCADE)
     level_id = models.IntegerField(verbose_name='等级id', default=1)
     level = models.CharField(verbose_name='等 级', default='User', max_length=24, help_text='请去除空格')
     days = models.IntegerField(verbose_name='时 间', default=0, help_text='原样输入，单位：周')

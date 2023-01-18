@@ -9,6 +9,7 @@ logger = logging.getLogger('ptools')
 
 def app_ready_handler(sender, **kwargs):
     from pt_site.models import Site
+    from pt_site.models import UserLevelRule
     logger.info('初始化站点信息')
     try:
         with open('pt_site_site.json', 'r') as f:
@@ -30,6 +31,18 @@ def app_ready_handler(sender, **kwargs):
                 site_obj = Site.objects.update_or_create(defaults=site_rules, url=url)
                 msg = site_obj[0].name + (' 规则新增成功！' if site_obj[1] else '规则更新成功！')
                 logger.info(msg)
+        with open('pt_site_userlevelrule.json', 'r') as file:
+            upgrade_data = json.load(file)
+            for upgrade in upgrade_data:
+                if upgrade.get('id'):
+                    del upgrade['id']
+                upgrade['level'] = upgrade.get('level').replace(' ', '')
+                upgrade_obj = UserLevelRule.objects.update_or_create(
+                    site_id=upgrade.get('site_id'), level_id=upgrade.get('level_id'),
+                    defaults=upgrade
+                )
+                logger.info(
+                    f'{upgrade_obj[0].site.name} {"用户升级规则新增成功！" if site_obj[1] else "用户升级规则更新成功！"}')
     except Exception as e:
         logger.error('初始化站点信息出错！{}'.format(e))
 
