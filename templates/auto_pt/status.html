@@ -263,7 +263,7 @@
                                     <el-popover
                                             v-if="site.level_info"
                                             placement="top"
-                                            width="440"
+                                            width="360"
                                             trigger="hover">
                                       <table style="font-size: 10px;font-family: 'Heiti SC';margin-right: 5px;">
                                           <tr v-if="site.level_info">
@@ -312,7 +312,9 @@
                                                       v-text="site.next_level.ratio"></span></td>
                                           </tr>
                                           <tr v-if="site.next_level && site.next_level.torrents != 0">
-                                              <th>发种数：<th>
+                                              <th>
+                                                  发种数：
+                                              <th>
                                               <td><span v-text="site.level_info.torrents"
                                                         class="incomplete"></span> / <span
                                                       v-text="site.next_level.torrents"></span></td>

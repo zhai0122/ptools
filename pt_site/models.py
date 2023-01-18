@@ -12,7 +12,7 @@ class Site(BaseEntity):
     # 站点设置
     url = models.URLField(verbose_name='站点网址', default='', help_text='请保留网址结尾的"/"', unique=True)
     name = models.CharField(max_length=32, verbose_name='站点名称')
-    nickname = models.CharField(max_length=8, verbose_name='简称', default='', help_text='英文，用于刷流')
+    nickname = models.CharField(max_length=16, verbose_name='简称', default='', help_text='英文，用于刷流')
     logo = models.URLField(verbose_name='站点logo', default='', help_text='站点logo图标')
     tracker = models.CharField(verbose_name='tracker', default='', help_text='tracker网址关键字', max_length=32)
     # 功能支持

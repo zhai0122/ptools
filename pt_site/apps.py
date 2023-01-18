@@ -37,6 +37,7 @@ def app_ready_handler(sender, **kwargs):
                 if upgrade.get('id'):
                     del upgrade['id']
                 upgrade['level'] = upgrade.get('level').replace(' ', '')
+                upgrade['rights'] = upgrade.get('rights').replace(' ', '')
                 upgrade_obj = UserLevelRule.objects.update_or_create(
                     site_id=upgrade.get('site_id'), level_id=upgrade.get('level_id'),
                     defaults=upgrade
