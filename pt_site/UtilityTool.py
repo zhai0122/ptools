@@ -2225,7 +2225,7 @@ class PtSpider:
                         if notice_count > 0:
                             print(f'{site.name} 站点公告')
                             if site.url in [
-                                # 'https://hdchina.org/',
+                                'https://hdchina.org/',
                                 'https://hudbt.hust.edu.cn/',
                                 # 'https://wintersakura.net/',
                             ]:
@@ -2266,7 +2266,7 @@ class PtSpider:
                         if mail_count > 0:
                             print(f'{site.name} 站点消息')
                             if site.url in [
-                                # 'https://hdchina.org/',
+                                'https://hdchina.org/',
                                 'https://hudbt.hust.edu.cn/',
                                 # 'https://wintersakura.net/',
                             ]:
