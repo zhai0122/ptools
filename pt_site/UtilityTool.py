@@ -2089,7 +2089,7 @@ class PtSpider:
                     details_html.xpath(site.my_level_rule)
                 ).replace('_Name', '').replace('fontBold', '').strip()
                 if 'hdcity' in site.url:
-                    my_level = my_level_1.strip()
+                    my_level = my_level_1.replace('[', '').replace(']', '').strip()
                 # elif 'u2' in site.url:
                 #     my_level = ''.join(re.findall(r'/(.*).{4}', my_level_1)).title()
                 else:
@@ -2280,7 +2280,7 @@ class PtSpider:
                                 message_res = self.send_request(my_site, url=site.url + site.page_message)
                             logger.info(f'PM消息页面：{message_res}')
                             mail_list = self.parse(site, message_res, site.message_title)
-                            mail_list = [f'#### {mail.strip()} ...' for mail in mail_list]
+                            mail_list = [f'#### {mail.strip()} ...\n' for mail in mail_list]
                             logger.info(mail_list)
                             mail = "".join(mail_list)
                             logger.info(mail)
