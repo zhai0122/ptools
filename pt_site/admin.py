@@ -218,9 +218,8 @@ class StatusInlines(TabularInlinePaginated):
     model = SiteStatus
     per_page = 10
     fields = [
-        'uploaded', 'downloaded', 'ratio',
-        'my_sp', 'my_bonus', 'seed_vol',
-        'created_at'
+        'uploaded', 'downloaded', 'ratio', 'seed', 'seed_vol', 'leech', 'invitation', 'sp_hour',
+        'my_sp', 'my_bonus', 'created_at'
     ]
     # classes = ['collapse']
     readonly_fields = ['created_at']
@@ -301,11 +300,6 @@ class MySiteAdmin(AjaxAdmin):  # instead of ModelAdmin
         StatusInlines,
         SignInInlines
     )
-
-    def save_model(self, request, obj, form, change):
-        if obj.sp_hour == '':
-            obj.sp_hour = 0
-        obj.save()
 
     def bonus(self, obj: MySite):
         status_today = obj.sitestatus_set.order_by('-pk').first()
@@ -597,15 +591,15 @@ class MySiteAdmin(AjaxAdmin):  # instead of ModelAdmin
                             my_site.site.name,
                             my_site.my_level,
                             site_status.my_sp,
-                            my_site.sp_hour,
+                            site_status.sp_hour,
                             site_status.my_bonus,
                             site_status.ratio,
                             FileSizeConvert.parse_2_file_size(site_status.seed_vol),
                             FileSizeConvert.parse_2_file_size(site_status.uploaded),
                             FileSizeConvert.parse_2_file_size(site_status.downloaded),
-                            my_site.seed,
-                            my_site.leech,
-                            my_site.invitation,
+                            site_status.seed,
+                            site_status.leech,
+                            site_status.invitation,
                             my_site.my_hr
                         )
                         messages.success(
