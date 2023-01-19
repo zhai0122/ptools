@@ -15,13 +15,7 @@ if [ ! -e $CONTAINER_ALREADY_STARTED ]; then
   git config pull.ff only
   git checkout $DEV
   echo "系统初始化中"
-  if [ ! -f db/db.sqlite3 ]; then
-    echo '数据库不存在，初始化数据库'
-    python manage.py migrate
-  else
-    echo '数据库已存在，同步数据库结构'
-    python manage.py migrate
-  fi
+  python manage.py migrate
   touch $CONTAINER_ALREADY_STARTED
   echo "创建超级用户"
   DJANGO_SUPERUSER_USERNAME=$DJANGO_SUPERUSER_USERNAME
@@ -45,15 +39,6 @@ echo 104.25.26.31 u2.dmhy.org >>/etc/hosts
 echo 104.25.61.106 u2.dmhy.org >>/etc/hosts
 echo 104.25.62.106 u2.dmhy.org >>/etc/hosts
 echo 172.67.98.15 u2.dmhy.org >>/etc/hosts
-echo 104.25.26.31 tracker.dmhy.org >>/etc/hosts
-echo 104.25.61.106 tracker.dmhy.org >>/etc/hosts
-echo 104.25.62.106 tracker.dmhy.org >>/etc/hosts
-echo 172.67.98.15 tracker.dmhy.org >>/etc/hosts
-echo 104.25.26.31 share.dmhy.org >>/etc/hosts
-echo 104.25.61.106 share.dmhy.org >>/etc/hosts
-echo 104.25.62.106 share.dmhy.org >>/etc/hosts
-echo 172.67.98.15 share.dmhy.org >>/etc/hosts
-echo 172.67.98.15 share.dmhy.org >>/etc/hosts
 echo "启动服务"
 python manage.py migrate
 python manage.py runserver 0.0.0.0:$DJANGO_WEB_PORT

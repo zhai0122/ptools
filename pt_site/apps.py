@@ -1,5 +1,6 @@
 import json
 import logging
+import traceback
 
 from django.apps import AppConfig
 from django.db.models.signals import post_migrate
@@ -29,8 +30,8 @@ def app_ready_handler(sender, **kwargs):
                     del site_rules['id']
                 url = site_rules.get('url')
                 site_obj = Site.objects.update_or_create(defaults=site_rules, url=url)
-                msg = site_obj[0].name + (' 规则新增成功！' if site_obj[1] else '规则更新成功！')
-                logger.info(msg)
+                # msg = site_obj[0].name + (' 规则新增成功！' if site_obj[1] else '规则更新成功！')
+                # logger.info(msg)
         with open('pt_site_userlevelrule.json', 'r') as file:
             upgrade_data = json.load(file)
             for upgrade in upgrade_data:
@@ -42,10 +43,12 @@ def app_ready_handler(sender, **kwargs):
                     site_id=upgrade.get('site_id'), level_id=upgrade.get('level_id'),
                     defaults=upgrade
                 )
-                logger.info(
-                    f'{upgrade_obj[0].site.name} {"用户升级规则新增成功！" if site_obj[1] else "用户升级规则更新成功！"}')
+                # logger.info(
+                #     f'{upgrade_obj[0].site.name} {"用户升级规则新增成功！" if site_obj[1] else "用户升级规则更新成功！"}')
+        logger.info('数据库初始化完成！')
     except Exception as e:
         logger.error('初始化站点信息出错！{}'.format(e))
+        logger.error(traceback.format_exc(limit=3))
 
 
 class PtSiteConfig(AppConfig):

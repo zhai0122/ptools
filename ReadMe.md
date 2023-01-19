@@ -13,3 +13,9 @@
 ## 支持目录
 
 [Support](Support/Support.md "Support")
+
+
+## 联系我
+
+- QQ群：707748572
+- TG频道：https://t.me/n_ptools
