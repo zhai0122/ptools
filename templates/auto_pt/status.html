@@ -530,7 +530,7 @@
             <div style="margin-bottom: 5px;">
                 <el-radio-group v-model="dataLength" size="mini"
                         {#                                @change="showAllIncrementHistory">#}
-                                @change="showHistoryList(site.id)">
+                                @change="showHistoryList(showAllHistory ? 0 : site.id)">
                     <el-radio-button label="-7">7天</el-radio-button>
                     <el-radio-button label="-15">15天</el-radio-button>
                     <el-radio-button label="-30">30天</el-radio-button>
@@ -592,9 +592,10 @@
             </el-form-item>
             <el-form-item label="功能开关" label-position="right" required>
                 <el-radio-group>
-                    <el-checkbox-button v-model="addMySiteForm.sign_in" label="签 到" border></el-checkbox-button>
+                    <el-checkbox-button v-model="addMySiteForm.get_info" label="站点信息" border></el-checkbox-button>
+                    <el-checkbox-button v-model="addMySiteForm.sign_in" label="站点签到" border></el-checkbox-button>
                     <el-checkbox-button v-model="addMySiteForm.hr" label="HR下载" border></el-checkbox-button>
-                    <el-checkbox-button v-model="addMySiteForm.search" label="搜 索" border></el-checkbox-button>
+                    <el-checkbox-button v-model="addMySiteForm.search" label="聚合搜索" border></el-checkbox-button>
                 </el-radio-group>
             </el-form-item>
 
@@ -640,7 +641,7 @@
             </el-popconfirm>
             <el-button @click="showAddMySite = false">取 消</el-button>
             <el-button type="primary" @click="editMySite('addMySiteForm')">
-                <span v-text="addMySiteForm.id==0 ? '添加站点' : '编辑站点'"></span>
+                <span v-text="addMySiteForm.id==0 ? '添加站点' : '保存站点'"></span>
             </el-button>
         </div>
     </el-dialog>
@@ -665,7 +666,7 @@
                     showSiteChart: false,
                     begInvite: false,
                     showLogo: true,
-                    showLegend: true,
+                    showLegend: window.innerWidth > 1200 ? true : false,
                     shuffle: false,
                     searchKey: '',
                     sortStep: 1,
@@ -680,6 +681,7 @@
                     addMySiteForm: {
                         id: 0,
                         site: null,
+                        get_info: true,
                         sign_in: true,
                         hr: false,
                         search: true,
@@ -697,7 +699,7 @@
                             {required: true, message: '请输入数字UID，指定站点请输入用户名', trigger: 'blur'},
                         ],
                         passkey: [
-                            {required: true, message: '请输入Passkey', trigger: 'blur'},
+                            {required: false, message: '请输入Passkey', trigger: 'blur'},
                             {min: 16, max: 32, message: '长度为32位', trigger: 'blur'}
                         ],
                         cookie: [

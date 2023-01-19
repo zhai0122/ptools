@@ -1798,8 +1798,8 @@ class PtSpider:
                         my_site.latest_active = stats.get('lastAccess')
                         my_site.my_level = details_response.get('personal').get('class')
                         community = details_response.get('community')
-                        my_site.seed = community.get('seeding')
-                        my_site.leech = community.get('leeching')
+                        seed = community.get('seeding')
+                        leech = community.get('leeching')
                         # ajax.php?action=index
                         if 'greatposterwall' in site.url:
                             userdata = seeding_response.get('userstats')
@@ -1807,7 +1807,7 @@ class PtSpider:
                             # if userdata.get('bonusPoints') else 0
                             seeding_size = userdata.get('seedingSize')
                             # if userdata.get('seedingSize') else 0
-                            my_site.sp_hour = userdata.get('seedingBonusPointsPerHour')
+                            sp_hour = userdata.get('seedingBonusPointsPerHour')
                             # if userdata.get('seedingBonusPointsPerHour') else 0
                         if 'dicmusic' in site.url:
                             logger.info('海豚')
@@ -1822,7 +1822,7 @@ class PtSpider:
                             seeding_size = FileSizeConvert.parse_2_byte(''.join(seeding_size_str))
                             """
                             my_sp = 0
-                            my_site.sp_hour = 0
+                            sp_hour = 0
                             seeding_size = 0
                         my_site.save()
                         res_gpw = SiteStatus.objects.update_or_create(
@@ -1836,6 +1836,9 @@ class PtSpider:
                                 'my_bonus': 0,
                                 # 做种体积
                                 'seed_vol': seeding_size,
+                                'seed': seed,
+                                'leech': leech,
+                                'sp_hour': sp_hour,
                             })
                         if float(ratio) < 1:
                             msg = f'{site.name} 分享率 {ratio} 过低，请注意'
@@ -1860,12 +1863,12 @@ class PtSpider:
                     my_sp = details_html.get(site.my_sp_rule)
                     ratio = uploaded / downloaded if downloaded > 0 else 'inf'
                     my_site.time_join = datetime.fromtimestamp(details_html.get(site.time_join_rule))
-                    my_site.invitation = details_html.get(site.invitation_rule)
+                    invitation = details_html.get(site.invitation_rule)
                     my_site.my_level = details_html.get('class').get('name')
-                    my_site.seed = details_html.get(site.seed_rule)
-                    my_site.leech = details_html.get(site.leech_rule)
+                    seed = details_html.get(site.seed_rule)
+                    leech = details_html.get(site.leech_rule)
                     my_site.mail = details_html.get(site.mailbox_rule)
-                    my_site.sp_hour = details_html.get(site.hour_sp_rule)
+                    sp_hour = details_html.get(site.hour_sp_rule)
                     my_site.save()
                     res_gpw = SiteStatus.objects.update_or_create(
                         site=my_site,
@@ -1876,6 +1879,10 @@ class PtSpider:
                             'uploaded': uploaded,
                             'my_sp': my_sp,
                             'my_bonus': 0,
+                            'invitation': invitation,
+                            'seed': seed,
+                            'leech': leech,
+                            'sp_hour': sp_hour,
                             # 做种体积
                             'seed_vol': seeding_size,
                         })
@@ -2128,34 +2135,34 @@ class PtSpider:
                 hr = ''.join(details_html.xpath(site.my_hr_rule)).replace('H&R:', '').replace('有效\n:', '').strip()
 
                 my_hr = hr if hr else '0'
-                logger.info(f'h&r: {hr} ,解析后：{my_hr}')
+                logger.info(f'h&r: "{hr}" ,解析后：{my_hr}')
                 # logger.info(my_bonus)
                 # 更新我的站点数据
                 # invitation = converter.convert(invitation)
                 # x = invitation.split('/')
                 # invitation = re.sub('[\u4e00-\u9fa5]', '', invitation)
-                logger.info(f'当前获取邀请数：{invitation}')
-                if invitation == '没有邀请资格' or invitation == '沒有邀請資格':
-                    my_site.invitation = 0
+                logger.info(f'当前获取邀请数："{invitation}"')
+                if '没有邀请资格' in invitation or '沒有邀請資格' in invitation:
+                    invitation = 0
                 elif '/' in invitation:
                     invitation_list = [int(n) for n in invitation.split('/')]
                     # my_site.invitation = int(invitation) if invitation else 0
-                    my_site.invitation = sum(invitation_list)
+                    invitation = sum(invitation_list)
                 elif '(' in invitation:
                     invitation_list = [int(get_decimals(n)) for n in invitation.split('(')]
                     # my_site.invitation = int(invitation) if invitation else 0
-                    my_site.invitation = sum(invitation_list)
+                    invitation = sum(invitation_list)
                 elif not invitation:
-                    my_site.invitation = 0
+                    invitation = 0
                 else:
-                    my_site.invitation = int(re.sub('\D', '', invitation))
+                    invitation = int(re.sub('\D', '', invitation))
                 my_site.latest_active = datetime.now()
                 my_site.my_level = my_level if my_level != '' else ' '
                 if my_hr:
                     my_site.my_hr = my_hr
-                my_site.seed = int(get_decimals(seed)) if seed else 0
+                seed = int(get_decimals(seed)) if seed else 0
                 logger.info(f'当前下载数：{leech}')
-                my_site.leech = int(get_decimals(leech)) if leech else 0
+                leech = int(get_decimals(leech)) if leech else 0
 
                 logger.info('站点：{}'.format(site))
                 logger.info('等级：{}'.format(my_level))
@@ -2312,7 +2319,7 @@ class PtSpider:
                         # logger.info(details_html)
                         # logger.info(res_sp_hour_list)
                         res_sp_hour = ''.join(res_sp_hour_list)
-                        my_site.sp_hour = get_decimals(res_sp_hour)
+                        sp_hour = get_decimals(res_sp_hour)
                         # 飞天邀请获取
                         logger.info(f'邀请页面：{site.url}Invites')
                         res_next_pt_invite = self.send_request(my_site, f'{site.url}Invites')
@@ -2324,13 +2331,13 @@ class PtSpider:
                         print(f'邀请字符串：{str_next_pt_invite}')
                         list_next_pt_invite = re.findall('\d+', str_next_pt_invite)
                         print(list_next_pt_invite)
-                        my_site.invitation = int(list_next_pt_invite[0]) - int(list_next_pt_invite[1])
+                        invitation = int(list_next_pt_invite[0]) - int(list_next_pt_invite[1])
                     else:
                         res_sp_hour = self.get_hour_sp(my_site=my_site)
                         if res_sp_hour.code != StatusCodeEnum.OK.code:
                             logger.error(my_site.site.name + res_sp_hour.msg)
                         else:
-                            my_site.sp_hour = res_sp_hour.data
+                            sp_hour = res_sp_hour.data
                     # 保存上传下载等信息
                     my_site.save()
                     # 外键反向查询
@@ -2347,6 +2354,11 @@ class PtSpider:
                                 my_bonus) if my_bonus != '' else 0,
                             # 做种体积
                             'seed_vol': seed_vol_all,
+                            'seed': seed,
+                            'leech': leech,
+                            'sp_hour': sp_hour,
+                            'invitation': invitation,
+                            'publish': 0,
                         })
                     # logger.info(result) # result 本身就是元祖
                     return CommonResponse.success(data=result)

@@ -314,9 +314,11 @@ class MySiteAdmin(AjaxAdmin):  # instead of ModelAdmin
             '<font color="#6c4c49">魔力：{}</font><br>'
             '<font color="#708090">满魔：{} </font>'
             '<font color="#708090">积分/HP：{}</font>',
-            round(float(obj.sp_hour), 3) if obj.sp_hour else 0,
+            round(float(obj.sitestatus_set.order_by('id').first().sp_hour), 3) if obj.sitestatus_set.order_by(
+                'id').first().sp_hour else 0,
             status_today.my_sp if status_today else 0,
-            '{:.2%}'.format(float(obj.sp_hour) / obj.site.sp_full) if status_today and obj.site.sp_full != 0 else 0,
+            '{:.2%}'.format(float(obj.sitestatus_set.order_by(
+                'id').first().sp_hour) / obj.site.sp_full) if status_today and obj.site.sp_full != 0 else 0,
             status_today.my_bonus if status_today else 0
         )
 
@@ -328,7 +330,7 @@ class MySiteAdmin(AjaxAdmin):  # instead of ModelAdmin
             '<font color="#6c4c49">邀请：{}</font><br>'
             '<font color="Tomato">H&R：{}</font>',
             obj.my_level,
-            obj.invitation,
+            obj.sitestatus_set.order_by('id').first().invitation,
             obj.my_hr if obj.my_hr else 0
         )
 
@@ -349,7 +351,8 @@ class MySiteAdmin(AjaxAdmin):  # instead of ModelAdmin
         return format_html(
             '<font color="#2570a1">做种：{}</font> / <font color="#6c4c49">下载：{} </font><br>'
             '<font color="#708090"> 做种体积：{}</font>',
-            obj.seed, obj.leech,
+            status_today.seed,
+            status_today.leech,
             FileSizeConvert.parse_2_file_size(status_today.seed_vol) if status_today else 0,
         )
 
@@ -667,7 +670,7 @@ class MySiteAdmin(AjaxAdmin):  # instead of ModelAdmin
         ['用户信息', {
             'classes': ('collapse',),  # CSS
             'fields': (
-                ('site', 'sign_in', 'hr', 'search'),
+                ('site', 'sign_in', 'get_info', 'hr', 'search'),
                 ('user_id', 'passkey',),
                 ('time_join',),
                 'user_agent',

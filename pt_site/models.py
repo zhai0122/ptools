@@ -218,6 +218,10 @@ class Site(BaseEntity):
         default='//img[@class="arrowdown"]/following-sibling::text()[1]',
         max_length=128)
 
+    publish_rule = models.CharField(verbose_name='发种数量',
+                                    default='//p/preceding-sibling::b/text()[1]',
+                                    max_length=128)
+
     seed_rule = models.CharField(verbose_name='做种数量',
                                  default='//img[@class="arrowup"]/following-sibling::text()[1]',
                                  max_length=128)
@@ -270,7 +274,7 @@ class Site(BaseEntity):
 
 
 class UserLevelRule(BaseEntity):
-    site = models.ForeignKey(verbose_name='站 点', to=Site,  to_field='url',on_delete=models.CASCADE)
+    site = models.ForeignKey(verbose_name='站 点', to=Site, to_field='url', on_delete=models.CASCADE)
     level_id = models.IntegerField(verbose_name='等级id', default=1)
     level = models.CharField(verbose_name='等 级', default='User', max_length=24, help_text='请去除空格')
     days = models.IntegerField(verbose_name='时 间', default=0, help_text='原样输入，单位：周')
@@ -309,18 +313,20 @@ class MySite(BaseEntity):
     # 用户设置
     hr = models.BooleanField(verbose_name='开启HR下载', default=False, help_text='是否下载HR种子')
     sign_in = models.BooleanField(verbose_name='开启签到', default=True, help_text='是否开启签到')
+    get_info = models.BooleanField(verbose_name='抓取信息', default=True, help_text='是否抓取站点数据')
     search = models.BooleanField(verbose_name='开启搜索', default=True, help_text='是否开启搜索')
     # 用户数据 自动拉取
-    invitation = models.IntegerField(verbose_name='邀请资格', default=0)
+    # invitation = models.IntegerField(verbose_name='邀请资格', default=0)
     time_join = models.DateTimeField(verbose_name='注册时间', blank=True, null=True, help_text='请务必填写此项！')
     latest_active = models.DateTimeField(verbose_name='最近活动时间', blank=True, null=True)
-    sp_hour = models.FloatField(verbose_name='时魔', default=0)
+    # sp_hour = models.FloatField(verbose_name='时魔', default=0)
     my_level = models.CharField(verbose_name='用户等级', max_length=16, default='')
     my_hr = models.CharField(verbose_name='H&R', max_length=16, default='')
-    leech = models.IntegerField(verbose_name='当前下载', default=0)
-    seed = models.IntegerField(verbose_name='当前做种', default=0)
+    # leech = models.IntegerField(verbose_name='当前下载', default=0)
+    # seed = models.IntegerField(verbose_name='当前做种', default=0)
     mail = models.IntegerField(verbose_name='新邮件', default=0)
-    publish = models.IntegerField(verbose_name='发布种子', default=0)
+
+    # publish = models.IntegerField(verbose_name='发布种子', default=0)
 
     def __str__(self):
         return self.site.name
@@ -341,6 +347,11 @@ class SiteStatus(BaseEntity):
     my_sp = models.FloatField(verbose_name='魔力值', default=0)
     my_bonus = models.FloatField(verbose_name='做种积分', default=0)
     seed_vol = models.IntegerField(verbose_name='做种体积', default=0)
+    leech = models.IntegerField(verbose_name='当前下载', default=0)
+    seed = models.IntegerField(verbose_name='当前做种', default=0)
+    sp_hour = models.FloatField(verbose_name='时魔', default=0)
+    publish = models.IntegerField(verbose_name='发布种子', default=0)
+    invitation = models.IntegerField(verbose_name='邀请资格', default=0)
 
     class Meta:
         verbose_name = '我的数据'

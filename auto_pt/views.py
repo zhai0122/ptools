@@ -538,7 +538,7 @@ def site_status_api(request):
             sign_in_support = site.sign_in_support and my_site.sign_in
             if len(site_info_list) <= 0:
                 logger.info(f'{site.name}: 获取站点信息列表错误，站点尚未获取过数据！')
-                site_info = {
+                out_site_info = {
                     'id': my_site.id,
                     'name': site.name,
                     'icon': site.logo,
@@ -546,7 +546,7 @@ def site_status_api(request):
                     'class': my_site.my_level,
                     'sign_in_support': sign_in_support,
                     'sign_in_state': False,
-                    'invite': my_site.invitation,
+                    'invite': 0,
                     'sp_hour': 0,
                     'sp_hour_full': '0',
                     'seeding': 0,
@@ -571,12 +571,12 @@ def site_status_api(request):
                     site_info = site_info_list.first()
                     downloaded += site_info.downloaded
                     uploaded += site_info.uploaded
-                    seeding += my_site.seed
-                    leeching += my_site.leech
+                    seeding += site_info.seed
+                    leeching += site_info.leech
                     sp += site_info.my_sp
-                    sp_hour += (float(my_site.sp_hour) if my_site.sp_hour != '' else 0)
+                    sp_hour += (float(site_info.sp_hour) if site_info.sp_hour != '' else 0)
                     bonus += site_info.my_bonus
-                    leeching += my_site.leech
+                    leeching += site_info.leech
                     seeding_size += site_info.seed_vol
                     weeks = ((now - my_site.time_join).days // 7) if my_site.time_join else 0
                     days = ((now - my_site.time_join).days % 7) if my_site.time_join else 0
@@ -586,7 +586,7 @@ def site_status_api(request):
                         sign_in_state = sign_in_list.first().sign_in_today if len(sign_in_list) > 0 else False
                     else:
                         sign_in_state = False
-                    site_info = {
+                    out_site_info = {
                         'id': my_site.id,
                         'name': site.name,
                         'icon': site.logo,
@@ -595,12 +595,12 @@ def site_status_api(request):
                         'class': my_site.my_level,
                         'sign_in_support': sign_in_support,
                         'sign_in_state': sign_in_state,
-                        'invite': my_site.invitation,
-                        'sp_hour': float(my_site.sp_hour) if my_site.sp_hour != '' else 0,
+                        'invite': site_info.invitation,
+                        'sp_hour': float(site_info.sp_hour) if site_info.sp_hour != '' else 0,
                         'sp_hour_full': '{:.2%}'.format(
-                            float(my_site.sp_hour) / site.sp_full) if site.sp_full != 0 else '0%',
-                        'seeding': my_site.seed,
-                        'leeching': my_site.leech,
+                            float(site_info.sp_hour) / site.sp_full) if site.sp_full != 0 else '0%',
+                        'seeding': site_info.seed,
+                        'leeching': site_info.leech,
                         'weeks': f'{weeks}周 {days}天',
                         'time_join': my_site.time_join if my_site.time_join else now,
                         'hr': my_site.my_hr,
@@ -653,12 +653,12 @@ def site_status_api(request):
                                     }
                                 )
                                 logger.info(f'我的站点id：{my_site.id}')
-                                logger.info(f'当前等级：{level_info_dict}')
-                                logger.info(f'下一等级：{next_level_dict}')
+                                # logger.info(f'当前等级：{level_info_dict}')
+                                # logger.info(f'下一等级：{next_level_dict}')
                                 upgrade_day = my_site.time_join + timedelta(days=next_level.days * 7)
 
                                 logger.info(f'下一等级升级日期：{upgrade_day}')
-                                site_info.update({
+                                out_site_info.update({
                                     'level_info': level_info_dict,
                                     'next_level': next_level_dict,
                                     'upgrade_day': upgrade_day if upgrade_day > datetime.today() else False,
@@ -671,7 +671,7 @@ def site_status_api(request):
                     logger.info(message)
                     logger.error(traceback.format_exc(limit=3))
                     continue
-            status_list.append(site_info)
+            status_list.append(out_site_info)
 
         # 按上传量排序
         # status_list.sort(key=lambda x: x['mail'], reverse=False)
@@ -730,20 +730,20 @@ def site_data_api(request):
         ])
         date_list = list(date_list)
         date_list.sort()
-        print(f'日期列表：{date_list}')
+        # print(f'日期列表：{date_list}')
         print(f'日期数量：{len(date_list)}')
 
         for my_site in my_site_list:
             # 每个站点获取自己站点的所有信息
             site_status_list = my_site.sitestatus_set.order_by('created_at').all()
-            print(f'站点数据条数：{len(site_status_list)}')
+            # print(f'站点数据条数：{len(site_status_list)}')
             info_list = [
                 {
                     'uploaded': site_info.uploaded,
                     'date': site_info.created_at.date().strftime('%Y-%m-%d')
                 } for site_info in site_status_list
             ]
-            print(f'提取完后站点数据条数：{len(info_list)}')
+            # print(f'提取完后站点数据条数：{len(info_list)}')
 
             # 生成本站点的增量列表，并标注时间
             '''
@@ -762,12 +762,12 @@ def site_data_api(request):
                 (index, info) in enumerate(info_list) if 0 < index < len(info_list)
 
             }
-            print(f'处理完后站点数据条数：{len(info_list)}')
+            # print(f'处理完后站点数据条数：{len(info_list)}')
             for date in date_list:
                 if not diff_info_list.get(date):
                     diff_info_list[date] = 0
             # print(diff_info_list)
-            print(len(diff_info_list))
+            # print(len(diff_info_list))
             diff_info_list = sorted(diff_info_list.items(), key=lambda x: x[0])
             diff_list.append({
                 'name': my_site.site.name,
@@ -776,7 +776,7 @@ def site_data_api(request):
                 'stack': 'increment',
                 'data': [value[1] if value[1] > 0 else 0 for value in diff_info_list]
             })
-        print(diff_list)
+        # print(diff_list)
 
         return JsonResponse(data=CommonResponse.success(
             data={
@@ -792,7 +792,7 @@ def site_data_api(request):
             msg='访问出错咯！'
         ).to_dict(), safe=False)
     site_info_list = my_site.sitestatus_set.order_by('created_at').all()
-    logger.info(site_info_list)
+    # logger.info(site_info_list)
     site_status_list = []
     site = {
         'id': my_site.id,
@@ -800,8 +800,6 @@ def site_data_api(request):
         'icon': my_site.site.logo,
         'url': my_site.site.url,
         'class': my_site.my_level,
-        'seeding': my_site.seed,
-        'leeching': my_site.leech,
         'last_active': datetime.strftime(my_site.updated_at, '%Y/%m/%d %H:%M:%S'),
     }
     for site_info in site_info_list:
@@ -812,11 +810,13 @@ def site_data_api(request):
             'seedingSize': site_info.seed_vol,
             'sp': site_info.my_sp,
             'bonus': site_info.my_bonus,
+            'seeding': site_info.seed,
+            'leeching': site_info.leech,
             'info_date': site_info.created_at.date()
         }
         site_status_list.append(my_site_status)
     logger.info(site)
-    logger.info(site_status_list)
+    # logger.info(site_status_list)
     return JsonResponse(data=CommonResponse.success(
         data={
             'site': site,
@@ -873,15 +873,15 @@ def update_site_api(request):
                     my_site.site.name,
                     my_site.my_level,
                     status.my_sp,
-                    my_site.sp_hour,
+                    status.sp_hour,
                     status.my_bonus,
                     status.ratio,
                     FileSizeConvert.parse_2_file_size(status.seed_vol),
                     FileSizeConvert.parse_2_file_size(status.uploaded),
                     FileSizeConvert.parse_2_file_size(status.downloaded),
-                    my_site.seed,
-                    my_site.leech,
-                    my_site.invitation,
+                    status.seed,
+                    status.leech,
+                    status.invitation,
                     my_site.my_hr
                 )
                 return JsonResponse(data=CommonResponse.success(
@@ -1077,7 +1077,8 @@ def edit_my_site(request):
         my_site_list = MySite.objects.filter(id=my_site_id)
         if len(my_site_list) == 1:
             my_site = my_site_list.values(
-                'id', 'site', 'sign_in', 'hr', 'search', 'user_id', 'passkey', 'user_agent', 'cookie', 'time_join'
+                'id', 'site', 'sign_in', 'get_info', 'hr', 'search', 'user_id', 'passkey', 'user_agent', 'cookie',
+                'time_join'
             ).first()
             return JsonResponse(CommonResponse.success(data={
                 'my_site': my_site
