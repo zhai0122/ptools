@@ -809,9 +809,11 @@ def site_data_api(request):
             'ratio': 0 if site_info.ratio == float('inf') else site_info.ratio,
             'seedingSize': site_info.seed_vol,
             'sp': site_info.my_sp,
+            'sp_hour': site_info.sp_hour,
             'bonus': site_info.my_bonus,
             'seeding': site_info.seed,
             'leeching': site_info.leech,
+            'invitation': site_info.invitation,
             'info_date': site_info.created_at.date()
         }
         site_status_list.append(my_site_status)
