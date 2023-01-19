@@ -317,7 +317,7 @@ class MySiteAdmin(AjaxAdmin):  # instead of ModelAdmin
     bonus.short_description = '魔力'
 
     def userinfo(self, obj: MySite):
-        status = obj.sitestatus_set.order_by('id').first()
+        status = obj.sitestatus_set.order_by('-pk').first()
         return format_html(
             '<font color="#2570a1">等级：{} / </font>'
             '<font color="#6c4c49">邀请：{}</font><br>'
