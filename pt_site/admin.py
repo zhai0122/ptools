@@ -308,23 +308,22 @@ class MySiteAdmin(AjaxAdmin):  # instead of ModelAdmin
             '<font color="#6c4c49">魔力：{}</font><br>'
             '<font color="#708090">满魔：{} </font>'
             '<font color="#708090">积分/HP：{}</font>',
-            round(float(obj.sitestatus_set.order_by('id').first().sp_hour), 3) if obj.sitestatus_set.order_by(
-                'id').first().sp_hour else 0,
+            round(float(status_today.sp_hour), 3) if status_today else 0,
             status_today.my_sp if status_today else 0,
-            '{:.2%}'.format(float(obj.sitestatus_set.order_by(
-                'id').first().sp_hour) / obj.site.sp_full) if status_today and obj.site.sp_full != 0 else 0,
+            '{:.2%}'.format(float(status_today.sp_hour) / obj.site.sp_full) if status_today and obj.site.sp_full != 0 else 0,
             status_today.my_bonus if status_today else 0
         )
 
     bonus.short_description = '魔力'
 
     def userinfo(self, obj: MySite):
+        status = obj.sitestatus_set.order_by('id').first()
         return format_html(
             '<font color="#2570a1">等级：{} / </font>'
             '<font color="#6c4c49">邀请：{}</font><br>'
             '<font color="Tomato">H&R：{}</font>',
             obj.my_level,
-            obj.sitestatus_set.order_by('id').first().invitation,
+            status.invitation if status else 0,
             obj.my_hr if obj.my_hr else 0
         )
 
@@ -345,8 +344,8 @@ class MySiteAdmin(AjaxAdmin):  # instead of ModelAdmin
         return format_html(
             '<font color="#2570a1">做种：{}</font> / <font color="#6c4c49">下载：{} </font><br>'
             '<font color="#708090"> 做种体积：{}</font>',
-            status_today.seed,
-            status_today.leech,
+            status_today.seed if status_today else 0,
+            status_today.leech if status_today else 0,
             FileSizeConvert.parse_2_file_size(status_today.seed_vol) if status_today else 0,
         )
 
