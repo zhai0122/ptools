@@ -1447,7 +1447,7 @@
   {
     "id": 22,
     "created_at": "2022-07-20 11:17:25.992000",
-    "updated_at": "2023-01-18 17:35:55.599881",
+    "updated_at": "2023-01-19 09:18:18.698541",
     "name": "烧包",
     "url": "https://ptsbao.club/",
     "logo": "https://ptsbao.club/favicon.ico",
@@ -1522,7 +1522,7 @@
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
-    "message_title": "//img[@alt=\"Unread\"]/parent::div/following-sibling::a[1]/div/text()",
+    "message_title": "//img[@alt=\"Unread\"]/parent::td/following::a[1]//text()",
     "page_message": "messages.php",
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",

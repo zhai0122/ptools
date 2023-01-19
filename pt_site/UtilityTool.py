@@ -1235,7 +1235,10 @@ class PtSpider:
 
     @staticmethod
     def parse(site, response, rules):
-        if site.url in ['https://ourbits.club/']:
+        if site.url in [
+            'https://ourbits.club/',
+            'https://piggo.me/',
+        ]:
             return etree.HTML(response.text).xpath(rules)
         else:
             return etree.HTML(response.content).xpath(rules)

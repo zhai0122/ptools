@@ -18,7 +18,6 @@ if [ ! -e $CONTAINER_ALREADY_STARTED ]; then
   if [ ! -f db/db.sqlite3 ]; then
     echo '数据库不存在，初始化数据库'
     python manage.py migrate
-    python manage.py loaddata pt.json
   else
     echo '数据库已存在，同步数据库结构'
     python manage.py migrate
