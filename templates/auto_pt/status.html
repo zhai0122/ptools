@@ -465,8 +465,15 @@
                                     </i>
                                     <br>
                                     <i class="el-icon-lollipop"
+                                       v-if="site.sp_hour != 0"
                                        v-text="site.sp_hour.toFixed(2) + ' / ' + site.sp_hour_full"
-                                       style="color: coral" title="时魔"></i>
+                                       style="color: coral" title="时魔">
+                                    </i>
+                                    <i class="el-icon-lollipop"
+                                       v-else="site.sp_hour != 0"
+                                       v-text="site.sp_hour.toFixed(2)"
+                                       style="color: coral" title="时魔">
+                                    </i>
                                 </div>
                                 <hr>
                                 <div>

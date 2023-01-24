@@ -319,7 +319,7 @@ class PtSpider:
         # my_site = MySite.objects.filter(site=site).first()
         # logger.info('查询我的站点：',my_site)
         # 如果有更新cookie，如果没有继续创建
-        my_level_str = cookie.get('info').get('levelName')
+        my_level_str = cookie.get('info').get('levelName').strip(" ")
         if my_level_str:
             my_level = re.sub(u'([^a-zA-Z_ ])', "", my_level_str).strip(" ")
         else:
@@ -1817,7 +1817,7 @@ class PtSpider:
                         ratio = 'inf' if ratio_str == '∞' else ratio_str
                         my_site.time_join = stats.get('joinedDate')
                         my_site.latest_active = stats.get('lastAccess')
-                        my_site.my_level = details_response.get('personal').get('class')
+                        my_site.my_level = details_response.get('personal').get('class').strip(" ")
                         community = details_response.get('community')
                         seed = community.get('seeding')
                         leech = community.get('leeching')
@@ -1885,7 +1885,7 @@ class PtSpider:
                     ratio = uploaded / downloaded if downloaded > 0 else 'inf'
                     my_site.time_join = datetime.fromtimestamp(details_html.get(site.time_join_rule))
                     invitation = details_html.get(site.invitation_rule)
-                    my_site.my_level = details_html.get('class').get('name')
+                    my_site.my_level = details_html.get('class').get('name').strip(" ")
                     seed = details_html.get(site.seed_rule)
                     leech = details_html.get(site.leech_rule)
                     my_site.mail = details_html.get(site.mailbox_rule)
@@ -2118,13 +2118,13 @@ class PtSpider:
                 # 去除字符串中的中文
                 my_level_1 = ''.join(
                     details_html.xpath(site.my_level_rule)
-                ).replace('_Name', '').replace('fontBold', '').strip()
+                ).replace('_Name', '').replace('fontBold', '').strip(" ").strip()
                 if 'hdcity' in site.url:
-                    my_level = my_level_1.replace('[', '').replace(']', '').strip()
+                    my_level = my_level_1.replace('[', '').replace(']', '').strip(" ").strip()
                 # elif 'u2' in site.url:
                 #     my_level = ''.join(re.findall(r'/(.*).{4}', my_level_1)).title()
                 else:
-                    my_level = re.sub(u"([^\u0041-\u005a\u0061-\u007a])", "", my_level_1)
+                    my_level = re.sub(u"([^\u0041-\u005a\u0061-\u007a])", "", my_level_1).strip(" ")
                 logger.info('用户等级：{}-{}'.format(my_level_1, my_level))
                 # my_level = re.sub('[\u4e00-\u9fa5]', '', my_level_1)
                 # logger.info('正则去除中文：', my_level)
@@ -2178,7 +2178,7 @@ class PtSpider:
                 else:
                     invitation = int(re.sub('\D', '', invitation))
                 my_site.latest_active = datetime.now()
-                my_site.my_level = my_level if my_level != '' else ' '
+                my_site.my_level = my_level.strip(" ") if my_level != '' else ' '
                 if my_hr:
                     my_site.my_hr = my_hr
                 seed = int(get_decimals(seed)) if seed else 0
