@@ -372,48 +372,49 @@
                             </div>
                             <div class="text item" style="font-size: 13px;text-align: right;">
                                 <div>
+                                    <el-button-group>
+                                        <el-button type="warning" size="mini" @click="updateSite(site.id)">更新
+                                        </el-button>
+                                        <el-dropdown split-button type="success" size="mini"
+                                                     @click="showHistoryList(site.id)">
+                                            数据
+                                            <el-dropdown-menu slot="dropdown">
+                                                <el-dropdown-item>
+                                                    <el-button type="primary" size="mini" @click="signIn(site.id)" plain
+                                                               v-if="site.sign_in_support && !site.sign_in_state"
+                                                               icon="el-icon-success">签到
+                                                    </el-button>
+                                                </el-dropdown-item>
+                                                <el-dropdown-item>
+                                                    <el-button type="success" icon="el-icon-success" plain
+                                                               size="mini" v-if="site.sign_in_state"
+                                                               @click="showSignIn(site.id)">签到
+                                                    </el-button>
+                                                </el-dropdown-item>
+                                                <el-dropdown-item>
 
-                                    <el-dropdown type="success" size="mini">
-                                        <el-button-group>
-                                            <el-button type="primary" size="mini" @click="signIn(site.id)"
-                                                       v-if="site.sign_in_support && !site.sign_in_state">
-                                                签到
-                                            </el-button>
-                                            <el-tooltip class="item" effect="dark" v-if="site.sign_in_state"
-                                                        content="已签到，点击查看最近签到记录"
-                                                        placement="bottom" effect="light">
-                                                <el-button type="success" icon="el-icon-success" plain size="mini"
-                                                           @click="showSignIn(site.id)">
-                                                </el-button>
-                                            </el-tooltip>
-                                            <el-button type="warning" size="mini" @click="updateSite(site.id)">更新
-                                            </el-button>
-                                            <el-button type="success" size="mini" @click="showHistoryList(site.id)">数据
-                                                <i class="el-icon-arrow-down el-icon--right"></i>
-                                            </el-button>
+                                                </el-dropdown-item>
+                                                <el-dropdown-item>
+                                                    <el-button @click="editSite(site.id)"
+                                                               type="primary" size="mini" plain
+                                                               icon="el-icon-edit">编辑
+                                                    </el-button>
+                                                </el-dropdown-item>
+                                                <el-dropdown-item>
+                                                    <el-button @click="getTorrent(site.id)"
+                                                               type="primary" size="mini" plain
+                                                               icon="el-icon-upload2">种子
+                                                    </el-button>
+                                                </el-dropdown-item>
+                                                <el-dropdown-item>
+                                                    <el-button type="primary" size="mini" plain
+                                                               icon="el-icon-s-open">规则
+                                                    </el-button>
+                                                </el-dropdown-item>
+                                            </el-dropdown-menu>
+                                        </el-dropdown>
+                                    </el-button-group>
 
-                                        </el-button-group>
-                                        <el-dropdown-menu slot="dropdown">
-                                            <el-dropdown-item>
-                                                <el-button @click="editSite(site.id)"
-                                                           type="primary" size="mini" plain
-                                                           icon="el-icon-edit">编辑
-                                                </el-button>
-                                            </el-dropdown-item>
-                                            <el-dropdown-item>
-                                                <el-button @click="getTorrent(site.id)"
-                                                           type="primary" size="mini" plain
-                                                           icon="el-icon-upload2">种子
-                                                </el-button>
-                                            </el-dropdown-item>
-                                            <el-dropdown-item>
-                                                <el-button type="primary" size="mini" plain
-                                                           icon="el-icon-s-open">规则
-                                                </el-button>
-                                            </el-dropdown-item>
-                                        </el-dropdown-menu>
-
-                                    </el-dropdown>
                                 </div>
                                 <hr>
                                 <div>
@@ -1734,7 +1735,7 @@
                         tooltip: {
                             show: true,
                             trigger: 'axis',
-                            alwaysShowContent: true,
+                            {#alwaysShowContent: true,#}
                             textStyle: {
                                 align: 'left',
                             },
@@ -1754,6 +1755,7 @@
                             left: '3%',
                             right: '4%',
                             bottom: '3%',
+                            top: '25%',
                             containLabel: true
                         },
                         toolbox: {
