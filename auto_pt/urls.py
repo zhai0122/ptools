@@ -39,6 +39,7 @@ urlpatterns = [
     path(r'remove_log_api', views.remove_log_api, name='remove_log_api'),
     path(r'get_site_list', views.get_site_list, name='get_site_list'),
     path(r'edit_my_site', views.edit_my_site, name='edit_my_site'),
+    path(r'monkey_to_ptools', views.monkey_to_ptools, name='monkey_to_ptools'),
     path(r'get_site_torrents', views.get_site_torrents, name='get_site_torrents'),
     path(r'get_helper_license', views.get_helper_license, name='get_helper_license'),
     path(r'downloading_status', views.downloading_status, name='downloading_status'),

@@ -2489,13 +2489,14 @@ class PtSpider:
                 msg='配置文件文件已存在！',
             )
         except Exception as e:
-            return CommonResponse.success(
+            return CommonResponse.error(
                 msg=f'初始化失败！{e}',
             )
 
-    def parse_uuid(self):
+    @staticmethod
+    def parse_token(cmd):
         with open('db/ptools.toml', 'r') as f:
             data = toml.load(f)
-        vip = data.get('vip')
-        os.environ['VIP'] = vip.get('key')
-        uuid = os.getenv()
+        return CommonResponse.success(
+            data=data.get(cmd)
+        )

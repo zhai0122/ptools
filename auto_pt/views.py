@@ -1215,3 +1215,55 @@ def exec_shell_command(request):
         return JsonResponse(data=CommonResponse.success(
             data=p
         ).to_dict(), safe=False)
+
+
+def monkey_to_ptools(request):
+    my_token = pt_spider.parse_token('token')
+    if my_token.code != 0:
+        return JsonResponse(data=CommonResponse.error(
+            msg='Token认证失败！'
+        ).to_dict(), safe=False)
+    own_token = my_token.data
+    if request.method == 'GET':
+        url = request.GET.get('url')
+        token = request.GET.get('token')
+        if len(token) > 0 and token != own_token.get('token'):
+            return JsonResponse(data=CommonResponse.error(
+                msg='Token认证失败！'
+            ).to_dict(), safe=False)
+        logger.info(url)
+        site_list = Site.objects.filter(url=url)
+        if len(site_list) == 1:
+            data = {'site_id': site_list.first().id}
+            # if len(my_site_list) == 1:
+            #     data.update({
+            #         'my_site_id': my_site_list.first().id
+            #     })
+            return JsonResponse(data=CommonResponse.success(
+                data=data
+            ).to_dict(), safe=False)
+        return JsonResponse(data=CommonResponse.error(
+            msg='站点信息获取失败！'
+        ).to_dict(), safe=False)
+    else:
+        my_site_params = json.loads(request.body)
+        logger.info(my_site_params)
+        token = my_site_params.get('token')
+        if len(token) > 0 and token != own_token.get('token'):
+            return JsonResponse(data=CommonResponse.error(
+                msg='Token认证失败！'
+            ).to_dict(), safe=False)
+        site_id = my_site_params.get('site_id')
+        logger.info(site_id)
+        try:
+            res_my_site = MySite.objects.update_or_create(site_id=site_id, defaults=my_site_params)
+            logger.info(res_my_site[1])
+
+            return JsonResponse(data=CommonResponse.success(
+                msg=f'{res_my_site[0].site.name} 添加成功！'
+            ).to_dict(), safe=False)
+        except:
+            logger.info(traceback.format_exc(3))
+            return JsonResponse(data=CommonResponse.error(
+                msg='站点信息添加失败！'
+            ).to_dict(), safe=False)
