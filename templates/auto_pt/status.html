@@ -651,7 +651,7 @@
             </el-popconfirm>
             <el-button @click="showAddMySite = false">取 消</el-button>
             <el-button type="primary" @click="editMySite('addMySiteForm')">
-                <span v-text="addMySiteForm.id==0 ? '添加站点' : '保存站点'"></span>
+                保存
             </el-button>
         </div>
     </el-dialog>
@@ -698,7 +698,7 @@
                         user_id: '',
                         passkey: '',
                         time_join: '2023-01-01 12:00:00',
-                        user_agent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.52',
+                        user_agent: '',
                         cookie: ''
                     },
                     addMySiteFormRules: {
@@ -719,6 +719,7 @@
                 }
             },
             beforeMount() {
+                this.addMySiteForm.user_agent = window.navigator.userAgent
             },
             mounted() {
                 {#this.chart = this.$refs.charts.chart#}
@@ -946,7 +947,7 @@
                                         user_id: '',
                                         passkey: '',
                                         time_join: '2023-01-01 12:00:00',
-                                        user_agent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.52',
+                                        user_agent: window.navigator.userAgent,
                                         cookie: ''
                                     }
                                     this.showAddMySite = false
@@ -992,7 +993,7 @@
                             user_id: '',
                             passkey: '',
                             time_join: '2023-01-01 12:00:00',
-                            user_agent: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36 Edg/107.0.1418.52',
+                            user_agent: window.navigator.userAgent,
                             cookie: ''
                         }
                         this.showAddMySite = true
