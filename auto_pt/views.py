@@ -598,7 +598,7 @@ def site_status_api(request):
                         'invite': site_info.invitation,
                         'sp_hour': float(site_info.sp_hour) if site_info.sp_hour != '' else 0,
                         'sp_hour_full': '{:.2%}'.format(
-                            float(site_info.sp_hour) / site.sp_full) if site.sp_full != 0 else '0%',
+                            float(site_info.sp_hour) / site.sp_full) if site.sp_full != 0 else '',
                         'seeding': site_info.seed,
                         'leeching': site_info.leech,
                         'weeks': f'{weeks}周 {days}天',
@@ -617,7 +617,7 @@ def site_status_api(request):
                         'last_active': datetime.strftime(site_info.updated_at, '%Y/%m/%d %H:%M:%S'),
                     }
                     try:
-                        level_info = site.userlevelrule_set.filter(level=my_site.my_level).first()
+                        level_info = site.userlevelrule_set.filter(level=my_site.my_level.lower().strip()).first()
 
                         if not level_info:
                             pass
