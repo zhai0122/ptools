@@ -326,9 +326,10 @@ class PtSpider:
             my_level = ' '
         userdatas = cookie.get('userdatas')
         time_stamp = cookie.get('info').get('joinTime')
-
-        time_join = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time_stamp / 1000))
-
+        if not time_stamp:
+            time_join = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(time_stamp) / 1000))
+        else:
+            time_join = datetime.now()
         passkey = cookie.get('passkey')
         logger.info('passkey: {}'.format(passkey))
         uid = cookie.get('info').get('id')
@@ -336,19 +337,37 @@ class PtSpider:
             try:
                 logger.info('备份文件未获取到User_id，尝试获取中')
                 scraper = self.get_scraper()
-                response = scraper.get(
-                    url=site.url + site.page_control_panel,
-                    cookies=cookie.get('cookies'),
-                )
-                passkey = self.parse(site, response, site.my_passkey_rule)[0]
                 logger.info(f'Passkey:{passkey}')
-                uid = get_decimals(self.parse(site, response, site.my_uid_rule)[0])
+                if site.url in [
+                    'https://monikadesign.uk/',
+                    'https://pt.hdpost.top/',
+                    'https://reelflix.xyz/',
+                    'https://exoticaz.to/',
+                    'https://cinemaz.to/',
+                    'https://avistaz.to/',
+                ]:
+                    response = scraper.get(
+                        url=site.url,
+                        cookies=cookie.get('cookies'),
+                    )
+                    logger.info(response.text)
+                    uid = ''.join(self.parse(site, response, site.my_uid_rule))
+                    passkey = ' '
+                else:
+                    response = scraper.get(
+                        url=site.url + site.page_control_panel,
+                        cookies=cookie.get('cookies'),
+                    )
+                    logger.info(response.text)
+                    uid = get_decimals(self.parse(site, response, site.my_uid_rule)[0])
+                    passkey = self.parse(site, response, site.my_passkey_rule)[0]
                 logger.info(f'uid:{uid}')
             except Exception as e:
                 passkey_msg = f'{site.name} Uid获取失败，请手动添加！'
+                msg = f'{site.name} 信息导入失败！ {passkey_msg}：{e}'
                 logger.info(passkey_msg)
                 return CommonResponse.error(
-                    msg=f'{site.name} 信息导入失败！ {passkey_msg}：{e}'
+                    msg=msg
                 )
         result = MySite.objects.update_or_create(site=site, defaults={
             'cookie': cookie.get('cookies'),
@@ -371,6 +390,7 @@ class PtSpider:
                 seeding_size = value.get('seedingSize')
                 my_sp = value.get('bonus')
                 ratio = value.get('ratio')
+                seed = value.get('seeding')
                 if ratio is None or ratio == 'null':
                     continue
                 if type(ratio) == str:
@@ -394,6 +414,7 @@ class PtSpider:
                         'my_sp': my_sp,
                         'seed_vol': seeding_size,
                         'ratio': float(ratio),
+                        'seed': seed if seed else 0,
                     })
                 res_status[0].created_at = create_time
                 res_status[0].save()
