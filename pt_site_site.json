@@ -7398,7 +7398,7 @@
   {
     "id": 100,
     "created_at": "2022-12-27 12:40:22.412286",
-    "updated_at": "2023-01-20 07:42:10.759839",
+    "updated_at": "2023-01-24 17:35:54.586359",
     "name": "Oldtoons",
     "url": "https://oldtoons.world/",
     "logo": "https://oldtoons.world/favicon.ico",
@@ -7462,7 +7462,7 @@
     "leech_rule": "//img[@class=\"arrowdown\"]/following-sibling::text()[1]",
     "seed_rule": "//img[@class=\"arrowup\"]/following-sibling::text()[1]",
     "record_count_rule": ".//td[3]/text()",
-    "seed_vol_rule": "//div[contains(text(),'Total size')]/text()",
+    "seed_vol_rule": "//p/preceding-sibling::text()[1]",
     "mailbox_rule": "//a[@href=\"messages.php\"]/font[contains(text(),\"new\")]/text()[1]",
     "hash_rule": "//td/b[contains(text(),\"Hash\")]/following::text()[1]",
     "notice_rule": "//a[@href=\"index.php\"]/font[contains(text(),\"new\")]/text()[1]",
