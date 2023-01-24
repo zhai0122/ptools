@@ -162,7 +162,7 @@
                                         </el-button>
                                         <el-button type="warning" size="mini" @click="updateSite(0)">更新
                                         </el-button>
-                                        <el-button type="success" size="mini" @click="showHistoryList(0)">历史
+                                        <el-button type="success" size="mini" @click="showHistoryList(0)">数据
                                         </el-button>
                                         <el-button type="danger" size="mini" @click="getTorrent(0)">种子
                                         </el-button>
@@ -171,7 +171,7 @@
                                 <hr>
                                 <div>
                                     <span style="float: left;font-weight: bold;color: #3b5769;line-height: 32px;">
-                                        关注度
+                                        关注
                                     </span>
                                     <span>
                                         <el-button size="mini" type="primary" plain @click="changeSortStep">
@@ -372,45 +372,53 @@
                             </div>
                             <div class="text item" style="font-size: 13px;text-align: right;">
                                 <div>
-                                    <el-button-group>
-                                        <el-button type="primary" size="mini" @click="signIn(site.id)"
-                                                   v-if="site.sign_in_support && !site.sign_in_state">
-                                            签到
-                                        </el-button>
-                                        <el-tooltip class="item" effect="dark" v-if="site.sign_in_state"
-                                                    content="已签到，点击查看最近签到记录"
-                                                    placement="bottom" effect="light">
-                                            <el-button type="success" icon="el-icon-success" plain size="mini"
-                                                       @click="showSignIn(site.id)">
-                                            </el-button>
-                                        </el-tooltip>
-                                        <el-button type="warning" size="mini" @click="updateSite(site.id)">更新
-                                        </el-button>
-                                        <el-dropdown split-button type="success" size="mini"
-                                                     @click="showHistoryList(site.id)">
-                                            历史
-                                            <el-dropdown-menu slot="dropdown">
-                                                <el-dropdown-item>
-                                                    <el-link @click="editSite(site.id)"
-                                                             size="mini" plain
-                                                             icon="el-icon-edit">编辑
-                                                    </el-link>
-                                                </el-dropdown-item>
-                                                <el-dropdown-item>
-                                                    <el-link @click="getTorrent(site.id)"
-                                                             size="mini" plain
-                                                             icon="el-icon-edit">种子
-                                                    </el-link>
-                                                </el-dropdown-item>
-                                            </el-dropdown-menu>
 
-                                        </el-dropdown>
-                                    </el-button-group>
+                                    <el-dropdown type="success" size="mini">
+                                        <el-button-group>
+                                            <el-button type="primary" size="mini" @click="signIn(site.id)"
+                                                       v-if="site.sign_in_support && !site.sign_in_state">
+                                                签到
+                                            </el-button>
+                                            <el-tooltip class="item" effect="dark" v-if="site.sign_in_state"
+                                                        content="已签到，点击查看最近签到记录"
+                                                        placement="bottom" effect="light">
+                                                <el-button type="success" icon="el-icon-success" plain size="mini"
+                                                           @click="showSignIn(site.id)">
+                                                </el-button>
+                                            </el-tooltip>
+                                            <el-button type="warning" size="mini" @click="updateSite(site.id)">更新
+                                            </el-button>
+                                            <el-button type="success" size="mini" @click="showHistoryList(site.id)">数据
+                                                <i class="el-icon-arrow-down el-icon--right"></i>
+                                            </el-button>
+
+                                        </el-button-group>
+                                        <el-dropdown-menu slot="dropdown">
+                                            <el-dropdown-item>
+                                                <el-button @click="editSite(site.id)"
+                                                           type="primary" size="mini" plain
+                                                           icon="el-icon-edit">编辑
+                                                </el-button>
+                                            </el-dropdown-item>
+                                            <el-dropdown-item>
+                                                <el-button @click="getTorrent(site.id)"
+                                                           type="primary" size="mini" plain
+                                                           icon="el-icon-upload2">种子
+                                                </el-button>
+                                            </el-dropdown-item>
+                                            <el-dropdown-item>
+                                                <el-button type="primary" size="mini" plain
+                                                           icon="el-icon-s-open">规则
+                                                </el-button>
+                                            </el-dropdown-item>
+                                        </el-dropdown-menu>
+
+                                    </el-dropdown>
                                 </div>
                                 <hr>
                                 <div>
                                     <span style="float: left;font-weight: bold;color: #3b5769;line-height: 32px;">
-                                        关注度
+                                        关注
                                     </span>
                                     <span>
                                         <el-button-group>
@@ -555,10 +563,16 @@
                     图例
                 </el-button>
             </div>
-
-            <charts ref="history_charts" style="height: 620px;margin: auto;"
-                    v-if="showAllHistory" :option="option"></charts>
-
+            <el-row v-if="showAllHistory">
+                <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                    <charts ref="today_charts" style="height: 680px;margin: auto;"
+                            :option="option"></charts>
+                </el-col>
+                <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                    <charts ref="history_charts" style="height: 680px;margin: auto;"
+                            :option="option"></charts>
+                </el-col>
+            </el-row>
             <el-row :gutter="20" v-else="showAllHistory">
                 <el-col :span="24">
                     <charts ref="seeding_charts" style="height: 420px;margin-top: 15px;" :option="option"></charts>
@@ -676,7 +690,7 @@
                     showSiteChart: false,
                     begInvite: false,
                     showLogo: true,
-                    showLegend: window.innerWidth > 1200 ? true : false,
+                    showLegend: false,
                     shuffle: false,
                     searchKey: '',
                     sortStep: 1,
@@ -1092,6 +1106,8 @@
                     let dateList = this.incrementData.date_list.slice(this.dataLength)
                     {#console.log(dateList)#}
                     let diff = []
+                    let today = []
+                    let today_total = 0
                     this.incrementData.diff.forEach((item, index) => {
                         let diff_item = {}
                         diff_item = JSON.parse(JSON.stringify(item));
@@ -1099,15 +1115,21 @@
                         diff_item.data = item.data.slice(this.dataLength)
                         {#console.log(diff_item)#}
                         diff.push(diff_item)
+                        let today_data = diff_item.data[diff_item.data.length - 1]
+                        today_total += today_data
+                        today_data != 0 ? today.push({
+                            'name': diff_item.name,
+                            'value': today_data
+                        }) : ''
                     })
                     let option = {
                         title: {
-                            text: '每日增量--全部站点',
+                            text: '每日上传',
                             textStyle: {
                                 color: 'orangered',
                             },
                             left: 'center',
-                            top: '3%',
+                            top: '12',
                         },
                         tooltip: {
                             show: true,
@@ -1119,7 +1141,7 @@
                                 //console.log(params)
                                 // console.log(params[0].value[1])
                                 let text = ''
-                                let total = 0
+                                {#let total = 0#}
                                 params.sort((a, b) => {
                                     return b.value - a.value
                                 })
@@ -1131,13 +1153,13 @@
                                             </div>
                                          `
                                     text += temp
-                                    total += param.value
+                                    {#total += param.value#}
                                 })
                                 let total_str = `
                                             <div style="display: block;height:14px;text-align: left;padding: 1%;font-size: 12px;">
                                               <span style="float: left;">
                                                     <i style="width: 8px;height: 8px;display: inline-block;background: darkorange;border-radius: 8px;">
-                                                    </i>总计：${renderSize(total)}</span>
+                                                    </i>总计：${renderSize(today_total)}</span>
                                               <text style="float: right;">${params[0].axisValue}</text>
                                             </div>
                                             <hr>
@@ -1147,15 +1169,15 @@
                             },
                             position: function (point, params, dom, rect, size) {
                                 let customVH = window.innerWidth
-                                if (customVH - point[0] < 280) {
-                                    point[0] = customVH - 320
+                                if (customVH - point[0] < 768) {
+                                    point[0] = 12
                                 }
-                                console.log(customVH)
-                                console.log(point[0])
-                                if (customVH > 768) {
-                                    return point
-                                }
-                                return [point[0], 5]
+                                {#console.log(customVH - point[0])#}
+                                {#console.log(point[0])#}
+                                //if (customVH - point[0] > 768) {
+                                //   return point
+                                //}
+                                return [12, 8]
                             },
                             order: 'valueDesc',
                             confine: false,
@@ -1164,8 +1186,8 @@
                         legend: {
                             show: this.showLegend,
                             {#top: '3%',#}
-                            left: 'center',
-                            bottom: '12',
+                            left: '15%',
+                            bottom: '5',
                             tooltip: {
                                 show: true
                             },
@@ -1174,7 +1196,7 @@
                         grid: {
                             left: '3%',
                             right: '4%',
-                            bottom: '25%',
+                            bottom: '55',
                             containLabel: true
                         },
                         toolbox: {
@@ -1205,14 +1227,66 @@
                         },
                         series: diff,
                     };
+                    console.log(today)
+                    today.sort((a, b) => {
+                        return a.value - b.value
+                    })
+                    let today_option = {
+                        title: {
+                            text: `今日上传总量： ${renderSize(today_total)}`,
+                            top: '12',
+                            left: 'center',
+                            textStyle: {
+                                fontSize: '18px',
+                                color: 'orangered',
+                            }
+                        },
+                        tooltip: {
+                            show: true,
+                            formatter: function (params) {
+                                return params.name + '：\t' + renderSize(params.data.value)
+                            },
+                            valueFormatter: function (value) {
+                                return renderSize(value)
+                            }
+                        },
+                        series: [
+                            {
+                                name: '今日上传',
+                                type: 'pie',
+                                top: '10%',
+                                bottom: '10%',
+                                radius: '55%',
+                                {#visualDimension: 1,#}
+                                center: ['45%', '50%'],
+                                roseType: '',
+                                data: today,
+                                label: {
+                                    show: true,
+                                    formatter: function (params) {
+                                        {#return params.name + ' \t ' + renderSize(params.data.value)#}
+                                        return `${params.name} \t ${renderSize(params.data.value)}`
+                                    },
+                                    itemHeight: 12,
+                                    itemWidth: 20,
+                                    textStyle: {
+                                        fontSize: '14px',
+                                    }
+                                },
+                            }
+                        ],
+                    }
                     this.site.name = '全部站点'
                     this.showSiteChart = true
                     this.showAllHistory = true
-                    this.showLegend ? option.grid.bottom = '25%' : option.grid.bottom = '3%'
+                    this.showLegend ? option.grid.bottom = '32%' : option.grid.bottom = '5%'
                     setTimeout(() => {
                         this.chart = this.$refs.history_charts.chart
                         this.chart.clear()
                         this.setChartOption(this.chart, option)
+                        this.chart = this.$refs.today_charts.chart
+                        this.chart.clear()
+                        this.setChartOption(this.chart, today_option)
                     }, 15)
                 },
                 begInviteMode() {
