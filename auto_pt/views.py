@@ -1163,8 +1163,11 @@ def get_config_api(request):
                 msg=res.msg
             ).to_dict(), safe=False)
     if request.GET.get('name') == 'hosts':
-        file_path = '/etc/hosts'
+        file_path = os.path.join(BASE_DIR, 'db/hosts')
     try:
+        if not os.path.exists(file_path):
+            subprocess.Popen('touch db/hosts', shell=True, stdout=subprocess.PIPE, )
+            pass
         with open(file_path, 'rb') as f:
             response = HttpResponse(f)
             logger.info(response)
@@ -1187,7 +1190,7 @@ def save_config_api(request):
     if content.get('name') == 'ptools.toml':
         file_path = os.path.join(BASE_DIR, 'db/ptools.toml')
     if content.get('name') == 'hosts':
-        file_path = '/etc/hosts'
+        file_path = os.path.join(BASE_DIR, 'db/hosts')
     try:
         with open(file_path, 'w') as f:
             f.write(content.get('settings'))

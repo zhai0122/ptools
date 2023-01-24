@@ -33,12 +33,17 @@ echo "列出代码文件信息"
 ls -l
 echo "安装并升级pip依赖"
 pip install -r requirements.txt -U
-echo "写入U2 hosts"
-echo 172.64.153.252 u2.dmhy.org >>/etc/hosts
-echo 104.25.26.31 u2.dmhy.org >>/etc/hosts
-echo 104.25.61.106 u2.dmhy.org >>/etc/hosts
-echo 104.25.62.106 u2.dmhy.org >>/etc/hosts
-echo 172.67.98.15 u2.dmhy.org >>/etc/hosts
+if [ ! -f db/hosts ]; then
+  echo "未自定义HOSTS，默认写入"
+  echo 172.64.153.252 u2.dmhy.org >>/etc/hosts
+  echo 104.25.26.31 u2.dmhy.org >>/etc/hosts
+  echo 104.25.61.106 u2.dmhy.org >>/etc/hosts
+  echo 104.25.62.106 u2.dmhy.org >>/etc/hosts
+  echo 172.67.98.15 u2.dmhy.org >>/etc/hosts
+else
+  echo '存在自定义HOSTS文件，apply'
+  mv db/hosts /etc/hosts
+fi
 echo "启动服务"
 python manage.py migrate
 python manage.py runserver 0.0.0.0:$DJANGO_WEB_PORT

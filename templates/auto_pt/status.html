@@ -373,27 +373,20 @@
                             <div class="text item" style="font-size: 13px;text-align: right;">
                                 <div>
                                     <el-button-group>
+                                        <el-button type="primary" size="mini" @click="signIn(site.id)"
+                                                   v-if="site.sign_in_support && !site.sign_in_state">签到
+                                        </el-button>
+                                        <el-button type="success" icon="el-icon-success" plain
+                                                   size="mini" v-if="site.sign_in_state"
+                                                   @click="showSignIn(site.id)">
+                                        </el-button>
                                         <el-button type="warning" size="mini" @click="updateSite(site.id)">更新
                                         </el-button>
                                         <el-dropdown split-button type="success" size="mini"
                                                      @click="showHistoryList(site.id)">
                                             数据
                                             <el-dropdown-menu slot="dropdown">
-                                                <el-dropdown-item>
-                                                    <el-button type="primary" size="mini" @click="signIn(site.id)" plain
-                                                               v-if="site.sign_in_support && !site.sign_in_state"
-                                                               icon="el-icon-success">签到
-                                                    </el-button>
-                                                </el-dropdown-item>
-                                                <el-dropdown-item>
-                                                    <el-button type="success" icon="el-icon-success" plain
-                                                               size="mini" v-if="site.sign_in_state"
-                                                               @click="showSignIn(site.id)">签到
-                                                    </el-button>
-                                                </el-dropdown-item>
-                                                <el-dropdown-item>
 
-                                                </el-dropdown-item>
                                                 <el-dropdown-item>
                                                     <el-button @click="editSite(site.id)"
                                                                type="primary" size="mini" plain
