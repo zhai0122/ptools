@@ -2,7 +2,7 @@
   {
     "id": 1,
     "created_at": "2022-07-17 10:22:03.474000",
-    "updated_at": "2023-01-18 17:35:55.548795",
+    "updated_at": "2023-01-20 07:42:10.451765",
     "name": "阿童木",
     "url": "https://hdatmos.club/",
     "logo": "https://hdatmos.club/favicon.ico",
@@ -74,6 +74,7 @@
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "hdatmos.club",
+    "nickname": "hdatmos",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -82,12 +83,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "hdatmos"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 2,
     "created_at": "2022-07-17 10:24:21.376000",
-    "updated_at": "2023-01-18 17:58:09.743821",
+    "updated_at": "2023-01-20 07:42:10.455135",
     "name": "猪猪网",
     "url": "https://piggo.me/",
     "logo": "https://piggo.me/favicon.ico",
@@ -159,6 +160,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "piggo.me",
+    "nickname": "piggo",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -167,12 +169,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "piggo"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 5,
     "created_at": "2022-07-17 10:27:30.380000",
-    "updated_at": "2023-01-18 17:35:55.556651",
+    "updated_at": "2023-01-20 07:42:10.460111",
     "name": "1PT",
     "url": "https://1ptba.com/",
     "logo": "https://1ptba.com/favicon.ico",
@@ -244,6 +246,7 @@
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "1ptba.com",
+    "nickname": "1ptba",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -252,12 +255,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "1ptba"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 8,
     "created_at": "2022-07-20 10:05:03.493000",
-    "updated_at": "2023-01-18 17:35:55.559627",
+    "updated_at": "2023-01-20 07:42:10.462873",
     "name": "CarPT",
     "url": "https://carpt.net/",
     "logo": "https://carpt.net/favicon.ico",
@@ -329,6 +332,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "carpt.net",
+    "nickname": "carpt",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -337,12 +341,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "carpt"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 9,
     "created_at": "2022-07-20 10:06:16.029000",
-    "updated_at": "2023-01-18 17:35:55.562548",
+    "updated_at": "2023-01-20 07:42:10.466546",
     "name": "HDArea",
     "url": "https://www.hdarea.co/",
     "logo": "https://www.hdarea.co/favicon.ico",
@@ -414,6 +418,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "hdarea.co",
+    "nickname": "hdarea",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -422,12 +427,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "hdarea"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 10,
     "created_at": "2022-07-20 10:07:13.505000",
-    "updated_at": "2023-01-18 17:35:55.565371",
+    "updated_at": "2023-01-20 07:42:10.469825",
     "name": "红豆饭",
     "url": "https://hdfans.org/",
     "logo": "https://hdfans.org/favicon.ico",
@@ -499,6 +504,7 @@
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "hdfans.org",
+    "nickname": "hdfans",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -507,12 +513,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "hdfans"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 11,
     "created_at": "2022-07-20 10:08:12.726000",
-    "updated_at": "2023-01-18 17:35:55.568419",
+    "updated_at": "2023-01-20 07:42:10.473565",
     "name": "天空",
     "url": "https://hdsky.me/",
     "logo": "https://hdsky.me/favicon.ico",
@@ -584,6 +590,7 @@
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "hdsky.me",
+    "nickname": "hdsky",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -592,12 +599,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "hdsky"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 12,
     "created_at": "2022-07-20 10:09:18.723000",
-    "updated_at": "2023-01-18 17:35:55.571331",
+    "updated_at": "2023-01-20 07:42:10.478124",
     "name": "时光",
     "url": "https://hdtime.org/",
     "logo": "https://hdtime.org/favicon.ico",
@@ -669,6 +676,7 @@
     "my_uid_rule": "//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "hdtime.org",
+    "nickname": "hdtime",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -677,12 +685,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "hdtime"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 13,
     "created_at": "2022-07-20 10:09:59.938000",
-    "updated_at": "2023-01-18 17:35:55.574377",
+    "updated_at": "2023-01-20 07:42:10.480967",
     "name": "Zone",
     "url": "https://hdzone.me/",
     "logo": "https://hdzone.me/favicon.ico",
@@ -754,6 +762,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "hdzone.me",
+    "nickname": "zone",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -762,12 +771,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "zone"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 14,
     "created_at": "2022-07-20 10:11:12.180000",
-    "updated_at": "2023-01-18 17:35:55.577179",
+    "updated_at": "2023-01-20 07:42:10.484125",
     "name": "冬樱",
     "url": "https://wintersakura.net/",
     "logo": "https://wintersakura.net/favicon.ico",
@@ -839,6 +848,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "wintersakura.net",
+    "nickname": "sakura",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -847,12 +857,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "sakura"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 15,
     "created_at": "2022-07-20 10:12:13.107000",
-    "updated_at": "2023-01-18 17:35:55.580103",
+    "updated_at": "2023-01-20 07:42:10.487072",
     "name": "蚂蚁",
     "url": "http://hdmayi.com/",
     "logo": "http://hdmayi.com/favicon.ico",
@@ -924,6 +934,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "hdmayi.com",
+    "nickname": "hdmayi",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -932,12 +943,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "hdmayi"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 16,
     "created_at": "2022-07-20 10:13:15.407000",
-    "updated_at": "2023-01-18 17:35:55.582829",
+    "updated_at": "2023-01-20 07:42:10.489919",
     "name": "农场",
     "url": "https://pt.0ff.cc/",
     "logo": "https://pt.0ff.cc/favicon.ico",
@@ -1009,6 +1020,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "0ff.cc",
+    "nickname": "0ff",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -1017,12 +1029,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "0ff"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 17,
     "created_at": "2022-07-20 10:15:59.584000",
-    "updated_at": "2023-01-18 17:35:55.585544",
+    "updated_at": "2023-01-20 07:42:10.493940",
     "name": "铂金学院",
     "url": "https://ptchina.org/",
     "logo": "https://ptchina.org/favicon.ico",
@@ -1094,6 +1106,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "ptchina.org",
+    "nickname": "ptchina",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -1102,12 +1115,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "ptchina"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 18,
     "created_at": "2022-07-20 10:58:58.928000",
-    "updated_at": "2023-01-18 17:35:55.588565",
+    "updated_at": "2023-01-20 07:42:10.496666",
     "name": "马杀鸡",
     "url": "https://pt.msg.vg/",
     "logo": "https://pt.msg.vg/favicon.ico",
@@ -1179,6 +1192,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "msg.vg",
+    "nickname": "msg",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -1187,12 +1201,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "msg"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 19,
     "created_at": "2022-07-20 11:03:57.583000",
-    "updated_at": "2023-01-18 17:35:55.591203",
+    "updated_at": "2023-01-20 07:42:10.499760",
     "name": "时间",
     "url": "https://www.pttime.org/",
     "logo": "https://www.pttime.org/favicon.ico",
@@ -1264,6 +1278,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "pttime.org",
+    "nickname": "pttime",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -1272,12 +1287,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "pttime"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 20,
     "created_at": "2022-07-20 11:06:11.901000",
-    "updated_at": "2023-01-18 17:35:55.594228",
+    "updated_at": "2023-01-20 07:42:10.502591",
     "name": "欧申",
     "url": "http://www.oshen.win/",
     "logo": "http://www.oshen.win/favicon.ico",
@@ -1349,6 +1364,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "oshen.win",
+    "nickname": "oshen",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -1357,12 +1373,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "oshen"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 21,
     "created_at": "2022-07-20 11:12:51.331000",
-    "updated_at": "2023-01-18 17:35:55.597029",
+    "updated_at": "2023-01-20 07:42:10.505349",
     "name": "海棠",
     "url": "https://www.htpt.cc/",
     "logo": "https://www.htpt.cc/favicon.ico",
@@ -1434,6 +1450,7 @@
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "htpt.cc",
+    "nickname": "htpt",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -1442,12 +1459,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "htpt"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 22,
     "created_at": "2022-07-20 11:17:25.992000",
-    "updated_at": "2023-01-19 09:18:18.698541",
+    "updated_at": "2023-01-20 07:42:10.509430",
     "name": "烧包",
     "url": "https://ptsbao.club/",
     "logo": "https://ptsbao.club/favicon.ico",
@@ -1519,6 +1536,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "ptsbao.club",
+    "nickname": "ptsbao",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -1527,12 +1545,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "ptsbao"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 23,
     "created_at": "2022-07-20 11:25:55.869000",
-    "updated_at": "2023-01-18 17:35:55.602679",
+    "updated_at": "2023-01-20 07:42:10.512613",
     "name": "百川",
     "url": "https://www.hitpt.com/",
     "logo": "https://www.hitpt.com/favicon.ico",
@@ -1604,6 +1622,7 @@
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "hitpt.com",
+    "nickname": "hitpt",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -1612,12 +1631,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "hitpt"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 24,
     "created_at": "2022-07-20 11:27:42.866000",
-    "updated_at": "2023-01-18 17:35:55.605262",
+    "updated_at": "2023-01-20 07:42:10.515829",
     "name": "聆音",
     "url": "https://pt.soulvoice.club/",
     "logo": "https://pt.soulvoice.club/favicon.ico",
@@ -1689,6 +1708,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "soulvoice.club",
+    "nickname": "soulvoice",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -1697,12 +1717,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "soulvoice"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 25,
     "created_at": "2022-07-20 11:28:54.234000",
-    "updated_at": "2023-01-18 17:35:55.608154",
+    "updated_at": "2023-01-20 07:42:10.519777",
     "name": "备胎",
     "url": "https://www.beitai.pt/",
     "logo": "https://www.beitai.pt/favicon.ico",
@@ -1774,6 +1794,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "beitai.pt",
+    "nickname": "beitai",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -1782,12 +1803,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "beitai"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 26,
     "created_at": "2022-07-20 23:48:14.437000",
-    "updated_at": "2023-01-18 17:35:55.610756",
+    "updated_at": "2023-01-20 07:42:10.522421",
     "name": "观众",
     "url": "https://audiences.me/",
     "logo": "https://audiences.me/favicon.ico",
@@ -1859,6 +1880,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "audiences.me",
+    "nickname": "audiences",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -1867,12 +1889,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "audiences"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 28,
     "created_at": "2022-07-20 23:51:03.848000",
-    "updated_at": "2023-01-18 17:57:09.276085",
+    "updated_at": "2023-01-20 07:42:10.526444",
     "name": "丐帮",
     "url": "https://gainbound.net/",
     "logo": "https://gainbound.net/favicon.ico",
@@ -1944,6 +1966,7 @@
     "my_uid_rule": "//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "gainbound.net",
+    "nickname": "gainb",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -1952,12 +1975,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "gainb"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 29,
     "created_at": "2022-07-20 23:51:54.709000",
-    "updated_at": "2023-01-18 17:59:51.682164",
+    "updated_at": "2023-01-20 07:42:10.529455",
     "name": "海胆",
     "url": "https://www.haidan.video/",
     "logo": "https://www.haidan.video/public/pic/favicon.ico",
@@ -2029,6 +2052,7 @@
     "my_uid_rule": "//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "haidan.video",
+    "nickname": "haidan",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -2037,12 +2061,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "haidan"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 30,
     "created_at": "2022-07-20 23:52:34.568000",
-    "updated_at": "2023-01-18 17:35:55.619075",
+    "updated_at": "2023-01-20 07:42:10.533015",
     "name": "HD杜比",
     "url": "https://www.hddolby.com/",
     "logo": "https://gitee.com/ngfchl/icons/raw/master/pt_site/hddolby.ico",
@@ -2114,6 +2138,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "hddolby.com",
+    "nickname": "hddolby",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -2122,12 +2147,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "hddolby"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 31,
     "created_at": "2022-07-20 23:53:30.271000",
-    "updated_at": "2023-01-18 17:35:55.621954",
+    "updated_at": "2023-01-20 07:42:10.535751",
     "name": "海带",
     "url": "https://www.hd.ai/",
     "logo": "https://www.hd.ai/favicon.png",
@@ -2199,6 +2224,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "hd.ai",
+    "nickname": "hdai",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -2207,12 +2233,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "hdai"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 32,
     "created_at": "2022-07-20 23:55:26.251000",
-    "updated_at": "2023-01-18 17:35:55.624643",
+    "updated_at": "2023-01-20 07:42:10.538689",
     "name": "MTeam",
     "url": "https://kp.m-team.cc/",
     "logo": "https://kp.m-team.cc/favicon.ico",
@@ -2284,6 +2310,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "m-team.cc",
+    "nickname": "mteam",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -2292,12 +2319,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "mteam"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 33,
     "created_at": "2022-07-20 23:56:40.615000",
-    "updated_at": "2023-01-18 17:35:55.627356",
+    "updated_at": "2023-01-20 07:42:10.541932",
     "name": "芒果",
     "url": "https://www.3wmg.com/",
     "logo": "https://www.3wmg.com/favicon.ico",
@@ -2369,6 +2396,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "3wmg.com",
+    "nickname": "3wmg",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -2377,12 +2405,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "3wmg"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 34,
     "created_at": "2022-07-23 19:05:57.166000",
-    "updated_at": "2023-01-18 17:35:55.630342",
+    "updated_at": "2023-01-20 07:42:10.545542",
     "name": "海豹GPW",
     "url": "https://greatposterwall.com/",
     "logo": "https://greatposterwall.com/favicon.ico",
@@ -2454,6 +2482,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "greatposterwall.com",
+    "nickname": "gpw",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -2462,12 +2491,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "gpw"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 35,
     "created_at": "2022-07-23 19:10:24.853000",
-    "updated_at": "2023-01-18 17:35:55.633000",
+    "updated_at": "2023-01-20 07:42:10.548357",
     "name": "白兔hares",
     "url": "https://club.hares.top/",
     "logo": "https://club.hares.top/favicon.ico",
@@ -2539,6 +2568,7 @@
     "my_uid_rule": "//span/a[contains(text(),\"UID\")]/text()",
     "page_control_panel": "usercp.php",
     "tracker": "hares.top",
+    "nickname": "hares",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -2547,12 +2577,12 @@
     "notice_title": "//div[@class=\"home_Announcement\"]/span[1]",
     "notice_content": "//div[@class=\"home_Announcement\"]/span/following-sibling::div/div",
     "page_index": "index.php",
-    "nickname": "hares"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 36,
     "created_at": "2022-07-27 12:59:12.234000",
-    "updated_at": "2023-01-18 17:35:55.635858",
+    "updated_at": "2023-01-20 07:42:10.551657",
     "name": "老师",
     "url": "https://www.nicept.net/",
     "logo": "https://www.nicept.net/favicon.ico",
@@ -2624,6 +2654,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "nicept.net",
+    "nickname": "nicept",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -2632,12 +2663,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "nicept"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 38,
     "created_at": "2022-08-02 10:14:26.854000",
-    "updated_at": "2023-01-18 17:35:55.638501",
+    "updated_at": "2023-01-20 07:42:10.554483",
     "name": "明教",
     "url": "https://hdpt.xyz/",
     "logo": "https://hdpt.xyz/favicon.ico",
@@ -2709,6 +2740,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "hdpt.xyz",
+    "nickname": "hdpt",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -2717,12 +2749,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "hdpt"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 39,
     "created_at": "2022-08-12 23:29:07.033000",
-    "updated_at": "2023-01-18 17:35:55.641205",
+    "updated_at": "2023-01-20 07:42:10.557082",
     "name": "铂金家",
     "url": "https://pthome.net/",
     "logo": "https://pthome.net/favicon.ico",
@@ -2794,6 +2826,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "pthome.net",
+    "nickname": "pthome",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//div/b[contains(text(),\"全局优惠\")]/following-sibling::text()[last()]",
@@ -2802,12 +2835,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "pthome"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 40,
     "created_at": "2022-08-14 09:14:51.194000",
-    "updated_at": "2023-01-18 17:35:55.644054",
+    "updated_at": "2023-01-20 07:42:10.561107",
     "name": "ipt",
     "url": "https://iptorrents.com/",
     "logo": "https://iptorrents.com/favicon.ico",
@@ -2879,6 +2912,7 @@
     "my_uid_rule": "//a[@class=\"tTipWrap uname\"]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "iptorrents.com",
+    "nickname": "iptorrents",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -2887,12 +2921,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "iptorrents"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 41,
     "created_at": "2022-08-18 00:39:11.082000",
-    "updated_at": "2023-01-18 17:35:55.646640",
+    "updated_at": "2023-01-20 07:42:10.563966",
     "name": "梓喵",
     "url": "https://azusa.wiki/",
     "logo": "https://azusa.wiki/favicon.ico",
@@ -2964,6 +2998,7 @@
     "my_uid_rule": "//span/span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "azusa",
+    "nickname": "azusa",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -2972,12 +3007,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "azusa"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 42,
     "created_at": "2022-08-18 00:46:55.688000",
-    "updated_at": "2023-01-18 17:35:55.649511",
+    "updated_at": "2023-01-20 07:42:10.567273",
     "name": "HD城市",
     "url": "https://hdcity.city/",
     "logo": "https://hdcity.city/favicon.ico",
@@ -3049,6 +3084,7 @@
     "my_uid_rule": "//b[text()=\"ID\"]/following-sibling::text()[1]",
     "page_control_panel": "usercp.php",
     "tracker": "leniter.org",
+    "nickname": "hdcity",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -3057,12 +3093,12 @@
     "notice_title": "//div[@class=\"block\"][1]/div[@class=\"blocktitle\"]/a",
     "notice_content": "//div[@class=\"block\"][1]/div[@class=\"blocktitle\"]/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "hdcity"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 43,
     "created_at": "2022-08-19 23:20:30.164000",
-    "updated_at": "2023-01-18 17:56:40.072121",
+    "updated_at": "2023-01-20 07:42:10.570048",
     "name": "HDVIDEO",
     "url": "https://hdvideo.one/",
     "logo": "https://hdvideo.one/favicon.ico",
@@ -3134,6 +3170,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "hdvideo.one",
+    "nickname": "hdvideo",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -3142,12 +3179,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "hdvideo"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 44,
     "created_at": "2022-08-23 16:41:38.669000",
-    "updated_at": "2023-01-18 17:35:55.655062",
+    "updated_at": "2023-01-20 07:42:10.572776",
     "name": "月月Frds",
     "url": "https://pt.keepfrds.com/",
     "logo": "https://pt.keepfrds.com/favicon.ico",
@@ -3219,6 +3256,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "keepfrds.com",
+    "nickname": "frds",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -3227,12 +3265,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "frds"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 45,
     "created_at": "2022-08-26 20:52:18.452000",
-    "updated_at": "2023-01-18 17:35:55.658281",
+    "updated_at": "2023-01-20 07:42:10.577178",
     "name": "U2",
     "url": "https://u2.dmhy.org/",
     "logo": "https://u2.dmhy.org/favicon.ico",
@@ -3304,6 +3342,7 @@
     "my_uid_rule": "//span/span/a[contains(@href, \"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "dmhy.best",
+    "nickname": "u2",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -3312,12 +3351,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "u2"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 46,
     "created_at": "2022-08-26 20:53:50.259000",
-    "updated_at": "2023-01-18 17:35:55.661270",
+    "updated_at": "2023-01-20 07:42:10.580612",
     "name": "TTG",
     "url": "https://totheglory.im/",
     "logo": "https://totheglory.im/favicon.ico",
@@ -3389,6 +3428,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "totheglory.im",
+    "nickname": "ttg",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -3397,12 +3437,12 @@
     "notice_title": "//td[@class=\"text\"]/ul/li",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "ttg"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 47,
     "created_at": "2022-08-26 20:54:35.357000",
-    "updated_at": "2023-01-18 17:35:55.664250",
+    "updated_at": "2023-01-20 07:42:10.585378",
     "name": "蝶粉",
     "url": "https://discfan.net/",
     "logo": "https://discfan.net/favicon.ico",
@@ -3474,6 +3514,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "discfan.net",
+    "nickname": "discfan",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -3482,12 +3523,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "discfan"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 48,
     "created_at": "2022-08-26 20:55:42.110000",
-    "updated_at": "2023-01-18 17:35:55.667023",
+    "updated_at": "2023-01-20 07:42:10.589999",
     "name": "joyhd",
     "url": "https://www.joyhd.net/",
     "logo": "https://www.joyhd.net/favicon.ico",
@@ -3559,6 +3600,7 @@
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "joyhd.net",
+    "nickname": "joyhd",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -3567,12 +3609,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "joyhd"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 49,
     "created_at": "2022-08-27 17:32:01.405000",
-    "updated_at": "2023-01-18 17:35:55.669969",
+    "updated_at": "2023-01-20 07:42:10.593786",
     "name": "彩虹岛",
     "url": "https://chdbits.co/",
     "logo": "https://chdbits.co/favicon.ico",
@@ -3644,6 +3686,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "chdbits.co",
+    "nickname": "chdbits",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -3652,12 +3695,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "chdbits"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 50,
     "created_at": "2022-08-27 17:36:00.453000",
-    "updated_at": "2023-01-18 17:35:55.672831",
+    "updated_at": "2023-01-20 07:42:10.596463",
     "name": "好多油",
     "url": "https://pt.hdupt.com/",
     "logo": "https://pt.hdupt.com/favicon.ico",
@@ -3729,6 +3772,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "hdupt.com",
+    "nickname": "hdupt",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -3737,12 +3781,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "hdupt"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 51,
     "created_at": "2022-08-27 17:43:57.903000",
-    "updated_at": "2023-01-18 17:35:55.675654",
+    "updated_at": "2023-01-20 07:42:10.600718",
     "name": "我堡",
     "url": "https://ourbits.club/",
     "logo": "https://ourbits.club/favicon.ico",
@@ -3814,6 +3858,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "ourbits.club",
+    "nickname": "ourbits",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -3822,12 +3867,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "ourbits"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 52,
     "created_at": "2022-08-27 18:16:09.224000",
-    "updated_at": "2023-01-18 17:35:55.678625",
+    "updated_at": "2023-01-20 07:42:10.603602",
     "name": "家园",
     "url": "https://hdhome.org/",
     "logo": "https://hdhome.org/favicon.ico",
@@ -3899,6 +3944,7 @@
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "hdhome.org",
+    "nickname": "hdhome",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -3907,12 +3953,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "hdhome"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 53,
     "created_at": "2022-08-27 18:18:44.023000",
-    "updated_at": "2023-01-18 17:35:55.681235",
+    "updated_at": "2023-01-20 07:42:10.606152",
     "name": "不可说",
     "url": "https://springsunday.net/",
     "logo": "https://springsunday.net/favicon.ico",
@@ -3984,6 +4030,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "springsunday.net",
+    "nickname": "ssd",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -3992,12 +4039,12 @@
     "notice_title": "//td[@class=\"text\"]/div/div/a",
     "notice_content": "//td[@class=\"text\"]/div/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "ssd"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 54,
     "created_at": "2022-08-27 18:24:32.917000",
-    "updated_at": "2023-01-18 17:35:55.684100",
+    "updated_at": "2023-01-20 07:42:10.610042",
     "name": "OpenCD",
     "url": "https://www.open.cd/",
     "logo": "https://www.open.cd/favicon.ico",
@@ -4069,6 +4116,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "open.cd",
+    "nickname": "opencd",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -4077,12 +4125,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "opencd"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 55,
     "created_at": "2022-08-27 21:57:23.449000",
-    "updated_at": "2023-01-18 17:35:55.686937",
+    "updated_at": "2023-01-20 07:42:10.613230",
     "name": "这是猫站",
     "url": "https://pterclub.com/",
     "logo": "https://pterclub.com/favicon.ico",
@@ -4154,6 +4202,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "pterclub.com",
+    "nickname": "pterclub",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//div/b/font[contains(text(),\"全站免费\")]/text()",
@@ -4162,12 +4211,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "pterclub"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 56,
     "created_at": "2022-08-27 21:57:47.858000",
-    "updated_at": "2023-01-18 17:35:55.689722",
+    "updated_at": "2023-01-20 07:42:10.616650",
     "name": "柠檬",
     "url": "https://lemonhd.org/",
     "logo": "https://lemonhd.org/favicon.ico",
@@ -4239,6 +4288,7 @@
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "lemonhd.org",
+    "nickname": "lemonhd",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -4247,12 +4297,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "lemonhd"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 57,
     "created_at": "2022-08-27 21:58:11.379000",
-    "updated_at": "2023-01-18 17:35:55.692677",
+    "updated_at": "2023-01-20 07:42:10.619790",
     "name": "南洋",
     "url": "https://nanyangpt.com/",
     "logo": "https://nanyangpt.com/favicon.ico",
@@ -4324,6 +4374,7 @@
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "nanyangpt.com",
+    "nickname": "nanyang",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -4332,12 +4383,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "nanyang"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 58,
     "created_at": "2022-09-03 00:08:20.078000",
-    "updated_at": "2023-01-18 17:35:55.695271",
+    "updated_at": "2023-01-20 07:42:10.622425",
     "name": "吐鲁番",
     "url": "https://pt.eastgame.org/",
     "logo": "https://pt.eastgame.org/favicon.ico",
@@ -4409,6 +4460,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "eastgame.org",
+    "nickname": "tlf",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -4417,12 +4469,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "tlf"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 59,
     "created_at": "2022-09-14 08:33:16.574000",
-    "updated_at": "2023-01-18 17:35:55.698122",
+    "updated_at": "2023-01-20 07:42:10.625288",
     "name": "KamePT",
     "url": "https://kamept.com/",
     "logo": "https://kamept.com/favicon.ico",
@@ -4494,6 +4546,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "kamept.com",
+    "nickname": "kame",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -4502,12 +4555,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "kame"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 62,
     "created_at": "2022-07-27 13:01:11.697000",
-    "updated_at": "2023-01-18 17:35:55.700787",
+    "updated_at": "2023-01-20 07:42:10.628727",
     "name": "艾薇",
     "url": "http://avgv.cc/",
     "logo": "http://avgv.cc/favicon.ico",
@@ -4579,6 +4632,7 @@
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "avgv.cc",
+    "nickname": "avgv",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -4587,12 +4641,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "avgv"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 63,
     "created_at": "2022-09-19 22:02:22.069000",
-    "updated_at": "2023-01-18 17:35:55.703509",
+    "updated_at": "2023-01-20 07:42:10.631660",
     "name": "憨憨",
     "url": "https://hhanclub.top/",
     "logo": "https://hhanclub.top/favicon.ico",
@@ -4664,6 +4718,7 @@
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "hhanclub.top",
+    "nickname": "hhanclub",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -4672,12 +4727,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "hhanclub"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 64,
     "created_at": "2022-10-04 10:55:26.478000",
-    "updated_at": "2023-01-18 17:35:55.706430",
+    "updated_at": "2023-01-20 07:42:10.634871",
     "name": "瓷器",
     "url": "https://hdchina.org/",
     "logo": "https://hdchina.org/favicon.ico",
@@ -4749,6 +4804,7 @@
     "my_uid_rule": "//p/span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "http://hdchina.org",
+    "nickname": "hdchina",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -4757,12 +4813,12 @@
     "notice_title": "//div[@class=\"announcebox\"]/div/h4",
     "notice_content": "//div[@class=\"announcebox\"]/div/h4/following-sibling::h3",
     "page_index": "index.php",
-    "nickname": "hdchina"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 65,
     "created_at": "2022-10-04 11:03:31.325000",
-    "updated_at": "2023-01-18 17:35:55.709096",
+    "updated_at": "2023-01-20 07:42:10.637416",
     "name": "北洋园",
     "url": "https://www.tjupt.org/",
     "logo": "https://www.tjupt.org/favicon.ico",
@@ -4834,6 +4890,7 @@
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "http://tjupt.org",
+    "nickname": "beiyang",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -4842,12 +4899,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "beiyang"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 66,
     "created_at": "2022-10-04 11:08:01.927000",
-    "updated_at": "2023-01-18 17:35:55.712055",
+    "updated_at": "2023-01-20 07:42:10.640153",
     "name": "UltraHD",
     "url": "https://ultrahd.net/",
     "logo": "https://ultrahd.net/favicon.ico",
@@ -4919,6 +4976,7 @@
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "http://ultrahd.net",
+    "nickname": "ultrahd",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -4927,12 +4985,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "ultrahd"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 67,
     "created_at": "2022-10-04 11:18:37.790000",
-    "updated_at": "2023-01-18 17:58:23.585011",
+    "updated_at": "2023-01-20 07:42:10.644781",
     "name": "TU88",
     "url": "http://pt.tu88.men/",
     "logo": "http://pt.tu88.men/favicon.ico",
@@ -5004,6 +5062,7 @@
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "tu88.men",
+    "nickname": "tu88",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -5012,12 +5071,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "tu88"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 68,
     "created_at": "2022-10-04 11:19:33.274000",
-    "updated_at": "2023-01-18 17:35:55.717561",
+    "updated_at": "2023-01-20 07:42:10.647602",
     "name": "PT分享站",
     "url": "https://pt.itzmx.com/",
     "logo": "https://pt.itzmx.com/favicon.ico",
@@ -5089,6 +5148,7 @@
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "itzmx.com",
+    "nickname": "itzmx",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -5097,12 +5157,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "itzmx"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 69,
     "created_at": "2022-10-11 20:56:14.504000",
-    "updated_at": "2023-01-18 17:35:55.720517",
+    "updated_at": "2023-01-20 07:42:10.650742",
     "name": "兽",
     "url": "https://pt.hd4fans.org/",
     "logo": "https://pt.hd4fans.org/favicon.ico",
@@ -5174,6 +5234,7 @@
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "hd4fans",
+    "nickname": "hd4fans",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -5182,12 +5243,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "hd4fans"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 70,
     "created_at": "2022-07-17 10:24:59.754000",
-    "updated_at": "2023-01-18 17:35:55.723156",
+    "updated_at": "2023-01-20 07:42:10.653470",
     "name": "BT学校",
     "url": "https://pt.btschool.club/",
     "logo": "https://gitee.com/ngfchl/ptools/raw/master/static/logo/btschool.ico",
@@ -5259,6 +5320,7 @@
     "my_uid_rule": "//a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "btschool.club",
+    "nickname": "btschool",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -5267,12 +5329,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "btschool"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 71,
     "created_at": "2022-10-13 20:46:41.135391",
-    "updated_at": "2023-01-18 17:35:55.726105",
+    "updated_at": "2023-01-20 07:42:10.656148",
     "name": "GGPT",
     "url": "https://gamegamept.cn/",
     "logo": "https://gamegamept.cn/favicon.ico",
@@ -5344,6 +5406,7 @@
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "gamegamept",
+    "nickname": "ggpt",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -5352,12 +5415,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "ggpt"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 72,
     "created_at": "2022-10-13 21:12:00.102150",
-    "updated_at": "2023-01-18 17:35:55.728800",
+    "updated_at": "2023-01-24 17:22:35.716702",
     "name": "飞天拉面",
     "url": "https://nextpt.net/",
     "logo": "https://nextpt.net/favicon.ico",
@@ -5413,7 +5476,7 @@
     "uploaded_rule": "//div/text/text[contains(text(),\"上传量\")]/following-sibling::text()",
     "downloaded_rule": "//div/text/text[contains(text(),\"下载量\")]/following-sibling::text()",
     "ratio_rule": "//div//text[contains(text(),\"分享率\")]/following-sibling::text()",
-    "my_sp_rule": "//div/text/a[@href=\"/Points\"]/following-sibling::text()[1]",
+    "my_sp_rule": "//div/text/a[@href=\"/Points\"]/text()",
     "hour_sp_rule": "//div/text/text[contains(text(),\"本月保种时\")]/following-sibling::text()",
     "my_bonus_rule": "//font[@class=\"color_bonus\" and contains(text(),\"积分\")]/following-sibling::text()[1]",
     "my_level_rule": "//div/a[contains(@href,\"/Users/profile?uid=\")]/@class",
@@ -5429,6 +5492,7 @@
     "my_uid_rule": "//div/a[contains(@href,\"/Users/profile?uid=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "creditracker",
+    "nickname": "nextpt",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -5437,12 +5501,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "Index",
-    "nickname": "nextpt"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 73,
     "created_at": "2022-10-13 22:31:26.178291",
-    "updated_at": "2023-01-18 17:35:55.731652",
+    "updated_at": "2023-01-20 07:42:10.662614",
     "name": "织梦",
     "url": "https://zmpt.cc/",
     "logo": "https://zmpt.cc/favicon.ico",
@@ -5514,6 +5578,7 @@
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "zmpt.cc",
+    "nickname": "zmpt",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -5522,12 +5587,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "zmpt"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 74,
     "created_at": "2022-10-14 14:23:01.057107",
-    "updated_at": "2023-01-18 17:35:55.734545",
+    "updated_at": "2023-01-20 07:42:10.665263",
     "name": "52PT",
     "url": "https://52pt.site/",
     "logo": "https://52pt.site/favicon.ico",
@@ -5599,6 +5664,7 @@
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "52pt.site",
+    "nickname": "52pt",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -5607,12 +5673,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "52pt"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 75,
     "created_at": "2022-10-14 14:25:28.692053",
-    "updated_at": "2023-01-18 17:35:55.737276",
+    "updated_at": "2023-01-20 07:42:10.668335",
     "name": "TCCF",
     "url": "https://et8.org/",
     "logo": "https://et8.org/favicon.ico",
@@ -5684,6 +5750,7 @@
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "et8.org",
+    "nickname": "tccf",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -5692,12 +5759,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "tccf"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 76,
     "created_at": "2022-10-15 20:49:44.721748",
-    "updated_at": "2023-01-18 17:35:55.740231",
+    "updated_at": "2023-01-20 07:42:10.670866",
     "name": "SRVFI",
     "url": "https://srvfi.top/",
     "logo": "https://srvfi.top/favicon.ico",
@@ -5769,6 +5836,7 @@
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "srvfi",
+    "nickname": "srvfi",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -5777,12 +5845,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "srvfi"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 77,
     "created_at": "2022-10-17 07:42:57.547264",
-    "updated_at": "2023-01-18 17:35:55.742884",
+    "updated_at": "2023-01-20 07:42:10.673819",
     "name": "ICC2022",
     "url": "https://www.icc2022.com/",
     "logo": "https://www.icc2022.com/favicon.ico",
@@ -5854,6 +5922,7 @@
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "icc2022",
+    "nickname": "icc",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -5862,12 +5931,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "icc"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 78,
     "created_at": "2022-10-21 18:14:12.349610",
-    "updated_at": "2023-01-18 17:35:55.745645",
+    "updated_at": "2023-01-20 07:42:10.677549",
     "name": "iHD",
     "url": "https://ihdbits.me/",
     "logo": "https://ihdbits.me/favicon.ico",
@@ -5939,6 +6008,7 @@
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "ihdbits",
+    "nickname": "ihdbits",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -5947,12 +6017,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "ihdbits"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 79,
     "created_at": "2022-11-01 00:06:06.053113",
-    "updated_at": "2023-01-18 17:35:55.748650",
+    "updated_at": "2023-01-20 07:42:10.680198",
     "name": "红叶",
     "url": "http://leaves.red/",
     "logo": "http://leaves.red/favicon.ico",
@@ -6024,6 +6094,7 @@
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "http://leaves.red/",
+    "nickname": "leaves",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -6032,12 +6103,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "leaves"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 81,
     "created_at": "2022-11-04 23:06:38.778550",
-    "updated_at": "2023-01-18 17:35:55.751448",
+    "updated_at": "2023-01-20 07:42:10.683053",
     "name": "龙之家",
     "url": "https://www.dragonhd.xyz/",
     "logo": "https://www.dragonhd.xyz/favicon.ico",
@@ -6109,6 +6180,7 @@
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "dragonhd.xyz",
+    "nickname": "dragonhd",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -6117,12 +6189,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "dragonhd"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 82,
     "created_at": "2022-11-08 09:18:21.489786",
-    "updated_at": "2023-01-18 17:35:55.754627",
+    "updated_at": "2023-01-20 07:42:10.685610",
     "name": "杏林",
     "url": "https://xinglin.one/",
     "logo": "https://xinglin.one/favicon.ico",
@@ -6194,6 +6266,7 @@
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "xinglin.one",
+    "nickname": "xinglin",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -6202,12 +6275,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "xinglin"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 83,
     "created_at": "2022-11-12 22:41:41.000351",
-    "updated_at": "2023-01-18 17:35:55.757482",
+    "updated_at": "2023-01-20 07:42:10.688441",
     "name": "Filept",
     "url": "https://www.filept.com/",
     "logo": "https://www.filept.com/favicon.ico",
@@ -6279,6 +6352,7 @@
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "www.filept.com",
+    "nickname": "filept",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -6287,12 +6361,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "filept"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 85,
     "created_at": "2022-11-23 17:58:52.708203",
-    "updated_at": "2023-01-18 17:35:55.760342",
+    "updated_at": "2023-01-20 07:42:10.701079",
     "name": "海豚",
     "url": "https://dicmusic.club/",
     "logo": "https://dicmusic.club/favicon.ico",
@@ -6364,6 +6438,7 @@
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "dicmusic",
+    "nickname": "dicmusic",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -6372,12 +6447,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "dicmusic"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
     "id": 86,
     "created_at": "2022-12-09 17:40:04.727545",
-    "updated_at": "2023-01-18 17:35:55.763157",
+    "updated_at": "2023-01-20 07:42:10.713906",
     "name": "Uploads",
     "url": "http://uploads.ltd/",
     "logo": "http://uploads.ltd/favicon.ico",
@@ -6449,6 +6524,7 @@
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "uploads.ltd",
+    "nickname": "uploads",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -6457,12 +6533,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "uploads"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
-    "id": 89,
+    "id": 87,
     "created_at": "2022-12-20 08:24:33.287437",
-    "updated_at": "2023-01-18 17:35:55.765991",
+    "updated_at": "2023-01-20 07:42:10.719647",
     "name": "大青虫",
     "url": "https://cyanbug.net/",
     "logo": "https://cyanbug.net/favicon.ico",
@@ -6534,6 +6610,7 @@
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "tracker.cyanbug.net",
+    "nickname": "cyanbug",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -6542,12 +6619,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "cyanbug"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
-    "id": 90,
+    "id": 89,
     "created_at": "2022-12-20 08:27:01.381014",
-    "updated_at": "2023-01-18 17:35:55.769005",
+    "updated_at": "2023-01-20 07:42:10.722694",
     "name": "鲨鱼",
     "url": "https://sharkpt.net/",
     "logo": "https://sharkpt.net/favicon.ico",
@@ -6619,6 +6696,7 @@
     "my_uid_rule": "//div/span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "tracker.sharkpt.net",
+    "nickname": "sharkpt",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -6627,12 +6705,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "sharkpt"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
-    "id": 91,
+    "id": 92,
     "created_at": "2022-12-25 17:54:44.854475",
-    "updated_at": "2023-01-18 17:35:55.771792",
+    "updated_at": "2023-01-23 15:35:01.152343",
     "name": "莫妮卡",
     "url": "https://monikadesign.uk/",
     "logo": "https://monikadesign.uk/favicon.ico",
@@ -6704,6 +6782,7 @@
     "my_uid_rule": "//div[@class=\"header gradient blue\"]//h2/text()[1]",
     "page_control_panel": "usercp.php",
     "tracker": "monikadesign.uk",
+    "nickname": "monika",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//span[contains(text(),\"全站免费\")]/following-sibling::div/span/text()",
@@ -6712,12 +6791,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "monika"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
-    "id": 92,
+    "id": 93,
     "created_at": "2022-12-26 10:00:41.449226",
-    "updated_at": "2023-01-18 17:35:55.774838",
+    "updated_at": "2023-01-20 07:42:10.732355",
     "name": "核弹头",
     "url": "https://hd-torrents.org/",
     "logo": "https://hd-torrents.org/favicon.ico",
@@ -6789,6 +6868,7 @@
     "my_uid_rule": "//td[1]/a[contains(@href,\"usercp.php?uid=\") and @class=\"nav\"][1]/@href",
     "page_control_panel": "usercp.php?do=pid_c&action=change&uid={}",
     "tracker": "hdts-announce.ru",
+    "nickname": "hd-t",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -6797,12 +6877,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "hd-t"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
-    "id": 93,
+    "id": 94,
     "created_at": "2022-12-26 10:51:49.583666",
-    "updated_at": "2023-01-18 17:35:55.777574",
+    "updated_at": "2023-01-23 15:37:15.989364",
     "name": "Exoticaz",
     "url": "https://exoticaz.to/",
     "logo": "https://exoticaz.to/favicon.ico",
@@ -6874,6 +6954,7 @@
     "my_uid_rule": "//a/span[@class=\"user-group group-member\"]/text()",
     "page_control_panel": "usercp.php",
     "tracker": "tracker.exoticaz.to",
+    "nickname": "exoticaz",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -6882,12 +6963,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "exoticaz"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
-    "id": 94,
+    "id": 95,
     "created_at": "2022-12-26 11:44:05.766041",
-    "updated_at": "2023-01-18 17:35:55.780460",
+    "updated_at": "2023-01-23 15:40:53.621481",
     "name": "Cinemaz",
     "url": "https://cinemaz.to/",
     "logo": "https://cinemaz.to/images/cinemaz-favicon.png",
@@ -6956,9 +7037,10 @@
     "hash_rule": "//td/b[contains(text(),\"Hash\")]/following::text()[1]",
     "notice_rule": "//a[@href=\"index.php\"]/font[contains(text(),\"条\")]/text()[1]",
     "my_passkey_rule": "//span[@class=\"text-monospace\"]/text()",
-    "my_uid_rule": "//a/span[@class=\"user-group group-member\"]/text()",
+    "my_uid_rule": "//ul[@class=\"nav navbar-nav navbar-right\"]/li/a[@class=\"dropdown-toggle\"]/text()",
     "page_control_panel": "usercp.php",
     "tracker": "tracker.cinemaz.to",
+    "nickname": "cinemaz",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -6967,12 +7049,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "cinemaz"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
-    "id": 95,
+    "id": 96,
     "created_at": "2022-12-26 12:12:22.433872",
-    "updated_at": "2023-01-18 17:35:55.783461",
+    "updated_at": "2023-01-23 15:44:55.331426",
     "name": "Avistaz",
     "url": "https://avistaz.to/",
     "logo": "https://avistaz.to/images/avistaz-favicon.png",
@@ -6980,7 +7062,7 @@
     "get_torrent_support": 1,
     "get_userinfo_support": 1,
     "search_support": 0,
-    "page_default": "torrents.php",
+    "page_default": "torrents",
     "page_sign_in": "attendance.php",
     "page_detail": "details.php?id={}",
     "page_download": "download.php?id={}",
@@ -7044,6 +7126,7 @@
     "my_uid_rule": "//a/span[@class=\"user-group group-member\"]/text()",
     "page_control_panel": "usercp.php",
     "tracker": "tracker.avistaz.to",
+    "nickname": "avistaz",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -7051,13 +7134,13 @@
     "page_message": "messages.php",
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
-    "page_index": "index.php",
-    "nickname": "avistaz"
+    "page_index": "/",
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
-    "id": 96,
+    "id": 97,
     "created_at": "2022-12-26 13:31:54.151043",
-    "updated_at": "2023-01-18 17:35:55.786318",
+    "updated_at": "2023-01-20 07:42:10.748152",
     "name": "Filelist",
     "url": "https://filelist.io/",
     "logo": "https://filelist.io/favicon.ico",
@@ -7129,6 +7212,7 @@
     "my_uid_rule": "//div[@class=\"status_avatar\"]/a[contains(@href, \"/userdetails.php?id=\")]/@href",
     "page_control_panel": "my.php",
     "tracker": "reactor.filelist.io",
+    "nickname": "filelist",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -7137,12 +7221,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "filelist"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
-    "id": 97,
+    "id": 98,
     "created_at": "2022-12-26 14:03:05.511105",
-    "updated_at": "2023-01-18 17:35:55.789558",
+    "updated_at": "2023-01-23 15:23:00.561612",
     "name": "普斯特",
     "url": "https://pt.hdpost.top/",
     "logo": "https://pt.hdpost.top/favicon.ico",
@@ -7211,9 +7295,10 @@
     "hash_rule": "//td/b[contains(text(),\"Hash\")]/following::text()[1]",
     "notice_rule": "//a[@href=\"index.php\"]/font[contains(text(),\"条\")]/text()[1]",
     "my_passkey_rule": "//span[@class=\"text-monospace\"]/text()",
-    "my_uid_rule": "//div[@class=\"header gradient blue\"]//h2/text()[1]",
+    "my_uid_rule": "//a[@class=\"top-nav__username--highresolution\"]/span/text()",
     "page_control_panel": "usercp.php",
     "tracker": "pt.post.top",
+    "nickname": "hdpost",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//span[contains(text(),\"全站免费\")]/following-sibling::div/span/text()",
@@ -7222,12 +7307,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "hdpost"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
-    "id": 98,
+    "id": 99,
     "created_at": "2022-12-26 19:45:08.010450",
-    "updated_at": "2023-01-18 17:35:55.792428",
+    "updated_at": "2023-01-20 07:42:10.754918",
     "name": "朱雀",
     "url": "https://zhuque.in/",
     "logo": "https://gitee.com/ngfchl/ptools/raw/master/static/logo/zhuque.png",
@@ -7299,6 +7384,7 @@
     "my_uid_rule": "id",
     "page_control_panel": "user/setting",
     "tracker": "tracker.zhuque.in",
+    "nickname": "zhuque",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -7307,12 +7393,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "zhuque"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
-    "id": 99,
+    "id": 100,
     "created_at": "2022-12-27 12:40:22.412286",
-    "updated_at": "2023-01-18 17:35:55.795410",
+    "updated_at": "2023-01-20 07:42:10.759839",
     "name": "Oldtoons",
     "url": "https://oldtoons.world/",
     "logo": "https://oldtoons.world/favicon.ico",
@@ -7384,6 +7470,7 @@
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "oldtoons.world",
+    "nickname": "oldtoons",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"Full site\") and contains(text(),\"Free\")]/text()",
@@ -7392,12 +7479,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "oldtoons"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
-    "id": 100,
+    "id": 101,
     "created_at": "2022-12-27 12:56:12.440343",
-    "updated_at": "2023-01-18 17:35:55.798188",
+    "updated_at": "2023-01-23 15:33:09.020834",
     "name": "Reelflix",
     "url": "https://reelflix.xyz/",
     "logo": "https://reelflix.xyz/favicon.ico",
@@ -7469,6 +7556,7 @@
     "my_uid_rule": "//div[@class=\"header gradient blue\"]//h2/text()[1]",
     "page_control_panel": "usercp.php",
     "tracker": "reelflix.xyz",
+    "nickname": "reelflix",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//span[contains(text(),\"全站免费\")]/following-sibling::div/span/text()",
@@ -7477,12 +7565,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "reelflix"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
-    "id": 101,
+    "id": 102,
     "created_at": "2023-01-03 09:53:52.495825",
-    "updated_at": "2023-01-18 17:35:55.801018",
+    "updated_at": "2023-01-20 07:42:10.766583",
     "name": "2xfree",
     "url": "https://pt.2xfree.org/",
     "logo": "https://pt.2xfree.org/favicon.ico",
@@ -7554,6 +7642,7 @@
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "pt.2xfree.org",
+    "nickname": "2xfree",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -7562,12 +7651,12 @@
     "notice_title": "//td[@class=\"text\"]/div/a",
     "notice_content": "//td[@class=\"text\"]/div/a/following-sibling::div",
     "page_index": "index.php",
-    "nickname": "2xfree"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   },
   {
-    "id": 102,
+    "id": 103,
     "created_at": "2023-01-16 16:45:01.890366",
-    "updated_at": "2023-01-18 17:35:55.804063",
+    "updated_at": "2023-01-20 07:42:10.769803",
     "name": "蝴蝶",
     "url": "https://hudbt.hust.edu.cn/",
     "logo": "https://hudbt.hust.edu.cn/favicon.ico",
@@ -7639,6 +7728,7 @@
     "my_uid_rule": "//table[@id=\"info_block\"]//span/a[contains(@class,\"_Name\") and contains(@href,\"userdetails.php?id=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "hudbt.hust.edu.cn",
+    "nickname": "hudbt",
     "page_hr": "myhr.php?hrtype=1&userid={}",
     "search_params": "{\"免费\":\"spstate=2\",\"2X\":\"spstate=3\",\"2X免费\":\"spstate=4\",\"50%\":\"spstate=5\",\"2X 50%\":\"spstate=6\",}",
     "full_site_free": "//td/b/a/font[contains(text(),\"全站\") and contains(text(),\"Free\")]/text()",
@@ -7647,6 +7737,6 @@
     "notice_title": "//div[@id=\"news\"]/ul/li/a",
     "notice_content": "//div[@id=\"news\"]/ul/li/a/following-sibling::div/div/font",
     "page_index": "index.php",
-    "nickname": "hudbt"
+    "publish_rule": "//p/preceding-sibling::b/text()[1]"
   }
 ]
