@@ -458,8 +458,11 @@
                                 <div>
                                     <span style="float: left;line-height: 36px;font-weight: bold;color: #3b5769;">魔力/积分：</span>
                                     <i class="el-icon-magic-stick"
-                                       v-text="' ' + numberFormat(site.sp) + ' / ' + numberFormat(site.bonus)"
-                                       style="color: darkorange" title="魔力/积分"></i>
+                                            {#                                       v-text="' ' + numberFormat(site.sp) + ' / ' + (site.bonus != 0 ？(' / ' + numberFormat(site.bonus) ):'')"#}
+                                       style="color: darkorange" title="魔力/积分">
+                                        <span v-text="' ' + numberFormat(site.sp)"></span>
+                                        <span v-text="' / ' + numberFormat(site.bonus)" v-if="site.bonus != 0"></span>
+                                    </i>
                                     <br>
                                     <i class="el-icon-lollipop"
                                        v-text="site.sp_hour.toFixed(2) + ' / ' + site.sp_hour_full"
@@ -1348,9 +1351,9 @@
                         //toolbox: {
                         //    {#show: true,#}
                         //    feature: {
-                                {#mark: {show: true},#}
-                                {#dataView: {show: true, readOnly: false},#}
-                                {#restore: {show: true},#}
+                        {#mark: {show: true},#}
+                        {#dataView: {show: true, readOnly: false},#}
+                        {#restore: {show: true},#}
                         //        saveAsImage: {show: true}
                         //    }
                         //},
