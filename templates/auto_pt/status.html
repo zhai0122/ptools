@@ -1135,7 +1135,7 @@
                                 //console.log(params)
                                 // console.log(params[0].value[1])
                                 let text = ''
-                                {#let total = 0#}
+                                let total = 0
                                 params.sort((a, b) => {
                                     return b.value - a.value
                                 })
@@ -1147,13 +1147,13 @@
                                             </div>
                                          `
                                     text += temp
-                                    {#total += param.value#}
+                                    total += param.value
                                 })
                                 let total_str = `
                                             <div style="display: block;height:14px;text-align: left;padding: 1%;font-size: 12px;">
                                               <span style="float: left;">
                                                     <i style="width: 8px;height: 8px;display: inline-block;background: darkorange;border-radius: 8px;">
-                                                    </i>总计：${renderSize(today_total)}</span>
+                                                    </i>总计：${renderSize(total)}</span>
                                               <text style="float: right;">${params[0].axisValue}</text>
                                             </div>
                                             <hr>
@@ -1267,7 +1267,7 @@
                                         fontSize: '14px',
                                     }
                                 },
-                            }
+                            },
                         ],
                     }
                     this.site.name = '全部站点'
