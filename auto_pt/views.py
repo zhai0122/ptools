@@ -617,7 +617,7 @@ def site_status_api(request):
                         'last_active': datetime.strftime(site_info.updated_at, '%Y/%m/%d %H:%M:%S'),
                     }
                     try:
-                        level_info = site.userlevelrule_set.filter(level=my_site.my_level.lower().strip()).first()
+                        level_info = site.userlevelrule_set.filter(level=my_site.my_level.strip()).first()
 
                         if not level_info:
                             pass
