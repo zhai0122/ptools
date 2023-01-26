@@ -85,6 +85,7 @@
 // @match        https://www.hitpt.com/*
 // @match        https://hdfans.org/*
 // @match        https://www.joyhd.net/*
+// @match        https://hdvideo.one/*
 
 // @run-at       context-menu
 // @version      0.0.3
