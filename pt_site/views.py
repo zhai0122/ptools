@@ -105,6 +105,8 @@ def auto_get_status():
             message = '> <font color="red">' + my_site.site.name + ' 信息更新失败！原因：' + result.msg + '</font>  \n\n'
             message_list = message + message_list
             logger.warning(my_site.site.name + '信息更新失败！原因：' + result.msg)
+    # 发送今日数据
+    pt_spider.today_data()
     end = time.time()
     consuming = '> <font color="blue">{} 任务运行成功！耗时：{} 完成时间：{}  </font>  \n'.format(
         '自动更新个人数据', end - start,
