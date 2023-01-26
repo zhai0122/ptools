@@ -57,6 +57,8 @@
 // @match        https://zmpt.cc/*
 // @match        https://leaves.red/*
 // @match        https://piggo.me/*
+
+// @run-at       context-menu
 // @version      0.0.2
 // @grant        GM_xmlhttpRequest
 // @grant        none
@@ -66,6 +68,7 @@
 
 /*
 日志：
+    2023.01.26  修复bug，调整为右键菜单启动
     2023.01.26  更新逻辑，一小时内不会重复更新
     2023.01.25  完成第一版0.0.1
     2023.01.24  开始编写第一版脚本
@@ -84,7 +87,8 @@ var path = "tasks/monkey_to_ptools";
 (function () {
     'use strict';
     main().then(res => {
-        alert('PTools提醒您，你的Cookie已更新！')
+        console.log(res)
+        alert('PTools提醒您：' + res.msg)
     });
 })();
 
@@ -97,8 +101,8 @@ async function getSite() {
     }).then(res => {
         // console.log(data);
         if (res.code !== 0) {
-            console.error(res.msg)
-            return
+            console.log(res.msg)
+            return false
         }
         console.log('站点信息获取成功！', res.data)
         return res.data
@@ -107,15 +111,19 @@ async function getSite() {
 
 async function getData() {
     var site_info = await getSite()
-    console.log(site_info)
+    if (site_info == false) return;
+    console.log(site_info.uid_xpath)
     //获取cookie与useragent
     let user_agent = window.navigator.userAgent
     let cookie = document.cookie
+    //获取UID
     let re = /\d+/;
-    let href = document.evaluate(site_info.uid_xpath, document).iterateNext()
-    let user_id = re.exec(href)[0]
+    let href = document.evaluate(site_info.uid_xpath, document).iterateNext().textContent
+    console.log(href)
+    let user_id = href.match(re)
+    console.log(user_id)
     return {
-        user_id: user_id,
+        user_id: user_id[0],
         site_id: site_info.site_id,
         cookie: cookie,
         token: token,
@@ -125,12 +133,13 @@ async function getData() {
 
 async function main() {
     var data = await getData();
-    if (data == false) return;
-    console.log(data)
-    let res = await ajax_post(data).then(res => {
-        alert('PTools提醒您：' + res.msg)
-        console.log(res)
-    })
+    if (data == false) {
+        return;
+    } else {
+        return await ajax_post(data).then(res => {
+            return res
+        })
+    }
 }
 
 
