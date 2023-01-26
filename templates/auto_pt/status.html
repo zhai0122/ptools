@@ -361,7 +361,7 @@
                                     <i class="el-icon-warning" style="color: orangered" v-if="site.hr!=0" title="H&R"
                                        v-text="' ' + site.hr"></i>
                                     <el-link style="color: darkred;font-size: 13px;"
-                                             :href="site.url" target="_blank"
+                                             :href="site.url + site.message_url" target="_blank"
                                              v-if="site.mail > 0">
                                         <i class="fas fa-envelope el-fade-in"></i>
                                         <span v-text="site.mail"></span>
