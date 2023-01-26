@@ -1236,13 +1236,13 @@ def monkey_to_ptools(request):
         site_list = Site.objects.filter(url=url)
         if len(site_list) == 1:
             site = site_list.first()
-            logger.info(f'{(datetime.now() - site.mysite.updated_at).seconds / 3600}')
-            if (datetime.now() - site.mysite.updated_at).seconds <= 3600:
-                return JsonResponse(data=CommonResponse.error(
-                    status=StatusCodeEnum.THROTTLING_ERR,
-                    msg=f'更新cookie还不到一个小时啦，下次再更吧！'
-                        f'{3600 - (datetime.now() - site.mysite.updated_at).seconds}后可以更新！'
-                ).to_dict(), safe=False)
+            # logger.info(f'{(datetime.now() - site.mysite.updated_at).seconds / 3600}')
+            # if (datetime.now() - site.mysite.updated_at).seconds <= 3600:
+            #     return JsonResponse(data=CommonResponse.error(
+            #         status=StatusCodeEnum.THROTTLING_ERR,
+            #         msg=f'更新cookie还不到一个小时啦，下次再更吧！'
+            #             f'{3600 - (datetime.now() - site.mysite.updated_at).seconds}后可以更新！'
+            #     ).to_dict(), safe=False)
             data = {'site_id': site.id, 'uid_xpath': site.my_uid_rule}
             # if len(my_site_list) == 1:
             #     data.update({
@@ -1264,6 +1264,7 @@ def monkey_to_ptools(request):
             ).to_dict(), safe=False)
         site_id = my_site_params.get('site_id')
         logger.info(site_id)
+        del my_site_params['token']
         try:
             res_my_site = MySite.objects.update_or_create(site_id=site_id, defaults=my_site_params)
             logger.info(res_my_site[1])
