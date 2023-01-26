@@ -375,7 +375,7 @@ class PtSpider:
             'user_id': uid,
             'my_level': my_level if my_level else ' ',
             'time_join': time_join,
-            'seed': cookie.get('info').get('seeding') if cookie.get('info').get('seeding') else 0,
+            # 'seed': cookie.get('info').get('seeding') if cookie.get('info').get('seeding') else 0,
             'mail': cookie.get('info').get('messageCount') if cookie.get('info').get('messageCount') else 0,
         })
         my_site = result[0]
