@@ -4,60 +4,60 @@
 // @description  PT站点cookie等信息发送到Ptools
 // @namespace    http://tampermonkey.net/
 
-// @match        https://1ptba.com/userdetails.php?id=*
-// @match        https://52pt.site/userdetails.php?id=*
-// @match        https://audiences.me/userdetails.php?id=*
-// @match        https://byr.pt/userdetails.php?id=*
-// @match        https://ccfbits.org/userdetails.php?id=*
-// @match        https://club.hares.top/userdetails.php?id=*
-// @match        https://discfan.net/userdetails.php?id=*
-// @match        https://et8.org/userdetails.php?id=*
-// @match        https://filelist.io/userdetails.php?id=*
-// @match        https://hdatmos.club/userdetails.php?id=*
-// @match        https://hdchina.org/userdetails.php?id=*
-// @match        https://hdcity.leniter.org/userdetails.php?id=*
-// @match        https://hdhome.org/userdetails.php?id=*
-// @match        https://hdmayi.com/userdetails.php?id=*
-// @match        https://hdsky.me/userdetails.php?id=*
-// @match        https://hdtime.org/userdetails.php?id=*
-// @match        https://hudbt.hust.edu.cn/userdetails.php?id=*
+// @match        https://1ptba.com/*
+// @match        https://52pt.site/*
+// @match        https://audiences.me/*
+// @match        https://byr.pt/*
+// @match        https://ccfbits.org/*
+// @match        https://club.hares.top/*
+// @match        https://discfan.net/*
+// @match        https://et8.org/*
+// @match        https://filelist.io/*
+// @match        https://hdatmos.club/*
+// @match        https://hdchina.org/*
+// @match        https://hdcity.leniter.org/*
+// @match        https://hdhome.org/*
+// @match        https://hdmayi.com/*
+// @match        https://hdsky.me/*
+// @match        https://hdtime.org/*
+// @match        https://hudbt.hust.edu.cn/*
 // @match        https://iptorrents.com/t
-// @match        https://kp.m-team.cc/userdetails.php?id=*
-// @match        https://lemonhd.org/userdetails.php?id=*
-// @match        https://nanyangpt.com/userdetails.php?id=*
-// @match        https://npupt.com/userdetails.php?id=*
-// @match        https://ourbits.club/userdetails.php?id=*
-// @match        https://pt.btschool.club/userdetails.php?id=*
-// @match        https://pt.eastgame.org/userdetails.php?id=*
-// @match        https://pt.hdbd.us/userdetails.php?id=*
-// @match        https://pt.keepfrds.com/userdetails.php?id=*
-// @match        https://pterclub.com/userdetails.php?id=*
-// @match        https://pthome.net/userdetails.php?id=*
-// @match        https://springsunday.net/userdetails.php?id=*
-// @match        https://totheglory.im/userdetails.php?id=*
-// @match        https://u2.dmhy.org/userdetails.php?id=*
-// @match        https://www.beitai.pt/userdetails.php?id=*
-// @match        https://www.haidan.video/userdetails.php?id=*
-// @match        https://www.hdarea.co/userdetails.php?id=*
-// @match        https://www.hddolby.com/userdetails.php?id=*
-// @match        https://www.htpt.cc/userdetails.php?id=*
-// @match        https://www.nicept.net/userdetails.php?id=*
-// @match        https://www.pthome.net/userdetails.php?id=*
+// @match        https://kp.m-team.cc/*
+// @match        https://lemonhd.org/*
+// @match        https://nanyangpt.com/*
+// @match        https://npupt.com/*
+// @match        https://ourbits.club/*
+// @match        https://pt.btschool.club/*
+// @match        https://pt.eastgame.org/*
+// @match        https://pt.hdbd.us/*
+// @match        https://pt.keepfrds.com/*
+// @match        https://pterclub.com/*
+// @match        https://pthome.net/*
+// @match        https://springsunday.net/*
+// @match        https://totheglory.im/*
+// @match        https://u2.dmhy.org/*
+// @match        https://www.beitai.pt/*
+// @match        https://www.haidan.video/*
+// @match        https://www.hdarea.co/*
+// @match        https://www.hddolby.com/*
+// @match        https://www.htpt.cc/*
+// @match        https://www.nicept.net/*
+// @match        https://www.pthome.net/*
 // @match        https://www.pttime.org
-// @match        https://www.tjupt.org/userdetails.php?id=*
+// @match        https://www.tjupt.org/*
 // @match        https://www.torrentleech.org
-// @match        https://www.carpet.net/userdetails.php?id=*
-// @match        https://wintersakura.net/userdetails.php?id=*
-// @match        https://hhanclub.top/userdetails.php?id=*
-// @match        https://www.hdpt.xyz/userdetails.php?id=*
-// @match        https://ptchina.org/userdetails.php?id=*
-// @match        https://www.oshen.win/userdetails.php?id=*
-// @match        https://www.hd.ai/userdetails.php?id=*
-// @match        http://ihdbits.me/userdetails.php?id=*
-// @match        https://zmpt.cc/userdetails.php?id=*
-// @match        https://leaves.red/userdetails.php?id=*
-// @match        https://piggo.me/userdetails.php?id=*
-// @version      0.0.1
+// @match        https://www.carpet.net/*
+// @match        https://wintersakura.net/*
+// @match        https://hhanclub.top/*
+// @match        https://www.hdpt.xyz/*
+// @match        https://ptchina.org/*
+// @match        https://www.oshen.win/*
+// @match        https://www.hd.ai/*
+// @match        http://ihdbits.me/*
+// @match        https://zmpt.cc/*
+// @match        https://leaves.red/*
+// @match        https://piggo.me/*
+// @version      0.0.2
 // @grant        GM_xmlhttpRequest
 // @grant        none
 // @license      GPL-3.0 License
@@ -66,6 +66,7 @@
 
 /*
 日志：
+    2023.01.26  更新逻辑，一小时内不会重复更新
     2023.01.25  完成第一版0.0.1
     2023.01.24  开始编写第一版脚本
 
@@ -82,7 +83,9 @@ var path = "tasks/monkey_to_ptools";
 
 (function () {
     'use strict';
-    main();
+    main().then(res => {
+        alert('PTools提醒您，你的Cookie已更新！')
+    });
 })();
 
 async function getSite() {
@@ -109,7 +112,7 @@ async function getData() {
     let user_agent = window.navigator.userAgent
     let cookie = document.cookie
     let re = /\d+/;
-    let href = document.location.search
+    let href = document.evaluate(site_info.uid_xpath, document).iterateNext()
     let user_id = re.exec(href)[0]
     return {
         user_id: user_id,
@@ -124,10 +127,10 @@ async function main() {
     var data = await getData();
     if (data == false) return;
     console.log(data)
-    let res = await ajax_post(data)
-    console.log(res)
-    //await sendSiteToNastools(data);
-
+    let res = await ajax_post(data).then(res => {
+        alert('PTools提醒您：' + res.msg)
+        console.log(res)
+    })
 }
 
 

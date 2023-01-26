@@ -1235,7 +1235,15 @@ def monkey_to_ptools(request):
         logger.info(url)
         site_list = Site.objects.filter(url=url)
         if len(site_list) == 1:
-            data = {'site_id': site_list.first().id}
+            site = site_list.first()
+            logger.info(f'{(datetime.now() - site.mysite.updated_at).seconds / 3600}')
+            if (datetime.now() - site.mysite.updated_at).seconds <= 3600:
+                return JsonResponse(data=CommonResponse.error(
+                    status=StatusCodeEnum.THROTTLING_ERR,
+                    msg=f'更新cookie还不到一个小时啦，下次再更吧！'
+                        f'{3600 - (datetime.now() - site.mysite.updated_at).seconds}后可以更新！'
+                ).to_dict(), safe=False)
+            data = {'site_id': site.id, 'uid_xpath': site.my_uid_rule}
             # if len(my_site_list) == 1:
             #     data.update({
             #         'my_site_id': my_site_list.first().id
@@ -1259,9 +1267,8 @@ def monkey_to_ptools(request):
         try:
             res_my_site = MySite.objects.update_or_create(site_id=site_id, defaults=my_site_params)
             logger.info(res_my_site[1])
-
             return JsonResponse(data=CommonResponse.success(
-                msg=f'{res_my_site[0].site.name} 添加成功！'
+                msg=f'{res_my_site[0].site.name} Cookie信息 {"添加成功！" if res_my_site[1] else "更新成功！"}'
             ).to_dict(), safe=False)
         except:
             logger.info(traceback.format_exc(3))
