@@ -870,7 +870,6 @@ def update_site_api(request):
             if res.code != StatusCodeEnum.OK.code:
                 return JsonResponse(data=res.to_dict(), safe=False)
             status = res.data[0]
-            pt_spider.today_data()
             if isinstance(status, SiteStatus):
                 message = message_template.format(
                     my_site.site.name,
