@@ -623,7 +623,7 @@ def site_status_api(request):
                             pass
                         else:
                             if level_info.level_id == 0:
-                                site_info.update({
+                                out_site_info.update({
                                     'level_info': model_to_dict(level_info),
                                 })
                             else:
@@ -870,6 +870,7 @@ def update_site_api(request):
             if res.code != StatusCodeEnum.OK.code:
                 return JsonResponse(data=res.to_dict(), safe=False)
             status = res.data[0]
+            pt_spider.today_data()
             if isinstance(status, SiteStatus):
                 message = message_template.format(
                     my_site.site.name,
