@@ -20,6 +20,11 @@ def app_ready_handler(sender, **kwargs):
                 Site.objects.filter(url='https://azusa.ru/').delete()
             else:
                 Site.objects.filter(url='https://azusa.ru/').update(url='https://azusa.wiki/')
+            red_leaves = Site.objects.filter(url='https://leaves.red/')
+            if len(red_leaves) >= 1:
+                Site.objects.filter(url='https://leaves.red/').delete()
+            else:
+                Site.objects.filter(url='http://leaves.red/').update(url='https://leaves.red/')
             data = json.load(f)
             logger.info('正在初始化站点规则信息表')
             logger.info('更新规则中，返回结果为True为新建，为False为更新，其他是错误了')
