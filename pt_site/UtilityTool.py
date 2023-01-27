@@ -2519,6 +2519,8 @@ class PtSpider:
             else:
                 uploaded_increase = site_state.uploaded
                 downloaded_increase = site_state.downloaded
+            if uploaded_increase + downloaded_increase <= 0:
+                continue
             total_upload += uploaded_increase
             total_download += downloaded_increase
             increase_list.append(f'\n\n- 站点：{my_site.site.name}'
