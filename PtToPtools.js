@@ -88,15 +88,18 @@
 // @match        https://hdzone.me/*
 
 
-// @run-at       context-menu
-// @version      0.0.3
+// @version      0.0.4
 // @grant        GM_xmlhttpRequest
+// @grant        GM_addStyle
 // @license      GPL-3.0 License
-// @require      https://cdn.bootcdn.net/ajax/libs/jquery/3.6.3/jquery.min.js
+
+// @require   file:///Users/ngf/PycharmProjects/ptools/static/test/test.js
+
 // ==/UserScript==
 
 /*
 日志：
+    2023.01.28  优化：无须右键菜单，直接在网页显示悬浮窗，点击运行
     2023.01.26  优化：适配站点进一步完善，如遇到PTOOLS支持的站点没有油猴脚本选项，请把网址发给我；优化：取消油猴脚本发送COOKIE的一小时限制
     2023.01.26  修复bug，调整为右键菜单启动
     2023.01.26  更新逻辑，一小时内不会重复更新
@@ -104,7 +107,6 @@
     2023.01.24  开始编写第一版脚本
 
 */
-this.$ = this.jQuery = jQuery.noConflict(true);
 /**
  * 小白白们请看这里
  * 需要修改的项目
@@ -114,6 +116,10 @@ this.$ = this.jQuery = jQuery.noConflict(true);
  */
 var ptools = "http://127.0.0.1:8000/";
 var token = "ptools";
+
+
+// this.$ = this.jQuery = jQuery.noConflict(true);
+
 /**
  * 以下内容无需修改
  * @type {string}
@@ -121,88 +127,153 @@ var token = "ptools";
 var path = "tasks/monkey_to_ptools";
 var i = 1;
 
-
 (function () {
     'use strict';
     if (i == 1) {
-        main()
-        i++
+        // main()
+        action()
+        addStyle()
+        i++;
     }
 })();
 
-async function getSite() {
-    return new Promise((resolve, reject) => {
-        GM_xmlhttpRequest({
-            url: `${ptools}${path}?url=${document.location.origin + '/'}&token=${token}`,
-            method: "GET",
-            responseType: "json",
-            onload: function (response) {
-                let res = response.response
-                console.log(res)
-                if (res.code !== 0) {
-                    console.log(res.msg)
-                    resolve(false)
-                }
+function getSite() {
+    var data = ''
+    GM_xmlhttpRequest({
+        url: `${ptools}${path}?url=${document.location.origin + '/'}&token=${token}`,
+        method: "GET",
+        responseType: "json",
+        onload: function (response) {
+            let res = response.response
+            console.log(res)
+            if (res.code !== 0) {
+                console.log(res.msg)
+                data = false
+                return
+            } else {
                 console.log('站点信息获取成功！', res.data)
-                resolve(res.data)
+                data = res.data
+                let params = getData(res.data)
+                console.log(params)
+                ajax_post(params)
             }
-        })
+
+
+        }
     })
 }
 
-async function getData() {
-    var site_info = await getSite()
+function getData(site_info) {
+    // var site_info = a_getSite()
     console.log(site_info)
-    if (site_info === false) return;
+    if (site_info === false || site_info === '' || site_info == null) return;
     console.log(site_info.uid_xpath)
     //获取cookie与useragent
     let user_agent = window.navigator.userAgent
     let cookie = document.cookie
     //获取UID
-    let re = /\d+/;
+    let re = /\d{2,}/;
     let href = document.evaluate(site_info.uid_xpath, document).iterateNext().textContent
     console.log(href)
     let user_id = href.match(re)
     console.log(user_id)
-    return `user_id=${user_id[0]}&site_id=${site_info.site_id}&cookie=${cookie}&token=${token}&user_agent=${user_agent}`
+    let data = `user_id=${user_id[0]}&site_id=${site_info.site_id}&cookie=${cookie}&token=${token}&user_agent=${user_agent}`
+    return data
 }
 
-async function main() {
-    var data = await getData();
-    if (data == false) {
-        return;
-    } else {
-        return await ajax_post(data).then(res => {
-            return res
-        })
-    }
+function main() {
+    var data = getSite();
+    console.log(data)
+    // if (data == false) {
+    //     return;
+    // } else {
+    //     a_ajax_post(data)
+    // }
 }
 
 
-async function ajax_post(data) {
-    return new Promise((resolve, reject) => {
-        GM_xmlhttpRequest({
-            url: `${ptools}${path}`,
-            method: "POST",
-            responseType: "json",
-            headers: {"Content-Type": "application/x-www-form-urlencoded"},
-            data: data,
-            onload: function (response) {
-                console.log(response)
-                let res = response.response
-                console.log(res)
-                if (res.code !== 0) {
-                    console.log(res.msg)
-                    resolve(false)
-                }
-                console.log('站点信息获取成功！', res.msg)
-                console.log(res)
-                alert('PTools提醒您：' + res.msg)
-                resolve(res)
-            },
-            onerror: function (response) {
-                reject("站点信息获取失败")
+function ajax_post(data) {
+    GM_xmlhttpRequest({
+        url: `${ptools}${path}`,
+        method: "POST",
+        responseType: "json",
+        headers: {"Content-Type": "application/x-www-form-urlencoded"},
+        data: data,
+        onload: function (response) {
+            console.log(response)
+            let res = response.response
+            console.log(res)
+            if (res.code !== 0) {
+                console.log(res.msg)
+                return false
             }
-        })
+            console.log('站点信息获取成功！', res.msg)
+            console.log(res)
+            alert('PTools提醒您：' + res.msg)
+        },
+        onerror: function (response) {
+            console.log("站点信息获取失败")
+        }
     })
+}
+
+function action() {
+    var wrap = document.createElement("div");
+    var first = document.body.firstChild;
+    wrap.innerHTML = `<img src="${ptools}static/logo4.png" style="width: 100%;"><br><label class="ui-upload">同步Cookie
+                <input  id="sync_cookie"/></label>`
+    wrap.className = 'wrap'
+    var wraphtml = document.body.insertBefore(wrap, first);
+    document.getElementById("sync_cookie").onclick = a_main;
+}
+
+function addStyle() {
+    let css = `
+        .wrap {
+        z-index:99999;
+        position: fixed;
+        width: 85px;
+        margin-right: 0;
+        margin-top: 240px;
+        float: left;
+        opacity: 0.4;
+        font-size: 12px;
+        }
+        .wrap:hover {
+            opacity: 1.0;
+        }
+        .wrap > img {
+            border-radius: 5px;
+        }
+        .ui-upload {
+            width: 100%;
+            height: 22px;
+            text-align: center;
+            position: relative;
+            cursor: pointer;
+            color: #fff;
+            background: GoldEnrod;
+            border-radius: 3px;
+            overflow: hidden;
+            display: inline-block;
+            text-decoration: none;
+            margin-top: 1px;
+            line-height: 22px;
+        }
+
+        .ui-upload input {
+           font-size: 12px;
+           width: 100%;
+           height: 100%;
+           text-align: center;
+           background: GoldEnrod;
+           margin-left: -1px;
+            position: absolute;
+            opacity: 0;
+            filter: alpha(opacity=0);
+            cursor: pointer;
+
+        }
+    `
+    GM_addStyle(css)
 }
