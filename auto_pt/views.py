@@ -1254,7 +1254,8 @@ def monkey_to_ptools(request):
             msg='站点信息获取失败！'
         ).to_dict(), safe=False)
     else:
-        my_site_params = json.loads(request.body)
+        logger.info(request.POST)
+        my_site_params = request.POST.copy()
         logger.info(my_site_params)
         token = my_site_params.get('token')
         if len(token) > 0 and token != own_token.get('token'):
@@ -1263,7 +1264,7 @@ def monkey_to_ptools(request):
             ).to_dict(), safe=False)
         site_id = my_site_params.get('site_id')
         logger.info(site_id)
-        del my_site_params['token']
+        my_site_params.pop('token')
         try:
             res_my_site = MySite.objects.update_or_create(site_id=site_id, defaults=my_site_params)
             logger.info(res_my_site[1])
