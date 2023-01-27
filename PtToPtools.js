@@ -85,7 +85,8 @@
 // @match        https://www.hitpt.com/*
 // @match        https://hdfans.org/*
 // @match        https://www.joyhd.net/*
-// @match        https://hdvideo.one/*
+// @match        https://hdzone.me/*
+
 
 // @run-at       context-menu
 // @version      0.0.3
@@ -111,45 +112,48 @@ this.$ = this.jQuery = jQuery.noConflict(true);
  * token：ptools.toml中设置的token，获取安全密钥token，可以在ptools.toml中自定义，格式 [token] token="ptools"
  * @type {string}
  */
-let ptools = "http://127.0.0.1:8000/";
+var ptools = "http://127.0.0.1:8000/";
+var token = "ptools";
 /**
  * 以下内容无需修改
  * @type {string}
  */
-var token = "ptools";
-
-//一下选项无需配置
 var path = "tasks/monkey_to_ptools";
+var i = 1;
 
 
 (function () {
     'use strict';
-    main().then(res => {
-        console.log(res)
-        alert('PTools提醒您：' + res.msg)
-    });
+    if (i == 1) {
+        main()
+        i++
+    }
 })();
 
 async function getSite() {
-    return $.ajax({
-        url: ptools + path,
-        type: "get",
-        dataType: "json",
-        data: {url: document.location.origin + '/', token: token}
-    }).then(res => {
-        // console.log(data);
-        if (res.code !== 0) {
-            console.log(res.msg)
-            return false
-        }
-        console.log('站点信息获取成功！', res.data)
-        return res.data
+    return new Promise((resolve, reject) => {
+        GM_xmlhttpRequest({
+            url: `${ptools}${path}?url=${document.location.origin + '/'}&token=${token}`,
+            method: "GET",
+            responseType: "json",
+            onload: function (response) {
+                let res = response.response
+                console.log(res)
+                if (res.code !== 0) {
+                    console.log(res.msg)
+                    resolve(false)
+                }
+                console.log('站点信息获取成功！', res.data)
+                resolve(res.data)
+            }
+        })
     })
 }
 
 async function getData() {
     var site_info = await getSite()
-    if (site_info == false) return;
+    console.log(site_info)
+    if (site_info === false) return;
     console.log(site_info.uid_xpath)
     //获取cookie与useragent
     let user_agent = window.navigator.userAgent
@@ -160,13 +164,7 @@ async function getData() {
     console.log(href)
     let user_id = href.match(re)
     console.log(user_id)
-    return {
-        user_id: user_id[0],
-        site_id: site_info.site_id,
-        cookie: cookie,
-        token: token,
-        user_agent: user_agent
-    }
+    return `user_id=${user_id[0]}&site_id=${site_info.site_id}&cookie=${cookie}&token=${token}&user_agent=${user_agent}`
 }
 
 async function main() {
@@ -182,13 +180,29 @@ async function main() {
 
 
 async function ajax_post(data) {
-    return $.ajax({
-        type: "POST",
-        url: ptools + path,
-        dataType: "json",
-        data: JSON.stringify(data),
-    }).then(res => {
-        console.log(res)
-        return res
-    });
+    return new Promise((resolve, reject) => {
+        GM_xmlhttpRequest({
+            url: `${ptools}${path}`,
+            method: "POST",
+            responseType: "json",
+            headers: {"Content-Type": "application/x-www-form-urlencoded"},
+            data: data,
+            onload: function (response) {
+                console.log(response)
+                let res = response.response
+                console.log(res)
+                if (res.code !== 0) {
+                    console.log(res.msg)
+                    resolve(false)
+                }
+                console.log('站点信息获取成功！', res.msg)
+                console.log(res)
+                alert('PTools提醒您：' + res.msg)
+                resolve(res)
+            },
+            onerror: function (response) {
+                reject("站点信息获取失败")
+            }
+        })
+    })
 }
