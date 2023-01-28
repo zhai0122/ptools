@@ -92,9 +92,9 @@
 // @grant        GM_xmlhttpRequest
 // @grant        GM_addStyle
 // @license      GPL-3.0 License
-
+/**
 // @require   file:///Users/ngf/PycharmProjects/ptools/static/test/test.js
-
+*/
 // ==/UserScript==
 
 /*
