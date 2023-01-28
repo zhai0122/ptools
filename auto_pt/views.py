@@ -1079,7 +1079,7 @@ def edit_my_site(request):
         my_site_list = MySite.objects.filter(id=my_site_id)
         if len(my_site_list) == 1:
             my_site = my_site_list.values(
-                'id', 'site', 'sign_in', 'get_info', 'hr', 'search', 'user_id', 'passkey', 'user_agent', 'cookie',
+                'id', 'site', 'sign_in', 'get_info', 'hr', 'search', 'user_id', 'user_agent', 'cookie',
                 'time_join'
             ).first()
             return JsonResponse(CommonResponse.success(data={
@@ -1097,7 +1097,7 @@ def remove_my_site(request):
         try:
             my_site = my_site_list.first().delete()
             logger.info(my_site)
-            if my_site[0] == 1:
+            if my_site[0] > 0:
                 return JsonResponse(data=CommonResponse.success(
                     msg='站点信息删除成功！'
                 ).to_dict(), safe=False)

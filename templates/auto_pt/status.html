@@ -632,10 +632,10 @@
                           placeholder="请输入数字UID，AZ,CZ,EZ,Reel，莫妮卡、普斯特等请填写用户名">
                 </el-input>
             </el-form-item>
-            <el-form-item label="Passkey" :label-position="top" prop="passkey">
-                <el-input v-model="addMySiteForm.passkey" clearable
-                          show-password show-word-limit></el-input>
-            </el-form-item>
+{#            <el-form-item label="Passkey" :label-position="top" prop="passkey">#}
+{#                <el-input v-model="addMySiteForm.passkey" clearable#}
+{#                          show-password show-word-limit></el-input>#}
+{#            </el-form-item>#}
             <el-form-item label="Cookies" :label-position="top" prop="cookie">
                 <el-input type="textarea"
                           placeholder="请输入站点Cookies，与UA搭配使用效果更佳"
@@ -704,7 +704,7 @@
                         hr: false,
                         search: true,
                         user_id: '',
-                        passkey: '',
+                        {#passkey: '',#}
                         time_join: '2023-01-01 12:00:00',
                         user_agent: '',
                         cookie: ''
@@ -716,10 +716,10 @@
                         user_id: [
                             {required: true, message: '请输入数字UID，指定站点请输入用户名', trigger: 'blur'},
                         ],
-                        passkey: [
-                            {required: false, message: '请输入Passkey', trigger: 'blur'},
-                            {min: 16, max: 32, message: '长度为32位', trigger: 'blur'}
-                        ],
+                        {#passkey: [#}
+                        {#    {required: false, message: '请输入Passkey', trigger: 'blur'},#}
+                        {#    {min: 16, max: 32, message: '长度为32位', trigger: 'blur'}#}
+                        {#],#}
                         cookie: [
                             {required: true, message: '请输入站点Cookies，与UA搭配使用效果更佳', trigger: 'change'}
                         ]
