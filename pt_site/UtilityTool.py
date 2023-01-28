@@ -330,38 +330,19 @@ class PtSpider:
             time_join = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(int(time_stamp) / 1000))
         else:
             time_join = datetime.now()
-        passkey = cookie.get('passkey')
-        logger.info('passkey: {}'.format(passkey))
         uid = cookie.get('info').get('id')
         if not uid:
             try:
                 logger.info('备份文件未获取到User_id，尝试获取中')
                 scraper = self.get_scraper()
-                logger.info(f'Passkey:{passkey}')
-                if site.url in [
-                    'https://monikadesign.uk/',
-                    'https://pt.hdpost.top/',
-                    'https://reelflix.xyz/',
-                    'https://exoticaz.to/',
-                    'https://cinemaz.to/',
-                    'https://avistaz.to/',
-                ]:
-                    response = scraper.get(
-                        url=site.url,
-                        cookies=cookie.get('cookies'),
-                    )
-                    logger.info(response.text)
-                    uid = ''.join(self.parse(site, response, site.my_uid_rule))
-                    passkey = ' '
-                else:
-                    response = scraper.get(
-                        url=site.url + site.page_control_panel,
-                        cookies=cookie.get('cookies'),
-                    )
-                    logger.info(response.text)
-                    uid = get_decimals(self.parse(site, response, site.my_uid_rule)[0])
-                    passkey = self.parse(site, response, site.my_passkey_rule)[0]
-                logger.info(f'uid:{uid}')
+                response = scraper.get(
+                    url=site.url + site.page_index,
+                    cookies=cookie.get('cookies'),
+                )
+                logger.info(response.text)
+                uid_list = ''.join(self.parse(site, response, site.my_uid_rule)).split('=')
+                # passkey = self.parse(site, response, site.my_passkey_rule)[0]
+                logger.info(f'uid:{uid_list[-1]}')
             except Exception as e:
                 passkey_msg = f'{site.name} Uid获取失败，请手动添加！'
                 msg = f'{site.name} 信息导入失败！ {passkey_msg}：{e}'
@@ -371,8 +352,7 @@ class PtSpider:
                 )
         result = MySite.objects.update_or_create(site=site, defaults={
             'cookie': cookie.get('cookies'),
-            'passkey': passkey,
-            'user_id': uid,
+            'user_id': uid_list[-1],
             'my_level': my_level if my_level else ' ',
             'time_join': time_join,
             # 'seed': cookie.get('info').get('seeding') if cookie.get('info').get('seeding') else 0,
@@ -380,7 +360,6 @@ class PtSpider:
         })
         my_site = result[0]
         passkey_msg = ''
-
         logger.info('开始导入PTPP历史数据')
         for key, value in userdatas.items():
             logger.info(key)
@@ -424,11 +403,6 @@ class PtSpider:
                 msg = '{}{} 数据导入出错，错误原因：{}'.format(site.name, key, traceback.format_exc(limit=3))
                 logger.error(msg)
                 continue
-        if not passkey:
-            return CommonResponse.success(
-                status=StatusCodeEnum.NO_PASSKEY_WARNING,
-                msg=site.name + (' 信息导入成功！' if result[1] else ' 信息更新成功！ ') + passkey_msg
-            )
         return CommonResponse.success(
             # status=StatusCodeEnum.NO_PASSKEY_WARNING,
             msg=site.name + (' 信息导入成功！' if result[1] else ' 信息更新成功！ ') + passkey_msg
