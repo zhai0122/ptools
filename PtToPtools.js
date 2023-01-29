@@ -92,7 +92,7 @@
 // @match        https://exoticaz.to/*
 // @match        https://cinemaz.to/*
 // @match        https://avistaz.to/*
-
+// @match        https://iptorrents.com/*
 
 
 // @version      0.0.5
@@ -101,6 +101,7 @@
 // @grant        GM_getResourceText
 // @grant        GM_addStyle
 // @grant        GM_cookie
+// @noframes     true
 // @license      GPL-3.0 License
 // @require      https://cdn.bootcdn.net/ajax/libs/jquery/3.6.3/jquery.min.js
 // @require      https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js
@@ -139,10 +140,11 @@ var i = 1;
 (function () {
     'use strict';
     if (i == 1) {
+        if (window.top != window.self) return;  //don't run on frames or iframes
         // GM_addStyle(GM_getResourceText("bootstrap"));
+        addStyle()
         getDownloaders()
         action()
-        addStyle()
         i++
     }
 })();
@@ -167,31 +169,8 @@ async function getSite() {
     })
 }
 
-async function getDownloaders() {
-    return new Promise((resolve, reject) => {
-        GM_xmlhttpRequest({
-            url: `${ptools}tasks/get_downloaders`,
-            method: "GET",
-            responseType: "json",
-            onload: function (response) {
-                let res = response.response
-                console.log(res)
-                if (res.code !== 0) {
-                    console.log(res.msg)
-                    resolve(false)
-                }
-                console.log('下载器列表获取成功！', res.data)
-                let downloader=''
-                res.data.forEach(item=>{
-                    downloader += `<button class="dropdown-item downloader" data-id="${item.id}">${item.name}</button>`
-                })
-                resolve(downloader)
-            }
-        })
-    })
-}
 
-async function getCookie(){
+async function getCookie() {
     return new Promise((resolve, reject) => {
         GM_cookie('list', { // 异步,如果在return data之前还没执行完，部分站点会导致cookie不全。
             url: location.href
@@ -216,7 +195,7 @@ async function getData() {
     console.log(href)
     let user_id = href.split('=')
     console.log(user_id)
-    return `user_id=${user_id[user_id.length-1]}&site_id=${site_info.site_id}&cookie=${cookie}&token=${token}&user_agent=${user_agent}`
+    return `user_id=${user_id[user_id.length - 1]}&site_id=${site_info.site_id}&cookie=${cookie}&token=${token}&user_agent=${user_agent}`
 }
 
 async function main() {
@@ -260,50 +239,124 @@ async function ajax_post(data) {
     })
 }
 
+async function getDownloaders() {
+    return new Promise((resolve, reject) => {
+        GM_xmlhttpRequest({
+            url: `${ptools}tasks/get_downloaders`,
+            method: "GET",
+            responseType: "json",
+            onload: function (response) {
+                let res = response.response
+                console.log(res)
+                if (res.code !== 0) {
+                    console.log(res.msg)
+                    resolve(false)
+                }
+                console.log('下载器列表获取成功！', res.data)
+
+                resolve(res.data)
+            }
+        })
+    })
+}
+
+async function showDownloaders(downloaders, flag) {
+    let downloader = ''
+    downloaders.forEach(item => {
+        downloader += `<button class="dropdown-item" data-id="${item.id}">${item.name}</button>`
+    })
+
+    let downloader_list = `<div class="btn-group">
+                    <button type="button" class="btn btn-outline-warning btn-sm btn-block text-nowrap" 
+                    style="font-size: 12px;" data-toggle="dropdown" aria-expanded="false">
+                        ${flag ? '下载到...' : '下载所有'}
+                    </button>
+                    <div class="dropdown-menu downloader">
+                        ${downloader}
+                    </div>
+                    </div>`
+    if (!flag) {
+        downloader_list += `<div class="btn-group">
+                    <button type="button" class="btn btn-outline-warning btn-sm btn-block text-nowrap" 
+                    style="font-size: 12px;" data-toggle="dropdown" aria-expanded="false">
+                        下载免费
+                    </button>
+                    <div class="dropdown-menu download-free">
+                        ${downloader}
+                    </div>
+                    </div>`
+    }
+    return downloader_list
+}
 
 async function action() {
     var wrap = document.createElement("div");
     var first = document.body.firstChild;
     wrap.innerHTML = `<img src="${ptools}static/logo4.png" style="width: 100%;"><br>
-    <div class="btn-group-vertical btn-block">
+    <div class="btn-group-vertical btn-block action">
     <button type="button" class="btn btn-outline-warning btn-sm btn-block text-nowrap" style="font-size: 12px;" id="sync_cookie">同步Cookie</button>
-    <div class="btn-group">
-    <button type="button" class="btn btn-outline-warning btn-sm btn-block text-nowrap" style="font-size: 12px;" data-toggle="dropdown" aria-expanded="false">下载到..</button>
-    <div class="dropdown-menu ">
-
-    </div>
-    </div>
-    <button type="button" class="btn btn-outline-warning btn-sm btn-block text-nowrap" style="font-size: 12px;" id="download_all">下载所有</button>
-    <button type="button" class="btn btn-outline-warning btn-sm btn-block text-nowrap" style="font-size: 12px;" id="copy_link">复制链接</button>
     </div>`
+    // '<button type="button" class="btn btn-outline-warning btn-sm btn-block text-nowrap" style="font-size: 12px;" id="copy_link">复制链接</button>\n'
+    // '<button type="button" class="btn btn-outline-warning btn-sm btn-block text-nowrap" style="font-size: 12px;" id="download_all">下载所有</button>\n'
     wrap.className = 'wrap'
     var wraphtml = document.body.insertBefore(wrap, first);
-    let downloaders = await getDownloaders()
-    $('.dropdown-menu').html(downloaders)
+    let downloader_list = await getDownloaders()
+    console.log(downloader_list)
+    if (location.pathname.search(/details\w+.php/) > 0
+        || location.pathname.includes('/torrent.php')
+        || location.pathname.search(/torrents\D*\d+/) > 0
+    ) {
+        console.log('当前为种子详情页')
+        let downloaders = await showDownloaders(downloader_list, true)
+        $('.action').append(downloaders)
+        $('.downloader').on('click', async function (e) {
+            const downloader_id = $(this).attr('data-id')
+            await download_to(downloader_id)
+        })
+    }
+
+    if (location.pathname.search(/torrents\D*$/) > 0
+        || location.pathname.search(/t$/) > 0
+        || location.pathname.includes('/music.php')
+        || location.pathname.includes('/torrents.php')) {
+        console.log('当前为种子列表页')
+        let downloaders = await showDownloaders(downloader_list, false)
+        $('.action').append(downloaders)
+        $('.downloader > button').on('click', async function (e) {
+            const downloader_id = $(this).attr('data-id')
+            await download_all(downloader_id)
+        })
+        $('.downloader-free > button').on('click', async function (e) {
+            const downloader_id = $(this).attr('data-id')
+            await download_free(downloader_id)
+        })
+    }
+
     document.getElementById("sync_cookie").onclick = function () {
         main()
     };
     // document.getElementById("download_to").onclick = function () {
     //     download_to()
     // };
-    document.getElementById("download_all").onclick = function () {
-        download_all()
-    };
-    document.getElementById("copy_link").onclick = function () {
-        copy_link()
-    };
-    $('.downloader').on('click',async function(e){
-        const downloader_id = $(this).attr('data-id')
-        download_to(downloader_id)
-    })
+    // document.getElementById("download_all").onclick = function () {
+    //     download_all()
+    // };
+    // document.getElementById("copy_link").onclick = function () {
+    //     copy_link()
+    // };
+
 }
 
 async function download_to(id) {
-    alert(`下载器ID：${id}。失望也是一种幸福，因为还有期待。期待我的到来吧，少年！`)
+    alert(`download_to 下载器ID：${id}。失望也是一种幸福，因为还有期待。期待我的到来吧，少年！`)
 }
 
-async function download_all() {
-    alert('失望也是一种幸福，因为还有期待。期待我的到来吧，少年！')
+async function download_all(id) {
+    alert(`download_all 下载器ID：${id}。失望也是一种幸福，因为还有期待。期待我的到来吧，少年！`)
+}
+
+async function download_free(id) {
+    alert(`download_free 下载器ID：${id}。失望也是一种幸福，因为还有期待。期待我的到来吧，少年！`)
 }
 
 async function copy_link() {
