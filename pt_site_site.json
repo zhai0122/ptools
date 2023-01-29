@@ -2840,7 +2840,7 @@
   {
     "id": 40,
     "created_at": "2022-08-14 09:14:51.194000",
-    "updated_at": "2023-01-25 08:42:33.983536",
+    "updated_at": "2023-01-29 10:52:11.886899",
     "name": "ipt",
     "url": "https://iptorrents.com/",
     "logo": "https://iptorrents.com/favicon.ico",
@@ -2909,7 +2909,7 @@
     "hash_rule": "//tr[11]//td[@class=\"no_border_wide\"][2]/text()",
     "notice_rule": "//a[@href=\"index.php\"]/font[contains(text(),\"条\")]/text()[1]",
     "my_passkey_rule": "//th[contains(text(),\"Passkey\")]/following-sibling::td/text()",
-    "my_uid_rule": "//a[@class=\"tTipWrap uname\"]/@href",
+    "my_uid_rule": "//a[@class=\"tTipWrap\" and contains(@href,\"/peers?u=\")]/@href",
     "page_control_panel": "usercp.php",
     "tracker": "iptorrents.com",
     "nickname": "iptorrents",
