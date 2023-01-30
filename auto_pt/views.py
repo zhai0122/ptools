@@ -695,7 +695,7 @@ def site_status_api(request):
             'p_years': round(p_years, 4),
             'now': datetime.strftime(
                 SiteStatus.objects.order_by('-updated_at').first().updated_at,
-                '%Y-%m-%d %H:%M:%S'),
+                '%Y-%m-%d %H:%M:%S') if len(SiteStatus.objects.all()) > 0 else datetime.now(),
         }
         # return render(request, 'auto_pt/status.html')
         userdata = {
