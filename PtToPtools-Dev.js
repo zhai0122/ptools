@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name         PtToPtools
+// @name         PtToPtools-Dev
 // @author       ngfchl
 // @description  PT站点cookie等信息发送到Ptools
 // @namespace    http://tampermonkey.net/
