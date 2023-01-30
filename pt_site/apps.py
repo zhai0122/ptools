@@ -15,16 +15,8 @@ def app_ready_handler(sender, **kwargs):
     try:
         with open('pt_site_site.json', 'r') as f:
             # print(f.readlines())
-            az_wiki = Site.objects.filter(url='https://azusa.wiki/')
-            if len(az_wiki) >= 1:
-                Site.objects.filter(url='https://azusa.ru/').delete()
-            else:
-                Site.objects.filter(url='https://azusa.ru/').update(url='https://azusa.wiki/')
-            red_leaves = Site.objects.filter(url='https://leaves.red/')
-            if len(red_leaves) >= 1:
-                Site.objects.filter(url='https://leaves.red/').delete()
-            else:
-                Site.objects.filter(url='http://leaves.red/').update(url='https://leaves.red/')
+            # Site.objects.filter(url='http://leaves.red/').update(url='https://leaves.red/')
+            # UserLevelRule.objects.filter(site_id='http://leaves.red/').update(site_id='https://leaves.red/')
             data = json.load(f)
             logger.info('正在初始化站点规则信息表')
             logger.info('更新规则中，返回结果为True为新建，为False为更新，其他是错误了')
@@ -35,8 +27,9 @@ def app_ready_handler(sender, **kwargs):
                     del site_rules['id']
                 url = site_rules.get('url')
                 site_obj = Site.objects.update_or_create(defaults=site_rules, url=url)
-                # msg = site_obj[0].name + (' 规则新增成功！' if site_obj[1] else '规则更新成功！')
-                # logger.info(msg)
+                msg = site_obj[0].name + (' 规则新增成功！' if site_obj[1] else '规则更新成功！')
+                logger.info(msg)
+
         with open('pt_site_userlevelrule.json', 'r') as file:
             upgrade_data = json.load(file)
             for upgrade in upgrade_data:
@@ -48,12 +41,12 @@ def app_ready_handler(sender, **kwargs):
                     site_id=upgrade.get('site_id'), level_id=upgrade.get('level_id'),
                     defaults=upgrade
                 )
-                # logger.info(
-                #     f'{upgrade_obj[0].site.name} {"用户升级规则新增成功！" if site_obj[1] else "用户升级规则更新成功！"}')
+                logger.info(
+                    f'{upgrade_obj[0].site.name} {"用户升级规则新增成功！" if site_obj[1] else "用户升级规则更新成功！"}')
         logger.info('数据库初始化完成！')
     except Exception as e:
         logger.error('初始化站点信息出错！{}'.format(e))
-        logger.error(traceback.format_exc(limit=3))
+        logger.error(traceback.format_exc(limit=5))
 
 
 class PtSiteConfig(AppConfig):

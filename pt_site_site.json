@@ -6024,7 +6024,7 @@
     "created_at": "2022-11-01 00:06:06.053113",
     "updated_at": "2023-01-25 08:42:34.284100",
     "name": "红叶",
-    "url": "https://leaves.red/",
+    "url": "http://leaves.red/",
     "logo": "http://leaves.red/favicon.ico",
     "sign_in_support": 1,
     "get_torrent_support": 1,
