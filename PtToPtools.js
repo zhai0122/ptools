@@ -121,10 +121,14 @@
 */
 this.$ = this.jQuery = jQuery.noConflict(true);
 /**
- * 小白白们请看这里
+ * 小白白们请看这里，详情请到博客查看入门文档： https://ainil.top
  * 需要修改的项目
- * ptools：ptools本地服务端地址，请在此修改设置ptools的访问地址，如http://192.168.1.2:8000
- * token：ptools.toml中设置的token，获取安全密钥token，可以在ptools.toml中自定义，格式 [token] token="ptools"
+ * ptools：ptools本地服务端地址，请在此修改设置ptools的访问地址，如http://192.168.1.2:8000/
+ * token：ptools.toml中设置的token，获取安全密钥token，可以在ptools.toml中自定义，格式
+ * ```
+ * [token]
+ * token="ptools"
+ * ```
  * @type {string}
  */
 var ptools = "http://127.0.0.1:8000/";
