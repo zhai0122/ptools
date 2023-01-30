@@ -340,9 +340,9 @@ class PtSpider:
                     cookies=cookie.get('cookies'),
                 )
                 logger.info(response.text)
-                uid_list = ''.join(self.parse(site, response, site.my_uid_rule)).split('=')
+                uid = ''.join(self.parse(site, response, site.my_uid_rule)).split('=')[-1]
                 # passkey = self.parse(site, response, site.my_passkey_rule)[0]
-                logger.info(f'uid:{uid_list[-1]}')
+                logger.info(f'uid:{uid}')
             except Exception as e:
                 passkey_msg = f'{site.name} Uid获取失败，请手动添加！'
                 msg = f'{site.name} 信息导入失败！ {passkey_msg}：{e}'
@@ -352,7 +352,7 @@ class PtSpider:
                 )
         result = MySite.objects.update_or_create(site=site, defaults={
             'cookie': cookie.get('cookies'),
-            'user_id': uid_list[-1],
+            'user_id': uid,
             'my_level': my_level if my_level else ' ',
             'time_join': time_join,
             # 'seed': cookie.get('info').get('seeding') if cookie.get('info').get('seeding') else 0,
