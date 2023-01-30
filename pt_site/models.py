@@ -10,6 +10,7 @@ from ptools.base import BaseEntity, DownloaderCategory
 # 支持的站点
 class Site(BaseEntity):
     # 站点设置
+    identity = models.IntegerField(verbose_name='认证ID', unique=True, help_text='唯一值，自行适配站点的请填写的尽量大')
     url = models.URLField(verbose_name='站点网址', default='', help_text='请保留网址结尾的"/"', unique=True)
     name = models.CharField(max_length=32, verbose_name='站点名称')
     nickname = models.CharField(max_length=16, verbose_name='简称', default='', help_text='英文，用于刷流')
@@ -108,10 +109,6 @@ class Site(BaseEntity):
         verbose_name='主页下载链接',
         default='.//td/a[contains(@href,"download.php?id=")]/@href',
         max_length=128)
-    download_url_rule = models.CharField(
-        verbose_name='详情页种子链接',
-        default='.//a[contains(@href,"download.php?id=") and contains(@href,"passkey")]/@href',
-        max_length=128)
     size_rule = models.CharField(verbose_name='文件大小',
                                  default='.//td[5]/text()',
                                  max_length=128)
@@ -144,18 +141,58 @@ class Site(BaseEntity):
         verbose_name='完成人数',
         default='.//a[contains(@href,"viewsnatches")]//text()',
         max_length=128)
-    viewfilelist_rule = models.CharField(
-        verbose_name='解析文件结构',
-        default='.//td/text()',
+    detail_title_rule = models.CharField(
+        verbose_name='详情页种子标题',
+        default='//h1/text()[1]',
         max_length=128)
-    viewpeerlist_rule = models.CharField(
-        verbose_name='平均下载进度',
-        default='.//tr/td[9]/nobr/text()',
+    detail_subtitle_rule = models.CharField(
+        verbose_name='详情页种子副标题',
+        default='//td[contains(text(),"副标题")]/following-sibling::td/text()[1]',
         max_length=128)
-    peer_speed_rule = models.CharField(
-        verbose_name='平均下载速度',
-        default='.//tr/td[7]/nobr/text()',
+    detail_download_url_rule = models.CharField(
+        verbose_name='详情页种子链接',
+        default='//a[@class="index" and contains(@href,"download.php")]/@href',
         max_length=128)
+    detail_size_rule = models.CharField(
+        verbose_name='详情页种子大小',
+        default='//td//b[contains(text(),"大小")]/following::text()[1]',
+        max_length=128)
+    detail_category_rule = models.CharField(
+        verbose_name='详情页种子类型',
+        default='//td/b[contains(text(),"类型")]/following-sibling::text()[1]',
+        max_length=128)
+    detail_area_rule = models.CharField(
+        verbose_name='详情页种子地区',
+        default='//h1/following::td/b[contains(text(),"地区")]/text()',
+        max_length=128)
+    detail_count_files_rule = models.CharField(
+        verbose_name='详情页文件数',
+        default='//td/b[contains(text(),"文件数")]/following-sibling::text()[1]',
+        max_length=128)
+    # HASH RULE
+    detail_hash_rule = models.CharField(
+        verbose_name='详情页种子HASH',
+        default='//td/b[contains(text(),"Hash")]/following-sibling::text()[1]',
+        max_length=128)
+    detail_free_rule = models.CharField(
+        verbose_name='详情页促销标记',
+        default='//td//b[contains(text(),"大小")]/following::text()[1]',
+        max_length=128)
+    detail_free_expire_rule = models.CharField(
+        verbose_name='详情页促销时间',
+        default='//h1/b/font[contains(@class,"free")]/parent::b/following-sibling::b/span/@title',
+        max_length=128)
+    detail_douban_rule = models.CharField(
+        verbose_name='详情页豆瓣信息',
+        help_text='提取做种列表中文件大小计算总量',
+        default='//td/a[starts-with(@href,"https://movie.douban.com/subject/")][1]',
+        max_length=128)
+    detail_year_publish_rule = models.CharField(
+        verbose_name='详情页豆瓣信息',
+        help_text='提取做种列表中文件大小计算总量',
+        default='year_current_publish: //td/b[contains(text(),"发行版年份")]/text()',
+        max_length=128)
+
     remark = models.TextField(verbose_name='备注', default='', null=True, blank=True)
     # 状态信息XPath
     invitation_rule = models.CharField(
@@ -226,11 +263,6 @@ class Site(BaseEntity):
                                  default='//img[@class="arrowup"]/following-sibling::text()[1]',
                                  max_length=128)
 
-    record_count_rule = models.CharField(verbose_name='做种大小列表',
-                                         help_text='提取做种列表中文件大小计算总量',
-                                         default='.//td[3]/text()',
-                                         max_length=128)
-
     seed_vol_rule = models.CharField(verbose_name='做种大小',
                                      default='//tr/td[3]',
                                      help_text='需对数据做处理',
@@ -259,10 +291,6 @@ class Site(BaseEntity):
                                       default='//td/b/a/font[contains(text(),"全站") and contains(text(),"Free")]/text()',
                                       help_text='站免信息',
                                       max_length=128)
-    # HASH RULE
-    hash_rule = models.CharField(verbose_name='种子HASH',
-                                 default='//td/b[contains(text(),"Hash")]/following::text()[1]',
-                                 max_length=128)
 
     class Meta:
         verbose_name = '站点信息'
@@ -274,16 +302,18 @@ class Site(BaseEntity):
 
 
 class UserLevelRule(BaseEntity):
-    site = models.ForeignKey(verbose_name='站 点', to=Site, to_field='url', on_delete=models.CASCADE)
+    site = models.ForeignKey(verbose_name='站 点', to=Site, to_field='identity', on_delete=models.CASCADE)
     level_id = models.IntegerField(verbose_name='等级id', default=1)
     level = models.CharField(verbose_name='等 级', default='User', max_length=24, help_text='请去除空格')
     days = models.IntegerField(verbose_name='时 间', default=0, help_text='原样输入，单位：周')
     uploaded = models.CharField(verbose_name='上 传', default=0, help_text='原样输入，例：50GB，1.5TB', max_length=12)
     downloaded = models.CharField(verbose_name='下 载', default=0, help_text='原样输入，例：50GB，1.5TB', max_length=12)
-    bonus = models.IntegerField(verbose_name='魔 力', default=0)
+    bonus = models.FloatField(verbose_name='魔 力', default=0)
     score = models.IntegerField(verbose_name='积 分', default=0)
     ratio = models.FloatField(verbose_name='分享率', default=0)
-    torrents = models.IntegerField(verbose_name='发 种', default=0)
+    torrents = models.IntegerField(verbose_name='发 种', help_text='发布种子数', default=0)
+    leeches = models.IntegerField(verbose_name='吸血数', help_text='完成种子数', default=0)
+    seeding_delta = models.FloatField(verbose_name='做种时间', help_text='累计做种时间', default=0)
     rights = models.TextField(verbose_name='权 利', max_length=256,
                               help_text='当前等级所享有的权利与义务')
 
