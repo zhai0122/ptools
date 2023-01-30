@@ -166,7 +166,7 @@ class SiteAdmin(admin.ModelAdmin):  # instead of ModelAdmin
                 'latest_active_rule',
             ),
         }],
-        ['种子获取规则', {
+        ['列表页获取规则', {
             'classes': ('collapse',),  # CSS
             'fields': (
                 'torrents_rule',
@@ -175,7 +175,6 @@ class SiteAdmin(admin.ModelAdmin):  # instead of ModelAdmin
                 'detail_url_rule',
                 'category_rule',
                 'poster_rule',
-                'download_url_rule',
                 'magnet_url_rule',
                 'size_rule',
                 'hr_rule',
@@ -185,11 +184,23 @@ class SiteAdmin(admin.ModelAdmin):  # instead of ModelAdmin
                 'seeders_rule',
                 'leechers_rule',
                 'completers_rule',
-                'record_count_rule',
-                'hash_rule',
-                'peer_speed_rule',
-                'viewpeerlist_rule',
-                'viewfilelist_rule',
+            ),
+        }],
+        ['详情页获取规则', {
+            'classes': ('collapse',),  # CSS
+            'fields': (
+                'detail_title_rule',
+                'detail_subtitle_rule',
+                'detail_download_url_rule',
+                'detail_size_rule',
+                'detail_category_rule',
+                'detail_area_rule',
+                'detail_count_files_rule',
+                'detail_hash_rule',
+                'detail_free_rule',
+                'detail_free_expire_rule',
+                'detail_douban_rule',
+                'detail_year_publish_rule',
             ),
         }]
     )
