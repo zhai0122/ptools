@@ -42,7 +42,7 @@ if [ ! -f db/hosts ]; then
   echo 172.67.98.15 u2.dmhy.org >>/etc/hosts
 else
   echo '存在自定义HOSTS文件，apply'
-  mv db/hosts /etc/hosts
+  cp -f db/hosts /etc/hosts
 fi
 echo "启动服务"
 python manage.py migrate
