@@ -32,7 +32,7 @@ git pull origin $DEV
 echo "列出代码文件信息"
 ls -l
 echo "安装并升级pip依赖"
-pip install -r requirements.txt -U
+pip install -r requirements.txt
 if [ ! -f db/hosts ]; then
   echo "未自定义HOSTS，默认写入"
   echo 172.64.153.252 u2.dmhy.org >>/etc/hosts
