@@ -1232,7 +1232,7 @@ def monkey_to_ptools(request):
                 msg='Token认证失败！'
             ).to_dict(), safe=False)
         logger.info(url)
-        site_list = Site.objects.filter(url=url)
+        site_list = Site.objects.filter(url__contains=url)
         if len(site_list) == 1:
             site = site_list.first()
             # logger.info(f'{(datetime.now() - site.mysite.updated_at).seconds / 3600}')

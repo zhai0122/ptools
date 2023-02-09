@@ -156,7 +156,7 @@ var i = 1;
 async function getSite() {
     return new Promise((resolve, reject) => {
         GM_xmlhttpRequest({
-            url: `${ptools}${path}?url=${document.location.origin + '/'}&token=${token}`,
+            url: `${ptools}${path}?url=${document.location.host + '/'}&token=${token}`,
             method: "GET",
             responseType: "json",
             onload: function (response) {
