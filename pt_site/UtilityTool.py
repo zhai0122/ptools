@@ -31,7 +31,7 @@ from auto_pt.models import Notify, OCR
 from pt_site.models import MySite, SignIn, TorrentInfo, SiteStatus, Site
 from ptools.base import TorrentBaseInfo, PushConfig, CommonResponse, StatusCodeEnum, DownloaderCategory
 from ptools.settings import BASE_DIR
-from wechat_push import WechatPush
+from .wechat_push import WechatPush
 
 urllib3.util.ssl_.DEFAULT_CIPHERS = 'ALL'
 
@@ -186,7 +186,8 @@ class PtSpider:
                         })
                     logger.info('爱语飞飞通知：{}'.format(res))
         except Exception as e:
-            logger.info('通知发送失败，{} {}'.format(res, traceback.format_exc(limit=3)))
+            logger.info('通知发送失败，{} {}'.format(res, traceback.format_exc(limit=5)))
+            raise
 
     def send_request(self,
                      my_site: MySite,
