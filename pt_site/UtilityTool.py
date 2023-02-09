@@ -25,13 +25,13 @@ from lxml import etree
 from pypushdeer import PushDeer
 from requests import Response, ReadTimeout
 from urllib3.exceptions import NewConnectionError, ConnectTimeoutError
-from wechat_push import WechatPush
 from wxpusher import WxPusher
 
 from auto_pt.models import Notify, OCR
 from pt_site.models import MySite, SignIn, TorrentInfo, SiteStatus, Site
 from ptools.base import TorrentBaseInfo, PushConfig, CommonResponse, StatusCodeEnum, DownloaderCategory
 from ptools.settings import BASE_DIR
+from wechat_push import WechatPush
 
 urllib3.util.ssl_.DEFAULT_CIPHERS = 'ALL'
 
@@ -137,7 +137,9 @@ class PtSpider:
                     notify_push = WechatPush(
                         corp_id=notify.corpid,
                         secret=notify.corpsecret,
-                        agent_id=notify.agentid, )
+                        agent_id=notify.agentid,
+                        server=notify.custom_server
+                    )
                     res = notify_push.send_text(
                         text=message,
                         to_uid=notify.touser if notify.touser else '@all'
@@ -2469,8 +2471,7 @@ class PtSpider:
 
     @staticmethod
     def parse_token(cmd):
-        with open('db/ptools.toml', 'r') as f:
-            data = toml.load(f)
+        data = toml.load('db/ptools.toml')
         return CommonResponse.success(
             data=data.get(cmd)
         )
