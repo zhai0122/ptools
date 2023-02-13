@@ -10,7 +10,7 @@ class WechatPush:
         self.secret = secret
         self.token = ''
         self.expire = 0
-        self.server = server
+        self.server = server if len(server) > 10 else 'https://qyapi.weixin.qq.com/'
 
     def refresh_token(self):
         r = requests.get(f"{self.server}cgi-bin/gettoken", params={
