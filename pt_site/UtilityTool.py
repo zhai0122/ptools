@@ -130,8 +130,8 @@ class PtSpider:
         res = '你还没有配置通知参数哦！'
         if len(notifies) <= 0:
             return res
-        try:
-            for notify in notifies:
+        for notify in notifies:
+            try:
                 if notify.name == PushConfig.wechat_work_push:
                     """企业微信通知"""
                     notify_push = WechatPush(
@@ -185,9 +185,8 @@ class PtSpider:
                             'desp': message
                         })
                     logger.info('爱语飞飞通知：{}'.format(res))
-        except Exception as e:
-            logger.info('通知发送失败，{} {}'.format(res, traceback.format_exc(limit=5)))
-            raise
+            except Exception as e:
+                logger.info('通知发送失败，{} {}'.format(res, traceback.format_exc(limit=5)))
 
     def send_request(self,
                      my_site: MySite,
