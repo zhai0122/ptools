@@ -24,7 +24,7 @@ from django.db.models import QuerySet
 from lxml import etree
 from pypushdeer import PushDeer
 from requests import Response, ReadTimeout
-from urllib3.exceptions import NewConnectionError, ConnectTimeoutError
+from urllib3.exceptions import NewConnectionError, ConnectTimeoutError, MaxRetryError
 from wxpusher import WxPusher
 
 from auto_pt.models import Notify, OCR
@@ -1721,7 +1721,7 @@ class PtSpider:
             logger.error(traceback.format_exc(limit=3))
             return CommonResponse.error(
                 status=StatusCodeEnum.WEB_CONNECT_ERR,
-                msg='网站证书验证失败！！')
+                msg='网站访问失败！！')
         except ReadTimeout as e:
             logger.error(traceback.format_exc(limit=3))
             return CommonResponse.error(
@@ -1731,7 +1731,12 @@ class PtSpider:
             logger.error(traceback.format_exc(limit=3))
             return CommonResponse.error(
                 status=StatusCodeEnum.WEB_CONNECT_ERR,
-                msg='网站连接超时，请稍后重试？？')
+                msg='网站连接超时-链接失败，请稍后重试？？')
+        except MaxRetryError as e:
+            logger.error(traceback.format_exc(limit=3))
+            return CommonResponse.error(
+                status=StatusCodeEnum.WEB_CONNECT_ERR,
+                msg='网站连接超时-抄错重试次数，请稍后重试？？')
         except Exception as e:
             message = '{} 访问个人主页信息：失败！原因：{}'.format(my_site.site.name, e)
             logger.error(message)
