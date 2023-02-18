@@ -1712,31 +1712,17 @@ class PtSpider:
                 'seeding_html': seeding_html,
                 # 'leeching_html': leeching_html
             })
-        except NewConnectionError as nce:
+        except (NewConnectionError,
+                requests.exceptions.SSLError,
+                requests.exceptions.ProxyError,
+                ReadTimeout,
+                ConnectTimeoutError,
+                MaxRetryError,
+                ) as nce:
             logger.error(traceback.format_exc(limit=3))
             return CommonResponse.error(
                 status=StatusCodeEnum.WEB_CONNECT_ERR,
-                msg='与网站建立连接失败，请检查网络？？')
-        except requests.exceptions.SSLError:
-            logger.error(traceback.format_exc(limit=3))
-            return CommonResponse.error(
-                status=StatusCodeEnum.WEB_CONNECT_ERR,
-                msg='网站访问失败！！')
-        except ReadTimeout as e:
-            logger.error(traceback.format_exc(limit=3))
-            return CommonResponse.error(
-                status=StatusCodeEnum.WEB_CONNECT_ERR,
-                msg='网站访问超时，请检查网站是否维护？？')
-        except ConnectTimeoutError as e:
-            logger.error(traceback.format_exc(limit=3))
-            return CommonResponse.error(
-                status=StatusCodeEnum.WEB_CONNECT_ERR,
-                msg='网站连接超时-链接失败，请稍后重试？？')
-        except MaxRetryError as e:
-            logger.error(traceback.format_exc(limit=3))
-            return CommonResponse.error(
-                status=StatusCodeEnum.WEB_CONNECT_ERR,
-                msg='网站连接超时-抄错重试次数，请稍后重试？？')
+                msg='网站访问失败，请检查网络？？')
         except Exception as e:
             message = '{} 访问个人主页信息：失败！原因：{}'.format(my_site.site.name, e)
             logger.error(message)
