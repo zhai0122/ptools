@@ -19,7 +19,7 @@ def app_ready_handler(sender, **kwargs):
             # UserLevelRule.objects.filter(site_id='http://leaves.red/').update(site_id='https://leaves.red/')
             data = json.load(f)
             logger.info('正在初始化站点规则信息表')
-            logger.info('更新规则中，返回结果为True为新建，为False为更新，其他是错误了')
+            # '更新规则中，返回结果为True为新建，为False为更新，其他是错误了')
             for site_rules in data:
                 if site_rules.get('pk'):
                     del site_rules['pk']
