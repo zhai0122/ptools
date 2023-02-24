@@ -2077,6 +2077,14 @@ class PtSpider:
                     time_join = datetime.strptime(''.join(details_html.xpath(site.time_join_rule)), '%d/%m/%Y %H:%M:%S')
                     my_site.time_join = time_join
                 elif site.url in [
+                    'https://piggo.me/',
+                ]:
+                    time_str = ''.join(details_html.xpath(site.time_join_rule))
+                    time_str = time_str.split('(')[0]
+                    print(time_str)
+                    time_join = datetime.strptime(time_str.strip(), '%Y-%m-%d %H:%M:%S')
+                    my_site.time_join = time_join
+                elif site.url in [
                     'https://exoticaz.to/',
                     'https://cinemaz.to/',
                     'https://avistaz.to/',

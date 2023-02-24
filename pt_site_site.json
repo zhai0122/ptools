@@ -95,7 +95,7 @@
   {
     "id": 2,
     "created_at": "2022-07-17 10:24:21.376000",
-    "updated_at": "2023-01-30 15:24:44.535451",
+    "updated_at": "2023-02-24 13:06:36.921136",
     "name": "猪猪网",
     "url": "https://piggo.me/",
     "logo": "https://piggo.me/favicon.ico",
@@ -142,7 +142,7 @@
     "completers_rule": ".//a[contains(@href,\"viewsnatches.php?id=\")]//text()",
     "remark": "",
     "invitation_rule": "//a[contains(@href,\"invite.php?id=\")]/following-sibling::text()[1]",
-    "time_join_rule": "//td[contains(text(),\"加入\")]/following-sibling::td[1]//span/@title",
+    "time_join_rule": "//td[contains(text(),\"加入\")]/following-sibling::td[1]/text()",
     "latest_active_rule": "//td[contains(text(),\"最近动向\")]/following-sibling::td[1]//span/@title",
     "uploaded_rule": "//font[@class=\"color_uploaded\"]/following-sibling::text()[1]",
     "downloaded_rule": "//font[@class=\"color_downloaded\"]/following-sibling::text()[1]",
